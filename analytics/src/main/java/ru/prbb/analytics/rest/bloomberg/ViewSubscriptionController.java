@@ -1,10 +1,8 @@
 package ru.prbb.analytics.rest.bloomberg;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.analytics.domain.Result;
+import ru.prbb.analytics.domain.ViewSubscriptionItem;
 import ru.prbb.analytics.repo.bloomberg.ViewSubscriptionDao;
 
 /**
@@ -22,59 +21,53 @@ import ru.prbb.analytics.repo.bloomberg.ViewSubscriptionDao;
  * 
  */
 @Controller
-@RequestMapping("/rest/Subscription")
+@RequestMapping("/rest/ViewSubscription")
 public class ViewSubscriptionController
 {
-	//	@Autowired
+	@Autowired
 	private ViewSubscriptionDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<Map<String, Object>> show()
+	List<ViewSubscriptionItem> show()
 	{
-		// {call dbo.output_subscriptions_prc}
-		final ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < 10; i++) {
-			final HashMap<String, Object> map = new HashMap<String, Object>();
-			list.add(map);
-			map.put("id_subscr", new Long(i + 1));
-			map.put("subscription_name", "SUBSCRIPTION_NAME_" + (i + 1));
-			map.put("subscription_comment", "SUBSCRIPTION_COMMENT_" + (i + 1));
-			map.put("subscription_status", "SUBSCRIPTION_STATUS_" + (i + 1));
-		}
-		return list;
+		return dao.findAll();
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	Object add(
+	Result add(
 			@RequestParam String name,
-			@RequestParam(defaultValue = "") String comment)
+			@RequestParam(required = false) String comment)
 	{
+		dao.put(name, comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	public @ResponseBody
-	Object del(
+	Result del(
 			@PathVariable(value = "id") Long id)
 	{
+		dao.delete(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/start", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	Object start(
+	Result start(
 			@PathVariable(value = "id") Long id)
 	{
+		dao.start(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/stop", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	Object stop(
+	Result stop(
 			@PathVariable(value = "id") Long id)
 	{
+		dao.stop(id);
 		return Result.SUCCESS;
 	}
 }

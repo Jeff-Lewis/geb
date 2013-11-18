@@ -23,9 +23,9 @@
 		autoLoad : true,
 		url : 'rest/RequestBDP/Params.do',
 		// root : 'params',
-		fields : [ 'code' ],
+		fields : [ 'name' ],
 		sortInfo : {
-			field : 'code'
+			field : 'name'
 		}
 	});
 
@@ -135,7 +135,7 @@
 
 		var idsp = [];
 		smParams.each(function(item) {
-			idsp.push(item.data.code);
+			idsp.push(item.data.name);
 			return true;
 		});
 
@@ -177,7 +177,7 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'rest/RequestBDP/Daily.do',
+			url : 'rest/RequestBDP.do',
 			params : {
 				security : ids
 			},
@@ -256,7 +256,7 @@
 			selModel : smParams,
 			columns : [ smParams, {
 				header : 'PARAMETER',
-				dataIndex : 'code'
+				dataIndex : 'name'
 			} ],
 			viewConfig : {
 				forceFit : true,

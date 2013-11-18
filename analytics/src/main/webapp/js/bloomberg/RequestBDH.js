@@ -26,9 +26,9 @@
 		autoLoad : true,
 		url : 'rest/RequestBDH/Params.do',
 		// root : 'params',
-		fields : [ 'code' ],
+		fields : [ 'name' ],
 		sortInfo : {
-			field : 'code'
+			field : 'name'
 		}
 	});
 
@@ -199,7 +199,7 @@
 
 		var idsp = [];
 		smParams.each(function(item) {
-			idsp.push(item.data.code);
+			idsp.push(item.data.name);
 			return true;
 		});
 
@@ -319,7 +319,7 @@
 			selModel : smParams,
 			columns : [ smParams, {
 				header : 'PARAMETER',
-				dataIndex : 'code'
+				dataIndex : 'name'
 			} ],
 			viewConfig : {
 				forceFit : true,

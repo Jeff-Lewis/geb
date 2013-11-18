@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.analytics.domain.EquityItem;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
-import ru.prbb.analytics.repo.SecuritiesDao;
+import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.model.BuildModelDao;
 
 /**
@@ -28,7 +28,7 @@ public class BuildModelController
 	@Autowired
 	private BuildModelDao dao;
 	@Autowired
-	private SecuritiesDao daoSecurities;
+	private EquitiesDao daoEquities;
 
 	@RequestMapping(value = "/CalculateModel", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
@@ -56,7 +56,7 @@ public class BuildModelController
 			@RequestParam(required = false) String query)
 	{
 		// select name from dbo.anca_WebGet_ajaxEquityFilter_v
-		return daoSecurities.getFilter(query);
+		return daoEquities.comboFilter();
 	}
 
 	@RequestMapping(value = "/FilterEquities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
@@ -65,7 +65,7 @@ public class BuildModelController
 			@RequestParam(required = false) String query)
 	{
 		// select id, name from dbo.anca_WebGet_ajaxEquity_v
-		return daoSecurities.getSecurities(query);
+		return daoEquities.comboEquities(query);
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
@@ -74,8 +74,6 @@ public class BuildModelController
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equity)
 	{
-		// {call dbo.anca_WebGet_EquityFilter_sp}
-		// {call dbo.anca_WebGet_EquityFilter_sp ?, ?, ?}
-		return daoSecurities.getSecurities(filter, equity, 2);
+		return daoEquities.findAllEquities(filter, equity, 2);
 	}
 }

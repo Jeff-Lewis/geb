@@ -8,22 +8,21 @@ import java.util.List;
 import ru.prbb.analytics.domain.SimpleItem;
 
 /**
- * BDS запрос
+ * Параметры запросов
  * 
  * @author RBr
  * 
  */
-public interface RequestBDSDao {
-
-	/**
-	 * @param security
-	 * @param params
-	 */
-	void execute(String[] security, String[] params);
+public interface BloombergParamsDao {
 
 	/**
 	 * @return
 	 */
-	List<SimpleItem> findParams();
+	List<SimpleItem> findPeriod();
+
+	/**
+	 * @return
+	 */
+	List<SimpleItem> findCalendar();
 
 }

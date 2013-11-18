@@ -25,9 +25,9 @@
 		autoLoad : true,
 		url : 'rest/RequestBDPovr/Params.do',
 		// root : 'params',
-		fields : [ 'code' ],
+		fields : [ 'name' ],
 		sortInfo : {
-			field : 'code'
+			field : 'name'
 		}
 	});
 
@@ -114,12 +114,12 @@
 
 	var overSelect = new Ext.form.ComboBox({
 		width : 150,
-		displayField : 'code',
+		displayField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
 			url : 'rest/RequestBDPovr/Override.do',
 			// root : 'info',
-			fields : [ 'code' ]
+			fields : [ 'name' ]
 		}),
 		editable : false,
 		allowBlank : false,
@@ -162,7 +162,7 @@
 
 		var idsp = [];
 		smParams.each(function(item) {
-			idsp.push(item.data.code);
+			idsp.push(item.data.name);
 			return true;
 		});
 
@@ -214,7 +214,7 @@
 
 		var idsp = [];
 		smParams.each(function(item) {
-			idsp.push(item.data.code);
+			idsp.push(item.data.name);
 			return true;
 		});
 
@@ -318,7 +318,7 @@
 			selModel : smParams,
 			columns : [ smParams, {
 				header : 'PARAMETER',
-				dataIndex : 'code'
+				dataIndex : 'name'
 			} ],
 			viewConfig : {
 				forceFit : true,
