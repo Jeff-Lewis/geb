@@ -1,0 +1,114 @@
+/**
+*  Module specific UI goes here
+*/
+#action-panel .x-panel {
+	margin: 4px;
+}
+
+#action-panel li {
+	margin: 4px;
+}
+
+#action-panel li img {
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	margin-right: 2px;
+	margin-bottom: 2px;
+}
+
+#action-panel li a,a:visited {
+	text-decoration: none;
+	color: #333333;
+	font-weight: bold;
+}
+
+#action-panel li a:hover {
+	color: #0066cc;
+}
+
+#header-panel {
+	font-size: 11px;
+	font-family: tahoma, arial, helvetica, sans-serif;
+	color: #000000;
+	background-color: #0066cc;
+}
+
+#header-panel a,a:visited {
+	text-decoration: none;
+	color: #333333;
+	font-weight: bold;
+}
+
+#header-panel a:hover {
+	text-decoration: underline;
+	color: #0066cc;
+}
+
+#header-panel h1 {
+	
+}
+
+#header-panel h2 {
+	font-size: 15px;
+}
+
+#header-panel h3 {
+	font-size: x-small;
+	font-weight: normal;
+	color: #666666;
+}
+
+#header-panel #user-name {
+	font-weight: bold;
+}
+
+#view-panel { /*margin-top: 4px;*/
+	
+}
+
+#view-panel a,a:visited {
+	color: #0066cc;
+}
+
+#loading-mask {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 20000;
+	background-color: white;
+}
+
+#loading {
+	position: absolute;
+	left: 45%;
+	top: 40%;
+	padding: 2px;
+	z-index: 20001;
+	height: auto;
+}
+
+#loading img {
+	margin-bottom: 5px;
+}
+
+#loading-indicator {
+	background: white;
+	color: #555;
+	font: bold 13px tahoma, arial, helvetica;
+	padding: 10px;
+	margin: 0;
+	text-align: center;
+	height: auto;
+}
+
+.z-important {
+	color: #0099ff;
+}
+
+.z-tooltip {
+	font-size: x-small;
+	font-weight: bold;
+}

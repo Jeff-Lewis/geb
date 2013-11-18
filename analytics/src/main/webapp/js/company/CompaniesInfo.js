@@ -1,0 +1,904 @@
+/**
+ * Список компаний - info
+ */
+(function() {
+
+	var id_sec = 0;
+
+	var _winFiles = Ext.id();
+
+	var _bloomCode = Ext.id();
+	var _adr = Ext.id();
+	var _currency = Ext.id();
+	var _group = Ext.id();
+	var _koef_0 = Ext.id();
+	var _koef_1 = Ext.id();
+	var _period = Ext.id();
+	var _eps = Ext.id();
+
+	var exStore = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : false,
+		url : 'organization/InfoSecurity.html?param=infoEx&id=' + id_sec,
+		root : 'infoEx',
+		fields : [ 'Exception', 'comment' ]
+	});
+
+	var exGrid = new Ext.grid.GridPanel({
+		region : 'center',
+		title : 'Коды',
+		frame : true,
+		enableHdMenu : false,
+
+		store : exStore,
+		columns : [ {
+			header : 'Exception',
+			dataIndex : 'Exception',
+			width : 50
+		}, {
+			header : 'Comment',
+			dataIndex : 'comment',
+			width : 50
+		} ],
+
+		viewConfig : {
+			forceFit : true,
+			stripeRows : true,
+			emptyText : 'Записи не найдены'
+		},
+
+		listeners : {
+			rowdblclick : function(grid, rowIndex, e) {
+				var text = grid.getStore().getAt(rowIndex).data.comment;
+				text = Ext.util.Format.htmlEncode(text);
+				text = Ext.util.Format.nl2br(text);
+				if (text) {
+					App.ui.message(text);
+				}
+			}
+		}
+	});
+
+	var quarters = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : false,
+		url : 'organization/InfoSecurity.html?param=info1',
+		root : 'info1',
+		fields : [ 'period', 'value', 'crnc', 'date', 'eqy_dps',
+				'eqy_dvd_yld_ind', 'sales_rev_turn', 'prof_margin',
+				'oper_margin', 'crnc' ]
+	});
+
+	var quarterGrid = new Ext.grid.GridPanel({
+		title : 'Показатели по кварталам',
+		frame : true,
+		autoHeight : true,
+		collapsible : true,
+		collapsed : false,
+		enableHdMenu : false,
+
+		store : quarters,
+		columns : [ {
+			header : 'ПЕРИОД',
+			width : 30,
+			dataIndex : 'period'
+		}, {
+			header : 'EPS',
+			width : 30,
+			dataIndex : 'value'
+		}, {
+			header : 'EQY_DPS',
+			width : 30,
+			dataIndex : 'eqy_dps'
+		}, {
+			header : 'EQY_DVD_YLD_IND',
+			width : 50,
+			dataIndex : 'eqy_dvd_yld_ind'
+		}, {
+			header : 'SALES_REV_TURN',
+			width : 50,
+			dataIndex : 'sales_rev_turn'
+		}, {
+			header : 'PROF_MARGIN',
+			width : 40,
+			dataIndex : 'prof_margin'
+		}, {
+			header : 'OPER_MARGIN',
+			width : 40,
+			dataIndex : 'oper_margin'
+		}, {
+			header : 'Валюта',
+			width : 30,
+			dataIndex : 'crnc'
+		} ],
+		viewConfig : {
+			forceFit : true,
+			stripeRows : true,
+			emptyText : 'Записи не найдены'
+		}
+	});
+
+	var years = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : false,
+		url : 'organization/InfoSecurity.html?param=info2',
+		root : 'info2',
+		fields : [ 'period', 'value', 'crnc', 'date', 'eps_recon_flag',
+				'eqy_dps', 'eqy_weighted_avg_px', 'eqy_weighted_avg_px_adr',
+				'book_val_per_sh', 'oper_roe', 'r_ratio', 'crnc' ]
+	});
+
+	var yearsGrid = new Ext.grid.GridPanel({
+		title : 'Показатели по годам',
+		frame : true,
+		autoHeight : true,
+		collapsible : true,
+		collapsed : false,
+		enableHdMenu : false,
+
+		store : years,
+		columns : [ {
+			header : 'ПЕРИОД',
+			width : 30,
+			dataIndex : 'period'
+		}, {
+			header : 'EPS',
+			width : 30,
+			dataIndex : 'value'
+		}, {
+			header : 'EPS_RECONTR_FLAG',
+			width : 50,
+			dataIndex : 'eps_recon_flag'
+		}, {
+			header : 'EQY_DPS',
+			width : 30,
+			dataIndex : 'eqy_dps'
+		}, {
+			header : 'EQY_WEIGHTED_AVG_PX',
+			width : 50,
+			dataIndex : 'eqy_weighted_avg_px'
+		}, {
+			header : 'EQY_WEIGHTED_AVG_PX_ADR',
+			width : 50,
+			dataIndex : 'eqy_weighted_avg_px_adr'
+		}, {
+			header : 'BOOK_VAL_PER_SH',
+			width : 50,
+			dataIndex : 'book_val_per_sh'
+		}, {
+			header : 'OPER_ROE',
+			width : 40,
+			dataIndex : 'oper_roe'
+		}, {
+			header : 'RETENTION_RATIO',
+			width : 50,
+			dataIndex : 'r_ratio'
+		}, {
+			header : 'Валюта',
+			width : 30,
+			dataIndex : 'crnc'
+		} ],
+		viewConfig : {
+			forceFit : true,
+			stripeRows : true,
+			emptyText : 'Записи не найдены'
+		}
+	});
+
+	var files = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : false,
+		url : 'organization/InfoSecurity.html?param=file',
+		root : 'file',
+		fields : [ {
+			name : 'id_doc',
+			type : 'int'
+		}, 'file_name', {
+			name : 'insert_date',
+			type : 'date',
+			format : App.util.Format.datetime
+		} ]
+	});
+
+	var sm = new Ext.grid.RowSelectionModel({
+		singleSelect : true
+	});
+
+	var winFiles = null;
+
+	function fileSubmit(self) {
+		if (!Ext.getCmp(_winFiles).items.itemAt(1).getValue()) {
+			App.ui.message('Выберите файл.');
+			return;
+		}
+
+		Ext.getCmp(_winFiles).getForm().submit({
+			url : 'organization/ScanSave.html',
+			waitMsg : 'Загрузка файла.',
+			params : {
+				code : id_sec
+			},
+			timeout : 10 * 60 * 1000,
+			success : function(form, action) {
+				winFiles.close();
+				menu.showSecurityInfo(id_sec);
+			},
+			failure : function(form, action) {
+				winFiles.close();
+				menu.showSecurityInfo(id_sec);
+
+				// switch (action.failureType) {
+				// case Ext.form.Action.CONNECT_FAILURE:
+				// App.ui.error('Сервер недоступен');
+				// break;
+				// case Ext.form.Action.SERVER_INVALID:
+				// App.ui.error(action.result.msg);
+				// break;
+				// }
+			}
+		});
+	}
+
+	function fileAdd(self) {
+		winFiles = new Ext.Window({
+			title : 'Загрузить файл',
+			width : 310,
+			height : 100,
+			plain : true,
+			modal : true,
+			border : false,
+			layout : 'fit',
+
+			items : [ {
+				id : _winFiles,
+				xtype : 'form',
+				baseCls : 'x-plain',
+				padding : 5,
+				fileUpload : true,
+
+				items : [ {
+					xtype : 'hidden',
+					name : 'UNID'
+				}, {
+					hideLabel : true,
+					xtype : 'fileuploadfield',
+					name : 'upload',
+					buttonText : 'Выбрать файл',
+					width : 285
+				} ]
+			} ],
+
+			buttons : [ {
+				text : 'Загрузить',
+				handler : fileSubmit
+			}, {
+				text : 'Отмена',
+				handler : function() {
+					winFiles.close();
+				}
+			} ]
+		});
+		winFiles.doLayout();
+		winFiles.show();
+	}
+
+	function fileOpen(self) {
+		if (sm.getCount() == 0) {
+			App.ui.message('Выберите файл для сохранения.');
+			return;
+		}
+
+		window.open('organization/ScanOpen.html?id='
+				+ sm.getSelected().data.id_doc);
+	}
+
+	function fileDelete(self) {
+		if (sm.getCount() == 0) {
+			App.ui.message('Выберите файл для удаления.');
+		} else {
+			App.ui.confirm('Удалить файл ' + sm.getSelected().data.file_name
+					+ '?', fileDeleteAjax);
+		}
+	}
+
+	function fileDeleteAjax() {
+		Ext.Ajax.request({
+			url : 'organization/ScanDelete.html',
+			params : {
+				id : sm.getSelected().data.id_doc
+			},
+			// timeout : 10 * 60 * 10000, // 10 min
+			timeout : 1000000000,
+			waitMsg : 'Удаление файла.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					menu.showSecurityInfo(id_sec);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	var fileGrid = new Ext.grid.GridPanel({
+		title : 'Прикреплённые документы',
+		frame : true,
+		autoHeight : true,
+		collapsible : true,
+		collapsed : false,
+		enableHdMenu : false,
+
+		tbar : [ {
+			text : 'Загрузить',
+			handler : fileAdd
+		}, {
+			text : 'Сохранить',
+			handler : fileOpen
+		}, {
+			text : 'Удалить',
+			handler : fileDelete
+		} ],
+
+		store : files,
+		selModel : sm,
+		columns : [ new Ext.grid.RowNumberer({
+			width : 30
+		}), {
+			header : 'Дата',
+			dataIndex : 'insert_date',
+			width : 50,
+			xtype : 'datecolumn',
+			format : 'd.m.Y H:i'
+		}, {
+			header : 'Файл',
+			dataIndex : 'file_name'
+		} ],
+		viewConfig : {
+			forceFit : true,
+			stripeRows : true,
+			emptyText : 'Записи не найдены'
+		}
+	});
+
+	function equityChange(self) {
+		Ext.Ajax.request({
+			url : 'organization/EquityChange.html',
+			params : {
+				id : id_sec,
+				bloomCode : Ext.getCmp(_bloomCode).getValue(),
+				adr : Ext.getCmp(_adr).getValue(),
+				currency_calc : Ext.getCmp(_currency).getValue(),
+				group : Ext.getCmp(_group).getValue(),
+				koefZero : Ext.getCmp(_koef_0).getValue(),
+				koefOne : Ext.getCmp(_koef_1).getValue(),
+				period : Ext.getCmp(_period).getValue(),
+				eps : Ext.getCmp(_eps).getValue()
+			},
+			timeout : 1000000000,
+			waitMsg : 'Сохранение.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					menu.showSecurityInfo(id_sec);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	function calculateEPS(self) {
+		Ext.Ajax.request({
+			url : 'organization/calculate-eps.html',
+			params : {
+				id : id_sec
+			},
+			timeout : 1000000000,
+			waitMsg : 'Рачёт EPS.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					menu.showSecurityInfo(id_sec);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	function buildModel(self) {
+		Ext.Ajax.request({
+			url : 'organization/build-model-company.html',
+			params : {
+				id : id_sec
+			},
+			timeout : 1000000000,
+			waitMsg : 'Расчёт модели.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					menu.showSecurityInfo(id_sec);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	var leftInfoForm = new Ext.form.FormPanel({
+		region : 'west',
+		title : 'Основная информация',
+		width : 420,
+		padding : 10,
+		frame : true,
+		border : true,
+		labelWidth : 180,
+		defaults : {
+			labelStyle : 'color:#3764A0;',
+			cls : 'z-title',
+			width : 200
+		},
+
+		items : [ {
+			fieldLabel : 'ISIN',
+			xtype : 'displayfield',
+			name : 'ISIN'
+		}, {
+			fieldLabel : 'Название компании',
+			xtype : 'displayfield',
+			name : 'Название компании'
+		}, {
+			id : _bloomCode,
+			fieldLabel : 'Код Блумберг',
+			xtype : 'textfield',
+			name : 'Код Блумберг'
+		}, {
+			fieldLabel : 'Родной тикер',
+			xtype : 'displayfield',
+			name : 'Родной тикер'
+		}, {
+			id : _adr,
+			fieldLabel : 'АДР',
+			xtype : 'numberfield',
+			decimalPrecision : 4,
+			name : 'ADR'
+		}, {
+			id : _currency,
+			fieldLabel : 'Валюта расчёта',
+			name : 'Валюта расчета',
+			xtype : 'combo',
+			displayField : 'name',
+			valueField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'dictionary/Currency.html',
+				root : 'info',
+				fields : [ 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			minChars : 1,
+			triggerAction : 'all'
+		}, {
+			fieldLabel : 'Сектор',
+			xtype : 'displayfield',
+			name : 'Сектор'
+		}, {
+			id : _group,
+			fieldLabel : 'Группа сводной',
+			name : 'Группа в сводной',
+			xtype : 'combo',
+			displayField : 'name',
+			valueField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'dictionary/GroupSvod.html',
+				root : 'info',
+				fields : [ 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			minChars : 1,
+			triggerAction : 'all'
+		}, {
+			id : _koef_0,
+			fieldLabel : 'Koef Upside',
+			xtype : 'numberfield',
+			decimalPrecision : 6,
+			name : 'Koef Upside'
+		}, {
+			id : _koef_1,
+			fieldLabel : 'Koef Upside н.м.',
+			xtype : 'numberfield',
+			decimalPrecision : 6,
+			name : 'Koef Upside н.м.'
+		}, {
+			id : _period,
+			fieldLabel : 'Периодичность отчётности',
+			name : 'Периодичность отчетности',
+			xtype : 'combo',
+			displayField : 'name',
+			valueField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'dictionary/Period.html',
+				root : 'info',
+				fields : [ 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			triggerAction : 'all',
+			editable : false
+		}, {
+			id : _eps,
+			fieldLabel : 'EPS',
+			name : 'EPS',
+			xtype : 'combo',
+			displayField : 'name',
+			valueField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'dictionary/eps.html',
+				root : 'info',
+				fields : [ 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			minChars : 2,
+			triggerAction : 'all'
+		} ]
+	});
+
+	var rightInfoForm = new Ext.form.FormPanel({
+		region : 'north',
+		title : 'Текущий расчёт',
+		padding : 10,
+		frame : true,
+		border : true,
+		autoHeight : true,
+
+		labelWidth : 50,
+		defaults : {
+			labelStyle : 'color:#3764A0;font-size:11px;',
+			cls : 'z-title',
+			width : 200
+		},
+
+		items : [ {
+			fieldLabel : 'g10',
+			xtype : 'displayfield',
+			name : 'g10 = '
+		}, {
+			fieldLabel : 'g5',
+			xtype : 'displayfield',
+			name : 'g5 = '
+		}, {
+			fieldLabel : 'b10',
+			xtype : 'displayfield',
+			name : 'b10 = '
+		}, {
+			fieldLabel : 'b5',
+			xtype : 'displayfield',
+			name : 'b5 = '
+		}, {
+			fieldLabel : 'PE10',
+			xtype : 'displayfield',
+			name : 'PE10 = '
+		}, {
+			fieldLabel : 'PE5',
+			xtype : 'displayfield',
+			name : 'PE5 = '
+		} ]
+	});
+
+	function addEpsGrowth(self) {
+		menu.showModal(menu, 'view-add-eps-form',
+				'organization/open-add-eps.html', {
+					id : id_sec
+				});
+	}
+
+	function deleteEpsGrowth(btn, text) {
+		if (btn != 'ok') {
+			return;
+		}
+
+		if (!text) {
+			App.ui.error('Тип не указан.');
+			return;
+		}
+
+		Ext.Ajax.request({
+			url : 'organization/del-eps-growth.html',
+			params : {
+				id : id_sec,
+				type : text
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Удаление исключения.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					App.ui.message('Исключение удалено.');
+					menu.showSecurityInfo(id_sec);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	function addBvGrowth(self) {
+		menu.showModal(menu, 'view-add-bv-form',
+				'organization/open-add-bv.html', {
+					id : id_sec
+				});
+	}
+
+	function deleteBvGrowth(btn, text) {
+		if (btn != 'ok') {
+			return;
+		}
+
+		if (!text) {
+			App.ui.error('Тип не указан.');
+			return;
+		}
+
+		Ext.Ajax.request({
+			url : 'organization/del-bv-growth.html',
+			params : {
+				id : id_sec,
+				type : text
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Удаление исключения.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					App.ui.message('Исключение удалено.');
+					menu.showSecurityInfo(id_sec);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	function addVariableFormula(self) {
+		menu.showModal(menu, 'view-add-expression-form',
+				'organization/PrepareFormExpression.html', {
+					id : id_sec
+				});
+	}
+
+	function confirmDeleteVariableFormula(self) {
+		var periodSelect = new Ext.form.ComboBox({
+			fieldLabel : 'Переменная',
+			width : 270,
+			hiddenName : 'period',
+			valueField : 'name',
+			displayField : 'name',
+			valueField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'dictionary/var-formula.html',
+				root : 'info',
+				fields : [ 'name' ]
+			}),
+			allowBlank : true,
+			emptyText : 'Выберите переменную',
+			loadingText : 'Поиск...',
+			triggerAction : 'all'
+		});
+
+		var window = null;
+		window = new Ext.Window({
+			title : 'Удаление исключения по формулам',
+			plain : true,
+			modal : true,
+			width : 300,
+			autoHeight : true,
+			padding : 10,
+
+			items : [ {
+				xtype : 'label',
+				cls : 'ext-mb-text',
+				text : 'Переменная'
+			}, periodSelect ],
+
+			buttonAlign : 'center',
+			buttons : [ {
+				text : 'Удалить',
+				handler : function() {
+					deleteVariableFormula('ok', periodSelect.getValue());
+					window.close();
+				}
+			}, {
+				text : 'Отмена',
+				handler : function() {
+					window.close();
+				}
+			} ],
+		});
+		window.doLayout();
+		window.show();
+	}
+
+	function deleteVariableFormula(btn, text) {
+		if (!text) {
+			App.ui.error('Переменная не указан.');
+			return;
+		}
+
+		Ext.Ajax.request({
+			url : 'organization/DelVarFormula.html',
+			params : {
+				id : id_sec,
+				type : text
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Удаление исключения',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					App.ui.message('Исключение удалено.');
+					menu.showSecurityInfo(id_sec);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	return new Ext.Panel({
+		id : 'view-security-info-component',
+		title : 'Компания',
+		frame : false,
+		baseCls : 'x-plain',
+		closable : true,
+		autoScroll : true,
+
+		tbar : [ {
+			text : 'Сохранить',
+			handler : equityChange
+		}, {
+			text : 'Задать исключение',
+			menu : [ {
+				text : 'по темпу роста <b>EPS</b>',
+				handler : addEpsGrowth
+			}, {
+				text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
+				handler : addBvGrowth
+			}, '-', {
+				text : 'параметров по формулам',
+				handler : addVariableFormula
+			} ]
+		}, {
+			text : 'Удалить исключение',
+			menu : [ {
+				text : 'по темпу роста <b>EPS</b>',
+				handler : function() {
+					Ext.Msg.show({
+						title : 'Удаление исключения EPS',
+						msg : 'Тип',
+						prompt : true,
+						minWidth : 300,
+						buttons : {
+							ok : 'Удалить',
+							cancel : true
+						},
+						fn : deleteEpsGrowth
+					});
+				}
+			}, {
+				text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
+				handler : function() {
+					Ext.Msg.show({
+						title : 'Удаление исключения BOOK_VAL_PER_SH',
+						msg : 'Тип',
+						prompt : true,
+						minWidth : 300,
+						buttons : {
+							ok : 'Удалить',
+							cancel : true
+						},
+						fn : deleteBvGrowth
+					});
+				}
+			}, '-', {
+				text : 'параметров по формулам</b>',
+				handler : confirmDeleteVariableFormula
+			} ]
+		}, {
+			text : 'Посчитать EPS',
+			handler : calculateEPS
+		}, {
+			text : 'Построить модель',
+			handler : buildModel
+		} ],
+
+		items : [ {
+			xtype : 'panel',
+			baseCls : 'x-plain',
+			height : 350,
+			layout : 'border',
+
+			items : [ leftInfoForm, {
+				region : 'center',
+				xtype : 'container',
+				width : 500,
+				layout : 'border',
+
+				items : [ rightInfoForm, exGrid ]
+			} ]
+		}, yearsGrid, quarterGrid, fileGrid ],
+
+		loadData : function(data) {
+			id_sec = data.item.id_sec;
+
+			this.setTitle('Компания: ' + data.item['Название компании']);
+
+			if (yearsGrid.collapsed) {
+				yearsGrid.expand(false);
+			}
+			if (quarterGrid.collapsed) {
+				quarterGrid.expand(false);
+			}
+			if (fileGrid.collapsed) {
+				fileGrid.expand(false);
+			}
+
+			// exStore.loadData(data);
+			// years.loadData(data);
+			// quarters.loadData(data);
+			// files.loadData(data);
+
+			// leftInfoForm.getForm().setValues(data);
+			// rightInfoForm.getForm().setValues(data);
+		}
+	});
+})();

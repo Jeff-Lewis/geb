@@ -1,0 +1,46 @@
+/**
+*  Overrides for EXTJS Gray theme
+*/
+.x-plain-body {
+	background-color: #ecedee;
+}
+
+.x-panel-trans {
+	background: transparent;
+}
+
+.x-form-cb-label {
+	font-size: 11px;
+}
+
+.x-form-item-label {
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.x-grid3-body .x-grid3-td-task-col .x-grid3-cell-inner {
+	padding: 1px 0 0 0 !important;
+}
+
+.x-grid3-td-task-title .x-grid3-cell-inner {
+	white-space: normal;
+}
+
+.x-grid3-dirty-cell {
+	background: transparent;
+}
+
+.x-grid3-row-selected {
+	background-color: #e6e6e6 !important;
+}
+
+/* 
+.x-btn {
+	font-size: 11px;
+	font-weight: bold;
+} */
+
+/* 
+.x-fieldset {
+	border-color: #99BBE8;
+} */
