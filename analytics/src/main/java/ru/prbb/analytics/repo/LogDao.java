@@ -4,10 +4,10 @@
 package ru.prbb.analytics.repo;
 
 import java.util.List;
-import java.util.Map;
 
 import ru.prbb.analytics.domain.LogContactItem;
 import ru.prbb.analytics.domain.LogMessagesItem;
+import ru.prbb.analytics.domain.SubscriptionItem;
 
 /**
  * Журнал отправки сообщений<br>
@@ -37,6 +37,6 @@ public interface LogDao {
 	/**
 	 * @return
 	 */
-	List<Map<String, Object>> getLogSubscription();
+	List<SubscriptionItem> getLogSubscription();
 
 }

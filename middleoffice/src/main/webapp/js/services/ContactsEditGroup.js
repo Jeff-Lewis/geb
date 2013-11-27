@@ -3,14 +3,13 @@
  */
 (function() {
 
-	var groupId = 0;
-	var groupName = '';
+	var idGroup = 0;
 
 	var _rbEMail = Ext.id();
 
 	var addresses = new Ext.data.JsonStore({
 		autoDestroy : true,
-		autoLoad : false,
+		autoLoad : true,
 		url : 'rest/Groups/Addresses.do',
 		// root : 'addresses',
 		fields : [ 'name', 'cid', 'value', 'type_id' ],
@@ -24,7 +23,7 @@
 
 	var contacts = new Ext.data.JsonStore({
 		autoDestroy : true,
-		autoLoad : false,
+		autoLoad : true,
 		url : 'rest/Groups/Contacts.do',
 		// root : 'contacts',
 		fields : [ 'name', 'cid', 'value' ],
@@ -35,6 +34,19 @@
 	});
 
 	var smC = new Ext.grid.CheckboxSelectionModel();
+
+	function reload() {
+		addresses.reload({
+			params : {
+				id : idGroup
+			}
+		});
+		contacts.reload({
+			params : {
+				id : idGroup
+			}
+		});
+	}
 
 	function add(self) {
 		if (smA.getCount() == 0) {
@@ -49,10 +61,8 @@
 		});
 
 		Ext.Ajax.request({
-			method : 'PUT',
-			url : 'contacts/GroupContactAdd.html',
+			url : 'rest/Groups/Staff/' + idGroup + '.do',
 			params : {
-				id : groupId,
 				cids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -60,7 +70,7 @@
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					menu.contactsGroupEdit(groupId, groupName);
+					reload();
 					App.ui.message('Контакты успешно добавлены!');
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
@@ -87,9 +97,9 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'contacts/GroupContactDel.html',
+			method : 'DELETE',
+			url : 'rest/Groups/Staff/' + idGroup + '.do',
 			params : {
-				id : groupId,
 				cids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -97,7 +107,7 @@
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					menu.contactsGroupEdit(groupId, groupName);
+					reload();
 					App.ui.message('Контакты удалены из группы!');
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
@@ -126,7 +136,7 @@
 	}
 
 	return new Ext.Panel({
-		id : 'edit-mail-group-component',
+		id : 'ContactsEditGroup-component',
 		title : 'Редактирование группы',
 		frame : true,
 		closable : true,
@@ -217,13 +227,10 @@
 		} ],
 
 		loadData : function(data) {
-			groupId = data.info.id;
-			groupName = data.info.name;
+			idGroup = data.item.id;
+			this.setTitle('Редактирование группы: ' + data.item.name);
 
-			this.setTitle('Редактирование группы: ' + groupName);
-
-			addresses.loadData(data);
-			contacts.loadData(data);
+			reload();
 
 			// Ext.getCmp(_rbEMail).setValue(true);
 			if (Ext.getCmp(_rbEMail)) {

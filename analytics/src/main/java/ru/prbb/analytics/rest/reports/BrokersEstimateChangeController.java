@@ -28,7 +28,6 @@ public class BrokersEstimateChangeController
 	public @ResponseBody
 	List<BrokersEstimateChangeItem> show()
 	{
-		// {call dbo.anca_WebGet_BrokerEstimatesChange_sp}
 		return dao.execute();
 	}
 }

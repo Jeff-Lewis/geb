@@ -24,7 +24,8 @@ public interface BrokersCoverageDao {
 	 * @param id
 	 * @param broker
 	 * @param value
+	 * @return
 	 */
-	void change(Long id, String broker, String value);
+	int change(Long id, String broker, Integer value);
 
 }

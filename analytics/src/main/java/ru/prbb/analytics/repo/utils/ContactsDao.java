@@ -5,7 +5,8 @@ package ru.prbb.analytics.repo.utils;
 
 import java.util.List;
 
-import ru.prbb.analytics.domain.ReferenceItem;
+import ru.prbb.analytics.domain.ContactStaffItem;
+import ru.prbb.analytics.domain.SimpleItem;
 
 /**
  * Справочник контактов
@@ -18,25 +19,59 @@ public interface ContactsDao {
 	/**
 	 * @return
 	 */
-	public List<ReferenceItem> findAllOrderedByName();
+	List<SimpleItem> findAll();
+
+	/**
+	 * @param id
+	 */
+	SimpleItem findById(Long id);
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	int put(String name);
+
+	/**
+	 * @param id
+	 * @param name
+	 * @return
+	 */
+	int updateById(Long id, String name);
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public ReferenceItem findById(Long id);
-
-	/**
-	 * @param id
-	 * @param value
-	 * @return
-	 */
-	public Long updateById(Long id, ReferenceItem value);
+	int deleteById(Long id);
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public Long deleteById(Long id);
+	List<ContactStaffItem> findAllStaff(Long id);
+
+	/**
+	 * @param id
+	 * @param name
+	 * @param type
+	 * @return
+	 */
+	int putStaff(Long id, String name, Integer type);
+
+	/**
+	 * @param id
+	 * @param cid
+	 * @param name
+	 * @return
+	 */
+	int updateByIdStaff(Long id, Long cid, String name);
+
+	/**
+	 * @param id
+	 * @param cid
+	 * @return
+	 */
+	int deleteByIdStaff(Long id, Long cid);
 
 }

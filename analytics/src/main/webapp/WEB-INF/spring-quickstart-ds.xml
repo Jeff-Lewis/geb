@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This is an unmanaged datasource. It should be used for proofs of concept 
-   or testing only. It uses H2, an in memory database that ships with JBoss 
-   AS. -->
+   or testing only. It uses H2, an in memory database that ships with JBoss AS. -->
 <datasources xmlns="http://www.jboss.org/ironjacamar/schema"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd">
-   <!-- The datasource is bound into JNDI at this location. We reference 
-      this in META-INF/persistence.xml -->
+
+   <!-- The datasource is bound into JNDI at this location. We reference this in META-INF/persistence.xml -->
    <datasource jndi-name="java:jboss/datasources/SpringQuickstartDS"
       pool-name="kitchensink-quickstart" enabled="true"
       use-java-context="true">
@@ -17,15 +16,16 @@
          <password>sa</password>
       </security>
    </datasource>
-   <!-- datasource jndi-name="java:jboss/datasources/BloombergDS"
-      pool-name="bloomberg" enabled="true"
+<!--
+   <datasource jndi-name="java:jboss/datasources/BloombergDS"
+      pool-name="analytics-bloomberg" enabled="true"
       use-java-context="true">
       <connection-url>jdbc:sybase:Tds:172.16.21.14:5000/inv_db</connection-url>
-      <driver>sybaseDriver</driver>
+      <driver>sybase</driver>
       <security>
          <user-name>dgluhov</user-name>
          <password>lbfcjan</password>
       </security>
-   </datasource -->
+   </datasource>
+-->
 </datasources>
- 

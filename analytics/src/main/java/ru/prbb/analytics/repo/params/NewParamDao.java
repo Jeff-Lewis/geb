@@ -3,7 +3,7 @@
  */
 package ru.prbb.analytics.repo.params;
 
-import java.util.Map;
+import ru.prbb.analytics.domain.NewParamItem;
 
 /**
  * Ввод нового параметра<br>
@@ -18,19 +18,21 @@ public interface NewParamDao {
 	 * @param code
 	 * @return
 	 */
-	Map<String, String> setup(String code);
+	NewParamItem setup(String code);
 
 	/**
 	 * @param blm_id
 	 * @param code
 	 * @param name
+	 * @return
 	 */
-	void save(String blm_id, String code, String name);
+	int save(String blm_id, String code, String name);
 
 	/**
 	 * @param code
 	 * @param broker
+	 * @return
 	 */
-	void saveOvr(String code, String broker);
+	int saveOvr(String code, String broker);
 
 }

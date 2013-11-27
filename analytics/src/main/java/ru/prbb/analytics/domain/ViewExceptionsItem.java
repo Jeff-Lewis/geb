@@ -5,16 +5,25 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class ViewExceptionsItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@Column(name = "security_code")
 	private String sec_code;
+	@Column(name = "related_security_code")
 	private String rs_code;
 	private String exc;
+	@Column(name = "related_parameter")
 	private String r_par;
 
 	/**

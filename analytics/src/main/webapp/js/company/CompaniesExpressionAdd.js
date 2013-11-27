@@ -1,7 +1,5 @@
 (function() {
 
-	var container;
-
 	var ids = 0;
 
 	var _expression = Ext.id();
@@ -31,45 +29,12 @@
 
 	});
 
-	function save(self) {
-		if (smr.getCount() == 0) {
-			App.ui.message('≤Î—’‡ÿ‚’ ﬂ’‡’‹’››„Ó ‡’◊„€Ï‚–‚–.');
-			return;
-		}
-
-		Ext.Ajax.request({
-			url : 'organization/AddExpression.html',
-			params : {
-				id : ids,
-				variable : smr.getSelected().data.var_user_name,
-				expression : Ext.getCmp(_expression).getValue(),
-				comment : Ext.getCmp(_comment).getValue()
-			},
-			timeout : 10 * 60 * 1000, // 10 min
-			waitMsg : '¡ﬁÂ‡–›’›ÿ’ ›ﬁ“ﬁ”ﬁ ÿ·⁄€ÓÁ’›ÿÔ',
-			success : function(xhr) {
-				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					container.window.close();
-					menu.showSecurityInfo(ids);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
-				}
-			},
-			failure : function() {
-				App.ui.error('¡’‡“’‡ ›’‘ﬁ·‚„ﬂ’›');
-			}
-		});
-	}
-
 	function btnHandler(btn) {
 		var tf = Ext.getCmp(_expression);
 		tf.setValue(tf.getValue() + btn.getText());
 	}
 
-	container = new Ext.FormPanel({
+	var container = new Ext.FormPanel({
 		width : 614,
 		height : 420,
 		padding : 10,
@@ -92,7 +57,7 @@
 			},
 
 			items : [ {
-				title : '≤Î‡–÷’›ÿ’',
+				title : '–í—ã—Ä–∞–∂–µ–Ω–∏–µ',
 				layout : 'fit',
 
 				items : {
@@ -117,7 +82,7 @@
 					handler : btnHandler
 				} ]
 			}, {
-				title : '∫ﬁ‹‹’›‚–‡ÿŸ',
+				title : '–ö–æ–º–º–µ–Ω—Ç–∞—Ä–∏–π',
 				layout : 'fit',
 				items : {
 					id : _comment,
@@ -142,43 +107,41 @@
 
 			items : [ {
 				xtype : 'grid',
-				title : '¿’◊„€Ï‚–‚',
+				title : '–†–µ–∑—É–ª—å—Ç–∞—Ç',
 
 				store : variables,
 				selModel : smr,
 				columns : [ smr, {
-					header : 'ø’‡’‹’››–Ô',
+					header : '–ü–µ—Ä–µ–º–µ–Ω–Ω–∞—è',
 					dataIndex : 'var_user_name'
 				} ],
 				viewConfig : {
 					forceFit : true,
-					emptyText : '∑–ﬂÿ·ÿ ›’ ›–Ÿ‘’›Î'
+					emptyText : '–ó–∞–ø–∏—Å–∏ –Ω–µ –Ω–∞–π–¥–µ–Ω—ã'
 				}
 			}, {
 				xtype : 'grid',
-				title : '¡€–”–’‹Î’ ﬂ’‡’‹’››Î’',
+				title : '–°–ª–∞–≥–∞–µ–º—ã–µ –ø–µ—Ä–µ–º–µ–Ω–Ω—ã–µ',
 
 				store : variables,
 				selModel : sme,
 				columns : [ sme, {
-					header : 'ø’‡’‹’››–Ô',
+					header : '–ü–µ—Ä–µ–º–µ–Ω–Ω–∞—è',
 					dataIndex : 'var_user_name'
 				} ],
 				viewConfig : {
 					forceFit : true,
-					emptyText : '∑–ﬂÿ·ÿ ›’ ›–Ÿ‘’›Î'
+					emptyText : '–ó–∞–ø–∏—Å–∏ –Ω–µ –Ω–∞–π–¥–µ–Ω—ã'
 				}
 			} ]
 		} ],
 
 		buttons : [ {
-			text : '¡ﬁÂ‡–›ÿ‚Ï',
+			text : '–°–æ—Ö—Ä–∞–Ω–∏—Ç—å',
 			handler : save
 		}, {
-			text : 'æ‚‹’›–',
-			handler : function() {
-				container.window.close();
-			}
+			text : '–û—Ç–º–µ–Ω–∞',
+			handler : close
 		} ],
 
 		loadData : function(data) {
@@ -187,9 +150,46 @@
 		},
 		setWindow : function(window) {
 			this.window = window;
-			this.window.setTitle('øﬁ·‚‡ﬁÿ‚’€Ï “Î‡–÷’›ÿŸ');
+			this.window.setTitle('–ü–æ—Å—Ç—Ä–æ–∏—Ç–µ–ª—å –≤—ã—Ä–∞–∂–µ–Ω–∏–π');
 		}
 	});
+
+	function save(self) {
+		if (smr.getCount() == 0) {
+			App.ui.message('–í—ã–±–µ—Ä–∏—Ç–µ –ø–µ—Ä–µ–º–µ–Ω–Ω—É—é —Ä–µ–∑—É–ª—å—Ç–∞—Ç–∞.');
+			return;
+		}
+
+		Ext.Ajax.request({
+			url : 'organization/AddExpression.html',
+			params : {
+				id : ids,
+				variable : smr.getSelected().data.var_user_name,
+				expression : Ext.getCmp(_expression).getValue(),
+				comment : Ext.getCmp(_comment).getValue()
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : '–°–æ—Ö—Ä–∞–Ω–µ–Ω–∏–µ –Ω–æ–≤–æ–≥–æ –∏—Å–∫–ª—é—á–µ–Ω–∏—è',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					container.window.close();
+					menu.showSecurityInfo(ids);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('–°–µ—Ä–≤–µ—Ä –Ω–µ–¥–æ—Å—Ç—É–ø–µ–Ω');
+			}
+		});
+	}
+
+	function close() {
+		container.window.close();
+	}
 
 	return container;
 })();

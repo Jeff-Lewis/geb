@@ -1,10 +1,9 @@
 package ru.prbb.middleoffice.rest.services;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,25 +25,23 @@ import ru.prbb.middleoffice.repo.services.SendingDao;
 @RequestMapping("/rest/Sending")
 public class SendingController
 {
-	//	@Autowired
+	@Autowired
 	private SendingDao dao;
 
-	@RequestMapping(value = "/Phone", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/Phone", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> comboPhone(
-			@RequestParam String query)
+			@RequestParam(required = false) String query)
 	{
-		// select id, name, comment from dbo.sms_group
-		return new ArrayList<SimpleItem>();
+		return dao.findComboPhone(query);
 	}
 
-	@RequestMapping(value = "/Mail", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/Mail", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> comboMail(
-			@RequestParam String query)
+			@RequestParam(required = false) String query)
 	{
-		// select name, value as mail from ncontacts_request_v where type ='E-mail' and lower(name) like ?
-		return new ArrayList<SimpleItem>();
+		return dao.findComboMail(query);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -52,9 +49,20 @@ public class SendingController
 	ResultData download(
 			@PathVariable("id") Long id)
 	{
-		// {call dbo.sms_template_proc}
-		// {call dbo.sms_template_trader}
-		return new ResultData("Рассылка для " + id);
+		String text;
+		switch (id.intValue()) {
+		case 0:
+			text = dao.getAnalitic();
+			break;
+		case 1:
+			text = dao.getTrader();
+			break;
+
+		default:
+			text = "Текст не задан.";
+			break;
+		}
+		return new ResultData(text);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -64,13 +72,6 @@ public class SendingController
 			@RequestParam String recp,
 			@RequestParam String recm)
 	{
-		final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		for (int i = 1; i < 3; ++i) {
-			final Map<String, Object> map = new HashMap<String, Object>();
-			map.put("status", "status" + i);
-			map.put("mail", "mail" + i);
-			list.add(map);
-		}
-		return list;
+		return dao.execute(text, recp, recm);
 	}
 }

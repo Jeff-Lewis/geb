@@ -5,13 +5,18 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class BuildEPSItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private String security_code;
 	private String bv_growth_rate;
 	private String eps_growth_status;

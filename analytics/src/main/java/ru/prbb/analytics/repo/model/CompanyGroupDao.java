@@ -29,19 +29,28 @@ public interface CompanyGroupDao {
 
 	/**
 	 * @param name
+	 * @return
 	 */
-	void put(String name);
+	int put(String name);
 
 	/**
 	 * @param id
 	 * @param name
+	 * @return
 	 */
-	void renameById(Long id, String name);
+	int renameById(Long id, String name);
 
 	/**
 	 * @param id
+	 * @return
 	 */
-	void deleteById(Long id);
+	int deleteById(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<CompanyStaffItem> findStaff();
 
 	/**
 	 * @param id
@@ -51,20 +60,16 @@ public interface CompanyGroupDao {
 
 	/**
 	 * @param id
+	 * @param ids
 	 * @return
 	 */
-	List<CompanyStaffItem> findStaffGroup(Long id);
+	int[] putStaff(Long id, Long[] ids);
 
 	/**
 	 * @param id
 	 * @param ids
+	 * @return
 	 */
-	void putStaff(Long id, Long[] ids);
-
-	/**
-	 * @param id
-	 * @param ids
-	 */
-	void deleteStaff(Long id, Long[] ids);
+	int[] deleteStaff(Long id, Long[] ids);
 
 }

@@ -3,12 +3,12 @@
  */
 package ru.prbb.analytics.repo.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,76 +30,74 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 
 	@Override
 	public List<SimpleItem> findAll() {
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (long i = 1; i < 11; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i);
-			item.setName("NAME_" + i);
-			list.add(item);
-		}
-		return list;
+		String sql = "{call dbo.anca_WebGet_PivotGroups_sp}";
+		return em.createQuery(sql, SimpleItem.class).getResultList();
 	}
 
 	@Override
 	public SimpleItem findById(Long id) {
-		SimpleItem item = new SimpleItem();
-		item.setId(id);
-		item.setName("NAME_" + id);
-		return item;
+		String sql = "{call dbo.anca_WebGet_PivotGroups_sp :id}";
+		return em.createQuery(sql, SimpleItem.class).setParameter(1, id).getSingleResult();
 	}
 
 	@Override
-	public void put(String name) {
-		// TODO Auto-generated method stub
-
+	public int put(String name) {
+		String sql = "{call dbo.anca_WebSet_putPivotGroup_sp :name}";
+		return em.createQuery(sql).setParameter(1, name).executeUpdate();
 	}
 
 	@Override
-	public void renameById(Long id, String name) {
-		// TODO Auto-generated method stub
-
+	public int renameById(Long id, String name) {
+		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'u', :id, :name}";
+		return em.createQuery(sql).setParameter(1, id).setParameter(2, name).executeUpdate();
 	}
 
 	@Override
-	public void deleteById(Long id) {
-		// TODO Auto-generated method stub
+	public int deleteById(Long id) {
+		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'd', :id}";
+		return em.createQuery(sql).setParameter(1, id).executeUpdate();
+	}
 
+	@Override
+	public List<CompanyStaffItem> findStaff() {
+		String sql = "{call dbo.anca_WebGet_SelectEquitiesNotPivotGroup_sp}";
+		return em.createQuery(sql, CompanyStaffItem.class).getResultList();
 	}
 
 	@Override
 	public List<CompanyStaffItem> findStaff(Long id) {
-		final List<CompanyStaffItem> list = new ArrayList<CompanyStaffItem>();
-		for (long i = 1; i < 11; i++) {
-			final CompanyStaffItem item = new CompanyStaffItem();
-			item.setId_sec(i);
-			item.setShort_name("NAME_" + i);
-			list.add(item);
+		String sql = "{call dbo.anca_WebGet_SelectPivotGroupEquities_sp :id}";
+		return em.createQuery(sql, CompanyStaffItem.class).setParameter(1, id).getResultList();
+	}
+
+	@Override
+	public int[] putStaff(Long id, Long[] cids) {
+		String sql = "{call dbo.anca_WebSet_addEquityPivotGroup_sp :id, :cid}";
+		int i = 0;
+		int[] res = new int[cids.length];
+		for (Long cid : cids) {
+			try {
+				res[i++] = em.createQuery(sql).setParameter(1, id).setParameter(2, cid).executeUpdate();
+			} catch (DataAccessException e) {
+				// TODO: handle exception
+			}
 		}
-		return list;
+		return res;
 	}
 
 	@Override
-	public List<CompanyStaffItem> findStaffGroup(Long id) {
-		final List<CompanyStaffItem> list = new ArrayList<CompanyStaffItem>();
-		for (long i = 1; i < 11; i++) {
-			final CompanyStaffItem item = new CompanyStaffItem();
-			item.setId_sec(i);
-			item.setShort_name("NAME_" + i);
-			list.add(item);
+	public int[] deleteStaff(Long _id, Long[] cids) {
+		String sql = "{call dbo.anca_WebSet_removeEquityPivotGroup_sp :cid}";
+		int i = 0;
+		int[] res = new int[cids.length];
+		for (Long cid : cids) {
+			try {
+				res[i++] = em.createQuery(sql).setParameter(1, cid).executeUpdate();
+			} catch (DataAccessException e) {
+				// TODO: handle exception
+			}
 		}
-		return list;
-	}
-
-	@Override
-	public void putStaff(Long id, Long[] ids) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteStaff(Long id, Long[] ids) {
-		// TODO Auto-generated method stub
-
+		return res;
 	}
 
 }

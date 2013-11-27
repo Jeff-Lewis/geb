@@ -5,6 +5,7 @@ package ru.prbb.analytics.repo.params;
 
 import java.util.List;
 
+import ru.prbb.analytics.domain.ViewParamItem;
 import ru.prbb.analytics.domain.ViewParamsItem;
 
 /**
@@ -18,12 +19,12 @@ public interface ViewParamsDao {
 	/**
 	 * @return
 	 */
-	List<ViewParamsItem> show();
+	List<ViewParamsItem> findAll();
 
 	/**
 	 * @param blm_id
 	 * @return
 	 */
-	ViewParamsItem getById(String blm_id);
+	ViewParamItem findById(String blm_id);
 
 }

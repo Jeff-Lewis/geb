@@ -79,61 +79,6 @@ var menu = new App.ui.MainMenu({
 		}
 	},
 
-	// EPS по компаниям
-	// showEPSforCompanies : function() {
-	// var _vbcc = Ext.getCmp('view-eps-for-companies-component');
-	// if (_vbcc == undefined) {
-	// this.showPane(this, 'reports/view-eps-for-companies');
-	// } else {
-	// _vbcc.show();
-	// _vbcc.getStore().reload();
-	// }
-	// },
-
-	/*
-	 * Запросы к терминалу Bloomberg
-	 */
-
-	// BDH запрос с EPS
-	// showEpsRequest : function() {
-	// this.showPane(this, 'bloomberg/bdh-request-eps');
-	// this.submitDataRequest(this, 'bloomberg/bdh-request-eps',
-	// 'bloomberg/BdhRequestEpsParams.html');
-	// },
-	// BDH запрос
-	// showMultiHistorParamsData : function() {
-	// this.showPane(this, 'bloomberg/bdh-request');
-	// this.submitDataRequest(this, 'bloomberg/bdh-request',
-	// 'bloomberg/BdhRequestParams.html');
-	// },
-	// BDP запрос
-	// showCurrentParamsData : function() {
-	// this.showPane(this, 'bloomberg/bdp-request');
-	// this.submitDataRequest(this, 'bloomberg/bdp-request',
-	// 'bloomberg/BdpRequestParams.html');
-	// },
-	// BDP с override
-	// showOverrides : function() {
-	// this.showPane(this, 'bloomberg/bdp-request-override');
-	// this.submitDataRequest(this, 'bloomberg/bdp-request-override',
-	// 'bloomberg/BdpRequestOverrideParams.html');
-	// },
-	// BDS запрос
-	// showBDSForm : function() {
-	// this.showPane(this, 'bloomberg/bds-request');
-	// this.submitDataRequest(this, 'bloomberg/bds-request',
-	// 'bloomberg/BdsRequestParams.html');
-	// },
-	// Subscription
-	// showEditSubscription : function() {
-	// var _vsfc = Ext.getCmp('view-subscription-form-component');
-	// if (_vsfc == undefined) {
-	// this.showPane(this, 'bloomberg/view-subscription-form');
-	// } else {
-	// _vsfc.show();
-	// _vsfc.getStore().reload();
-	// }
-	// },
 	/*
 	 * Утилиты
 	 */

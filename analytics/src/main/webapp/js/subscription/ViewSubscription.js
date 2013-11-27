@@ -29,10 +29,7 @@
 
 		var data = smInfo.getSelected().data;
 		menu.submitDataRequest(menu, 'subscription/ViewSubscriptionEdit',
-				'subscription/Subscription-edit.html', {
-					id : data.id_subscr,
-					name : data.subscription_name
-				});
+				'rest/ViewSubscription/' + data.id_subscr + '.do');
 	}
 
 	function del(b, e) {
@@ -139,7 +136,7 @@
 		}, {
 			text : 'Удалить',
 			handler : del
-		}, ' ', {
+		}, ' ', ' ', ' ', {
 			text : 'Запустить',
 			handler : subscrStart
 		}, {

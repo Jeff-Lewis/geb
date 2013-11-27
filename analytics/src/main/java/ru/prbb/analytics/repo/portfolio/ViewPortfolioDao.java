@@ -6,6 +6,7 @@ package ru.prbb.analytics.repo.portfolio;
 import java.util.List;
 
 import ru.prbb.analytics.domain.ViewPortfolioItem;
+import ru.prbb.analytics.domain.ViewPortfolioSecurityItem;
 
 /**
  * Добавление организаций в Portfolio
@@ -18,7 +19,7 @@ public interface ViewPortfolioDao {
 	/**
 	 * @return
 	 */
-	List<ViewPortfolioItem> getSecurities();
+	List<ViewPortfolioSecurityItem> getSecurities();
 
 	/**
 	 * @return
@@ -27,12 +28,14 @@ public interface ViewPortfolioDao {
 
 	/**
 	 * @param ids
+	 * @return
 	 */
-	void put(String[] ids);
+	int[] put(String[] ids);
 
 	/**
 	 * @param ids
+	 * @return
 	 */
-	void del(String[] ids);
+	int[] del(String[] ids);
 
 }

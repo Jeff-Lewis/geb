@@ -28,7 +28,6 @@ public class ViewCompaniesEpsController
 	public @ResponseBody
 	List<ViewCompaniesEpsItem> show()
 	{
-		// {call dbo.anca_WebGet_EquityEPSinfo_sp}
 		return dao.execute();
 	}
 }

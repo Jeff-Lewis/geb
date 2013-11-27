@@ -1,31 +1,31 @@
 /**
- * Dictionary
+ * Просмотр текущей модели -
  */
 (function() {
 
-	var store = new Ext.data.JsonStore({
+	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
-		root : 'info',
+		// root : 'info',
 		fields : [ 'equity_fund_ticker', 'company_short_name', 'firm_name',
 				'bloomberg_code', 'firm_rating', 'target_price', 'price_date',
 				'price_period', 'TR' ],
 		sortInfo : {
-			field : 'firm_name',
-			direction : 'ASC'
+			field : 'firm_name'
 		}
 	});
 
 	return new Ext.grid.GridPanel({
-		id : 'view-target-price-cons12m-data-grid-component',
+		id : 'ViewModelPrice-component',
+		title : 'Расчёт по <br/><b>Target Price Cons 12m</b>',
 		frame : true,
 		closable : true,
 		autoScroll : true,
 		enableHdMenu : false,
-		store : store,
+
+		store : info,
 		columns : [ {
 			header : 'firm_name',
 			dataIndex : 'firm_name',
-			sortable : true,
 			width : 40,
 			css : 'color: #0099ff;'
 		}, {
@@ -59,8 +59,7 @@
 		},
 
 		loadData : function(data) {
-			this.setTitle('Расчёт по <br/><b>Target Price Cons 12m</b>');
-			this.getStore().loadData(data);
+			info.loadData(data);
 		}
 	});
 })();

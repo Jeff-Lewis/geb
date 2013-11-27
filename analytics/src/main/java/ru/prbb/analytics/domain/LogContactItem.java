@@ -6,13 +6,18 @@ package ru.prbb.analytics.domain;
 import java.io.Serializable;
 import java.sql.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class LogContactItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long number;
 	private Long nid;
 	private String name;

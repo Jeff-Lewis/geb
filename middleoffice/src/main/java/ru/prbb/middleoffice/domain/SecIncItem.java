@@ -5,13 +5,18 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class SecIncItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long sip;
 	private String security_code;
 	private String short_name;

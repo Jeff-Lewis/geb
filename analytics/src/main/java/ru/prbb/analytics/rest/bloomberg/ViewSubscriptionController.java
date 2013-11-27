@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.analytics.domain.Result;
+import ru.prbb.analytics.domain.ResultData;
+import ru.prbb.analytics.domain.SecuritySubscrItem;
 import ru.prbb.analytics.domain.ViewSubscriptionItem;
 import ru.prbb.analytics.repo.bloomberg.ViewSubscriptionDao;
 
@@ -34,6 +36,14 @@ public class ViewSubscriptionController
 		return dao.findAll();
 	}
 
+	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	public @ResponseBody
+	List<SecuritySubscrItem> getSecurities(
+			@RequestParam(required = false) Long id)
+	{
+		return dao.findAllSecurities(id);
+	}
+
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result add(
@@ -44,10 +54,18 @@ public class ViewSubscriptionController
 		return Result.SUCCESS;
 	}
 
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody
+	ResultData get(
+			@PathVariable("id") Long id)
+	{
+		return new ResultData(dao.get(id));
+	}
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	public @ResponseBody
 	Result del(
-			@PathVariable(value = "id") Long id)
+			@PathVariable("id") Long id)
 	{
 		dao.delete(id);
 		return Result.SUCCESS;
@@ -56,7 +74,7 @@ public class ViewSubscriptionController
 	@RequestMapping(value = "/{id}/start", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	Result start(
-			@PathVariable(value = "id") Long id)
+			@PathVariable("id") Long id)
 	{
 		dao.start(id);
 		return Result.SUCCESS;
@@ -65,7 +83,7 @@ public class ViewSubscriptionController
 	@RequestMapping(value = "/{id}/stop", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	Result stop(
-			@PathVariable(value = "id") Long id)
+			@PathVariable("id") Long id)
 	{
 		dao.stop(id);
 		return Result.SUCCESS;

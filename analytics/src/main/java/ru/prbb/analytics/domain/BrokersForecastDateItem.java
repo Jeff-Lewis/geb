@@ -4,22 +4,28 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * @author RBr
  * 
  */
+@Entity
 public class BrokersForecastDateItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String date;
+	@Id
+	private Timestamp date;
 	private String value;
-	private String display;
 
 	/**
 	 * @return the date
 	 */
-	public String getDate() {
+	public Timestamp getDate() {
 		return date;
 	}
 
@@ -27,7 +33,7 @@ public class BrokersForecastDateItem implements Serializable {
 	 * @param date
 	 *            the date to set
 	 */
-	public void setDate(String date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 
@@ -46,18 +52,9 @@ public class BrokersForecastDateItem implements Serializable {
 		this.value = value;
 	}
 
-	/**
-	 * @return the display
-	 */
-	public String getDisplay() {
-		return display;
-	}
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-	/**
-	 * @param display
-	 *            the display to set
-	 */
-	public void setDisplay(String display) {
-		this.display = display;
+	public String getDisplay() {
+		return sdf.format(date.getTime());
 	}
 }

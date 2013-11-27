@@ -47,7 +47,7 @@
 				name : 'description'
 			}, {
 				fieldLabel : 'DATA_LICENCE_CATEGORY',
-				name : 'data_licence_category'
+				name : 'data_license_category'
 			}, {
 				fieldLabel : 'CATEGORY',
 				name : 'category'
@@ -135,7 +135,7 @@
 		loadData : function(data) {
 			this.setTitle('Information about field '
 					+ data.item['field_mnemonic']);
-			// this.getForm().setValues(data.info[0]);
+			this.getForm().setValues(data.item);
 		}
 	});
 })();

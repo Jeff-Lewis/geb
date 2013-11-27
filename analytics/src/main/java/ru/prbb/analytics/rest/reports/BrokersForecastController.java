@@ -1,6 +1,5 @@
 package ru.prbb.analytics.rest.reports;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.analytics.domain.BrokersForecastDateItem;
 import ru.prbb.analytics.domain.BrokersForecastItem;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.reports.BrokersForecastDao;
+import ru.prbb.analytics.repo.utils.BrokersDao;
 
 /**
  * Прогнозы по брокерам
@@ -27,6 +28,10 @@ public class BrokersForecastController
 {
 	@Autowired
 	private BrokersForecastDao dao;
+	@Autowired
+	private BrokersDao daoBrokers;
+	@Autowired
+	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
@@ -35,7 +40,6 @@ public class BrokersForecastController
 			@RequestParam(required = false) String broker,
 			@RequestParam(required = false) String equity)
 	{
-		// {call dbo.anca_WebGet_BrokerForecastData_sp ?, ?, ?}
 		return dao.execute(date, broker, equity);
 	}
 
@@ -44,8 +48,7 @@ public class BrokersForecastController
 	List<BrokersForecastDateItem> comboDates(
 			@RequestParam(required = false) String query)
 	{
-		// select value, display from dbo.anca_WebGet_ajaxBrokerDates_v
-		return new ArrayList<BrokersForecastDateItem>();
+		return dao.findBrokerDates();
 	}
 
 	@RequestMapping(value = "/Brokers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
@@ -53,8 +56,7 @@ public class BrokersForecastController
 	List<SimpleItem> comboBrokers(
 			@RequestParam(required = false) String query)
 	{
-		// select id, name from dbo.anca_WebGet_ajaxBrokers_v
-		return new ArrayList<SimpleItem>();
+		return daoBrokers.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
@@ -62,7 +64,6 @@ public class BrokersForecastController
 	List<SimpleItem> comboEquities(
 			@RequestParam(required = false) String query)
 	{
-		// select id, name from dbo.anca_WebGet_ajaxEquity_v
-		return new ArrayList<SimpleItem>();
+		return daoEquities.comboEquities(query);
 	}
 }

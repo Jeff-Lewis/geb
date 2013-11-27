@@ -5,6 +5,7 @@ package ru.prbb.analytics.repo.bloomberg;
 
 import java.util.List;
 
+import ru.prbb.analytics.domain.SecuritySubscrItem;
 import ru.prbb.analytics.domain.ViewSubscriptionItem;
 
 /**
@@ -29,6 +30,11 @@ public interface ViewSubscriptionDao {
 	/**
 	 * @param id
 	 */
+	ViewSubscriptionItem get(Long id);
+
+	/**
+	 * @param id
+	 */
 	void delete(Long id);
 
 	/**
@@ -40,5 +46,11 @@ public interface ViewSubscriptionDao {
 	 * @param id
 	 */
 	void stop(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<SecuritySubscrItem> findAllSecurities(Long id);
 
 }

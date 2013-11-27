@@ -3,12 +3,12 @@
  */
 package ru.prbb.analytics.repo.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,14 +30,8 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 
 	@Override
 	public List<SimpleItem> findAll() {
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (long i = 1; i < 11; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i);
-			item.setName("NAME_" + i);
-			list.add(item);
-		}
-		return list;
+		String sql = "{call dbo.anca_WebGet_Reports_sp}";
+		return em.createQuery(sql, SimpleItem.class).getResultList();
 	}
 
 	@Override
@@ -68,38 +62,44 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 
 	@Override
 	public List<CompanyStaffItem> findStaff(Long id) {
-		final List<CompanyStaffItem> list = new ArrayList<CompanyStaffItem>();
-		for (long i = 1; i < 11; i++) {
-			final CompanyStaffItem item = new CompanyStaffItem();
-			item.setId_sec(i);
-			item.setShort_name("NAME_" + i);
-			list.add(item);
-		}
-		return list;
+		String sql = "{call dbo.anca_WebGet_EquitiesNotInReport_sp :id}";
+		return em.createQuery(sql, CompanyStaffItem.class).setParameter(1, id).getResultList();
 	}
 
 	@Override
 	public List<CompanyStaffItem> findStaffReport(Long id) {
-		final List<CompanyStaffItem> list = new ArrayList<CompanyStaffItem>();
-		for (long i = 1; i < 11; i++) {
-			final CompanyStaffItem item = new CompanyStaffItem();
-			item.setId_sec(i);
-			item.setShort_name("NAME_" + i);
-			list.add(item);
+		String sql = "{call dbo.anca_WebGet_Security_report_maps_sp :id}";
+		return em.createQuery(sql, CompanyStaffItem.class).setParameter(1, id).getResultList();
+	}
+
+	@Override
+	public int[] putStaff(Long id, Long[] cids) {
+		String sql = "{call dbo.anca_WebSet_putSecurity_report_maps_sp :id, :cid}";
+		int i = 0;
+		int[] res = new int[cids.length];
+		for (Long cid : cids) {
+			try {
+				res[i++] = em.createQuery(sql).setParameter(1, id).setParameter(2, cid).executeUpdate();
+			} catch (DataAccessException e) {
+				// TODO: handle exception
+			}
 		}
-		return list;
+		return res;
 	}
 
 	@Override
-	public void putStaff(Long id, Long[] ids) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteStaff(Long id, Long[] ids) {
-		// TODO Auto-generated method stub
-
+	public int[] deleteStaff(Long id, Long[] cids) {
+		String sql = "{call dbo.anca_WebSet_udSecurity_report_maps_sp :id, :cid}";
+		int i = 0;
+		int[] res = new int[cids.length];
+		for (Long cid : cids) {
+			try {
+				res[i++] = em.createQuery(sql).setParameter(1, id).setParameter(2, cid).executeUpdate();
+			} catch (DataAccessException e) {
+				// TODO: handle exception
+			}
+		}
+		return res;
 	}
 
 }

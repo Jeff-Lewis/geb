@@ -1,7 +1,6 @@
 package ru.prbb.middleoffice.rest.logs;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.middleoffice.domain.LogContactItem;
 import ru.prbb.middleoffice.repo.LogDao;
 
 /**
@@ -27,11 +27,10 @@ public class LogContactsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Map<String, Object>> show(
+	List<LogContactItem> show(
 			@RequestParam String start,
 			@RequestParam String stop)
 	{
-		// {call dbo.check_ncontacts_change_log ?, ?}
 		return dao.getLogContacts(start, stop);
 	}
 }

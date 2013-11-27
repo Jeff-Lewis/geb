@@ -83,22 +83,14 @@ public class EquitiesDaoImpl implements EquitiesDao
 	 */
 	@Override
 	public List<EquityItem> findAllEquities(String filter, Long security_id, Integer fund_flag) {
-		// {call dbo.anca_WebGet_EquityFilter_sp}
-		// {call dbo.anca_WebGet_EquityFilter_sp ?, ?, ?}
-		final List<EquityItem> list = new ArrayList<EquityItem>();
-		for (long i = 1; i < 11; ++i) {
-			final EquityItem item = new EquityItem();
-			item.setId_sec(i);
-			item.setSecurity_code("security_code" + i);
-			item.setShort_name("short_name" + i);
-			list.add(item);
-		}
-		return list;
+		String sql = "{call dbo.anca_WebGet_EquityFilter_sp :filter, :fund_flag, :security_id}";
+		return em.createQuery(sql, EquityItem.class)
+				.setParameter(1, filter).setParameter(2, fund_flag).setParameter(3, security_id)
+				.getResultList();
 	}
 
 	@Override
 	public List<SimpleItem> comboFilter() {
-		// select name from dbo.anca_WebGet_ajaxEquityFilter_v
 		String sql = "select null as id, name from dbo.anca_WebGet_ajaxEquityFilter_v";
 		return em.createQuery(sql, SimpleItem.class).getResultList();
 	}
@@ -109,7 +101,8 @@ public class EquitiesDaoImpl implements EquitiesDao
 		if (Utils.isEmpty(query)) {
 			return em.createQuery(sql, SimpleItem.class).getResultList();
 		} else {
-			sql += " where lower(name) like :query";
+			sql += " where lower(name) like :q";
+			query = '%' + query.toLowerCase() + '%';
 			return em.createQuery(sql, SimpleItem.class).setParameter(1, query).getResultList();
 		}
 	}

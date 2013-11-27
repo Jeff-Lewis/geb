@@ -33,7 +33,6 @@ public class CompanyReportsController
 	public @ResponseBody
 	List<SimpleItem> list()
 	{
-		// {call dbo.anca_WebGet_Reports_sp}
 		return dao.findAll();
 	}
 
@@ -78,7 +77,6 @@ public class CompanyReportsController
 	List<CompanyStaffItem> listA(
 			@RequestParam Long id)
 	{
-		// {call dbo.anca_WebGet_EquitiesNotInReport_sp ?}
 		return dao.findStaff(id);
 	}
 
@@ -87,7 +85,6 @@ public class CompanyReportsController
 	List<CompanyStaffItem> listR(
 			@RequestParam Long id)
 	{
-		// {call dbo.anca_WebGet_Security_report_maps_sp ?}
 		return dao.findStaffReport(id);
 	}
 

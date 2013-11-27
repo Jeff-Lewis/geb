@@ -3,10 +3,7 @@
  */
 package ru.prbb.analytics.repo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -17,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.LogContactItem;
 import ru.prbb.analytics.domain.LogMessagesItem;
+import ru.prbb.analytics.domain.SubscriptionItem;
 
 /**
  * Журнал отправки сообщений<br>
@@ -68,15 +66,9 @@ public class LogDaoImpl implements LogDao
 	}
 
 	@Override
-	public List<Map<String, Object>> getLogSubscription() {
-		// {call subscription_data_v_proc}
-		final ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < 10; i++) {
-			final HashMap<String, Object> map = new HashMap<String, Object>();
-			list.add(map);
-			map.put("security_type", "SECURITY_TYPE_" + (i + 1));
-		}
-		return list;
+	public List<SubscriptionItem> getLogSubscription() {
+		String sql = "{call dbo.subscription_data_v_proc}";
+		return em.createQuery(sql, SubscriptionItem.class).getResultList();
 	}
 
 }

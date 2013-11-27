@@ -5,13 +5,18 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class ViewParamsItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long param_id;
 	private String blm_id;
 	private String code;

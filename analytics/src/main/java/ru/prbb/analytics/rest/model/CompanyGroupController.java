@@ -33,7 +33,6 @@ public class CompanyGroupController
 	public @ResponseBody
 	List<SimpleItem> list()
 	{
-		// {call dbo.anca_WebGet_PivotGroups_sp}
 		return dao.findAll();
 	}
 
@@ -73,25 +72,23 @@ public class CompanyGroupController
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "Staff/All", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/Staff/All", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	List<CompanyStaffItem> listA(
 			@RequestParam Long id)
 	{
-		// {call dbo.anca_WebGet_SelectEquitiesNotPivotGroup_sp}
-		return dao.findStaff(id);
+		return dao.findStaff();
 	}
 
-	@RequestMapping(value = "Staff/Group", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/Staff/Group", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	List<CompanyStaffItem> listG(
 			@RequestParam Long id)
 	{
-		// {call dbo.anca_WebGet_SelectPivotGroupEquities_sp ?}
-		return dao.findStaffGroup(id);
+		return dao.findStaff(id);
 	}
 
-	@RequestMapping(value = "Staff/{id}", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/Staff/{id}", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result add(
 			@PathVariable("id") Long id,

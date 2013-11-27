@@ -3,7 +3,6 @@
  */
 package ru.prbb.analytics.repo.reports;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -29,17 +28,8 @@ public class ViewCompaniesEpsDaoImpl implements ViewCompaniesEpsDao
 
 	@Override
 	public List<ViewCompaniesEpsItem> execute() {
-		final ArrayList<ViewCompaniesEpsItem> list = new ArrayList<ViewCompaniesEpsItem>();
-		for (long i = 0; i < 10; i++) {
-			final ViewCompaniesEpsItem item = new ViewCompaniesEpsItem();
-			item.setId_sec(i);
-			item.setSecurity_code("SECURITY_CODE_" + (i + 1));
-			item.setSector("sector_" + (i + 1));
-			item.setEPS("EPS_" + (i + 1));
-			item.setRelated_security("RELATED_SECURITY_" + (i + 1));
-			list.add(item);
-		}
-		return list;
+		String sql = "{call dbo.anca_WebGet_EquityEPSinfo_sp}";
+		return em.createQuery(sql, ViewCompaniesEpsItem.class).getResultList();
 	}
 
 }

@@ -1,6 +1,5 @@
 package ru.prbb.analytics.rest.utils.contacts;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +10,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.analytics.domain.GroupItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
-import ru.prbb.analytics.repo.utils.ContactsDao;
+import ru.prbb.analytics.repo.utils.GroupsDao;
 
 /**
  * Справочник контактов
@@ -27,21 +27,13 @@ import ru.prbb.analytics.repo.utils.ContactsDao;
 public class GroupsController
 {
 	@Autowired
-	private ContactsDao dao;
+	private GroupsDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> listAllMembers()
 	{
-		// {call dbo.WebGet_SelectGroups_sp}
-		ArrayList<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (long i = 1; i < 11; i++) {
-			SimpleItem e = new SimpleItem();
-			e.setId(i);
-			e.setName("name" + i);
-			list.add(e);
-		}
-		return list;
+		return dao.findAll();
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -49,6 +41,7 @@ public class GroupsController
 	Result add(
 			@RequestParam String name)
 	{
+		dao.put(name);
 		return Result.SUCCESS;
 	}
 
@@ -58,6 +51,7 @@ public class GroupsController
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
+		dao.updateById(id, name);
 		return Result.SUCCESS;
 	}
 
@@ -66,12 +60,7 @@ public class GroupsController
 	ResultData lookupById(
 			@PathVariable("id") Long id)
 	{
-		// {call dbo.WebGet_SelectContactsAddress_sp ?}
-		// {call dbo.WebGet_SelectGroupContacts_sp ?}
-		SimpleItem e = new SimpleItem();
-		e.setId(id);
-		e.setName("name" + id);
-		return new ResultData(e);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
@@ -79,6 +68,44 @@ public class GroupsController
 	Result deleteById(
 			@PathVariable("id") Long id)
 	{
+		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
+
+	@RequestMapping(value = "/Addresses", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	List<GroupItem> getAddresses(
+			@RequestParam Long id)
+	{
+		return dao.findAllAddresses(id);
+	}
+
+	@RequestMapping(value = "/Contacts", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	List<GroupItem> getContacts(
+			@RequestParam Long id)
+	{
+		return dao.getContacts(id);
+	}
+
+	@RequestMapping(value = "/Staff/{id}", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	Result addStaff(
+			@PathVariable("id") Long id,
+			@RequestParam Long[] cids)
+	{
+		dao.putStaff(id, cids);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/Staff/{id}", method = RequestMethod.DELETE, produces = "application/json")
+	public @ResponseBody
+	Result delStaff(
+			@PathVariable("id") Long id,
+			@RequestParam Long[] cids)
+	{
+		dao.deleteStaff(id, cids);
+		return Result.SUCCESS;
+	}
+
 }

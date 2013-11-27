@@ -28,7 +28,6 @@ public class ViewExceptionsController
 	public @ResponseBody
 	List<ViewExceptionsItem> show()
 	{
-		// {call dbo.output_equities_exceptions}
 		return dao.execute();
 	}
 }

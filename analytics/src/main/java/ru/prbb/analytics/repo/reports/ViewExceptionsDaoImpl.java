@@ -3,7 +3,6 @@
  */
 package ru.prbb.analytics.repo.reports;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -29,16 +28,8 @@ public class ViewExceptionsDaoImpl implements ViewExceptionsDao
 
 	@Override
 	public List<ViewExceptionsItem> execute() {
-		final List<ViewExceptionsItem> list = new ArrayList<ViewExceptionsItem>();
-		for (int i = 1; i < 11; i++) {
-			final ViewExceptionsItem item = new ViewExceptionsItem();
-			item.setSec_code("SEC_CODE_" + i);
-			item.setRs_code("RS_CODE_" + i);
-			item.setExc("EXC_" + i);
-			item.setR_par("R_PAR_" + i);
-			list.add(item);
-		}
-		return list;
+		String sql = "{call dbo.output_equities_exceptions}";
+		return em.createQuery(sql, ViewExceptionsItem.class).getResultList();
 	}
 
 }

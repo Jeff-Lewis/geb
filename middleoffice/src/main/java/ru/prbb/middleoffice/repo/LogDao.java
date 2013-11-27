@@ -4,7 +4,10 @@
 package ru.prbb.middleoffice.repo;
 
 import java.util.List;
-import java.util.Map;
+
+import ru.prbb.middleoffice.domain.LogContactItem;
+import ru.prbb.middleoffice.domain.LogMessagesItem;
+import ru.prbb.middleoffice.domain.SubscriptionItem;
 
 /**
  * Журнал отправки сообщений<br>
@@ -21,7 +24,7 @@ public interface LogDao {
 	 * @param stop
 	 * @return
 	 */
-	List<Map<String, Object>> getLogContacts(String start, String stop);
+	List<LogContactItem> getLogContacts(String start, String stop);
 
 	/**
 	 * @param type
@@ -29,11 +32,11 @@ public interface LogDao {
 	 * @param stop
 	 * @return
 	 */
-	List<Map<String, Object>> getLogMessages(String type, String start, String stop);
+	List<LogMessagesItem> getLogMessages(String type, String start, String stop);
 
 	/**
 	 * @return
 	 */
-	List<Map<String, Object>> getLogSubscription();
+	List<SubscriptionItem> getLogSubscription();
 
 }

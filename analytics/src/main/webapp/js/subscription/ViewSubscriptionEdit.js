@@ -3,13 +3,13 @@
  */
 (function() {
 
-	var subscrId = 0;
-	var subscrName = '';
+	var idSubscr = 0;
 
 	var storeSec = new Ext.data.JsonStore({
 		autoDestroy : true,
-		autoLoad : false,
-		root : 'infoSec',
+		autoLoad : true,
+		url : 'rest/ViewSubscription/Securities.do',
+		// root : 'infoSec',
 		fields : [ 'id_sec', 'security_code', 'security_name' ],
 		listeners : App.ui.listenersJsonStore()
 	});
@@ -19,12 +19,21 @@
 	var storeSub = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		root : 'info',
+		url : 'rest/ViewSubscription/Securities.do',
+		// root : 'info',
 		fields : [ 'id_sec', 'security_code', 'security_name' ],
 		listeners : App.ui.listenersJsonStore()
 	});
 
 	var smSub = new Ext.grid.CheckboxSelectionModel();
+
+	function reload() {
+		storeSub.reload({
+			params : {
+				id : idSubscr
+			}
+		});
+	}
 
 	function add(self) {
 		if (smSec.getCount() == 0) {
@@ -39,18 +48,17 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'subscription/Subscription-sec-add.html',
+			url : 'rest/ViewSubscription/' + idSubscr + '.do',
 			params : {
-				id : subscrId,
-				security : ids
+				action : 'add',
+				ids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Добавляем инструмент в подписку',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					storeSec.loadData(answer);
-					storeSub.loadData(answer);
+					reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -76,18 +84,17 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'subscription/Subscription-sec-del.html',
+			url : 'rest/ViewSubscription/' + idSubscr + '.do',
 			params : {
-				id : subscrId,
-				security : ids
+				action : 'del',
+				ids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Удаляем инструменты из подписки',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					storeSec.loadData(answer);
-					storeSub.loadData(answer);
+					reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -110,7 +117,7 @@
 			align : 'stretch'
 		},
 		defaults : {
-			width : 500,
+			width : 400,
 			frame : true
 		},
 
@@ -174,13 +181,11 @@
 		} ],
 
 		loadData : function(data) {
-			subscrId = data.id;
-			subscrName = data.name;
+			idSubscr = data.item.id_subscr;
 
-			this.setTitle('Подписка ' + subscrName);
+			this.setTitle('Подписка ' + data.item.subscription_name);
 
-			storeSec.loadData(data);
-			storeSub.loadData(data);
+			reload();
 		}
 	});
 

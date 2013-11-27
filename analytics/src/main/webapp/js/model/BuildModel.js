@@ -29,6 +29,7 @@
 
 	var equities = new Ext.form.ComboBox({
 		width : 150,
+		valueField : 'id',
 		displayField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,

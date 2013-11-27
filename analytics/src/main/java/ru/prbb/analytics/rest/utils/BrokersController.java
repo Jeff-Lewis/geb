@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.analytics.domain.ReferenceItem;
+import ru.prbb.analytics.domain.BrokerItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.repo.utils.BrokersDao;
@@ -30,9 +30,8 @@ public class BrokersController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<ReferenceItem> list()
+	List<BrokerItem> list()
 	{
-		// {call dbo.anca_WebGet_SelectBrokers_sp}
 		return dao.findAll();
 	}
 
@@ -41,36 +40,33 @@ public class BrokersController
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		// {call dbo.anca_WebGet_SelectBrokers_sp ?}
-		final ReferenceItem value = dao.findById(id);
-		return new ResultData(value);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result add(
-			@RequestParam String name,
-			@RequestParam String comment)
+			@RequestParam String fullName,
+			@RequestParam Integer rating,
+			@RequestParam String bloombergCode,
+			@RequestParam Integer coverRussian,
+			@RequestParam String shortName)
 	{
-		final ReferenceItem value = new ReferenceItem();
-		value.setName(name);
-		value.setComment(comment);
-		dao.put(value);
+		dao.put(fullName, rating, bloombergCode, coverRussian, shortName);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result update(
-			@PathVariable("id") Long id,
-			@RequestParam String name,
-			@RequestParam String comment)
+			@PathVariable Long id,
+			@RequestParam String fullName,
+			@RequestParam Integer rating,
+			@RequestParam String bloombergCode,
+			@RequestParam Integer coverRussian,
+			@RequestParam String shortName)
 	{
-		final ReferenceItem value = new ReferenceItem();
-		value.setId(id);
-		value.setName(name);
-		value.setComment(comment);
-		dao.updateById(id, value);
+		dao.updateById(id, fullName, rating, bloombergCode, coverRussian, shortName);
 		return Result.SUCCESS;
 	}
 

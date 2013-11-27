@@ -55,7 +55,6 @@ public class BuildModelController
 	List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
-		// select name from dbo.anca_WebGet_ajaxEquityFilter_v
 		return daoEquities.comboFilter();
 	}
 
@@ -64,7 +63,6 @@ public class BuildModelController
 	List<SimpleItem> comboFilterEquities(
 			@RequestParam(required = false) String query)
 	{
-		// select id, name from dbo.anca_WebGet_ajaxEquity_v
 		return daoEquities.comboEquities(query);
 	}
 

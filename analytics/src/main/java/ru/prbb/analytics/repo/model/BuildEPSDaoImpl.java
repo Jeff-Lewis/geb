@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,23 +31,28 @@ public class BuildEPSDaoImpl implements BuildEPSDao
 	@Override
 	public List<BuildEPSItem> calculate(Long[] ids) {
 		final List<BuildEPSItem> list = new ArrayList<BuildEPSItem>();
-		for (int i = 0; i < ids.length; i++) {
-			final BuildEPSItem item = new BuildEPSItem();
-			item.setSecurity_code("SEC_CODE_" + ids[i]);
+		for (Long id : ids) {
+			BuildEPSItem item;
+			try {
+				item = calculateEps(id);
+			} catch (DataAccessException e) {
+				item = new BuildEPSItem();
+				item.setSecurity_code(id.toString());
+			}
 			list.add(item);
 		}
 		return list;
 	}
 
+	public BuildEPSItem calculateEps(Long id) {
+		String sql = "{call main_create_eps_proc :id}";
+		return em.createQuery(sql, BuildEPSItem.class).setParameter(1, id).getSingleResult();
+	}
+
 	@Override
 	public List<BuildEPSItem> calculate() {
-		final List<BuildEPSItem> list = new ArrayList<BuildEPSItem>();
-		for (int i = 0; i < 11; i++) {
-			final BuildEPSItem item = new BuildEPSItem();
-			item.setSecurity_code("SEC_CODE_" + i);
-			list.add(item);
-		}
-		return list;
+		String sql = "{call main_create_eps_proc}";
+		return em.createQuery(sql, BuildEPSItem.class).getResultList();
 	}
 
 }

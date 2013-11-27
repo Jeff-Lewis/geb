@@ -63,8 +63,8 @@
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					Ext.getCmp(_name).setValue(answer.item.NAME);
-					Ext.getCmp(_blm_id).setValue(answer.item.BLM_ID);
+					Ext.getCmp(_name).setValue(answer.item.name);
+					Ext.getCmp(_blm_id).setValue(answer.item.blmId);
 				} else if (ret.code == 'login') {
 					App.ui.sessionExpired();
 				} else {

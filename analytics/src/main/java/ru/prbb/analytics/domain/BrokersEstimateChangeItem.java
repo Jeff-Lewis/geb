@@ -5,13 +5,18 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class BrokersEstimateChangeItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private String Security;
 	private String Broker;
 	private String targetChange;

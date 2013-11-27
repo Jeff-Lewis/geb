@@ -1,7 +1,6 @@
 /**
- * Organization Info view
+ * Просмотр текущей модели - Детальная информация
  */
-
 (function() {
 
 	var statusView = new Ext.Panel(
@@ -62,241 +61,115 @@
 					items : [ {
 						xtype : 'fieldset',
 						autoHeight : true,
+						defaults : {
+							xtype : 'displayfield',
+							width : 400,
+							readOnly : true
+						},
+
 						items : [ {
-							xtype : 'displayfield',
 							fieldLabel : 'BestPrice',
-							name : 'BestPrice',
-							width : 400,
-							readOnly : true
+							name : 'BestPrice'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'r',
-							name : 'r',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'r'
+						}, {
 							fieldLabel : 'teta',
-							name : 'teta',
-							width : 400,
-							readOnly : true
+							name : 'teta'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'PriceMedian',
-							name : 'PriceMedian',
-							width : 400,
-							readOnly : true
+							name : 'PriceMedian'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'LastYearAvgWhtPrice',
-							name : 'LastYearAvgWhtPrice',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'LastYearAvgWhtPrice'
+						}, {
 							fieldLabel : 'M1Q',
-							name : 'M1Q',
-							width : 400,
-							readOnly : true
+							name : 'M1Q'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'M2Q',
-							name : 'M2Q',
-							width : 400,
-							readOnly : true
+							name : 'M2Q'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'M3Q',
-							name : 'M3Q',
-							width : 400,
-							readOnly : true
+							name : 'M3Q'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'M4Q',
-							name : 'M4Q',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'M4Q'
+						}, {
 							fieldLabel : 'factEPS1Q',
-							name : 'factEPS1Q',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'factEPS1Q'
+						}, {
 							fieldLabel : 'factEPS2Q',
-							name : 'factEPS2Q',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'factEPS2Q'
+						}, {
 							fieldLabel : 'factEPS3Q',
-							name : 'factEPS3Q',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'factEPS3Q'
+						}, {
 							fieldLabel : 'factEPS4Q',
-							name : 'factEPS4Q',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'factEPS4Q'
+						}, {
 							fieldLabel : 'forecastEPS2Q',
-							name : 'forecastEPS2Q',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'forecastEPS2Q'
+						}, {
 							fieldLabel : 'forecastEPS3Q',
-							name : 'forecastEPS3Q',
-							width : 400,
-							readOnly : true
+							name : 'forecastEPS3Q'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'forecastEPS4Q',
-							name : 'forecastEPS4Q',
-							width : 400,
-							readOnly : true
+							name : 'forecastEPS4Q'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'forecastEPS',
-							name : 'forecastEPS',
-							width : 400,
-							readOnly : true
+							name : 'forecastEPS'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'forecastEPS12M',
-							name : 'forecastEPS12M',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'forecastEPS12M'
+						}, {
 							fieldLabel : 'forecastEPS_NextYear',
-							name : 'forecastEPS_NextYear',
-							width : 400,
-							readOnly : true
+							name : 'forecastEPS_NextYear'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'forecastEPS1QNext',
-							name : 'forecastEPS1QNext',
-							width : 400,
-							readOnly : true
+							name : 'forecastEPS1QNext'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'forecastEPS2QNext',
-							name : 'forecastEPS2QNext',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'forecastEPS2QNext'
+						}, {
 							fieldLabel : 'forecastEPS3QNext',
-							name : 'forecastEPS3QNext',
-							width : 400,
-							readOnly : true
+							name : 'forecastEPS3QNext'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'forecastEPS4QNext',
-							name : 'forecastEPS4QNext',
-							width : 400,
-							readOnly : true
+							name : 'forecastEPS4QNext'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'forecastEPScons',
-							name : 'forecastEPScons',
-							width : 400,
-							readOnly : true
+							name : 'forecastEPScons'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'forecastEPScons12M',
-							name : 'forecastEPScons12M',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'forecastEPScons12M'
+						}, {
 							fieldLabel : 'EPSttm',
-							name : 'EPSttm',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'EPSttm'
+						}, {
 							fieldLabel : 'g5',
-							name : 'g5',
-							width : 400,
-							readOnly : true
+							name : 'g5'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'g10',
-							name : 'g10',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
+							name : 'g10'
+						}, {
 							fieldLabel : 'gk',
-							name : 'gk',
-							width : 400,
-							readOnly : true
+							name : 'gk'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'PE_5',
-							name : 'PE_5',
-							width : 400,
-							readOnly : true
+							name : 'PE_5'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'PE_10',
-							name : 'PE_10',
-							width : 400,
-							readOnly : true
+							name : 'PE_10'
 						}, {
-							xtype : 'displayfield',
 							fieldLabel : 'PE_current',
-							name : 'PE_current',
-							width : 400,
-							readOnly : true
-						},
-
-						{
-							xtype : 'displayfield',
-							fieldLabel : 'PE_ttm',
-							name : 'PE_ttm',
-							width : 400,
-							readOnly : true
+							name : 'PE_current'
 						}, {
-							xtype : 'displayfield',
+							fieldLabel : 'PE_ttm',
+							name : 'PE_ttm'
+						}, {
 							fieldLabel : 'PE_cons',
-							name : 'PE_cons',
-							width : 400,
-							readOnly : true
-						}
-
-						]
+							name : 'PE_cons'
+						} ]
 					} ]
 				} ],
 
@@ -309,9 +182,10 @@
 					// inf['TargetPriceCons12M'] =
 					// data['info'][0]['TargetPriceCons12M'];
 
-					inf['TargetPriceCons12M'] = '<b><a onclick=\"menu.submitDataRequest(menu, \'model/ViewModelPrice\', \'portfolio/info-target-cons12m.html\', { id : '
-							+ data['info'][0]['id_sec']
-							+ '});\" href="#">'
+					var onclick = "menu.submitDataRequest(menu, 'model/ViewModelPrice', 'rest/ViewModel/'"
+							+ data.info[0].id_sec + "'/Price.do');";
+					inf['TargetPriceCons12M'] = '<b><a onclick="' + onclick
+							+ '" href="#">'
 							+ data['info'][0]['TargetPriceCons12M']
 							+ '</a></b>';
 

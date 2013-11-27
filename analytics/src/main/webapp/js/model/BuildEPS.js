@@ -127,8 +127,8 @@
 			waitMsg : 'Расчёт по выбранным компаниям',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
-				if (answer.length) {
-					result.loadData(answer);
+				if (answer.success) {
+					result.loadData(answer.item);
 					App.ui.message('Расчёт произведен');
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
@@ -149,8 +149,8 @@
 			waitMsg : 'Расчёт по всем компаниям',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
-				if (answer.length) {
-					result.loadData(answer);
+				if (answer.success) {
+					result.loadData(answer.item);
 					App.ui.message('Расчёт произведен');
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();

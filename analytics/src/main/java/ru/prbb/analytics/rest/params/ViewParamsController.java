@@ -33,8 +33,7 @@ public class ViewParamsController
 	public @ResponseBody
 	List<ViewParamsItem> list()
 	{
-		// select param_id, blm_id, code, name from dbo.params
-		return dao.show();
+		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -42,7 +41,6 @@ public class ViewParamsController
 	ResultData info(
 			@PathVariable("id") String blm_id)
 	{
-		// select field_id,field_mnemonic,description,data_license_category,category,definition,comdty, equity,muni,pfd,m_mkt,govt,corp,indx,curncy,mtge,standard_width,  standard_decimal_places,field_type,back_office,extended_back_office,production_date, current_maximum_width,bval,bval_blocked,getfundamentals,gethistory,getcompany,old_mnemonic,data_license_category_2,psboopt from dbo.bloomberg_dl_fields where field_id=?
-		return new ResultData(dao.getById(blm_id));
+		return new ResultData(dao.findById(blm_id));
 	}
 }

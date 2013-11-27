@@ -99,8 +99,8 @@
 			waitMsg : 'Отправка сообщения ...',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
-				if (answer.length) {
-					storeRes.loadData(answer);
+				if (answer.success) {
+					storeRes.loadData(answer.item);
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {

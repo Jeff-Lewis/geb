@@ -5,13 +5,18 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class NotEnoughQuotationsItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long id_sec;
 	private String SecurityCode;
 	private String SecurityType;

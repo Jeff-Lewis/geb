@@ -3,7 +3,6 @@
  */
 package ru.prbb.analytics.repo.reports;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -29,21 +28,13 @@ public class BrokersCoverageDaoImpl implements BrokersCoverageDao
 
 	@Override
 	public List<BrokersCoverageItem> execute() {
-		final ArrayList<BrokersCoverageItem> list = new ArrayList<BrokersCoverageItem>();
-		for (long i = 1; i < 11; i++) {
-			final BrokersCoverageItem item = new BrokersCoverageItem();
-			item.setId_sec(i);
-			item.setSecurity_code("SECURITY_CODE_" + i);
-			item.setShort_name("SHORT_NAME_" + i);
-			item.setPivot_group("PIVOT_GROUP_" + (i % 3));
-			list.add(item);
-		}
-		return list;
+		String sql = "{call dbo.anca_WebGet_EquityBrokerCoverage_sp}";
+		return em.createQuery(sql, BrokersCoverageItem.class).getResultList();
 	}
 
 	@Override
-	public void change(Long id, String broker, String value) {
-		// TODO Auto-generated method stub
-
+	public int change(Long id, String broker, Integer value) {
+		String sql = "{call dbo.anca_WebSet_setEquityBrokerCoverage_sp :id, :broker, :value}";
+		return em.createQuery(sql).setParameter(1, id).setParameter(2, broker).setParameter(3, value).executeUpdate();
 	}
 }

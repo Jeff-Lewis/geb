@@ -16,12 +16,16 @@ import ru.prbb.analytics.domain.BuildModelItem;
 public interface BuildModelDao {
 
 	/**
+	 * dbo.build_model_proc_p
+	 * 
 	 * @param ids
 	 * @return
 	 */
 	List<BuildModelItem> calculateModel(Long[] ids);
 
 	/**
+	 * dbo.build_model_proc
+	 * 
 	 * @return
 	 */
 	List<BuildModelItem> calculateSvod();

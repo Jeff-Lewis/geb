@@ -1,6 +1,7 @@
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.0">
    <deployment>
    	   <dependencies>
+   	   		<module name="com.sybase"/>
    	   		<module name="com.h2database.h2"/>
    	   		<module name="org.codehaus.jackson.jackson-core-asl"/>
    	   		<module name="org.codehaus.jackson.jackson-mapper-asl"/>

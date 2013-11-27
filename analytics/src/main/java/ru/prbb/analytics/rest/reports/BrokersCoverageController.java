@@ -30,7 +30,6 @@ public class BrokersCoverageController
 	public @ResponseBody
 	List<BrokersCoverageItem> show()
 	{
-		// {call dbo.anca_WebGet_EquityBrokerCoverage_sp}
 		return dao.execute();
 	}
 
@@ -39,7 +38,7 @@ public class BrokersCoverageController
 	Result change(
 			@RequestParam Long id,
 			@RequestParam String broker,
-			@RequestParam String value)
+			@RequestParam Integer value)
 	{
 		dao.change(id, broker, value);
 		return Result.SUCCESS;

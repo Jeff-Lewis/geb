@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,25 +31,29 @@ public class BuildModelDaoImpl implements BuildModelDao
 	@Override
 	public List<BuildModelItem> calculateModel(Long[] ids) {
 		final List<BuildModelItem> list = new ArrayList<BuildModelItem>();
-		for (int i = 0; i < ids.length; i++) {
-			final BuildModelItem item = new BuildModelItem();
-			item.setSecurity_code("SEC_CODE_" + ids[i]);
-			item.setStatus("OK");
+		for (Long id : ids) {
+			BuildModelItem item;
+			try {
+				item = buildModelCompany(id);
+			} catch (DataAccessException e) {
+				item = new BuildModelItem();
+				item.setSecurity_code(id);
+				item.setStatus(e.toString());
+			}
 			list.add(item);
 		}
 		return list;
 	}
 
+	private BuildModelItem buildModelCompany(Long id) {
+		String sql = "{call dbo.build_model_proc_p :id}";
+		return em.createQuery(sql, BuildModelItem.class).setParameter(1, id).getSingleResult();
+	}
+
 	@Override
 	public List<BuildModelItem> calculateSvod() {
-		final List<BuildModelItem> list = new ArrayList<BuildModelItem>();
-		for (int i = 0; i < 10; i++) {
-			final BuildModelItem item = new BuildModelItem();
-			item.setSecurity_code("SEC_CODE_" + i);
-			item.setStatus("OK");
-			list.add(item);
-		}
-		return list;
+		String sql = "{call dbo.build_model_proc}";
+		return em.createQuery(sql, BuildModelItem.class).getResultList();
 	}
 
 }

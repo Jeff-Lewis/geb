@@ -1,6 +1,5 @@
 package ru.prbb.middleoffice.rest.services.contacts;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.middleoffice.domain.ContactStaffItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SimpleItem;
@@ -33,15 +33,7 @@ public class ContactsController
 	public @ResponseBody
 	List<SimpleItem> listAllMembers()
 	{
-		// {call dbo.WebGet_SelectContacts_sp}
-		ArrayList<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (long i = 1; i < 11; i++) {
-			SimpleItem e = new SimpleItem();
-			e.setId(i);
-			e.setName("name" + i);
-			list.add(e);
-		}
-		return list;
+		return dao.findAll();
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -49,6 +41,7 @@ public class ContactsController
 	Result add(
 			@RequestParam String name)
 	{
+		dao.put(name);
 		return Result.SUCCESS;
 	}
 
@@ -58,6 +51,7 @@ public class ContactsController
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
+		dao.updateById(id, name);
 		return Result.SUCCESS;
 	}
 
@@ -66,11 +60,7 @@ public class ContactsController
 	ResultData lookupById(
 			@PathVariable("id") Long id)
 	{
-		// {call dbo.WebGet_SelectContactInfo_sp ?}
-		SimpleItem e = new SimpleItem();
-		e.setId(id);
-		e.setName("name" + id);
-		return new ResultData(e);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
@@ -78,6 +68,47 @@ public class ContactsController
 	Result deleteById(
 			@PathVariable("id") Long id)
 	{
+		dao.deleteById(id);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/Staff", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	List<ContactStaffItem> getStaff(
+			@RequestParam Long id)
+	{
+		return dao.findAllStaff(id);
+	}
+
+	@RequestMapping(value = "/Staff/{id}", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	Result addStaff(
+			@PathVariable Long id,
+			@RequestParam String name,
+			@RequestParam Integer type)
+	{
+		dao.putStaff(id, name, type);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/Staff/{id}/{cid}", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	Result renStaff(
+			@PathVariable Long id,
+			@PathVariable Long cid,
+			@RequestParam String name)
+	{
+		dao.updateByIdStaff(id, cid, name);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/Staff/{id}/{cid}", method = RequestMethod.DELETE, produces = "application/json")
+	public @ResponseBody
+	Result delStaff(
+			@PathVariable Long id,
+			@PathVariable Long cid)
+	{
+		dao.deleteByIdStaff(id, cid);
 		return Result.SUCCESS;
 	}
 }

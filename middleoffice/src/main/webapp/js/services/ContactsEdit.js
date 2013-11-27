@@ -1,5 +1,5 @@
 /**
- * Параметры контакта
+ * Справочник контактов Параметры контакта
  */
 (function() {
 
@@ -8,7 +8,7 @@
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Contacts/Info.do',
+		url : 'rest/Contacts/Staff.do',
 		// root : 'info',
 		fields : [ 'cid', 'value' ]
 	});
@@ -68,10 +68,8 @@
 				text : 'Добавить',
 				handler : function() {
 					Ext.Ajax.request({
-						method : 'PUT',
-						url : 'rest/Contacts/Info.do',
+						url : 'rest/Contacts/Staff/' + idContact + '.do',
 						params : {
-							id : idContact,
 							name : Ext.getCmp(_name).getValue(),
 							type : Ext.getCmp(_sms).getValue() ? 1 : 2
 						},
@@ -120,9 +118,9 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'contacts/ContactInfoEdit.html',
+			url : 'rest/Contacts/Staff/' + idContact + '/'
+					+ sm.getSelected().data.cid + '.do',
 			params : {
-				cid : sm.getSelected().data.cid,
 				name : text
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -153,7 +151,8 @@
 	function delContactAjax() {
 		Ext.Ajax.request({
 			method : 'DELETE',
-			url : 'rest/Contacts/Info/' + sm.getSelected().data.cid + '.do',
+			url : 'rest/Contacts/' + idContact + '/'
+					+ sm.getSelected().data.cid + '.do',
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Удаление',
 			success : function(xhr) {
@@ -209,8 +208,8 @@
 		},
 
 		loadData : function(data) {
-			idContact = data.info.id;
-			this.setTitle('Редактирование контакта: ' + data.info.name);
+			idContact = data.item.id;
+			this.setTitle('Редактирование контакта: ' + data.item.name);
 			reload();
 		}
 	});

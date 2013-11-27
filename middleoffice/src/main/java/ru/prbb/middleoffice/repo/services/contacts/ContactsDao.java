@@ -5,7 +5,8 @@ package ru.prbb.middleoffice.repo.services.contacts;
 
 import java.util.List;
 
-import ru.prbb.middleoffice.domain.ReferenceItem;
+import ru.prbb.middleoffice.domain.ContactStaffItem;
+import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
  * Справочник контактов
@@ -18,25 +19,53 @@ public interface ContactsDao {
 	/**
 	 * @return
 	 */
-	public List<ReferenceItem> findAllOrderedByName();
+	List<SimpleItem> findAll();
+
+	/**
+	 * @param id
+	 */
+	SimpleItem findById(Long id);
+
+	/**
+	 * @param name
+	 */
+	void put(String name);
+
+	/**
+	 * @param id
+	 * @param name
+	 */
+	void updateById(Long id, String name);
+
+	/**
+	 * @param id
+	 */
+	void deleteById(Long id);
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public ReferenceItem findById(Long id);
+	List<ContactStaffItem> findAllStaff(Long id);
 
 	/**
 	 * @param id
-	 * @param value
-	 * @return
+	 * @param name
+	 * @param type
 	 */
-	public Long updateById(Long id, ReferenceItem value);
+	void putStaff(Long id, String name, Integer type);
 
 	/**
 	 * @param id
-	 * @return
+	 * @param cid
+	 * @param name
 	 */
-	public Long deleteById(Long id);
+	void updateByIdStaff(Long id, Long cid, String name);
+
+	/**
+	 * @param id
+	 * @param cid
+	 */
+	void deleteByIdStaff(Long id, Long cid);
 
 }

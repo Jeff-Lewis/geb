@@ -5,13 +5,18 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class EquityItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long id_sec;
 	private String security_code;
 	private String short_name;
@@ -107,5 +112,27 @@ public class EquityItem implements Serializable {
 	 */
 	public void setPivot(String pivot) {
 		this.pivot = pivot;
+	}
+
+	@Override
+	public int hashCode() {
+		return id_sec.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (null == obj)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EquityItem other = (EquityItem) obj;
+		if (id_sec == null) {
+			if (other.id_sec != null)
+				return false;
+		} else if (!id_sec.equals(other.id_sec))
+			return false;
+		return true;
 	}
 }

@@ -5,13 +5,18 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class BrokersForecastItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long id_sec;
 	private String security_code;
 	private String short_name;

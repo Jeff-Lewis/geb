@@ -3,7 +3,6 @@
  */
 package ru.prbb.analytics.repo.params;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.analytics.domain.ViewParamItem;
 import ru.prbb.analytics.domain.ViewParamsItem;
 
 /**
@@ -28,27 +28,21 @@ public class ViewParamsDaoImpl implements ViewParamsDao
 	private EntityManager em;
 
 	@Override
-	public List<ViewParamsItem> show() {
-		ArrayList<ViewParamsItem> list = new ArrayList<ViewParamsItem>();
-		for (long i = 1; i < 11; i++) {
-			ViewParamsItem item = new ViewParamsItem();
-			item.setParam_id(i);
-			item.setBlm_id("blm_id" + i);
-			item.setCode("code" + i);
-			item.setName("name" + i);
-			list.add(item);
-		}
-		return list;
+	public List<ViewParamsItem> findAll() {
+		String sql = "select param_id, blm_id, code, name from dbo.params";
+		return em.createQuery(sql, ViewParamsItem.class).getResultList();
 	}
 
 	@Override
-	public ViewParamsItem getById(String blm_id) {
-		ViewParamsItem item = new ViewParamsItem();
-		item.setParam_id(1L);
-		item.setBlm_id("blm_id" + blm_id);
-		item.setCode("code" + blm_id);
-		item.setName("name" + blm_id);
-		return item;
+	public ViewParamItem findById(String blm_id) {
+		String sql = "select field_id, field_mnemonic, description, data_license_category, category," +
+				" definition, comdty, equity, muni, pfd, m_mkt, govt, corp, indx, curncy, mtge, standard_width," +
+				" standard_decimal_places, field_type, back_office, extended_back_office, production_date," +
+				" current_maximum_width, bval, bval_blocked, getfundamentals, gethistory, getcompany," +
+				" old_mnemonic, data_license_category_2, psboopt" +
+				" from dbo.bloomberg_dl_fields" +
+				" where field_id=:blm_id";
+		return em.createQuery(sql, ViewParamItem.class).setParameter(1, blm_id).getSingleResult();
 	}
 
 }

@@ -32,17 +32,10 @@ public class BrokersDaoImpl implements BrokersDao
 	 * @return
 	 */
 	public List<ReferenceItem> findAll() {
+		String sql = "execute mo_WebGet_SelectBrokers_sp";
+		return em.createNativeQuery(sql, ReferenceItem.class).getResultList();
 		// {call dbo.mo_WebGet_SelectBrokers_sp}
 		//return em.createQuery("{call dbo.anca_WebGet_SelectBrokers_sp}", ReferenceItem.class).getResultList();
-		final List<ReferenceItem> list = new ArrayList<ReferenceItem>();
-		for (int i = 0; i < 10; i++) {
-			final ReferenceItem item = new ReferenceItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			item.setComment("comment" + (i + 1));
-			list.add(item);
-		}
-		return list;
 	}
 
 	/**

@@ -94,10 +94,9 @@
 			return;
 		}
 
-		var _data = smC.getSelected().data;
-
+		var id = smC.getSelected().data.id;
 		menu.submitDataRequest(menu, 'utils/ContactsEdit', 'rest/Contacts/'
-				+ _data.id + '.do');
+				+ id + '.do');
 	}
 
 	function delContact(self) {
@@ -110,9 +109,10 @@
 				delContactCallback);
 	}
 	function delContactCallback() {
+		var id = smC.getSelected().data.id;
 		Ext.Ajax.request({
 			method : 'DELETE',
-			url : 'rest/Contacts/' + smC.getSelected().data.id + '.do',
+			url : 'rest/Contacts/' + id + '.do',
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Удаление',
 			success : function(xhr) {
@@ -222,10 +222,9 @@
 			return;
 		}
 
-		var _data = smG.getSelected().data;
-
+		var id = smG.getSelected().data.id;
 		menu.submitDataRequest(menu, 'utils/ContactsEditGroup', 'rest/Groups/'
-				+ _data.id + '.do');
+				+ id + '.do');
 	}
 
 	function delGroup(self) {

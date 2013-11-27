@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ViewPortfolioItem;
+import ru.prbb.analytics.domain.ViewPortfolioSecurityItem;
 import ru.prbb.analytics.repo.portfolio.ViewPortfolioDao;
 
 /**
@@ -28,9 +29,8 @@ public class ViewPortfolioController
 
 	@RequestMapping(value = "/Securities", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<ViewPortfolioItem> showSecurities()
+	List<ViewPortfolioSecurityItem> showSecurities()
 	{
-		// select * from dbo.equity_request_v
 		return dao.getSecurities();
 	}
 
@@ -38,7 +38,6 @@ public class ViewPortfolioController
 	public @ResponseBody
 	List<ViewPortfolioItem> showPortfolio()
 	{
-		// select id_sec, security_code from dbo.securities where portfolio='portfolio'
 		return dao.getPortfolio();
 	}
 

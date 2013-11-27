@@ -35,27 +35,24 @@
 		}
 
 		if (sm.getCount() == 1) {
-
-			App.ui.confirm('Удалить компанию ' + sm.getSelected().data.code
-					+ '?', function() {
+			var name = sm.getSelected().data.code;
+			App.ui.confirm('Удалить компанию ' + name + '?', function() {
 				data.remove(sm.getSelected());
 			});
 			return;
 		}
 
-		App.ui.confirm('Удалить ' + sm.getCount()
-				+ (sm.getCount() > 4 ? ' компаний?' : ' компании?'),
-				function() {
-					sm.lock();
-					try {
-						sm.each(function(r) {
-							data.remove(r);
-							return true;
-						});
-					} finally {
-						sm.unlock();
-					}
+		App.ui.confirm('Удалить выбранные компании?', function() {
+			sm.lock();
+			try {
+				sm.each(function(r) {
+					data.remove(r);
+					return true;
 				});
+			} finally {
+				sm.unlock();
+			}
+		});
 	}
 
 	function execute() {

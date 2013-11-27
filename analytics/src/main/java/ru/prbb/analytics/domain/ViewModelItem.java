@@ -5,28 +5,33 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class ViewModelItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long id_sec;
 	private String company_short_name;
 	private String industry_group;
-	private String CurrentPrice;
-	private String TargetPrice;
-	private String TargetPriceCons12M;
-	private String YearHigh;
-	private String YearLow;
-	private String PE_current;
-	private String PE_5;
-	private String PE_10;
-	private String DividendYield;
-	private String BestPrice;
-	private String DeltaBstCur_pct;
-	private String CurrentUpside_pct;
+	private Double CurrentPrice;
+	private Double TargetPrice;
+	private Double TargetPriceCons12M;
+	private Double YearHigh;
+	private Double YearLow;
+	private Double PE_current;
+	private Double PE_5;
+	private Double PE_10;
+	private Double DividendYield;
+	private Double BestPrice;
+	private Double DeltaBstCur_pct;
+	private Double CurrentUpside_pct;
 	private String Currency;
 
 	/**
@@ -77,7 +82,7 @@ public class ViewModelItem implements Serializable {
 	/**
 	 * @return the currentPrice
 	 */
-	public String getCurrentPrice() {
+	public Double getCurrentPrice() {
 		return CurrentPrice;
 	}
 
@@ -85,14 +90,14 @@ public class ViewModelItem implements Serializable {
 	 * @param currentPrice
 	 *            the currentPrice to set
 	 */
-	public void setCurrentPrice(String currentPrice) {
+	public void setCurrentPrice(Double currentPrice) {
 		CurrentPrice = currentPrice;
 	}
 
 	/**
 	 * @return the targetPrice
 	 */
-	public String getTargetPrice() {
+	public Double getTargetPrice() {
 		return TargetPrice;
 	}
 
@@ -100,14 +105,14 @@ public class ViewModelItem implements Serializable {
 	 * @param targetPrice
 	 *            the targetPrice to set
 	 */
-	public void setTargetPrice(String targetPrice) {
+	public void setTargetPrice(Double targetPrice) {
 		TargetPrice = targetPrice;
 	}
 
 	/**
 	 * @return the targetPriceCons12M
 	 */
-	public String getTargetPriceCons12M() {
+	public Double getTargetPriceCons12M() {
 		return TargetPriceCons12M;
 	}
 
@@ -115,14 +120,14 @@ public class ViewModelItem implements Serializable {
 	 * @param targetPriceCons12M
 	 *            the targetPriceCons12M to set
 	 */
-	public void setTargetPriceCons12M(String targetPriceCons12M) {
+	public void setTargetPriceCons12M(Double targetPriceCons12M) {
 		TargetPriceCons12M = targetPriceCons12M;
 	}
 
 	/**
 	 * @return the yearHigh
 	 */
-	public String getYearHigh() {
+	public Double getYearHigh() {
 		return YearHigh;
 	}
 
@@ -130,14 +135,14 @@ public class ViewModelItem implements Serializable {
 	 * @param yearHigh
 	 *            the yearHigh to set
 	 */
-	public void setYearHigh(String yearHigh) {
+	public void setYearHigh(Double yearHigh) {
 		YearHigh = yearHigh;
 	}
 
 	/**
 	 * @return the yearLow
 	 */
-	public String getYearLow() {
+	public Double getYearLow() {
 		return YearLow;
 	}
 
@@ -145,14 +150,14 @@ public class ViewModelItem implements Serializable {
 	 * @param yearLow
 	 *            the yearLow to set
 	 */
-	public void setYearLow(String yearLow) {
+	public void setYearLow(Double yearLow) {
 		YearLow = yearLow;
 	}
 
 	/**
 	 * @return the pE_current
 	 */
-	public String getPE_current() {
+	public Double getPE_current() {
 		return PE_current;
 	}
 
@@ -160,14 +165,14 @@ public class ViewModelItem implements Serializable {
 	 * @param pE_current
 	 *            the pE_current to set
 	 */
-	public void setPE_current(String pE_current) {
+	public void setPE_current(Double pE_current) {
 		PE_current = pE_current;
 	}
 
 	/**
 	 * @return the pE_5
 	 */
-	public String getPE_5() {
+	public Double getPE_5() {
 		return PE_5;
 	}
 
@@ -175,14 +180,14 @@ public class ViewModelItem implements Serializable {
 	 * @param pE_5
 	 *            the pE_5 to set
 	 */
-	public void setPE_5(String pE_5) {
+	public void setPE_5(Double pE_5) {
 		PE_5 = pE_5;
 	}
 
 	/**
 	 * @return the pE_10
 	 */
-	public String getPE_10() {
+	public Double getPE_10() {
 		return PE_10;
 	}
 
@@ -190,14 +195,14 @@ public class ViewModelItem implements Serializable {
 	 * @param pE_10
 	 *            the pE_10 to set
 	 */
-	public void setPE_10(String pE_10) {
+	public void setPE_10(Double pE_10) {
 		PE_10 = pE_10;
 	}
 
 	/**
 	 * @return the dividendYield
 	 */
-	public String getDividendYield() {
+	public Double getDividendYield() {
 		return DividendYield;
 	}
 
@@ -205,14 +210,14 @@ public class ViewModelItem implements Serializable {
 	 * @param dividendYield
 	 *            the dividendYield to set
 	 */
-	public void setDividendYield(String dividendYield) {
+	public void setDividendYield(Double dividendYield) {
 		DividendYield = dividendYield;
 	}
 
 	/**
 	 * @return the bestPrice
 	 */
-	public String getBestPrice() {
+	public Double getBestPrice() {
 		return BestPrice;
 	}
 
@@ -220,14 +225,14 @@ public class ViewModelItem implements Serializable {
 	 * @param bestPrice
 	 *            the bestPrice to set
 	 */
-	public void setBestPrice(String bestPrice) {
+	public void setBestPrice(Double bestPrice) {
 		BestPrice = bestPrice;
 	}
 
 	/**
 	 * @return the deltaBstCur_pct
 	 */
-	public String getDeltaBstCur_pct() {
+	public Double getDeltaBstCur_pct() {
 		return DeltaBstCur_pct;
 	}
 
@@ -235,14 +240,14 @@ public class ViewModelItem implements Serializable {
 	 * @param deltaBstCur_pct
 	 *            the deltaBstCur_pct to set
 	 */
-	public void setDeltaBstCur_pct(String deltaBstCur_pct) {
+	public void setDeltaBstCur_pct(Double deltaBstCur_pct) {
 		DeltaBstCur_pct = deltaBstCur_pct;
 	}
 
 	/**
 	 * @return the currentUpside_pct
 	 */
-	public String getCurrentUpside_pct() {
+	public Double getCurrentUpside_pct() {
 		return CurrentUpside_pct;
 	}
 
@@ -250,7 +255,7 @@ public class ViewModelItem implements Serializable {
 	 * @param currentUpside_pct
 	 *            the currentUpside_pct to set
 	 */
-	public void setCurrentUpside_pct(String currentUpside_pct) {
+	public void setCurrentUpside_pct(Double currentUpside_pct) {
 		CurrentUpside_pct = currentUpside_pct;
 	}
 

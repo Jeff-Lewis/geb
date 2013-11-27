@@ -58,13 +58,15 @@ public interface CompanyReportsDao {
 	/**
 	 * @param id
 	 * @param ids
+	 * @return
 	 */
-	void putStaff(Long id, Long[] ids);
+	int[] putStaff(Long id, Long[] ids);
 
 	/**
 	 * @param id
 	 * @param ids
+	 * @return
 	 */
-	void deleteStaff(Long id, Long[] ids);
+	int[] deleteStaff(Long id, Long[] ids);
 
 }

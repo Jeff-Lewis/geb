@@ -52,7 +52,7 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'rest/Subscription.do',
+			url : 'rest/ViewSubscription.do',
 			params : {
 				name : _n.getValue(),
 				comment : Ext.getCmp(_comment).getValue()

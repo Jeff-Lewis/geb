@@ -5,13 +5,18 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class ViewPortfolioItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long id_sec;
 	private String security_code;
 
@@ -43,5 +48,23 @@ public class ViewPortfolioItem implements Serializable {
 	 */
 	public void setSecurity_code(String security_code) {
 		this.security_code = security_code;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ViewPortfolioItem) {
+			return id_sec.equals(((ViewPortfolioItem) obj).id_sec);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return id_sec.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return security_code + '(' + id_sec + ')';
 	}
 }

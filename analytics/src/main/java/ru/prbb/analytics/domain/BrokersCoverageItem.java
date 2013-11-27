@@ -5,24 +5,29 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author RBr
  * 
  */
+@Entity
 public class BrokersCoverageItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long id_sec;
 	private String security_code;
 	private String short_name;
 	private String pivot_group;
-	private String Credit_Suisse;
-	private String Goldman_Sachs;
-	private String JP_Morgan;
-	private String UBS;
-	private String Merrill_Lynch;
-	private String Morgan_Stanley;
-	private String Deutsche_Bank;
+	private Integer Credit_Suisse;
+	private Integer Goldman_Sachs;
+	private Integer JP_Morgan;
+	private Integer UBS;
+	private Integer Merrill_Lynch;
+	private Integer Morgan_Stanley;
+	private Integer Deutsche_Bank;
 
 	/**
 	 * @return the id_sec
@@ -87,7 +92,7 @@ public class BrokersCoverageItem implements Serializable {
 	/**
 	 * @return the credit_Suisse
 	 */
-	public String getCredit_Suisse() {
+	public Integer getCredit_Suisse() {
 		return Credit_Suisse;
 	}
 
@@ -95,14 +100,14 @@ public class BrokersCoverageItem implements Serializable {
 	 * @param credit_Suisse
 	 *            the credit_Suisse to set
 	 */
-	public void setCredit_Suisse(String credit_Suisse) {
+	public void setCredit_Suisse(Integer credit_Suisse) {
 		Credit_Suisse = credit_Suisse;
 	}
 
 	/**
 	 * @return the goldman_Sachs
 	 */
-	public String getGoldman_Sachs() {
+	public Integer getGoldman_Sachs() {
 		return Goldman_Sachs;
 	}
 
@@ -110,14 +115,14 @@ public class BrokersCoverageItem implements Serializable {
 	 * @param goldman_Sachs
 	 *            the goldman_Sachs to set
 	 */
-	public void setGoldman_Sachs(String goldman_Sachs) {
+	public void setGoldman_Sachs(Integer goldman_Sachs) {
 		Goldman_Sachs = goldman_Sachs;
 	}
 
 	/**
 	 * @return the jP_Morgan
 	 */
-	public String getJP_Morgan() {
+	public Integer getJP_Morgan() {
 		return JP_Morgan;
 	}
 
@@ -125,14 +130,14 @@ public class BrokersCoverageItem implements Serializable {
 	 * @param jP_Morgan
 	 *            the jP_Morgan to set
 	 */
-	public void setJP_Morgan(String jP_Morgan) {
+	public void setJP_Morgan(Integer jP_Morgan) {
 		JP_Morgan = jP_Morgan;
 	}
 
 	/**
 	 * @return the uBS
 	 */
-	public String getUBS() {
+	public Integer getUBS() {
 		return UBS;
 	}
 
@@ -140,14 +145,14 @@ public class BrokersCoverageItem implements Serializable {
 	 * @param uBS
 	 *            the uBS to set
 	 */
-	public void setUBS(String uBS) {
+	public void setUBS(Integer uBS) {
 		UBS = uBS;
 	}
 
 	/**
 	 * @return the merrill_Lynch
 	 */
-	public String getMerrill_Lynch() {
+	public Integer getMerrill_Lynch() {
 		return Merrill_Lynch;
 	}
 
@@ -155,14 +160,14 @@ public class BrokersCoverageItem implements Serializable {
 	 * @param merrill_Lynch
 	 *            the merrill_Lynch to set
 	 */
-	public void setMerrill_Lynch(String merrill_Lynch) {
+	public void setMerrill_Lynch(Integer merrill_Lynch) {
 		Merrill_Lynch = merrill_Lynch;
 	}
 
 	/**
 	 * @return the morgan_Stanley
 	 */
-	public String getMorgan_Stanley() {
+	public Integer getMorgan_Stanley() {
 		return Morgan_Stanley;
 	}
 
@@ -170,14 +175,14 @@ public class BrokersCoverageItem implements Serializable {
 	 * @param morgan_Stanley
 	 *            the morgan_Stanley to set
 	 */
-	public void setMorgan_Stanley(String morgan_Stanley) {
+	public void setMorgan_Stanley(Integer morgan_Stanley) {
 		Morgan_Stanley = morgan_Stanley;
 	}
 
 	/**
 	 * @return the deutsche_Bank
 	 */
-	public String getDeutsche_Bank() {
+	public Integer getDeutsche_Bank() {
 		return Deutsche_Bank;
 	}
 
@@ -185,7 +190,7 @@ public class BrokersCoverageItem implements Serializable {
 	 * @param deutsche_Bank
 	 *            the deutsche_Bank to set
 	 */
-	public void setDeutsche_Bank(String deutsche_Bank) {
+	public void setDeutsche_Bank(Integer deutsche_Bank) {
 		Deutsche_Bank = deutsche_Bank;
 	}
 }
