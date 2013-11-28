@@ -29,22 +29,27 @@ public interface FundsDao {
 
 	/**
 	 * 
-	 * @param value
+	 * @param name
+	 * @param comment
 	 * @return
 	 */
-	public Long put(ReferenceItem value);
+	public int put(String name, String comment);
 
 	/**
+	 * 
 	 * @param id
-	 * @param value
+	 * @param name
+	 * @param comment
 	 * @return
 	 */
-	public Long updateById(Long id, ReferenceItem value);
+	public int updateById(Long id, String name, String comment);
 
 	/**
+	 * 
 	 * @param id
+	 * @return
 	 */
-	public void deleteById(Long id);
+	public int deleteById(Long id);
 
 	/**
 	 * @param query
