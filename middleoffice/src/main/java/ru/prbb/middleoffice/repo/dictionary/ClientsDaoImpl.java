@@ -66,7 +66,7 @@ public class ClientsDaoImpl implements ClientsDao
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "execute dbo.mo_WebSet_udClients_sp 'd', ?, ?, ?";
+		String sql = "execute dbo.mo_WebSet_udClients_sp 'd', ?";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();

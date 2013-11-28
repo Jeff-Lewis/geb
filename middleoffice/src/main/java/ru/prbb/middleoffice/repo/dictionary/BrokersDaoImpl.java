@@ -66,7 +66,7 @@ public class BrokersDaoImpl implements BrokersDao
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "execute dbo.mo_WebSet_udBrokers_sp 'd', ?, ?, ?";
+		String sql = "execute dbo.mo_WebSet_udBrokers_sp 'd', ?";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();
