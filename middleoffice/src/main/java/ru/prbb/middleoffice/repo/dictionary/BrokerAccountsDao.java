@@ -29,22 +29,27 @@ public interface BrokerAccountsDao {
 
 	/**
 	 * 
-	 * @param value
+	 * @param name
+	 * @param client
+	 * @param broker
+	 * @param comment
 	 * @return
 	 */
-	public Long put(BrokerAccountItem value);
+	public int put(String name, String client, String broker, String comment);
+
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @param comment
+	 * @return
+	 */
+	public int updateById(Long id, String name, String comment);
 
 	/**
 	 * @param id
-	 * @param value
-	 * @return
 	 */
-	public Long updateById(Long id, BrokerAccountItem value);
-
-	/**
-	 * @param id
-	 */
-	public void deleteById(Long id);
+	public int deleteById(Long id);
 
 	/**
 	 * @param query

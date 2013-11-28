@@ -47,8 +47,7 @@ public class BrokerAccountsController
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		final BrokerAccountItem value = dao.findById(id);
-		return new ResultData(value);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -59,12 +58,7 @@ public class BrokerAccountsController
 			@RequestParam String broker,
 			@RequestParam String comment)
 	{
-		final BrokerAccountItem value = new BrokerAccountItem();
-		value.setName(name);
-		value.setClient(client);
-		value.setBroker(broker);
-		value.setComment(comment);
-		dao.put(value);
+		dao.put(name, client, broker, comment);
 		return Result.SUCCESS;
 	}
 
@@ -75,11 +69,7 @@ public class BrokerAccountsController
 			@RequestParam String name,
 			@RequestParam String comment)
 	{
-		final BrokerAccountItem value = new BrokerAccountItem();
-		value.setId(id);
-		value.setName(name);
-		value.setComment(comment);
-		dao.updateById(id, value);
+		dao.updateById(id, name, comment);
 		return Result.SUCCESS;
 	}
 

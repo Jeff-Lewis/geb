@@ -8,8 +8,6 @@
 
 	var cbClient = new Ext.form.ComboBox({
 		fieldLabel : 'Клиент',
-		width : 200,
-		hiddenName : 'client',
 		valueField : 'name',
 		displayField : 'name',
 		store : new Ext.data.JsonStore({
@@ -18,7 +16,8 @@
 			// root : 'info',
 			fields : [ 'id', 'name' ]
 		}),
-		allowBlank : true,
+		allowBlank : false,
+		editable : false,
 		emptyText : 'Выберите клиента',
 		loadingText : 'Поиск...',
 		triggerAction : 'all'
@@ -26,8 +25,6 @@
 
 	var cbBroker = new Ext.form.ComboBox({
 		fieldLabel : 'Брокер',
-		width : 200,
-		hiddenName : 'broker',
 		valueField : 'name',
 		displayField : 'name',
 		store : new Ext.data.JsonStore({
@@ -36,9 +33,10 @@
 			// root : 'info',
 			fields : [ 'id', 'name' ]
 		}),
-		allowBlank : true,
+		allowBlank : false,
 		emptyText : 'Выберите брокера',
 		loadingText : 'Поиск...',
+		minChars : 2,
 		triggerAction : 'all'
 	});
 
@@ -49,20 +47,20 @@
 		labelWidth : 160,
 		width : 420,
 		height : 210,
+		defaults : {
+			width : 200
+		},
 
 		items : [ {
 			id : _name,
 			xtype : 'textfield',
 			fieldLabel : 'Наименование',
-			width : 200,
 			allowBlank : false,
-			emptyText : 'Заполните',
-			name : 'name'
+			emptyText : 'Заполните'
 		}, cbClient, cbBroker, {
 			id : _comment,
 			xtype : 'textfield',
-			fieldLabel : 'Комментарий',
-			width : 200
+			fieldLabel : 'Комментарий'
 		} ],
 
 		buttons : [ {

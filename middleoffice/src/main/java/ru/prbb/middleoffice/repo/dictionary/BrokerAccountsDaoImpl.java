@@ -3,15 +3,16 @@
  */
 package ru.prbb.middleoffice.repo.dictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.BrokerAccountItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
@@ -28,78 +29,64 @@ public class BrokerAccountsDaoImpl implements BrokerAccountsDao
 	@Autowired
 	private EntityManager em;
 
-	/**
-	 * @return
-	 */
-	public List<BrokerAccountItem> findAll() {
-		// {call dbo.mo_WebGet_SelectAccount_sp}
-		//return em.createQuery("{call dbo.anca_WebGet_SelectBrokers_sp}", ReferenceItem.class).getResultList();
-		final List<BrokerAccountItem> list = new ArrayList<BrokerAccountItem>();
-		for (int i = 0; i < 10; i++) {
-			final BrokerAccountItem item = new BrokerAccountItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			item.setComment("comment" + (i + 1));
-			list.add(item);
-		}
-		return list;
-	}
-
-	/**
-	 * @param id
-	 * @return
-	 */
-	public BrokerAccountItem findById(Long id) {
-		// {call dbo.mo_WebGet_SelectAccount_sp ?}
-		final BrokerAccountItem item = new BrokerAccountItem();
-		item.setId(id);
-		item.setName("name" + id);
-		item.setComment("comment" + id);
-		return item;
-	}
-
-	/**
-	 * 
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Long put(BrokerAccountItem value) {
-		// "{call dbo.mo_WebSet_putAccount_sp ?, ?, ?, ?}"
-		return value.getId();
+	public List<BrokerAccountItem> findAll() {
+		String sql = "execute dbo.mo_WebGet_SelectAccount_sp";
+		Query q = em.createNativeQuery(sql, BrokerAccountItem.class);
+		return q.getResultList();
 	}
 
-	/**
-	 * @param id
-	 * @param value
-	 * @return
-	 */
-	public Long updateById(Long id, BrokerAccountItem value) {
-		// "{call dbo.mo_WebSet_udAccount_sp 'u', ?, ?, ?}"
-		return id;
+	@Override
+	public BrokerAccountItem findById(Long id) {
+		String sql = "execute dbo.mo_WebGet_SelectAccount_sp ?";
+		Query q = em.createNativeQuery(sql, BrokerAccountItem.class)
+				.setParameter(1, id);
+		return (BrokerAccountItem) q.getSingleResult();
 	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	public void deleteById(Long id) {
-		// "{call dbo.mo_WebSet_udAccount_sp 'd', ?}"
+	@Override
+	public int put(String name, String client, String broker, String comment) {
+		String sql = "execute dbo.mo_WebSet_putAccount_sp ?, ?, ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, name)
+				.setParameter(2, client)
+				.setParameter(3, broker)
+				.setParameter(4, comment);
+		return q.executeUpdate();
 	}
 
-	/**
-	 * @param query
-	 * @return
-	 */
+	@Override
+	public int updateById(Long id, String name, String comment) {
+		String sql = "execute dbo.mo_WebSet_udAccount_sp 'u', ?, ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, name)
+				.setParameter(3, comment);
+		return q.executeUpdate();
+	}
+
+	@Override
+	public int deleteById(Long id) {
+		String sql = "execute dbo.mo_WebSet_udAccount_sp 'd', ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<SimpleItem> findCombo(String query) {
-		// "select id, name from dbo.mo_WebGet_ajaxAccount_v"
-		// " where lower(name) like ?"
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (int i = 0; i < 10; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			list.add(item);
+		String sql = "select id, name from dbo.mo_WebGet_ajaxAccount_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return list;
+		return q.getResultList();
 	}
 
 }
