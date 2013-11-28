@@ -2,6 +2,9 @@ package ru.prbb.middleoffice.test;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = {
@@ -10,10 +13,16 @@ import org.junit.Test;
 //@Transactional
 //@TransactionConfiguration(defaultRollback = true)
 @Ignore("Не реализовано")
-public class MemberDaoTest
+public class BrokersDaoTest
 {
-	//    @Autowired
-	//    private MemberDao memberDao;
+	@Autowired
+	private BrokersDao dao;
+
+	@Test
+	public void testFindAll()
+	{
+		dao.findAll();
+	}
 
 	@Test
 	public void testFindById()

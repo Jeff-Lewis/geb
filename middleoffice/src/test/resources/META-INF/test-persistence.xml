@@ -2,11 +2,22 @@
 
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
 	<persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<!-- class>ru.prbb.middleoffice.domain.Member</class -->
-        <properties>
-	        <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-        	<property name="hibernate.show_sql" value="true" />
-        </properties>
+        <!-- provider>org.hibernate.ejb.HibernatePersistence</provider -->
+		<jta-data-source>java:jboss/datasources/BloombergDS</jta-data-source>
+		<class>ru.prbb.middleoffice.domain.ReferenceItem</class>
+		<properties>
+			<property
+				name="jboss.entity.manager.factory.jndi.name"
+				value="java:jboss/spring-quickstart/persistence" />
+			<property
+				name="hibernate.dialect"
+				value="org.hibernate.dialect.SybaseDialect" />
+			<property
+				name="show_sql"
+				value="true" />
+			<property
+				name="hibernate.temp.use_jdbc_metadata_defaults"
+				value="false" />
+		</properties>
 	</persistence-unit>
 </persistence>
