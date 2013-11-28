@@ -11,9 +11,9 @@
 		// root : 'info',
 		fields : [ 'security_type', 'ticker', 'name', 'last', 'lastchange',
 				'lastchangetime', 'attention' ],
-		sortInfo : {
-			field : 'ticker'
-		},
+		// sortInfo : {
+		// field : 'ticker'
+		// },
 		listeners : App.ui.listenersJsonStore()
 	});
 
@@ -54,7 +54,7 @@
 		}, {
 			header : 'lastchangetime',
 			dataIndex : 'lastchangetime',
-			renderer : App.util.Renderer.datetime('d-m-Y H:i:s'),
+			renderer : App.util.Renderer.datetime(),
 			width : 60
 		}, {
 			header : 'attention',

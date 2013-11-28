@@ -83,7 +83,8 @@ App.util.Renderer = (function() {
 		datetime : function(format) {
 			format = format || 'd.m.Y H:i:s';
 			return function(v) {
-				v = Date.parseDate(v, 'Y-m-dTH:i:s');
+				v = Ext.util.Format.substr(v, 0, 19);
+				v = Date.parseDate(v, 'Y-m-d H:i:s');
 				return v ? v.format(format) : '';
 			};
 		},

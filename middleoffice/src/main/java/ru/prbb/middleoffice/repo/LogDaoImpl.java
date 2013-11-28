@@ -3,6 +3,7 @@
  */
 package ru.prbb.middleoffice.repo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.LogContactItem;
 import ru.prbb.middleoffice.domain.LogMessagesItem;
 import ru.prbb.middleoffice.domain.SubscriptionItem;
@@ -68,7 +70,21 @@ public class LogDaoImpl implements LogDao
 	@Override
 	public List<SubscriptionItem> getLogSubscription() {
 		String sql = "execute dbo.subscription_data_v_proc";
-		return em.createNativeQuery(sql, SubscriptionItem.class).getResultList();
+		List list = em.createNativeQuery(sql).getResultList();
+		List<SubscriptionItem> res = new ArrayList<SubscriptionItem>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			SubscriptionItem item = new SubscriptionItem();
+			item.setSecurity_type(Utils.toString(arr[0]));
+			item.setTicker(Utils.toString(arr[1]));
+			item.setName(Utils.toString(arr[2]));
+			item.setLast(Utils.toDouble(arr[3]));
+			item.setLastchange(Utils.toDouble(arr[4]));
+			item.setLastchangetime(Utils.toString(arr[5])); // Timestamp
+			item.setAttention(Utils.toString(arr[6]));
+			res.add(item);
+		}
+		return res;
 	}
 
 }

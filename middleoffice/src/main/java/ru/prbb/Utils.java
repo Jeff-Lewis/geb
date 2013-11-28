@@ -3,6 +3,9 @@
  */
 package ru.prbb;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
 /**
  * @author RBr
  * 
@@ -25,6 +28,50 @@ public class Utils {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static String toString(Object object) {
+		if (null != object) {
+			return object.toString();
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static BigDecimal toDouble(Object object) {
+		if (null != object) {
+			return (BigDecimal) object;
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static Timestamp toTimestamp(Object object) {
+		if (null != object) {
+			return (Timestamp) object;
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static Long toLong(Object object) {
+		if (null != object) {
+			return ((BigDecimal) object).longValue();
+		}
+		return null;
 	}
 
 }
