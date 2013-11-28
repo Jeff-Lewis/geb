@@ -3,15 +3,16 @@
  */
 package ru.prbb.middleoffice.repo.dictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
@@ -28,70 +29,61 @@ public class BrokersDaoImpl implements BrokersDao
 	@Autowired
 	private EntityManager em;
 
-	/**
-	 * @return
-	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<ReferenceItem> findAll() {
-		String sql = "execute mo_WebGet_SelectBrokers_sp";
-		return em.createNativeQuery(sql, ReferenceItem.class).getResultList();
-		// {call dbo.mo_WebGet_SelectBrokers_sp}
-		//return em.createQuery("{call dbo.anca_WebGet_SelectBrokers_sp}", ReferenceItem.class).getResultList();
+		String sql = "execute dbo.mo_WebGet_SelectBrokers_sp";
+		Query q = em.createNativeQuery(sql, ReferenceItem.class);
+		return q.getResultList();
 	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
+	@Override
 	public ReferenceItem findById(Long id) {
-		// {call dbo.mo_WebGet_SelectBrokers_sp ?}
-		final ReferenceItem item = new ReferenceItem();
-		item.setId(id);
-		item.setName("name" + id);
-		item.setComment("comment" + id);
-		return item;
+		String sql = "execute dbo.mo_WebGet_SelectBrokers_sp ?";
+		Query q = em.createNativeQuery(sql, ReferenceItem.class)
+				.setParameter(1, id);
+		return (ReferenceItem) q.getSingleResult();
 	}
 
-	/**
-	 * 
-	 */
 	@Override
-	public Long put(ReferenceItem value) {
-		// "{call dbo.mo_WebSet_putBrokers_sp ?, ?}"
-		return value.getId();
+	public int put(String name, String comment) {
+		String sql = "execute dbo.mo_WebSet_putBrokers_sp ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, name)
+				.setParameter(2, comment);
+		return q.executeUpdate();
 	}
 
-	/**
-	 * @param id
-	 * @param value
-	 * @return
-	 */
-	public Long updateById(Long id, ReferenceItem value) {
-		// "{call dbo.mo_WebSet_udBrokers_sp 'u', ?, ?, ?}"
-		return id;
-	}
-
-	/**
-	 * @param id
-	 */
 	@Override
-	public void deleteById(Long id) {
-		// "{call dbo.mo_WebSet_udBrokers_sp 'd', ?}"
+	public int updateById(Long id, String name, String comment) {
+		String sql = "execute dbo.mo_WebSet_udBrokers_sp 'u', ?, ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, name)
+				.setParameter(3, comment);
+		return q.executeUpdate();
 	}
 
-	/**
-	 * @param query
-	 */
+	@Override
+	public int deleteById(Long id) {
+		String sql = "execute dbo.mo_WebSet_udBrokers_sp 'd', ?, ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {
-		// select id, name from dbo.mo_WebGet_ajaxBroker_v
-		// " where lower(name) like ?"
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (int i = 0; i < 10; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			list.add(item);
+		String sql = "select id, name from dbo.mo_WebGet_ajaxBroker_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return list;
+		return q.getResultList();
 	}
 }
