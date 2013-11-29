@@ -3,16 +3,18 @@
  */
 package ru.prbb.middleoffice.repo.dictionary;
 
-import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.prbb.middleoffice.domain.SecIncItem;
+import ru.prbb.middleoffice.domain.SecurityIncorporationItem;
+import ru.prbb.middleoffice.domain.SecurityIncorporationListItem;
 
 /**
  * Регистрация инструментов
@@ -27,54 +29,48 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 	@Autowired
 	private EntityManager em;
 
-	/**
-	 * @return
-	 */
-	public List<SecIncItem> findAll() {
-		// {call dbo.mo_WebGet_SecurityIncorporations_sp}
-		//return em.createQuery("{call dbo.anca_WebGet_SelectBrokers_sp}", ReferenceItem.class).getResultList();
-		final List<SecIncItem> list = new ArrayList<SecIncItem>();
-		for (int i = 0; i < 10; i++) {
-			final SecIncItem item = new SecIncItem();
-			list.add(item);
-		}
-		return list;
-	}
-
-	/**
-	 * @param id
-	 * @return
-	 */
-	public SecIncItem findById(Long id) {
-		// select * from mo_WebGet_SecurityIncorporations_v where id = ?
-		final SecIncItem item = new SecIncItem();
-		return item;
-	}
-
-	/**
-	 * 
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Long put(SecIncItem value) {
-		// "{call dbo.mo_WebSet_putSecurityIncorporations_sp ?, ?, ?}"
-		return value.getSip();
+	public List<SecurityIncorporationListItem> findAll() {
+		String sql = "execute dbo.mo_WebGet_SecurityIncorporations_sp";
+		Query q = em.createNativeQuery(sql, SecurityIncorporationListItem.class);
+		return q.getResultList();
 	}
 
-	/**
-	 * @param id
-	 * @param value
-	 * @return
-	 */
-	public Long updateById(Long id, SecIncItem value) {
-		// "{call dbo.mo_WebSet_udSecurityIncorporations_sp 'u', ?, ?, ?}"
-		return id;
+	@Override
+	public SecurityIncorporationItem findById(Long id) {
+		String sql = "select * from mo_WebGet_SecurityIncorporations_v where id = ?";
+		Query q = em.createNativeQuery(sql, SecurityIncorporationItem.class)
+				.setParameter(1, id);
+		return (SecurityIncorporationItem) q.getSingleResult();
 	}
 
-	/**
-	 * @param id
-	 */
-	public void deleteById(Long id) {
-		// "{call dbo.mo_WebSet_udSecurityIncorporations_sp 'd', ?}"
+	@Override
+	public int put(Long security, Long country, Date dateBegin) {
+		String sql = "execute dbo.mo_WebSet_putSecurityIncorporations_sp ?, ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, security)
+				.setParameter(2, country)
+				.setParameter(3, dateBegin);
+		return q.executeUpdate();
+	}
+
+	@Override
+	public int updateById(Long id, Date dateBegin, Date dateEnd) {
+		String sql = "execute dbo.mo_WebSet_udSecurityIncorporations_sp 'u', ?, ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, dateBegin)
+				.setParameter(3, dateEnd);
+		return q.executeUpdate();
+	}
+
+	@Override
+	public int deleteById(Long id) {
+		String sql = "execute dbo.mo_WebSet_udSecurityIncorporations_sp 'd', ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
 	}
 
 }

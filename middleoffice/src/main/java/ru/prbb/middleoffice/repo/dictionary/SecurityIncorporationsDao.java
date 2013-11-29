@@ -3,9 +3,11 @@
  */
 package ru.prbb.middleoffice.repo.dictionary;
 
+import java.sql.Date;
 import java.util.List;
 
-import ru.prbb.middleoffice.domain.SecIncItem;
+import ru.prbb.middleoffice.domain.SecurityIncorporationItem;
+import ru.prbb.middleoffice.domain.SecurityIncorporationListItem;
 
 /**
  * Регистрация инструментов
@@ -18,31 +20,36 @@ public interface SecurityIncorporationsDao {
 	/**
 	 * @return
 	 */
-	public List<SecIncItem> findAll();
+	public List<SecurityIncorporationListItem> findAll();
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public SecIncItem findById(Long id);
+	public SecurityIncorporationItem findById(Long id);
 
 	/**
 	 * 
-	 * @param value
+	 * @param security
+	 * @param country
+	 * @param dateBegin
 	 * @return
 	 */
-	public Long put(SecIncItem value);
+	public int put(Long security, Long country, Date dateBegin);
+
+	/**
+	 * 
+	 * @param id
+	 * @param dateBegin
+	 * @param dateEnd
+	 * @return
+	 */
+	public int updateById(Long id, Date dateBegin, Date dateEnd);
 
 	/**
 	 * @param id
-	 * @param value
 	 * @return
 	 */
-	public Long updateById(Long id, SecIncItem value);
-
-	/**
-	 * @param id
-	 */
-	public void deleteById(Long id);
+	public int deleteById(Long id);
 
 }

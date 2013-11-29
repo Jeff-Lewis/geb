@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
-import ru.prbb.middleoffice.domain.SecIncItem;
+import ru.prbb.middleoffice.domain.SecurityIncorporationListItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
@@ -37,7 +38,7 @@ public class SecurityIncorporationsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<SecIncItem> list()
+	List<SecurityIncorporationListItem> list()
 	{
 		return dao.findAll();
 	}
@@ -47,8 +48,7 @@ public class SecurityIncorporationsController
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		final SecIncItem item = dao.findById(id);
-		return new ResultData(item);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -58,8 +58,7 @@ public class SecurityIncorporationsController
 			@RequestParam Long country,
 			@RequestParam String dateBegin)
 	{
-		SecIncItem item = new SecIncItem();
-		dao.put(item);
+		dao.put(security, country, Utils.parseDate(dateBegin));
 		return Result.SUCCESS;
 	}
 
@@ -70,7 +69,7 @@ public class SecurityIncorporationsController
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
-		dao.updateById(id, new SecIncItem());
+		dao.updateById(id, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 
