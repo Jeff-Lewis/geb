@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.domain.SwapItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.SwapsDao;
 
@@ -34,26 +34,26 @@ public class SwapsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<ReferenceItem> list()
+	List<SwapItem> list()
 	{
 		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	ResultData get(@PathVariable("id") Long id)
+	ResultData get(
+			@PathVariable("id") Long id)
 	{
-		final ReferenceItem item = dao.findById(id);
-		return new ResultData(item);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result add(
 			@RequestParam String swap,
-			@RequestParam Long securityId)
+			@RequestParam Long security)
 	{
-		dao.put(new ReferenceItem());
+		dao.put(swap, security);
 		return Result.SUCCESS;
 	}
 
@@ -63,7 +63,7 @@ public class SwapsController
 			@PathVariable("id") Long id,
 			@RequestParam String swap)
 	{
-		dao.updateById(id, new ReferenceItem());
+		dao.updateById(id, swap);
 		return Result.SUCCESS;
 	}
 

@@ -5,7 +5,7 @@ package ru.prbb.middleoffice.repo.dictionary;
 
 import java.util.List;
 
-import ru.prbb.middleoffice.domain.ReferenceItem;
+import ru.prbb.middleoffice.domain.SwapItem;
 
 /**
  * Свопы
@@ -18,31 +18,34 @@ public interface SwapsDao {
 	/**
 	 * @return
 	 */
-	public List<ReferenceItem> findAll();
+	public List<SwapItem> findAll();
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public ReferenceItem findById(Long id);
+	public SwapItem findById(Long id);
 
 	/**
 	 * 
-	 * @param value
+	 * @param swap
+	 * @param security
 	 * @return
 	 */
-	public Long put(ReferenceItem value);
+	public int put(String swap, Long security);
+
+	/**
+	 * 
+	 * @param id
+	 * @param swap
+	 * @return
+	 */
+	public int updateById(Long id, String swap);
 
 	/**
 	 * @param id
-	 * @param value
 	 * @return
 	 */
-	public Long updateById(Long id, ReferenceItem value);
-
-	/**
-	 * @param id
-	 */
-	public void deleteById(Long id);
+	public int deleteById(Long id);
 
 }

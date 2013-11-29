@@ -20,14 +20,13 @@
 		items : [ {
 			id : _swap,
 			xtype : 'textfield',
-			decimalPrecision : 6,
 			fieldLabel : 'Своп'
 		}, {
 			id : _security,
 			xtype : 'combo',
 			fieldLabel : 'Инструмент',
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Swaps/Equities.do',
@@ -37,9 +36,9 @@
 					field : 'name'
 				}
 			}),
+			triggerAction : 'all',
 			loadingText : 'Поиск...',
-			minChars : 2,
-			triggerAction : 'all'
+			minChars : 2
 		} ],
 
 		buttons : [ {
@@ -62,7 +61,7 @@
 			url : 'rest/Swaps.do',
 			params : {
 				swap : Ext.getCmp(_swap).getValue(),
-				securityId : App.Combo.getValueId(Ext.getCmp(_security))
+				security : Ext.getCmp(_security).getValue()
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Сохранение',
