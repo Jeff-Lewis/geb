@@ -3,15 +3,16 @@
  */
 package ru.prbb.middleoffice.repo.dictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
@@ -28,72 +29,61 @@ public class TradesystemsDaoImpl implements TradesystemsDao
 	@Autowired
 	private EntityManager em;
 
-	/**
-	 * @return
-	 */
-	public List<ReferenceItem> findAll() {
-		// {call dbo.mo_WebGet_SelectTradeSystem_sp}
-		//return em.createQuery("{call dbo.anca_WebGet_SelectBrokers_sp}", ReferenceItem.class).getResultList();
-		final List<ReferenceItem> list = new ArrayList<ReferenceItem>();
-		for (int i = 0; i < 10; i++) {
-			final ReferenceItem item = new ReferenceItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			item.setComment("comment" + (i + 1));
-			list.add(item);
-		}
-		return list;
-	}
-
-	/**
-	 * @param id
-	 * @return
-	 */
-	public ReferenceItem findById(Long id) {
-		// {call dbo.mo_WebGet_SelectTradeSystem_sp ?}
-		final ReferenceItem item = new ReferenceItem();
-		item.setId(id);
-		item.setName("name" + id);
-		item.setComment("comment" + id);
-		return item;
-	}
-
-	/**
-	 * 
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Long put(ReferenceItem value) {
-		// "{call dbo.mo_WebSet_putTradeSystem_sp ?, ?}"
-		return value.getId();
+	public List<ReferenceItem> findAll() {
+		String sql = "execute dbo.mo_WebGet_SelectTradeSystem_sp";
+		Query q = em.createNativeQuery(sql, ReferenceItem.class);
+		return q.getResultList();
 	}
 
-	/**
-	 * @param id
-	 * @param value
-	 * @return
-	 */
-	public Long updateById(Long id, ReferenceItem value) {
-		// "{call dbo.mo_WebSet_udTradeSystem_sp 'u', ?, ?, ?}"
-		return id;
+	@Override
+	public ReferenceItem findById(Long id) {
+		String sql = "execute dbo.mo_WebGet_SelectTradeSystem_sp ?";
+		Query q = em.createNativeQuery(sql, ReferenceItem.class)
+				.setParameter(1, id);
+		return (ReferenceItem) q.getSingleResult();
 	}
 
-	/**
-	 * @param id
-	 */
-	public void deleteById(Long id) {
-		// "{call dbo.mo_WebSet_udTradeSystem_sp 'd', ?}"
+	@Override
+	public int put(String name, String comment) {
+		String sql = "execute dbo.mo_WebSet_putTradeSystem_sp ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, name)
+				.setParameter(2, comment);
+		return q.executeUpdate();
 	}
 
+	@Override
+	public int updateById(Long id, String name, String comment) {
+		String sql = "execute dbo.mo_WebSet_udTradeSystem_sp 'u', ?, ?, ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, name)
+				.setParameter(3, comment);
+		return q.executeUpdate();
+	}
+
+	@Override
+	public int deleteById(Long id) {
+		String sql = "execute dbo.mo_WebSet_udTradeSystem_sp 'd', ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {
-		// select name from dbo.TradeSystem
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (int i = 0; i < 10; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			list.add(item);
+		String sql = "select name from dbo.TradeSystem";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return list;
+		return q.getResultList();
 	}
 }

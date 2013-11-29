@@ -29,22 +29,26 @@ public interface TradesystemsDao {
 
 	/**
 	 * 
-	 * @param value
+	 * @param name
+	 * @param comment
 	 * @return
 	 */
-	public Long put(ReferenceItem value);
+	public int put(String name, String comment);
+
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @param comment
+	 * @return
+	 */
+	public int updateById(Long id, String name, String comment);
 
 	/**
 	 * @param id
-	 * @param value
 	 * @return
 	 */
-	public Long updateById(Long id, ReferenceItem value);
-
-	/**
-	 * @param id
-	 */
-	public void deleteById(Long id);
+	public int deleteById(Long id);
 
 	/**
 	 * @param query

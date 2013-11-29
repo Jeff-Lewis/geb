@@ -40,8 +40,7 @@ public class TradesystemsController
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		final ReferenceItem value = dao.findById(id);
-		return new ResultData(value);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -50,10 +49,7 @@ public class TradesystemsController
 			@RequestParam String name,
 			@RequestParam String comment)
 	{
-		final ReferenceItem value = new ReferenceItem();
-		value.setName(name);
-		value.setComment(comment);
-		dao.put(value);
+		dao.put(name, comment);
 		return Result.SUCCESS;
 	}
 
@@ -64,11 +60,7 @@ public class TradesystemsController
 			@RequestParam String name,
 			@RequestParam String comment)
 	{
-		final ReferenceItem value = new ReferenceItem();
-		value.setId(id);
-		value.setName(name);
-		value.setComment(comment);
-		dao.updateById(id, value);
+		dao.updateById(id, name, comment);
 		return Result.SUCCESS;
 	}
 
