@@ -50,11 +50,7 @@ public class FuturesController
 			@RequestParam Double coef,
 			@RequestParam String comment)
 	{
-		final FuturesItem value = new FuturesItem();
-		value.setName(name);
-		value.setCoefficient(coef);
-		value.setComment(comment);
-		dao.put(value);
+		dao.put(name, coef, comment);
 		return Result.SUCCESS;
 	}
 
@@ -65,11 +61,7 @@ public class FuturesController
 			@RequestParam String name,
 			@RequestParam String comment)
 	{
-		final FuturesItem value = new FuturesItem();
-		value.setId(id);
-		value.setName(name);
-		value.setComment(comment);
-		dao.updateById(id, value);
+		dao.updateById(id, name, comment);
 		return Result.SUCCESS;
 	}
 
