@@ -27,8 +27,8 @@
 			id : _security,
 			xtype : 'combo',
 			fieldLabel : 'Инструмент',
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Dividends/Equities.do',
@@ -47,11 +47,11 @@
 			id : _account,
 			xtype : 'combo',
 			fieldLabel : 'Счёт',
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'rest/Dividends/BrokerAccounts.do',
+				url : 'rest/Dividends/Accounts.do',
 				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
@@ -67,11 +67,11 @@
 			id : _currency,
 			xtype : 'combo',
 			fieldLabel : 'Валюта',
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'rest/Dividends/Currency.do',
+				url : 'rest/Dividends/Currencies.do',
 				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
@@ -136,9 +136,9 @@
 		Ext.Ajax.request({
 			url : 'rest/Dividends/Add.do',
 			params : {
-				securityId : App.Combo.getValueId(Ext.getCmp(_security)),
-				accountId : App.Combo.getValueId(Ext.getCmp(_account)),
-				currencyId : App.Combo.getValueId(Ext.getCmp(_currency)),
+				securityId : Ext.getCmp(_security).getValue(),
+				accountId : Ext.getCmp(_account).getValue(),
+				currencyId : Ext.getCmp(_currency).getValue(),
 				dateRecord : App.util.Format.dateYMD(rrd),
 				dateReceive : App.util.Format.dateYMD(rcd),
 				quantity : Ext.getCmp(_quantity).getValue(),

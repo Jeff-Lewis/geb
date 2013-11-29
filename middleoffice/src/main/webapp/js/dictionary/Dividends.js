@@ -36,7 +36,7 @@
 			params : {
 				clientId : Ext.getCmp(_client).getValue(),
 				brokerId : Ext.getCmp(_broker).getValue(),
-				securityId : App.Combo.getValueId(Ext.getCmp(_security)),
+				securityId : Ext.getCmp(_security).getValue(),
 				// accountId : null,
 				dateBegin : App.util.Format.dateYMD(Ext.getCmp(_dateBegin)
 						.getValue()),
@@ -167,8 +167,8 @@
 			id : _security,
 			xtype : 'combo',
 			width : 150,
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Dividends/Equities.do',

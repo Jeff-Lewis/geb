@@ -1,6 +1,5 @@
 package ru.prbb.middleoffice.rest.dictionary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.DividendItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.CurrenciesDao;
+import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
@@ -37,9 +38,11 @@ public class DividendsController
 	@Autowired
 	private BrokersDao daoBrokers;
 	@Autowired
-	private BrokerAccountsDao daoBrokerAccounts;
+	private BrokerAccountsDao daoAccounts;
 	@Autowired
 	private CurrenciesDao daoCurrencies;
+	@Autowired
+	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
@@ -50,7 +53,8 @@ public class DividendsController
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
-		return dao.findAll();
+		return dao.findAll(securityId, clientId, brokerId, null,
+				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 	}
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
@@ -65,7 +69,9 @@ public class DividendsController
 			@RequestParam Double dividend,
 			@RequestParam Double extraCost)
 	{
-		dao.put();
+		dao.put(securityId, accountId, currencyId,
+				Utils.parseDate(dateRecord), Utils.parseDate(dateReceive),
+				quantity, dividend, extraCost);
 		return Result.SUCCESS;
 	}
 
@@ -77,13 +83,15 @@ public class DividendsController
 		return dao.findById(id);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json")
+	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	Long deleteById(
+	Result deleteById(
 			@PathVariable("id") Long id,
-			@RequestParam DividendItem value)
+			@RequestParam String type,
+			@RequestParam String value)
 	{
-		return dao.updateById(id, value);
+		dao.updateAttrById(id, type, value);
+		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
@@ -111,15 +119,15 @@ public class DividendsController
 		return daoBrokers.findCombo(query);
 	}
 
-	@RequestMapping(value = "/BrokerAccounts", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(value = "/Accounts", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> comboBrokerAccounts(
 			@RequestParam(required = false) String query)
 	{
-		return daoBrokerAccounts.findCombo(query);
+		return daoAccounts.findCombo(query);
 	}
 
-	@RequestMapping(value = "/Currency", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(value = "/Currencies", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> comboCurrency(
 			@RequestParam(required = false) String query)
@@ -132,7 +140,7 @@ public class DividendsController
 	List<SimpleItem> comboEquities(
 			@RequestParam(required = false) String query)
 	{
-		// select id, security_code as name from dbo.mo_WebGet_ajaxEquity_v
-		return new ArrayList<SimpleItem>();
+		return daoEquities.findCombo(query);
 	}
+
 }
