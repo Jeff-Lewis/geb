@@ -24,8 +24,10 @@
 			id : _security,
 			xtype : 'combo',
 			fieldLabel : 'Тип инструмента',
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
+			allowBlank : false,
+			emptyText : 'Выберите значение',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/CountryTaxes/SecurityType.do',
@@ -35,15 +37,17 @@
 					field : 'name'
 				}
 			}),
+			triggerAction : 'all',
 			loadingText : 'Поиск...',
-			minChars : 2,
-			triggerAction : 'all'
+			minChars : 2
 		}, {
 			id : _country,
 			xtype : 'combo',
 			fieldLabel : 'Страна',
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
+			allowBlank : false,
+			emptyText : 'Выберите значение',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/CountryTaxes/Countries.do',
@@ -53,15 +57,17 @@
 					field : 'name'
 				}
 			}),
+			triggerAction : 'all',
 			loadingText : 'Поиск...',
-			minChars : 2,
-			triggerAction : 'all'
+			minChars : 2
 		}, {
 			id : _broker,
 			xtype : 'combo',
 			fieldLabel : 'Брокер',
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
+			allowBlank : false,
+			emptyText : 'Выберите значение',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/CountryTaxes/Brokers.do',
@@ -71,9 +77,9 @@
 					field : 'name'
 				}
 			}),
+			triggerAction : 'all',
 			loadingText : 'Поиск...',
-			minChars : 2,
-			triggerAction : 'all'
+			minChars : 2
 		}, {
 			id : _value,
 			xtype : 'numberfield',
@@ -106,9 +112,9 @@
 		Ext.Ajax.request({
 			url : 'rest/CountryTaxes.do',
 			params : {
-				securityType : App.Combo.getValueId(Ext.getCmp(_security)),
-				country : App.Combo.getValueId(Ext.getCmp(_country)),
-				broker : App.Combo.getValueId(Ext.getCmp(_broker)),
+				securityType : Ext.getCmp(_security).getValue(),
+				country : Ext.getCmp(_country).getValue(),
+				broker : Ext.getCmp(_broker).getValue(),
 				value : Ext.getCmp(_value).getValue(),
 				dateBegin : App.util.Format.dateYMD(Ext.getCmp(_dateBegin)
 						.getValue())

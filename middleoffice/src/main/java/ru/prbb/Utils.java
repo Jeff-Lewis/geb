@@ -4,13 +4,19 @@
 package ru.prbb;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * @author RBr
  * 
  */
 public class Utils {
+
+	private static final Locale LOCALE = new Locale("RU", "ru");
 
 	/**
 	 * Проверить строку на содержимое
@@ -28,6 +34,17 @@ public class Utils {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Проверить строку на содержимое
+	 * 
+	 * @param s
+	 *            проверяемая строка
+	 * @return <code>true</code>, если содержит символы
+	 */
+	public static boolean isNotEmpty(String s) {
+		return !isEmpty(s);
 	}
 
 	/**
@@ -70,6 +87,29 @@ public class Utils {
 	public static Long toLong(Object object) {
 		if (null != object) {
 			return ((BigDecimal) object).longValue();
+		}
+		return null;
+	}
+
+	/**
+	 * Декодирует строку даты для SQL
+	 * 
+	 * @param date
+	 *            строка даты в формате yyyy-MM-dd
+	 * @return объект <code>java.sql.Date</code>
+	 */
+	public static Date parseDate(String date) {
+		if (isNotEmpty(date)) {
+			try {
+				if (date.length() > 10) {
+					date = date.substring(0, 10);
+				}
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", LOCALE);
+				long time = sdf.parse(date).getTime();
+				return new Date(time);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+			}
 		}
 		return null;
 	}

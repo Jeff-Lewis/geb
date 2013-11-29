@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.CountryTaxItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
@@ -50,8 +51,7 @@ public class CountryTaxesController
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		final CountryTaxItem value = dao.findById(id);
-		return new ResultData(value);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -63,8 +63,7 @@ public class CountryTaxesController
 			@RequestParam Double value,
 			@RequestParam String dateBegin)
 	{
-		final CountryTaxItem item = new CountryTaxItem();
-		dao.put(item);
+		dao.put(securityType, country, broker, value, Utils.parseDate(dateBegin));
 		return Result.SUCCESS;
 	}
 
@@ -76,9 +75,7 @@ public class CountryTaxesController
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
-		final CountryTaxItem item = new CountryTaxItem();
-		item.setId(id);
-		dao.updateById(id, item);
+		dao.updateById(id, value, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 

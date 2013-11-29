@@ -3,6 +3,7 @@
  */
 package ru.prbb.middleoffice.repo.dictionary;
 
+import java.sql.Date;
 import java.util.List;
 
 import ru.prbb.middleoffice.domain.CountryTaxItem;
@@ -28,22 +29,29 @@ public interface CountryTaxesDao {
 
 	/**
 	 * 
+	 * @param securityType
+	 * @param country
+	 * @param broker
 	 * @param value
+	 * @param dateBegin
 	 * @return
 	 */
-	public Long put(CountryTaxItem value);
+	public int put(Long securityType, Long country, Long broker, Double value, Date dateBegin);
+
+	/**
+	 * 
+	 * @param id
+	 * @param value
+	 * @param dateBegin
+	 * @param dateEnd
+	 * @return
+	 */
+	public int updateById(Long id, Double value, Date dateBegin, Date dateEnd);
 
 	/**
 	 * @param id
-	 * @param value
 	 * @return
 	 */
-	public Long updateById(Long id, CountryTaxItem value);
-
-	/**
-	 * @param id
-	 * @return
-	 */
-	public Long deleteById(Long id);
+	public int deleteById(Long id);
 
 }
