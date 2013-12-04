@@ -5,7 +5,6 @@ package ru.prbb;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -48,6 +47,48 @@ public class Utils {
 	}
 
 	/**
+	 * Подготовить строку для записи в БД<br>
+	 * <code>
+	 * null -> null<br>
+	 * "" -> null<br>
+	 * " " -> null<br>
+	 * "s" -> "s"
+	 * </code>
+	 * 
+	 * @param s
+	 * @return null для пустой строки
+	 */
+	public static String parseString(String s) {
+		if (isNotEmpty(s)) {
+			return s;
+		}
+		return null;
+	}
+
+	/**
+	 * Декодирует строку даты для SQL
+	 * 
+	 * @param date
+	 *            строка даты в формате yyyy-MM-dd
+	 * @return объект <code>java.sql.Date</code>
+	 */
+	public static Date parseDate(String date) {
+		if (isNotEmpty(date)) {
+			try {
+				if (date.length() > 10) {
+					date = date.substring(0, 10);
+				}
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", LOCALE);
+				long time = sdf.parse(date).getTime();
+				return new Date(time);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @param object
 	 * @return
 	 */
@@ -73,17 +114,6 @@ public class Utils {
 	 * @param object
 	 * @return
 	 */
-	public static Timestamp toTimestamp(Object object) {
-		if (null != object) {
-			return (Timestamp) object;
-		}
-		return null;
-	}
-
-	/**
-	 * @param object
-	 * @return
-	 */
 	public static Long toLong(Object object) {
 		if (null != object) {
 			return ((BigDecimal) object).longValue();
@@ -92,24 +122,56 @@ public class Utils {
 	}
 
 	/**
-	 * Декодирует строку даты для SQL
-	 * 
-	 * @param date
-	 *            строка даты в формате yyyy-MM-dd
-	 * @return объект <code>java.sql.Date</code>
+	 * @param object
+	 * @return
 	 */
-	public static Date parseDate(String date) {
-		if (isNotEmpty(date)) {
-			try {
-				if (date.length() > 10) {
-					date = date.substring(0, 10);
-				}
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", LOCALE);
-				long time = sdf.parse(date).getTime();
-				return new Date(time);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-			}
+	public static Integer toInteger(Object object) {
+		if (null != object) {
+			return (Integer) object;
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static Byte toByte(Object object) {
+		if (null != object) {
+			return (Byte) object;
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static String toTimestamp(Object object) {
+		if (null != object) {
+			return object.toString();
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static String toDate(Object object) {
+		if (null != object) {
+			return object.toString();
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static String toTime(Object object) {
+		if (null != object) {
+			return object.toString();
 		}
 		return null;
 	}

@@ -91,7 +91,7 @@
 
 			<li><img class="icon-show-all" src="images/user-plus.png">
 				<a href="#"
-				onclick="menu.submitDataRequest(menu, 'dictionary/Holidays', 'rest/Holidays.do');">
+				onclick="menu.showPane(menu, 'dictionary/Holidays');">
 					Праздники </a></li>
 
 			<li><img class="icon-show-all" src="images/excel.png"><a
@@ -114,6 +114,14 @@
 			<li><img class="icon-show-all" src="images/excel.png"><a
 				href="#" onclick="menu.showPane(menu, 'dictionary/Swaps');">
 					Свопы </a></li>
+
+			<li><img class="icon-show-all" src="images/excel.png"><a
+				href="#" onclick="menu.showPane(menu, 'dictionary/Currencies');">
+					Валюты </a></li>
+
+			<li><img class="icon-show-all" src="images/excel.png"><a
+				href="#" onclick="menu.showPane(menu, 'dictionary/CurrencyRate');">
+					Курсы валют </a></li>
 
 		</ul>
 

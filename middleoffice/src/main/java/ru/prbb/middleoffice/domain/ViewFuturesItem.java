@@ -4,17 +4,25 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * @author RBr
  * 
  */
-public class PortfolioItem implements Serializable {
+@Entity
+public class ViewFuturesItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	private Long id_sec;
-	private String deal_name;
 	private String ticker;
+	private String deal_name;
+	private BigDecimal coef;
+	private String name;
 	private String date_insert;
 
 	/**
@@ -33,21 +41,6 @@ public class PortfolioItem implements Serializable {
 	}
 
 	/**
-	 * @return the deal_name
-	 */
-	public String getDeal_name() {
-		return deal_name;
-	}
-
-	/**
-	 * @param deal_name
-	 *            the deal_name to set
-	 */
-	public void setDeal_name(String deal_name) {
-		this.deal_name = deal_name;
-	}
-
-	/**
 	 * @return the ticker
 	 */
 	public String getTicker() {
@@ -63,6 +56,51 @@ public class PortfolioItem implements Serializable {
 	}
 
 	/**
+	 * @return the deal_name
+	 */
+	public String getDeal_name() {
+		return deal_name;
+	}
+
+	/**
+	 * @param deal_name
+	 *            the deal_name to set
+	 */
+	public void setDeal_name(String deal_name) {
+		this.deal_name = deal_name;
+	}
+
+	/**
+	 * @return the coef
+	 */
+	public BigDecimal getCoef() {
+		return coef;
+	}
+
+	/**
+	 * @param coef
+	 *            the coef to set
+	 */
+	public void setCoef(BigDecimal coef) {
+		this.coef = coef;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * @return the date_insert
 	 */
 	public String getDate_insert() {
@@ -75,23 +113,5 @@ public class PortfolioItem implements Serializable {
 	 */
 	public void setDate_insert(String date_insert) {
 		this.date_insert = date_insert;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof PortfolioItem) {
-			return id_sec.equals(((PortfolioItem) obj).id_sec);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return id_sec.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return deal_name + '(' + id_sec + ')';
 	}
 }

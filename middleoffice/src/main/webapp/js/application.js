@@ -74,7 +74,9 @@ App.util.Renderer = (function() {
 		time : function(format) {
 			format = format || 'H:i:s';
 			return function(v) {
-				v = Ext.util.Format.substr(v, 11, 8);
+				if (v && v.length > 11) {
+					v = Ext.util.Format.substr(v, 11, 8);
+				}
 				v = Date.parseDate(v, 'H:i:s');
 				return v ? v.format(format) : '';
 			};

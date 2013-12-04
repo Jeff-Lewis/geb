@@ -3,6 +3,7 @@
  */
 package ru.prbb.middleoffice.repo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -52,19 +53,28 @@ public class SecuritiesDaoImpl implements SecuritiesDao
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findComboFilter(String query) {
 		String sql = "select name from dbo.mo_WebGet_ajaxFilterRequest_v";
 		Query q;
 		if (Utils.isEmpty(query)) {
-			q = em.createNativeQuery(sql, SimpleItem.class);
+			q = em.createNativeQuery(sql);
 		} else {
 			sql += " where lower(name) like ?";
-			q = em.createNativeQuery(sql, SimpleItem.class)
+			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<SimpleItem> res = new ArrayList<SimpleItem>(list.size());
+		long id = 0;
+		for (Object object : list) {
+			SimpleItem item = new SimpleItem();
+			item.setId(++id);
+			item.setName(Utils.toString(object));
+			res.add(item);
+		}
+		return res;
 	}
 
 }
