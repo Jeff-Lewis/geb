@@ -5,6 +5,7 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,10 +19,14 @@ public class NoConformityItem implements Serializable {
 
 	@Id
 	private Long id;
-	private String TradeNum;
-	private String Date;
-	private String SecShortName;
-	private String Operation;
+	@Column(name = "TradeNum")
+	private String tradeNum;
+	@Column(name = "Date")
+	private String tradeDate;
+	@Column(name = "SecShortName")
+	private String secShortName;
+	@Column(name = "Operation")
+	private String operation;
 
 	/**
 	 * @return the id
@@ -42,7 +47,7 @@ public class NoConformityItem implements Serializable {
 	 * @return the tradeNum
 	 */
 	public String getTradeNum() {
-		return TradeNum;
+		return tradeNum;
 	}
 
 	/**
@@ -50,29 +55,29 @@ public class NoConformityItem implements Serializable {
 	 *            the tradeNum to set
 	 */
 	public void setTradeNum(String tradeNum) {
-		TradeNum = tradeNum;
+		this.tradeNum = tradeNum;
 	}
 
 	/**
-	 * @return the date
+	 * @return the tradeDate
 	 */
-	public String getDate() {
-		return Date;
+	public String getTradeDate() {
+		return tradeDate;
 	}
 
 	/**
-	 * @param date
-	 *            the date to set
+	 * @param tradeDate
+	 *            the tradeDate to set
 	 */
-	public void setDate(String date) {
-		Date = date;
+	public void setTradeDate(String tradeDate) {
+		this.tradeDate = tradeDate;
 	}
 
 	/**
 	 * @return the secShortName
 	 */
 	public String getSecShortName() {
-		return SecShortName;
+		return secShortName;
 	}
 
 	/**
@@ -80,14 +85,14 @@ public class NoConformityItem implements Serializable {
 	 *            the secShortName to set
 	 */
 	public void setSecShortName(String secShortName) {
-		SecShortName = secShortName;
+		this.secShortName = secShortName;
 	}
 
 	/**
 	 * @return the operation
 	 */
 	public String getOperation() {
-		return Operation;
+		return operation;
 	}
 
 	/**
@@ -95,16 +100,9 @@ public class NoConformityItem implements Serializable {
 	 *            the operation to set
 	 */
 	public void setOperation(String operation) {
-		Operation = operation;
+		this.operation = operation;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof NoConformityItem) {
-			return id.equals(((NoConformityItem) obj).id);
-		}
-		return false;
-	}
 
 	@Override
 	public int hashCode() {
@@ -112,7 +110,24 @@ public class NoConformityItem implements Serializable {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (null == obj)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NoConformityItem other = (NoConformityItem) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
-		return TradeNum + '(' + id + ')';
+		return tradeNum + '(' + id + ')';
 	}
 }

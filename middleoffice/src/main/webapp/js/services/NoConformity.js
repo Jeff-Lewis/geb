@@ -3,18 +3,20 @@
  */
 (function() {
 
-	var info = new Ext.data.JsonStore({
-		autoDestroy : true,
-		autoLoad : true,
-		autoSave : false,
-		url : 'rest/NoConformity.do',
-		// root : 'info',
-		fields : [ 'id', 'TradeNum', 'Date', 'SecShortName', 'Operation' ],
-		sortInfo : {
-			field : 'Date'
-		},
-		listeners : App.ui.listenersJsonStore()
-	});
+	var info = new Ext.data.JsonStore(
+			{
+				autoDestroy : true,
+				autoLoad : true,
+				autoSave : false,
+				url : 'rest/NoConformity.do',
+				// root : 'info',
+				fields : [ 'id', 'tradeNum', 'tradeDate', 'secShortName',
+						'operation' ],
+				sortInfo : {
+					field : 'tradeDate'
+				},
+				listeners : App.ui.listenersJsonStore()
+			});
 
 	var sm = new Ext.grid.CheckboxSelectionModel({
 		checkOnly : true
@@ -84,24 +86,24 @@
 		clicksToEdit : 1,
 		columns : [ sm, new Ext.grid.RowNumberer(), {
 			header : 'TradeNum',
-			dataIndex : 'TradeNum',
+			dataIndex : 'tradeNum',
 			sortable : true
 		}, {
 			header : 'Date',
-			dataIndex : 'Date',
+			dataIndex : 'tradeDate',
 			// align : 'center',
 			renderer : App.util.Renderer.date(),
 			sortable : true
 		}, {
 			header : 'SecShortName',
-			dataIndex : 'SecShortName',
+			dataIndex : 'secShortName',
 			editor : new Ext.form.TextField({
 				readOnly : true,
 				selectOnFocus : true
 			})
 		}, {
 			header : 'Operation',
-			dataIndex : 'Operation'
+			dataIndex : 'operation'
 		} ],
 		viewConfig : {
 			forceFit : true,

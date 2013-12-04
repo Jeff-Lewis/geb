@@ -3,10 +3,10 @@
  */
 package ru.prbb.middleoffice.repo.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,26 +27,18 @@ public class NoConformityDaoImpl implements NoConformityDao
 	@Autowired
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<NoConformityItem> show() {
-		// {call dbo.mo_WebGet_DealBlmTickerUnSet_sp}
-		final List<NoConformityItem> list = new ArrayList<NoConformityItem>();
-		for (long i = 1; i < 11; ++i) {
-			final NoConformityItem item = new NoConformityItem();
-			item.setId(i);
-			item.setTradeNum("TradeNum" + i);
-			item.setDate(null);
-			item.setSecShortName("SecShortName" + i);
-			item.setOperation("Operation" + i);
-			list.add(item);
-		}
-		return list;
+		String sql = "execute dbo.mo_WebGet_DealBlmTickerUnSet_sp";
+		Query q = em.createNativeQuery(sql, NoConformityItem.class);
+		return q.getResultList();
 	}
 
 	@Override
 	public void delete(Long[] ids) {
-		// "{call dbo.mo_WebSet_dTickerUnSetDeals_sp ?}"
-
+		String sql = "execute dbo.mo_WebSet_dTickerUnSetDeals_sp ?";
+		// TODO em.createNativeQuery(sql).setParameter(1, id);
 	}
 
 }
