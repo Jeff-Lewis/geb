@@ -32,8 +32,7 @@ public class CountriesDaoImpl implements CountriesDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CountryItem> findAll() {
-		// {call dbo.mo_WebGet_Countries_sp}
-		String sql = "execute dbo.mo_WebGet_Countries_sp";
+		String sql = "{call dbo.mo_WebGet_Countries_sp}";
 		Query q = em.createNativeQuery(sql, CountryItem.class);
 		return q.getResultList();
 	}

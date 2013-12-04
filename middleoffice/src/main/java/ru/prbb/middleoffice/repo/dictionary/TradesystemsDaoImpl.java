@@ -75,7 +75,7 @@ public class TradesystemsDaoImpl implements TradesystemsDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {
-		String sql = "select name from dbo.TradeSystem";
+		String sql = "select id, name from dbo.TradeSystem";
 		Query q;
 		if (Utils.isEmpty(query)) {
 			q = em.createNativeQuery(sql, SimpleItem.class);
