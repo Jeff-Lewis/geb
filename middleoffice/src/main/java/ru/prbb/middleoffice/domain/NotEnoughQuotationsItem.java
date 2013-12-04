@@ -5,6 +5,7 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -17,31 +18,35 @@ public class NotEnoughQuotationsItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Long id_sec;
-	private String SecurityCode;
-	private String SecurityType;
-	private String FirstTradeDate;
+	@Column(name = "id_sec")
+	private Long securityId;
+	@Column(name = "SecurityCode")
+	private String securityCode;
+	@Column(name = "SecurityType")
+	private String securityType;
+	@Column(name = "FirstTradeDate")
+	private String dateFirstTrade;
 
 	/**
-	 * @return the id_sec
+	 * @return the securityId
 	 */
-	public Long getId_sec() {
-		return id_sec;
+	public Long getSecurityId() {
+		return securityId;
 	}
 
 	/**
-	 * @param id_sec
-	 *            the id_sec to set
+	 * @param securityId
+	 *            the securityId to set
 	 */
-	public void setId_sec(Long id_sec) {
-		this.id_sec = id_sec;
+	public void setSecurityId(Long securityId) {
+		this.securityId = securityId;
 	}
 
 	/**
 	 * @return the securityCode
 	 */
 	public String getSecurityCode() {
-		return SecurityCode;
+		return securityCode;
 	}
 
 	/**
@@ -49,14 +54,14 @@ public class NotEnoughQuotationsItem implements Serializable {
 	 *            the securityCode to set
 	 */
 	public void setSecurityCode(String securityCode) {
-		SecurityCode = securityCode;
+		this.securityCode = securityCode;
 	}
 
 	/**
 	 * @return the securityType
 	 */
 	public String getSecurityType() {
-		return SecurityType;
+		return securityType;
 	}
 
 	/**
@@ -64,39 +69,39 @@ public class NotEnoughQuotationsItem implements Serializable {
 	 *            the securityType to set
 	 */
 	public void setSecurityType(String securityType) {
-		SecurityType = securityType;
+		this.securityType = securityType;
 	}
 
 	/**
-	 * @return the firstTradeDate
+	 * @return the dateFirstTrade
 	 */
-	public String getFirstTradeDate() {
-		return FirstTradeDate;
+	public String getDateFirstTrade() {
+		return dateFirstTrade;
 	}
 
 	/**
-	 * @param firstTradeDate
-	 *            the firstTradeDate to set
+	 * @param dateFirstTrade
+	 *            the dateFirstTrade to set
 	 */
-	public void setFirstTradeDate(String firstTradeDate) {
-		FirstTradeDate = firstTradeDate;
+	public void setDateFirstTrade(String dateFirstTrade) {
+		this.dateFirstTrade = dateFirstTrade;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof NotEnoughQuotationsItem) {
-			return id_sec.equals(((NotEnoughQuotationsItem) obj).id_sec);
+			return securityId.equals(((NotEnoughQuotationsItem) obj).securityId);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return id_sec.hashCode();
+		return securityId.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return SecurityCode + '(' + id_sec + ')';
+		return securityCode + '(' + securityId + ')';
 	}
 }

@@ -3,16 +3,15 @@
  */
 (function() {
 
-	var info = new Ext.data.JsonStore(
-			{
-				autoDestroy : true,
-				autoLoad : true,
-				url : 'rest/NotEnoughQuotations.do',
-				// root : 'info',
-				fields : [ 'id_sec', 'SecurityCode', 'SecurityType',
-						'FirstTradeDate' ],
-				listeners : App.ui.listenersJsonStore()
-			});
+	var info = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : true,
+		url : 'rest/NotEnoughQuotations.do',
+		// root : 'info',
+		fields : [ 'securityId', 'securityCode', 'securityType',
+				'dateFirstTrade' ],
+		listeners : App.ui.listenersJsonStore()
+	});
 
 	return new Ext.grid.GridPanel({
 		id : 'NotEnoughQuotations-component',
@@ -33,13 +32,13 @@
 		store : info,
 		columns : [ {
 			header : 'SecurityCode',
-			dataIndex : 'SecurityCode'
+			dataIndex : 'securityCode'
 		}, {
 			header : 'SecurityType',
-			dataIndex : 'SecurityType'
+			dataIndex : 'securityType'
 		}, {
 			header : 'FirstTradeDate',
-			dataIndex : 'FirstTradeDate',
+			dataIndex : 'dateFirstTrade',
 			// align : 'center',
 			renderer : App.util.Renderer.date(),
 			width : 40

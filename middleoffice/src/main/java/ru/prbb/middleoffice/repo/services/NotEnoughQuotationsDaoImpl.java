@@ -3,10 +3,10 @@
  */
 package ru.prbb.middleoffice.repo.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,19 +27,12 @@ public class NotEnoughQuotationsDaoImpl implements NotEnoughQuotationsDao
 	@Autowired
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<NotEnoughQuotationsItem> show() {
-		// select * from mo_WebGet_QuotesNotExist_v
-		final List<NotEnoughQuotationsItem> list = new ArrayList<NotEnoughQuotationsItem>();
-		for (long i = 1; i < 11; ++i) {
-			final NotEnoughQuotationsItem item = new NotEnoughQuotationsItem();
-			item.setId_sec(i);
-			item.setSecurityCode("SecurityCode" + i);
-			item.setSecurityType("SecurityType" + i);
-			item.setFirstTradeDate("FirstTradeDate" + i);
-			list.add(item);
-		}
-		return list;
+		String sql = "select * from mo_WebGet_QuotesNotExist_v";
+		Query q = em.createNativeQuery(sql, NotEnoughQuotationsItem.class);
+		return q.getResultList();
 	}
 
 }
