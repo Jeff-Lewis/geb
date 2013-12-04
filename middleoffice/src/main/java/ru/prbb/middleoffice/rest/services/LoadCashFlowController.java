@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.ResultData;
-import ru.prbb.middleoffice.domain.SecurityItem;
-import ru.prbb.middleoffice.repo.SecuritiesDao;
+import ru.prbb.middleoffice.domain.SecurityCashFlowItem;
 import ru.prbb.middleoffice.repo.services.LoadCashFlowDao;
 
 /**
@@ -26,8 +25,6 @@ public class LoadCashFlowController
 {
 	@Autowired
 	private LoadCashFlowDao dao;
-	@Autowired
-	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
@@ -39,10 +36,8 @@ public class LoadCashFlowController
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
-	List<SecurityItem> listSecurities(
-			@RequestParam(required = false) String filter,
-			@RequestParam(required = false) Long security)
+	List<SecurityCashFlowItem> getSecurities()
 	{
-		return daoSecurities.findAll(filter, security);
+		return dao.findAllSecurities();
 	}
 }
