@@ -58,13 +58,14 @@ public class ViewShareController
 	public @ResponseBody
 	List<PortfolioItem> showPortfolio()
 	{
+		// TODO "select id_sec, ticker, deal_name, date_insert from portfolio_equity_v"
 		return daoEquities.findAllPortfolio();
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SecurityItem> listSecurities(
-			@RequestParam(required = false) String filter,
+			@RequestParam(defaultValue = "Equity") String filter,
 			@RequestParam(required = false) Long security)
 	{
 		return daoSecurities.findAll(filter, security);

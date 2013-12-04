@@ -58,13 +58,13 @@ public class ViewSwapsController
 	public @ResponseBody
 	List<PortfolioItem> showPortfolio()
 	{
-		return daoEquities.findAllPortfolio();
+		return daoEquities.findAllSwaps();
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SecurityItem> listSecurities(
-			@RequestParam(required = false) String filter,
+			@RequestParam(defaultValue = "Total return swap") String filter,
 			@RequestParam(required = false) Long security)
 	{
 		return daoSecurities.findAll(filter, security);

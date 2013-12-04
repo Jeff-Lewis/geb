@@ -58,18 +58,16 @@ public class ViewBondsController
 	public @ResponseBody
 	List<PortfolioItem> showPortfolio()
 	{
-		// TODO "{call mo_WebGet_SecuritiesDealNameMapping_sp 5}"
-		return daoEquities.findAllPortfolio();
+		return daoEquities.findAllBonds();
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SecurityItem> listSecurities(
-			@RequestParam(required = false) String filter,
+			@RequestParam(defaultValue = "Bond") String filter,
 			@RequestParam(required = false) Long security)
 	{
-		// TODO "{call dbo.mo_WebGet_FilterSecurities_sp 'Bond'}"
-		return daoSecurities.findAll(filter, security);
+		return daoSecurities.findAll("Bond", security);
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

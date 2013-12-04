@@ -14,11 +14,11 @@ import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.DividendItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
-import ru.prbb.middleoffice.repo.CurrenciesDao;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
+import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
 import ru.prbb.middleoffice.repo.dictionary.DividendsDao;
 
 /**

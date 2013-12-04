@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
-import ru.prbb.middleoffice.repo.CurrenciesDao;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.SecurityTypeDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
+import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
 import ru.prbb.middleoffice.repo.dictionary.FuturesDao;
 import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
 import ru.prbb.middleoffice.repo.operations.DealsOneNewDao;
