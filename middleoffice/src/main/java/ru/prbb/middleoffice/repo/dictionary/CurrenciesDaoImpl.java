@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.middleoffice.repo;
+package ru.prbb.middleoffice.repo.dictionary;
 
 import java.util.List;
 
@@ -13,11 +13,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
+import ru.prbb.middleoffice.domain.CurrenciesItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
+ * Валюты
+ * 
  * @author RBr
- *
+ * 
  */
 @Repository
 @Transactional
@@ -25,6 +28,14 @@ public class CurrenciesDaoImpl implements CurrenciesDao
 {
 	@Autowired
 	private EntityManager em;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CurrenciesItem> findAll() {
+		String sql = "{call dbo.mo_WebGet_Currency_sp}";
+		Query q = em.createNativeQuery(sql, CurrenciesItem.class);
+		return q.getResultList();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
