@@ -1,6 +1,5 @@
 package ru.prbb.middleoffice.rest.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ import ru.prbb.middleoffice.repo.services.RiskRewardPrice1Dao;
 @RequestMapping("/rest/RiskRewardPrice1")
 public class RiskRewardPrice1Controller
 {
-	// @Autowired
+	@Autowired
 	private RiskRewardPrice1Dao dao;
 	@Autowired
 	private ClientsDao daoClients;
@@ -40,16 +39,7 @@ public class RiskRewardPrice1Controller
 	public @ResponseBody
 	List<RiskRewardPrice1Item> list()
 	{
-		ArrayList<RiskRewardPrice1Item> list = new ArrayList<RiskRewardPrice1Item>();
-		for (long i = 1; i < 11; i++) {
-			RiskRewardPrice1Item item = new RiskRewardPrice1Item();
-			item.setId(i);
-			item.setSecurity_code("security_code" + i);
-			item.setClient("client" + i);
-			item.setFund("fund" + i);
-			list.add(item);
-		}
-		return list;
+		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -57,12 +47,7 @@ public class RiskRewardPrice1Controller
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		RiskRewardPrice1Item item = new RiskRewardPrice1Item();
-		item.setId(id);
-		item.setSecurity_code("security_code" + id);
-		item.setClient("client" + id);
-		item.setFund("fund" + id);
-		return new ResultData(item);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -93,7 +78,7 @@ public class RiskRewardPrice1Controller
 	Result deleteById(
 			@PathVariable("id") Long id)
 	{
-		//dao.deleteById(id);
+		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 

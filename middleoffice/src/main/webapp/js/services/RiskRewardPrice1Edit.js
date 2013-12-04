@@ -27,7 +27,7 @@
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
 			url : 'rest/RiskRewardPrice1/Funds.do',
-			root : 'info',
+			// root : 'info',
 			fields : [ 'id', 'name' ]
 		}),
 		emptyText : 'Выберите',
@@ -86,7 +86,7 @@
 		} ],
 
 		loadData : function(data) {
-			data = data.info;
+			data = data.item;
 
 			idItem = data.id;
 
