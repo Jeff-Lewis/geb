@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import ru.prbb.middleoffice.domain.SecurityValuesItem;
 
 /**
  * Загрузка номинала
@@ -30,6 +33,13 @@ public class LoadValuesDaoImpl implements LoadValuesDao
 	public List<Map<String, Object>> execute(String[] securities) {
 		// TODO Auto-generated method stub
 		return new ArrayList<Map<String, Object>>();
+	}
+
+	@Override
+	public List<SecurityValuesItem> findAllSecurities() {
+		String sql = "select * from dbo.mo_WebGet_bonds_sinkable_v";
+		Query q = em.createNativeQuery(sql, SecurityValuesItem.class);
+		return q.getResultList();
 	}
 
 }
