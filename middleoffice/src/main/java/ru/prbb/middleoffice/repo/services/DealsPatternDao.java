@@ -22,7 +22,8 @@ public interface DealsPatternDao {
 
 	/**
 	 * @param id
+	 * @return
 	 */
-	void deleteById(Long id);
+	int deleteById(Long id);
 
 }
