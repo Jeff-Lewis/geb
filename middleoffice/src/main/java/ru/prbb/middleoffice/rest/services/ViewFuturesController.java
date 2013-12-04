@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.middleoffice.domain.PortfolioItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.domain.ViewFuturesItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.FuturesDao;
@@ -68,15 +68,15 @@ public class ViewFuturesController
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<PortfolioItem> showPortfolio()
+	List<ViewFuturesItem> showPortfolio()
 	{
-		return daoEquities.findAllPortfolio();
+		return daoEquities.findAllFutures();
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SecurityItem> listSecurities(
-			@RequestParam(required = false) String filter,
+			@RequestParam(defaultValue = "Future") String filter,
 			@RequestParam(required = false) Long security)
 	{
 		return daoSecurities.findAll(filter, security);

@@ -281,7 +281,9 @@
 				header : 'KOEF',
 				width : 30,
 				dataIndex : 'coef',
-				sortable : true
+				sortable : true,
+				align : 'right',
+				renderer : App.util.Renderer.number()
 			}, {
 				header : 'NAME',
 				width : 30,
@@ -291,7 +293,7 @@
 				header : 'DATE_INSERT',
 				dataIndex : 'date_insert',
 				// align : 'center',
-				// renderer : App.util.Renderer.date(),
+				renderer : App.util.Renderer.datetime(),
 				width : 40,
 				sortable : true
 			} ],
