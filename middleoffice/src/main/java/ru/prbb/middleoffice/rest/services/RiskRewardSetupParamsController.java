@@ -1,6 +1,5 @@
 package ru.prbb.middleoffice.rest.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.RiskRewardSetupParamsItem;
@@ -29,7 +29,7 @@ import ru.prbb.middleoffice.repo.services.RiskRewardSetupParamsDao;
 @RequestMapping("/rest/RiskRewardSetupParams")
 public class RiskRewardSetupParamsController
 {
-	//	@Autowired
+	@Autowired
 	private RiskRewardSetupParamsDao dao;
 	@Autowired
 	private SecuritiesDao daoSecurities;
@@ -37,17 +37,10 @@ public class RiskRewardSetupParamsController
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	List<RiskRewardSetupParamsItem> list(
-			@RequestParam String date,
-			@RequestParam Long security)
+			@RequestParam Long security,
+			@RequestParam String date)
 	{
-		ArrayList<RiskRewardSetupParamsItem> list = new ArrayList<RiskRewardSetupParamsItem>();
-		for (long i = 1; i < 11; i++) {
-			RiskRewardSetupParamsItem item = new RiskRewardSetupParamsItem();
-			item.setId(i);
-			item.setSecurity_code("security_code" + i);
-			list.add(item);
-		}
-		return list;
+		return dao.findAll(security, Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -55,10 +48,7 @@ public class RiskRewardSetupParamsController
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		RiskRewardSetupParamsItem item = new RiskRewardSetupParamsItem();
-		item.setId(id);
-		item.setSecurity_code("security_code" + id);
-		return new ResultData(item);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
