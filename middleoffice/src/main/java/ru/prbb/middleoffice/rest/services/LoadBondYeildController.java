@@ -43,7 +43,7 @@ public class LoadBondYeildController
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SecurityItem> listSecurities(
-			@RequestParam(required = false) String filter,
+			@RequestParam(defaultValue = "Bond") String filter,
 			@RequestParam(required = false) Long security)
 	{
 		return daoSecurities.findAll(filter, security);
