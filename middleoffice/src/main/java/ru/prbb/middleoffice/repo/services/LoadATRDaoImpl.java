@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
@@ -34,43 +36,49 @@ public class LoadATRDaoImpl implements LoadATRDao
 		return new ArrayList<Object>();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> getTypeMA(String query) {
-		// "select id, algorithm_name as name from dbo.mo_WebGet_ajaxAlgorithm_v"
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (int i = 0; i < 10; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			list.add(item);
+		String sql = "select id, algorithm_name as name from dbo.mo_WebGet_ajaxAlgorithm_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(algorithm_name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return list;
+		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> getPeriod(String query) {
-		// "select period_id as id, name from dbo.period_type"
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (int i = 0; i < 10; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			list.add(item);
+		String sql = "select period_id as id, name from dbo.period_type";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return list;
+		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> getCalendar(String query) {
-		// "select calendar_id as id, name from calendar_type"
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (int i = 0; i < 10; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i + 1L);
-			item.setName("name" + (i + 1));
-			list.add(item);
+		String sql = "select calendar_id as id, name from calendar_type";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return list;
+		return q.getResultList();
 	}
 
 }

@@ -20,6 +20,8 @@
 			fields : [ 'id', 'name' ]
 		}),
 		allowBlank : false,
+		loadingText : 'Поиск...',
+		triggerAction : 'all',
 		editable : false
 	});
 
@@ -36,6 +38,8 @@
 			fields : [ 'id', 'name' ]
 		}),
 		allowBlank : false,
+		loadingText : 'Поиск...',
+		triggerAction : 'all',
 		editable : false
 	});
 
@@ -52,6 +56,8 @@
 			fields : [ 'id', 'name' ]
 		}),
 		allowBlank : false,
+		loadingText : 'Поиск...',
+		triggerAction : 'all',
 		editable : false
 	});
 
