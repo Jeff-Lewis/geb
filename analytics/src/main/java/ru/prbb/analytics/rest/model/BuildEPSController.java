@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.analytics.domain.EquityItem;
+import ru.prbb.analytics.domain.EquitiesItem;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.EquitiesDao;
@@ -50,8 +50,7 @@ public class BuildEPSController
 	List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
-		// select name from dbo.anca_WebGet_ajaxEquityFilter_v
-		return daoEquities.comboFilter();
+		return daoEquities.comboFilter(query);
 	}
 
 	@RequestMapping(value = "/FilterEquities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
@@ -64,7 +63,7 @@ public class BuildEPSController
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
-	List<EquityItem> listEquities(
+	List<EquitiesItem> listEquities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equity)
 	{

@@ -14,29 +14,26 @@
 		autoLoad : false,
 		url : 'rest/ViewDetailedFinrez.do',
 		// root : 'info',
-		fields : [ 'Client', 'Portfolio', 'Security_id', 'Security_code',
-				'Batch', 'Deals_realised_profit_id', 'Deal_id', 'TradeNum',
-				'Trade_date', 'Operation', 'Realised_profit',
-				'Initial_quantity', 'Deal_quantity', 'Avg_price',
-				'Avg_price_usd', 'Deal_price', 'Currency', 'Funding',
-				'Date_insert', 'Account' ],
+		fields : [ 'client', 'portfolio', 'security_id', 'security_code',
+				'batch', 'deals_realised_profit_id', 'deal_id', 'tradeNum',
+				'trade_date', 'operation', 'realised_profit',
+				'initial_quantity', 'deal_quantity', 'avg_price',
+				'avg_price_usd', 'deal_price', 'currency', 'funding',
+				'date_insert', 'account' ],
 		listeners : App.ui.listenersJsonStore()
 	});
 
 	function reload() {
-		var _db = App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue());
-		var _de = App.util.Format.dateYMD(Ext.getCmp(_dateEnd).getValue());
-		var _c = Ext.getCmp(_client).getValue();
-		var _f = Ext.getCmp(_fund).getValue();
-		var _s = App.Combo.getValueId(Ext.getCmp(_security));
+		var _db = Ext.getCmp(_dateBegin).getValue();
+		var _de = Ext.getCmp(_dateEnd).getValue();
 
 		info.reload({
 			params : {
-				dateBegin : _db,
-				dateEnd : _de,
-				client : _c,
-				fund : _f,
-				security : _s
+				dateBegin : App.util.Format.dateYMD(_db),
+				dateEnd : App.util.Format.dateYMD(_de),
+				client : Ext.getCmp(_client).getValue(),
+				fund : Ext.getCmp(_fund).getValue(),
+				security : Ext.getCmp(_security).getValue()
 			}
 		});
 	}
@@ -46,7 +43,7 @@
 		var _de = App.util.Format.dateYMD(Ext.getCmp(_dateEnd).getValue());
 		var _c = Ext.getCmp(_client).getValue();
 		var _f = Ext.getCmp(_fund).getValue();
-		var _s = App.Combo.getValueId(Ext.getCmp(_security));
+		var _s = Ext.getCmp(_security).getValue();
 
 		var url = 'rest/ViewDetailedFinrez/Export.do?dateBegin=' + _db
 				+ '&dateEnd=' + _de + '&client=' + _c + '&fund=' + _f
@@ -154,11 +151,11 @@
 			id : _security,
 			xtype : 'combo',
 			width : 150,
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'rest/ViewDetailedFinrez/Tickers.do',
+				url : 'rest/ViewDetailedFinrez/Securities.do',
 				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
@@ -202,71 +199,71 @@
 		store : info,
 		columns : [ {
 			header : 'Client',
-			dataIndex : 'Client'
+			dataIndex : 'client'
 		}, {
 			header : 'Portfolio',
-			dataIndex : 'Portfolio'
+			dataIndex : 'portfolio'
 		}, {
 			header : 'Security_id',
-			dataIndex : 'Security_id'
+			dataIndex : 'security_id'
 		}, {
 			header : 'Security_code',
-			dataIndex : 'Security_code'
+			dataIndex : 'security_code'
 		}, {
 			header : 'Batch',
-			dataIndex : 'Batch'
+			dataIndex : 'batch'
 		}, {
 			header : 'Deals_realised_profit_id',
-			dataIndex : 'Deals_realised_profit_id'
+			dataIndex : 'deals_realised_profit_id'
 		}, {
 			header : 'Deal_id',
-			dataIndex : 'Deal_id'
+			dataIndex : 'deal_id'
 		}, {
 			header : 'TradeNum',
-			dataIndex : 'TradeNum'
+			dataIndex : 'tradeNum'
 		}, {
 			header : 'Trade_date',
-			dataIndex : 'Trade_date',
+			dataIndex : 'trade_date',
 			align : 'center',
 			renderer : App.util.Renderer.date()
 		}, {
 			header : 'Operation',
-			dataIndex : 'Operation'
+			dataIndex : 'operation'
 		}, {
 			header : 'Realised_profit',
-			dataIndex : 'Realised_profit'
+			dataIndex : 'realised_profit'
 		}, {
 			header : 'Initial_quantity',
-			dataIndex : 'Initial_quantity'
+			dataIndex : 'initial_quantity'
 		}, {
 			header : 'Deal_quantity',
-			dataIndex : 'Deal_quantity'
+			dataIndex : 'deal_quantity'
 		}, {
 			header : 'Avg_price',
-			dataIndex : 'Avg_price',
+			dataIndex : 'avg_price',
 			align : 'right',
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'Avg_price_usd',
-			dataIndex : 'Avg_price_usd'
+			dataIndex : 'avg_price_usd'
 		}, {
 			header : 'Deal_price',
-			dataIndex : 'Deal_price'
+			dataIndex : 'deal_price'
 		}, {
 			header : 'Currency',
-			dataIndex : 'Currency'
+			dataIndex : 'currency'
 		}, {
 			header : 'Funding',
-			dataIndex : 'Funding'
+			dataIndex : 'funding'
 		}, {
 			header : 'Date_insert',
-			dataIndex : 'Date_insert',
+			dataIndex : 'date_insert',
 			align : 'center',
 			renderer : App.util.Renderer.datetime()
 
 		}, {
 			header : 'Account',
-			dataIndex : 'Account'
+			dataIndex : 'account'
 		} ],
 
 		viewConfig : {

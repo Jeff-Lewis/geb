@@ -36,14 +36,6 @@ public class ViewSubscriptionController
 		return dao.findAll();
 	}
 
-	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecuritySubscrItem> getSecurities(
-			@RequestParam(required = false) Long id)
-	{
-		return dao.findAllSecurities(id);
-	}
-
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result add(
@@ -59,7 +51,7 @@ public class ViewSubscriptionController
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		return new ResultData(dao.get(id));
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
@@ -67,8 +59,42 @@ public class ViewSubscriptionController
 	Result del(
 			@PathVariable("id") Long id)
 	{
-		dao.delete(id);
+		dao.deleteById(id);
 		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	Result del(
+			@PathVariable("id") Long id,
+			@RequestParam String action,
+			@RequestParam Long[] ids)
+	{
+		switch (action) {
+		case "ADD":
+			dao.staffAdd(id, ids);
+			return Result.SUCCESS;
+
+		case "DEL":
+			dao.staffDel(id, ids);
+			return Result.SUCCESS;
+		}
+		return Result.FAIL;
+	}
+
+	@RequestMapping(value = "/Securities", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody
+	List<SecuritySubscrItem> getSecurities()
+	{
+		return dao.findAllSecurities();
+	}
+
+	@RequestMapping(value = "/Securities", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	List<SecuritySubscrItem> getSecurities(
+			@RequestParam Long id)
+	{
+		return dao.findAllSecurities(id);
 	}
 
 	@RequestMapping(value = "/{id}/start", method = RequestMethod.GET, produces = "application/json")

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.analytics.domain.BrokersCoverageItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.repo.reports.BrokersCoverageDao;
@@ -40,8 +41,7 @@ public class BrokersCoverageController
 			@RequestParam String broker,
 			@RequestParam Integer value)
 	{
-		dao.change(id, broker, value);
+		dao.change(id, Utils.getColumnNameByField(broker, BrokersCoverageItem.class), value);
 		return Result.SUCCESS;
 	}
-
 }

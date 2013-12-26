@@ -65,7 +65,7 @@
 					success : function(xhr) {
 						var answer = Ext.decode(xhr.responseText);
 						if (answer.success) {
-							textarea.setValue(answer.text);
+							textarea.setValue(answer.item);
 						} else if (answer.code == 'login') {
 							App.ui.sessionExpired();
 						} else {

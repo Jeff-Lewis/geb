@@ -69,7 +69,9 @@
 		}),
 		loadingText : 'Поиск...',
 		minChars : 2,
-		typeAhead : false,
+		allowBlank : true,
+		loadingText : 'Поиск...',
+		triggerAction : 'all',
 		listeners : {
 			select : function(combo, record, index) {
 				filterUpdate();

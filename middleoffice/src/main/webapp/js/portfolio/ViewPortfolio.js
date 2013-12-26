@@ -20,10 +20,11 @@
 	var futureSelect = new Ext.form.ComboBox({
 		width : 150,
 		fieldLabel : 'Тикер Блумберг',
+		valueField : 'id',
 		displayField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
-			url : 'rest/ViewPortfolio/Tickers.do',
+			url : 'rest/ViewPortfolio/Securities.do',
 			// root : 'info',
 			fields : [ 'id', 'name' ],
 			sortInfo : {
@@ -47,7 +48,7 @@
 		info.reload({
 			params : {
 				date : App.util.Format.dateYMD(fd),
-				ticker : App.Combo.getValueId(futureSelect)
+				security : futureSelect.getValue()
 			}
 		});
 	}
@@ -64,7 +65,7 @@
 			url : 'rest/ViewPortfolio/Calculate.do',
 			params : {
 				date : App.util.Format.dateYMD(fd),
-				ticker : App.Combo.getValueId(futureSelect)
+				security : futureSelect.getValue()
 			},
 			timeout : 60 * 60 * 1000, // 60 min
 			waitMsg : 'Выполняется расчет портфеля.',
@@ -93,7 +94,7 @@
 		}
 
 		var url = 'rest/ViewPortfolio/Export.do?date='
-				+ App.util.Format.dateYMD(fd) + '&ticker='
+				+ App.util.Format.dateYMD(fd) + '&security='
 				+ futureSelect.getValue();
 		window.open(url);
 	}

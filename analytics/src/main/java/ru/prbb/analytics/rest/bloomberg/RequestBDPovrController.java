@@ -1,6 +1,5 @@
 package ru.prbb.analytics.rest.bloomberg;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.analytics.domain.EquityItem;
+import ru.prbb.analytics.domain.EquitiesItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.EquitiesDao;
@@ -72,20 +71,12 @@ public class RequestBDPovrController
 	List<SimpleItem> comboOverride(
 			@RequestParam(required = false) String query)
 	{
-		// select code  from dbo.blm_datasource_ovr
-		final List<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (long i = 1; i < 11; i++) {
-			final SimpleItem item = new SimpleItem();
-			item.setId(i);
-			item.setName("NAME_" + i);
-			list.add(item);
-		}
-		return list;
+		return dao.comboFilterOverride(query);
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
-	List<EquityItem> getEquities(
+	List<EquitiesItem> getEquities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equities,
 			@RequestParam(required = false) Integer fundamentals)
@@ -98,7 +89,7 @@ public class RequestBDPovrController
 	List<SimpleItem> comboEquitiesFilter(
 			@RequestParam(required = false) String query)
 	{
-		return daoEquities.comboFilter();
+		return daoEquities.comboFilter(query);
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

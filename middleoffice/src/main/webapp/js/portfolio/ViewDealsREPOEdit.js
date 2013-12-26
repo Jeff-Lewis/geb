@@ -54,10 +54,10 @@
 
 		loadData : function(data) {
 			itemId = data.item.id;
-			Ext.getCmp(_price1).setValue(data.item.price1);
-			Ext.getCmp(_quantity).setValue(data.item.quantity);
-			Ext.getCmp(_days).setValue(data.item.days);
 			Ext.getCmp(_rate).setValue(data.item.rate);
+			Ext.getCmp(_quantity).setValue(data.item.quantity);
+			Ext.getCmp(_price1).setValue(data.item.price1);
+			Ext.getCmp(_days).setValue(data.item.days);
 		},
 		setWindow : function(window) {
 			this.window = window;
@@ -69,10 +69,10 @@
 		Ext.Ajax.request({
 			url : 'rest/ViewDealsREPO/' + itemId + '.do',
 			params : {
-				price : Ext.getCmp(_price1).getValue(),
-				quantity : Ext.getCmp(_quantity).getValue(),
-				days : Ext.getCmp(_days).getValue(),
 				rate : Ext.getCmp(_rate).getValue(),
+				quantity : Ext.getCmp(_quantity).getValue(),
+				price : Ext.getCmp(_price1).getValue(),
+				days : Ext.getCmp(_days).getValue()
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Сохранение',

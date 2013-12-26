@@ -20,7 +20,7 @@ public interface ViewModelDao {
 	/**
 	 * @return
 	 */
-	List<ViewModelItem> current();
+	List<ViewModelItem> findAll();
 
 	/**
 	 * @param id_sec
@@ -32,6 +32,6 @@ public interface ViewModelDao {
 	 * @param id_sec
 	 * @return
 	 */
-	ViewModelPriceItem getPriceById(Long id_sec);
+	List<ViewModelPriceItem> findPriceById(Long id_sec);
 
 }

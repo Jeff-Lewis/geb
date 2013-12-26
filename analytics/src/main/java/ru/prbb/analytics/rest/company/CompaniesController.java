@@ -11,11 +11,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.analytics.domain.CompanyItem;
+import ru.prbb.Utils;
+import ru.prbb.analytics.domain.CompaniesExceptionItem;
+import ru.prbb.analytics.domain.CompaniesFileItem;
+import ru.prbb.analytics.domain.CompaniesListItem;
+import ru.prbb.analytics.domain.CompaniesQuarterItem;
+import ru.prbb.analytics.domain.CompaniesYearItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.company.CompaniesDao;
+import ru.prbb.analytics.repo.company.CompaniesDao.AttrVal;
+import ru.prbb.analytics.repo.model.BuildEPSDao;
+import ru.prbb.analytics.repo.model.BuildModelDao;
 
 /**
  * Список компаний
@@ -29,10 +37,14 @@ public class CompaniesController
 {
 	@Autowired
 	private CompaniesDao dao;
+	@Autowired
+	private BuildModelDao daoBuildModel;
+	@Autowired
+	private BuildEPSDao daoBuildEPS;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<CompanyItem> list()
+	List<CompaniesListItem> list()
 	{
 		return dao.findAll();
 	}
@@ -42,57 +54,39 @@ public class CompaniesController
 	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		//		select id_doc, file_type, file_name, insert_date from dbo.sec_docs where id_sec = ?
-		//		{call dbo.anca_WebGet_EquityInfo_sp 1, ?}
-		//		exec dbo.anca_WebGet_EquityInfo_sp 21, 
-		//		exec dbo.anca_WebGet_EquityInfo_sp 22, 1
-		//		exec dbo.output_equity_growthexclusions 1
-		//		{call dbo.anca_WebGet_EquityVarException_sp ?}
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/Exceptions", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Object> getExceptions(
+	List<CompaniesExceptionItem> getExceptions(
 			@RequestParam Long id)
 	{
-		String sql = "{call dbo.anca_WebGet_EquityVarException_sp :id}";
-		// 'Exception', 'comment'
-		return new ArrayList<Object>();
+		return dao.findVarException(id);
 	}
 
 	@RequestMapping(value = "/Quarters", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Object> getQuarters(
+	List<CompaniesQuarterItem> getQuarters(
 			@RequestParam Long id)
 	{
-		String sql = "exec dbo.anca_WebGet_EquityInfo_sp 21, :id";
-		//		'period', 'value', 'crnc', 'date', 'eqy_dps',
-		//		'eqy_dvd_yld_ind', 'sales_rev_turn', 'prof_margin',
-		//		'oper_margin', 'crnc'
-		return new ArrayList<Object>();
+		return dao.findQuarters(id);
 	}
 
 	@RequestMapping(value = "/Years", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Object> getYears(
+	List<CompaniesYearItem> getYears(
 			@RequestParam Long id)
 	{
-		String sql = "exec dbo.anca_WebGet_EquityInfo_sp 22, :id";
-		//		'period', 'value', 'crnc', 'date', 'eps_recon_flag',
-		//		'eqy_dps', 'eqy_weighted_avg_px', 'eqy_weighted_avg_px_adr',
-		//		'book_val_per_sh', 'oper_roe', 'r_ratio', 'crnc'
-		return new ArrayList<Object>();
+		return dao.findYears(id);
 	}
 
 	@RequestMapping(value = "/Files", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Object> getFiles(
+	List<CompaniesFileItem> getFiles(
 			@RequestParam Long id)
 	{
-		String sql = "select id_doc, file_type, file_name, insert_date from dbo.sec_docs where id_sec=:id";
-		//		'id_doc', 'file_name', 'id_doc', 'file_name'
-		return new ArrayList<Object>();
+		return dao.findFiles(id);
 	}
 
 	@RequestMapping(value = "/{id}/EquityChange", method = RequestMethod.POST, produces = "application/json")
@@ -100,52 +94,32 @@ public class CompaniesController
 	Result execEquityChange(
 			@PathVariable Long id,
 			@RequestParam String bloomCode,
-			@RequestParam Double adr,
+			@RequestParam String adr,
 			@RequestParam String currency_calc,
 			@RequestParam String group,
-			@RequestParam Double koefZero,
-			@RequestParam Double koefOne,
+			@RequestParam String koefZero,
+			@RequestParam String koefOne,
 			@RequestParam String period,
 			@RequestParam String eps)
 	{
-		//		class MyPair {
-		//			final String attribute;
-		//			final String value;
-		//
-		//			MyPair(String attribute, String value) {
-		//				this.attribute = attribute;
-		//				this.value = value;
-		//			}
-		//		}
-		//
-		//		final List<MyPair> params = Lists.newArrayList();
-		//		params.add(new MyPair("bloomberg_code", security_code));
-		//		params.add(new MyPair("adr", adr));
-		//		params.add(new MyPair("currency", currency_iso));
-		//		params.add(new MyPair("pivot_group", group_name));
-		//		params.add(new MyPair("koef", upside_koef_0));
-		//		params.add(new MyPair("new_koef", upside_koef_1));
-		//		params.add(new MyPair("period", period));
-		//		params.add(new MyPair("eps", eps));
-		//
-		//		String sql = "{call dbo.anca_WebSet_EquityAttributes_sp ?, ?, ?}";
-		//		log.info(sql);
-		//		jdbcTemplate.batchUpdate(sql,
-		//				new BatchPreparedStatementSetter() {
-		//
-		//					@Override
-		//					public void setValues(PreparedStatement ps, int i) throws SQLException {
-		//						final MyPair param = params.get(i);
-		//						ps.setLong(1, id_sec);
-		//						ps.setString(2, param.attribute);
-		//						ps.setString(3, Translate.toNull(param.value));
-		//					}
-		//
-		//					@Override
-		//					public int getBatchSize() {
-		//						return params.size();
-		//					}
-		//				});
+		List<AttrVal> params = new ArrayList<>();
+		if (Utils.isNotEmpty(bloomCode))
+			params.add(new AttrVal("bloomberg_code", bloomCode));
+		if (Utils.isNotEmpty(adr))
+			params.add(new AttrVal("adr", adr));
+		if (Utils.isNotEmpty(currency_calc))
+			params.add(new AttrVal("currency", currency_calc));
+		if (Utils.isNotEmpty(group))
+			params.add(new AttrVal("pivot_group", group));
+		if (Utils.isNotEmpty(koefZero))
+			params.add(new AttrVal("koef", koefZero));
+		if (Utils.isNotEmpty(koefOne))
+			params.add(new AttrVal("new_koef", koefOne));
+		if (Utils.isNotEmpty(period))
+			params.add(new AttrVal("period", period));
+		if (Utils.isNotEmpty(eps))
+			params.add(new AttrVal("eps", eps));
+		dao.updateById(id, params);
 		return Result.SUCCESS;
 	}
 
@@ -154,7 +128,7 @@ public class CompaniesController
 	Result execCalculateEps(
 			@PathVariable Long id)
 	{
-		String sql = "{call main_create_eps_proc ?}";
+		daoBuildEPS.calculate(new Long[] { id });
 		return Result.SUCCESS;
 	}
 
@@ -163,7 +137,7 @@ public class CompaniesController
 	Result execBuildModelCompany(
 			@PathVariable Long id)
 	{
-		String sql = "{call dbo.build_model_proc_p ?}";
+		daoBuildModel.calculateModel(new Long[] { id });
 		return Result.SUCCESS;
 	}
 
@@ -172,6 +146,7 @@ public class CompaniesController
 	Result getScanSave(
 			@PathVariable Long id)
 	{
+		// TODO ScanSave
 		return Result.SUCCESS;
 	}
 
@@ -180,6 +155,7 @@ public class CompaniesController
 	Result getScanOpen(
 			@PathVariable Long id)
 	{
+		// TODO ScanOpen
 		return Result.SUCCESS;
 	}
 
@@ -188,6 +164,7 @@ public class CompaniesController
 	Result getScanDelete(
 			@PathVariable Long id)
 	{
+		// TODO ScanDelete
 		return Result.SUCCESS;
 	}
 

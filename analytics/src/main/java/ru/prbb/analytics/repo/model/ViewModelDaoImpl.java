@@ -3,14 +3,17 @@
  */
 package ru.prbb.analytics.repo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.analytics.domain.ViewModelInfoItem;
 import ru.prbb.analytics.domain.ViewModelItem;
 import ru.prbb.analytics.domain.ViewModelPriceItem;
@@ -22,16 +25,18 @@ import ru.prbb.analytics.domain.ViewModelPriceItem;
  * 
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class ViewModelDaoImpl implements ViewModelDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<ViewModelItem> current() {
+	public List<ViewModelItem> findAll() {
 		String sql = "{call dbo.MainPageReportProc}";
-		return em.createQuery(sql, ViewModelItem.class).getResultList();
+		Query q = em.createNativeQuery(sql, ViewModelItem.class);
+		return q.getResultList();
 	}
 
 	@Override
@@ -47,16 +52,37 @@ public class ViewModelDaoImpl implements ViewModelDao
 				"  (select max(mr1.date_ins)" +
 				"     from inv_db.dbo.model_report mr1" +
 				"    where mr1.id_sec = dbo.model_report.id_sec) " +
-				" and id_sec = :id";
-		return em.createQuery(sql, ViewModelInfoItem.class).setParameter(1, id_sec).getSingleResult();
+				" and id_sec = ?";
+		Query q = em.createNativeQuery(sql, ViewModelInfoItem.class)
+				.setParameter(1, id_sec);
+		return (ViewModelInfoItem) q.getSingleResult();
 	}
 
 	@Override
-	public ViewModelPriceItem getPriceById(Long id_sec) {
+	public List<ViewModelPriceItem> findPriceById(Long id_sec) {
 		String sql = "select equity_fund_ticker, company_short_name, firm_name, bloomberg_code, " +
 				"firm_rating, target_price, price_date, price_period, TR" +
 				" from dbo.AnalystTargetComputingV" +
-				" where id_sec = :id";
-		return em.createQuery(sql, ViewModelPriceItem.class).setParameter(1, id_sec).getSingleResult();
+				" where id_sec = ?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id_sec);
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<ViewModelPriceItem> res = new ArrayList<>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			ViewModelPriceItem item = new ViewModelPriceItem();
+			item.setEquity_fund_ticker(Utils.toString(arr[0]));
+			item.setCompany_short_name(Utils.toString(arr[1]));
+			item.setFirm_name(Utils.toString(arr[2]));
+			item.setBloomberg_code(Utils.toString(arr[3]));
+			item.setFirm_rating(Utils.toInteger(arr[4]));
+			item.setTarget_price(Utils.toDouble(arr[5]));
+			item.setPrice_date(Utils.toString(arr[6]));
+			item.setPrice_period(Utils.toString(arr[7]));
+			item.setTR(Utils.toInteger(arr[8]));
+			res.add(item);
+		}
+		return res;
 	}
 }

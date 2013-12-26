@@ -22,7 +22,7 @@ public interface BrokersForecastDao {
 	 * @param equity
 	 * @return
 	 */
-	List<BrokersForecastItem> execute(String date, String broker, String equity);
+	List<BrokersForecastItem> execute(String date_time, Long broker_id, Long id_sec);
 
 	/**
 	 * @return

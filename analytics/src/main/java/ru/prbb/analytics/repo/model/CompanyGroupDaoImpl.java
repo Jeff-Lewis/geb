@@ -6,10 +6,12 @@ package ru.prbb.analytics.repo.model;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.CompanyStaffItem;
@@ -28,56 +30,79 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findAll() {
 		String sql = "{call dbo.anca_WebGet_PivotGroups_sp}";
-		return em.createQuery(sql, SimpleItem.class).getResultList();
+		Query q = em.createNativeQuery(sql, SimpleItem.class);
+		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
 	public SimpleItem findById(Long id) {
-		String sql = "{call dbo.anca_WebGet_PivotGroups_sp :id}";
-		return em.createQuery(sql, SimpleItem.class).setParameter(1, id).getSingleResult();
+		String sql = "{call dbo.anca_WebGet_PivotGroups_sp ?}";
+		Query q = em.createNativeQuery(sql, SimpleItem.class)
+				.setParameter(1, id);
+		return (SimpleItem) q.getSingleResult();
 	}
 
 	@Override
 	public int put(String name) {
-		String sql = "{call dbo.anca_WebSet_putPivotGroup_sp :name}";
-		return em.createQuery(sql).setParameter(1, name).executeUpdate();
+		String sql = "{call dbo.anca_WebSet_putPivotGroup_sp ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, name);
+		return q.executeUpdate();
 	}
 
 	@Override
 	public int renameById(Long id, String name) {
-		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'u', :id, :name}";
-		return em.createQuery(sql).setParameter(1, id).setParameter(2, name).executeUpdate();
+		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'u', ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, name);
+		return q.executeUpdate();
 	}
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'd', :id}";
-		return em.createQuery(sql).setParameter(1, id).executeUpdate();
+		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'd', ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
 	}
 
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompanyStaffItem> findStaff() {
 		String sql = "{call dbo.anca_WebGet_SelectEquitiesNotPivotGroup_sp}";
-		return em.createQuery(sql, CompanyStaffItem.class).getResultList();
+		Query q = em.createNativeQuery(sql, CompanyStaffItem.class);
+		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompanyStaffItem> findStaff(Long id) {
-		String sql = "{call dbo.anca_WebGet_SelectPivotGroupEquities_sp :id}";
-		return em.createQuery(sql, CompanyStaffItem.class).setParameter(1, id).getResultList();
+		String sql = "{call dbo.anca_WebGet_SelectPivotGroupEquities_sp ?}";
+		Query q = em.createNativeQuery(sql, CompanyStaffItem.class)
+				.setParameter(1, id);
+		return q.getResultList();
 	}
 
 	@Override
 	public int[] putStaff(Long id, Long[] cids) {
-		String sql = "{call dbo.anca_WebSet_addEquityPivotGroup_sp :id, :cid}";
+		String sql = "{call dbo.anca_WebSet_addEquityPivotGroup_sp ?, ?}";
 		int i = 0;
 		int[] res = new int[cids.length];
+		Query q = em.createNativeQuery(sql);
 		for (Long cid : cids) {
 			try {
-				res[i++] = em.createQuery(sql).setParameter(1, id).setParameter(2, cid).executeUpdate();
+				q.setParameter(1, id);
+				q.setParameter(2, cid);
+				res[i++] = q.executeUpdate();
 			} catch (DataAccessException e) {
 				// TODO: handle exception
 			}
@@ -87,12 +112,14 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 
 	@Override
 	public int[] deleteStaff(Long _id, Long[] cids) {
-		String sql = "{call dbo.anca_WebSet_removeEquityPivotGroup_sp :cid}";
+		String sql = "{call dbo.anca_WebSet_removeEquityPivotGroup_sp ?}";
 		int i = 0;
 		int[] res = new int[cids.length];
+		Query q = em.createNativeQuery(sql);
 		for (Long cid : cids) {
 			try {
-				res[i++] = em.createQuery(sql).setParameter(1, cid).executeUpdate();
+				q.setParameter(1, cid);
+				res[i++] = q.executeUpdate();
 			} catch (DataAccessException e) {
 				// TODO: handle exception
 			}

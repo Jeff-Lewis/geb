@@ -26,7 +26,7 @@
 		sortInfo : {
 			field : 'security_code'
 		},
-		listeners : App.ui.listenersJsonStore()
+	// listeners : App.ui.listenersJsonStore()
 	});
 
 	var smP = new Ext.grid.CheckboxSelectionModel();
@@ -50,8 +50,9 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'rest/ViewPortfolio/Add.do',
+			url : 'rest/ViewPortfolio.do',
 			params : {
+				action : 'ADD',
 				ids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -85,8 +86,9 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'rest/ViewPortfolio/Del.do',
+			url : 'rest/ViewPortfolio.do',
 			params : {
+				action : 'DEL',
 				ids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min

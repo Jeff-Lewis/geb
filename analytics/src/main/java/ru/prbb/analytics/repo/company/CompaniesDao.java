@@ -5,7 +5,12 @@ package ru.prbb.analytics.repo.company;
 
 import java.util.List;
 
-import ru.prbb.analytics.domain.CompanyItem;
+import ru.prbb.analytics.domain.CompaniesExceptionItem;
+import ru.prbb.analytics.domain.CompaniesFileItem;
+import ru.prbb.analytics.domain.CompaniesItem;
+import ru.prbb.analytics.domain.CompaniesListItem;
+import ru.prbb.analytics.domain.CompaniesQuarterItem;
+import ru.prbb.analytics.domain.CompaniesYearItem;
 import ru.prbb.analytics.domain.SimpleItem;
 
 /**
@@ -19,13 +24,53 @@ public interface CompaniesDao {
 	/**
 	 * @return
 	 */
-	List<CompanyItem> findAll();
+	List<CompaniesListItem> findAll();
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	CompanyItem findById(Long id);
+	CompaniesItem findById(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<CompaniesQuarterItem> findQuarters(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<CompaniesYearItem> findYears(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<CompaniesFileItem> findFiles(Long id);
+
+	public class AttrVal {
+		public final String attribute;
+		public final String value;
+
+		public AttrVal(String attribute, String value) {
+			this.attribute = attribute;
+			this.value = value;
+		}
+	}
+
+	/**
+	 * @param id
+	 * @param params
+	 */
+	void updateById(Long id, List<AttrVal> params);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<CompaniesExceptionItem> findVarException(Long id);
 
 	/**
 	 * @param query

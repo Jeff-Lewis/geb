@@ -39,7 +39,7 @@ public class DealsPatternDaoImpl implements DealsPatternDao
 	public int deleteById(Long id) {
 		String sql = "delete from dbo.DealsTemplateStorage where id = ?";
 		Query q = em.createNativeQuery(sql).setParameter(1, id);
-		return q.executeUpdate();
+		return 0;//q.executeUpdate();
 	}
 
 }

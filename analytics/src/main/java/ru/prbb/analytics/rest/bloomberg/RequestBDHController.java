@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.analytics.domain.EquityItem;
+import ru.prbb.analytics.domain.EquitiesItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.EquitiesDao;
@@ -78,7 +78,7 @@ public class RequestBDHController
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
-	List<EquityItem> getEquities(
+	List<EquitiesItem> getEquities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equities,
 			@RequestParam(required = false) Integer fundamentals)
@@ -91,7 +91,7 @@ public class RequestBDHController
 	List<SimpleItem> comboEquitiesFilter(
 			@RequestParam(required = false) String query)
 	{
-		return daoEquities.comboFilter();
+		return daoEquities.comboFilter(query);
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

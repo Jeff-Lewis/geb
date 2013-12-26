@@ -17,55 +17,71 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 public interface ContactsDao {
 
 	/**
+	 * 
 	 * @return
 	 */
 	List<SimpleItem> findAll();
 
 	/**
+	 * 
 	 * @param id
+	 * @return
 	 */
 	SimpleItem findById(Long id);
 
 	/**
+	 * 
 	 * @param name
+	 * @return
 	 */
-	void put(String name);
+	int put(String name);
 
 	/**
+	 * 
 	 * @param id
 	 * @param name
+	 * @return
 	 */
-	void updateById(Long id, String name);
+	int updateById(Long id, String name);
 
 	/**
+	 * 
 	 * @param id
+	 * @return
 	 */
-	void deleteById(Long id);
+	int deleteById(Long id);
 
 	/**
+	 * 
 	 * @param id
 	 * @return
 	 */
 	List<ContactStaffItem> findAllStaff(Long id);
 
 	/**
+	 * 
 	 * @param id
 	 * @param name
 	 * @param type
+	 * @return
 	 */
-	void putStaff(Long id, String name, Integer type);
+	int putStaff(Long id, String name, Integer type);
 
 	/**
+	 * 
 	 * @param id
 	 * @param cid
 	 * @param name
+	 * @return
 	 */
-	void updateByIdStaff(Long id, Long cid, String name);
+	int updateByIdStaff(Long id, Long cid, String name);
 
 	/**
+	 * 
 	 * @param id
 	 * @param cid
+	 * @return
 	 */
-	void deleteByIdStaff(Long id, Long cid);
+	int deleteByIdStaff(Long id, Long cid);
 
 }

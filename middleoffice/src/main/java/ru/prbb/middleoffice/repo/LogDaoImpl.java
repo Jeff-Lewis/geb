@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,45 +33,34 @@ public class LogDaoImpl implements LogDao
 	@Autowired
 	private EntityManager em;
 
-	/**
-	 * dbo.check_ncontacts_change_log
-	 * 
-	 * @param start
-	 *            varchar (20)
-	 * @param stop
-	 *            varchar (20)
-	 * 
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogContactItem> getLogContacts(String start, String stop) {
-		String sql = "{call dbo.check_ncontacts_change_log :start, :stop}";
-		TypedQuery<LogContactItem> q = em.createQuery(sql, LogContactItem.class);
-		return q.setParameter(1, start).setParameter(2, stop).getResultList();
+		String sql = "{call dbo.check_ncontacts_change_log ?, ?}";
+		Query q = em.createNativeQuery(sql, LogContactItem.class)
+				.setParameter(1, start)
+				.setParameter(2, stop);
+		return q.getResultList();
 	}
 
-	/**
-	 * dbo.check_sms_and_email_reciver
-	 * 
-	 * @param type
-	 *            varchar(10),
-	 * @param start
-	 *            varchar (20),
-	 * @param stop
-	 *            varchar (20)
-	 * 
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogMessagesItem> getLogMessages(String type, String start, String stop) {
-		String sql = "{call dbo.check_sms_and_email_reciver :type, :start, :stop}";
-		TypedQuery<LogMessagesItem> q = em.createQuery(sql, LogMessagesItem.class);
-		return q.setParameter(1, type).setParameter(2, start).setParameter(3, stop).getResultList();
+		String sql = "{call dbo.check_sms_and_email_reciver ?, ?, ?}";
+		Query q = em.createNativeQuery(sql, LogMessagesItem.class)
+				.setParameter(1, type)
+				.setParameter(2, start)
+				.setParameter(3, stop);
+		return q.getResultList();
 	}
 
 	@Override
 	public List<SubscriptionItem> getLogSubscription() {
-		String sql = "execute dbo.subscription_data_v_proc";
-		List list = em.createNativeQuery(sql).getResultList();
-		List<SubscriptionItem> res = new ArrayList<SubscriptionItem>(list.size());
+		String sql = "{call dbo.subscription_data_v_proc}";
+		Query q = em.createNativeQuery(sql);
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<SubscriptionItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
 			SubscriptionItem item = new SubscriptionItem();

@@ -13,8 +13,8 @@
 
 	var typeDeal = new Ext.form.ComboBox({
 		fieldLabel : 'Тип инструмента',
-		displayField : 'name',
 		valueField : 'id',
+		displayField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
 			url : 'rest/DealsOneNew/SecurityType.do',
@@ -27,7 +27,7 @@
 		editable : false,
 		listeners : {
 			select : function(combo, record, index) {
-				futureAlias.setDisabled('Future' != combo.getValue());
+				futureAlias.setDisabled('Future' != record.data.name);
 			}
 		}
 	});

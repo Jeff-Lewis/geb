@@ -95,7 +95,7 @@
 		}
 
 		var id = smC.getSelected().data.id;
-		menu.submitDataRequest(menu, 'utils/ContactsEdit', 'rest/Contacts/'
+		menu.submitDataRequest(menu, 'services/ContactsEdit', 'rest/Contacts/'
 				+ id + '.do');
 	}
 
@@ -223,8 +223,8 @@
 		}
 
 		var id = smG.getSelected().data.id;
-		menu.submitDataRequest(menu, 'utils/ContactsEditGroup', 'rest/Groups/'
-				+ id + '.do');
+		menu.submitDataRequest(menu, 'services/ContactsEditGroup',
+				'rest/Groups/' + id + '.do');
 	}
 
 	function delGroup(self) {

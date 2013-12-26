@@ -5,7 +5,7 @@ package ru.prbb.analytics.repo;
 
 import java.util.List;
 
-import ru.prbb.analytics.domain.EquityItem;
+import ru.prbb.analytics.domain.EquitiesItem;
 import ru.prbb.analytics.domain.PortfolioItem;
 import ru.prbb.analytics.domain.SimpleItem;
 
@@ -43,14 +43,16 @@ public interface EquitiesDao {
 	 *            numeric(18) = null
 	 * 
 	 */
-	List<EquityItem> findAllEquities(String filter, Long security_id, Integer fund_flag);
+	List<EquitiesItem> findAllEquities(String filter, Long security_id, Integer fund_flag);
 
 	/**
 	 * select name from dbo.anca_WebGet_ajaxEquityFilter_v
 	 * 
+	 * @param query
+	 * 
 	 * @return
 	 */
-	List<SimpleItem> comboFilter();
+	List<SimpleItem> comboFilter(String query);
 
 	/**
 	 * select id, name from dbo.anca_WebGet_ajaxEquity_v

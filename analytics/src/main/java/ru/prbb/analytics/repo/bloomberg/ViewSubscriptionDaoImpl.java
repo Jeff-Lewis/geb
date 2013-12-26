@@ -3,10 +3,10 @@
  */
 package ru.prbb.analytics.repo.bloomberg;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,64 +28,106 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 	@Autowired
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewSubscriptionItem> findAll() {
-		// {call dbo.output_subscriptions_prc}
-		final List<ViewSubscriptionItem> list = new ArrayList<ViewSubscriptionItem>();
-		for (long i = 0; i < 10; i++) {
-			final ViewSubscriptionItem item = new ViewSubscriptionItem();
-			item.setId_subscr(i);
-			item.setSubscription_name("SUBSCRIPTION_NAME_" + i);
-			item.setSubscription_comment("SUBSCRIPTION_COMMENT_" + i);
-			item.setSubscription_status((i % 2) == 1 ? "Running" : "Stopped");
-			list.add(item);
+		String sql = "{call dbo.output_subscriptions_prc}";
+		Query q = em.createNativeQuery(sql, ViewSubscriptionItem.class);
+		return q.getResultList();
+	}
+
+	@Override
+	public ViewSubscriptionItem findById(Long id) {
+		List<ViewSubscriptionItem> list = findAll();
+		for (ViewSubscriptionItem item : list) {
+			if (id.equals(item.getId())) {
+				return item;
+			}
 		}
-		return list;
-	}
 
-	@Override
-	public List<SecuritySubscrItem> findAllSecurities(Long id) {
-		if (null == id) {
-			String sql = "{call dbo.output_securities_subscr_prc}";
-			return em.createQuery(sql, SecuritySubscrItem.class).getResultList();
-		} else {
-			String sql = "{call dbo.secs_in_subscription_prc :id}";
-			return em.createQuery(sql, SecuritySubscrItem.class).setParameter(1, id).getResultList();
-		}
-	}
-
-	@Override
-	public void put(String name, String comment) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public ViewSubscriptionItem get(Long id) {
-		final ViewSubscriptionItem item = new ViewSubscriptionItem();
-		item.setId_subscr(id);
-		item.setSubscription_name("SUBSCRIPTION_NAME_" + id);
-		item.setSubscription_comment("SUBSCRIPTION_COMMENT_" + id);
-		item.setSubscription_status((id % 2) == 1 ? "Running" : "Stopped");
+		ViewSubscriptionItem item = new ViewSubscriptionItem();
+		item.setId(id);
+		item.setName(id.toString());
+		item.setComment("findById:" + id);
 		return item;
 	}
 
 	@Override
-	public void delete(Long id) {
-		// TODO Auto-generated method stub
-
+	public int put(String name, String comment) {
+		String sql = "{call dbo.create_subscription_proc ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, name)
+				.setParameter(2, comment);
+		return q.executeUpdate();
 	}
 
 	@Override
-	public void start(Long id) {
-		// TODO Auto-generated method stub
+	public int deleteById(Long id) {
+		String sql = "{call dbo.remove_subscription_proc ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SecuritySubscrItem> findAllSecurities() {
+		String sql = "{call dbo.output_securities_subscr_prc}";
+		Query q = em.createNativeQuery(sql, SecuritySubscrItem.class);
+		return q.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SecuritySubscrItem> findAllSecurities(Long id) {
+		String sql = "{call dbo.secs_in_subscription_prc ?}";
+		Query q = em.createNativeQuery(sql, SecuritySubscrItem.class)
+				.setParameter(1, id);
+		return q.getResultList();
 	}
 
 	@Override
-	public void stop(Long id) {
-		// TODO Auto-generated method stub
+	public int[] staffAdd(Long id_subscr, Long[] ids) {
+		String sql = "{call dbo.subscribe_security_proc ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		q.setParameter(2, id_subscr);
+		int i = 0;
+		int[] res = new int[ids.length];
+		for (Long id_sec : ids) {
+			q.setParameter(1, id_sec);
+			res[i++] = q.executeUpdate();
+		}
+		return res;
+	}
 
+	@Override
+	public int[] staffDel(Long id_subscr, Long[] ids) {
+		String sql = "{call dbo.unsubscribe_security_proc ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		q.setParameter(2, id_subscr);
+		int i = 0;
+		int[] res = new int[ids.length];
+		for (Long id_sec : ids) {
+			q.setParameter(1, id_sec);
+			res[i++] = q.executeUpdate();
+		}
+		return res;
+	}
+
+	@Override
+	public int start(Long id) {
+		String sql = "{call dbo.run_subscription_proc ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
+	}
+
+	@Override
+	public int stop(Long id) {
+		String sql = "{call dbo.stop_subscription_proc ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
 	}
 
 }

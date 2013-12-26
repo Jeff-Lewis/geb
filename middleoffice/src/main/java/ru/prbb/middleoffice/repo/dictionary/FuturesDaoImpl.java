@@ -29,14 +29,16 @@ public class FuturesDaoImpl implements FuturesDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<FuturesItem> findAll() {
-		String sql = "execute dbo.mo_WebGet_SelectFuturesAlias_sp";
+		String sql = "{call dbo.mo_WebGet_SelectFuturesAlias_sp}";
 		Query q = em.createNativeQuery(sql, FuturesItem.class);
 		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public FuturesItem findById(Long id) {
 		// "{call dbo.mo_WebGet_SelectFuturesAlias_sp ?}"
@@ -45,7 +47,7 @@ public class FuturesDaoImpl implements FuturesDao
 
 	@Override
 	public int put(String name, Double coef, String comment) {
-		String sql = "execute dbo.mo_WebSet_putFuturesAlias_sp ?, ?, ?";
+		String sql = "{call dbo.mo_WebSet_putFuturesAlias_sp ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name)
 				.setParameter(2, coef)
@@ -61,12 +63,13 @@ public class FuturesDaoImpl implements FuturesDao
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "execute dbo.mo_WebSet_udFuturesAlias_sp 'd', ?";
+		String sql = "{call dbo.mo_WebSet_udFuturesAlias_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();
 	}
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {

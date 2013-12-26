@@ -52,13 +52,20 @@ App.util.Renderer = (function() {
 			case 3:
 				format = '0,000.000';
 				break;
+			case 9:
+				format = '0,000.000000000';
+				break;
+			case 12:
+				format = '0,000.000000000000';
+				break;
 			case 0:
 				format = '0,000';
 				break;
 			}
 
 			return function(v) {
-				return Ext.util.Format.number(v, format).replace(/,/g, ' ');
+				v = Ext.util.Format.number(v, format);
+				return v.replace(/,/g, ' ');// .replace('.', ',');
 			};
 		},
 
@@ -74,7 +81,12 @@ App.util.Renderer = (function() {
 		time : function(format) {
 			format = format || 'H:i:s';
 			return function(v) {
-				v = Ext.util.Format.substr(v, 11, 8);
+				if (v && v.length > 11) {
+					v = Ext.util.Format.substr(v, 11, 8);
+				}
+				if (v && v.length == 5) {
+					v += ':00';
+				}
 				v = Date.parseDate(v, 'H:i:s');
 				return v ? v.format(format) : '';
 			};
@@ -83,7 +95,8 @@ App.util.Renderer = (function() {
 		datetime : function(format) {
 			format = format || 'd.m.Y H:i:s';
 			return function(v) {
-				v = Date.parseDate(v, 'Y-m-dTH:i:s');
+				v = Ext.util.Format.substr(v, 0, 19);
+				v = Date.parseDate(v, 'Y-m-d H:i:s');
 				return v ? v.format(format) : '';
 			};
 		},

@@ -10,10 +10,10 @@
 		reader : new Ext.data.JsonReader({
 			// root : 'info',
 			fields : [ 'id_sec', 'company_short_name', 'industry_group',
-					'CurrentPrice', 'TargetPrice', 'TargetPriceCons12M',
-					'YearHigh', 'YearLow', 'PE_current', 'PE_5', 'PE_10',
-					'DividendYield', 'BestPrice', 'DeltaBstCur_pct',
-					'CurrentUpside_pct', 'Currency' ]
+					'currentPrice', 'targetPrice', 'targetPriceCons12M',
+					'yearHigh', 'yearLow', 'pe_current', 'pe_5', 'pe_10',
+					'dividendYield', 'bestPrice', 'deltaBstCur_pct',
+					'currentUpside_pct', 'currency' ]
 		}),
 		sortInfo : {
 			field : 'company_short_name'
@@ -73,78 +73,61 @@
 		columns : [ {
 			header : 'company_short_name',
 			dataIndex : 'company_short_name',
-			sortable : true,
-			width : 20,
 			renderer : rendererDetailPortfolioInfo
 		}, {
 			header : 'industry_group',
-			dataIndex : 'industry_group',
-			width : 20
+			dataIndex : 'industry_group'
 		}, {
 			header : 'CurrentPrice',
-			dataIndex : 'CurrentPrice',
-			align : 'right',
-			width : 20,
-			sortable : true
+			dataIndex : 'currentPrice',
+			align : 'right'
 		}, {
 			header : 'BestPrice',
-			dataIndex : 'BestPrice',
-			align : 'right',
-			width : 20
+			dataIndex : 'bestPrice',
+			align : 'right'
 		}, {
 			header : 'DeltaBstCur_pct',
-			dataIndex : 'DeltaBstCur_pct',
-			align : 'right',
-			width : 20
+			dataIndex : 'deltaBstCur_pct',
+			align : 'right'
 		}, {
 			header : 'CurrentUpside_pct',
-			dataIndex : 'CurrentUpside_pct',
-			align : 'right',
-			width : 20
+			dataIndex : 'currentUpside_pct',
+			align : 'right'
 		}, {
 			header : 'TargetPrice',
-			dataIndex : 'TargetPrice',
-			align : 'right',
-			width : 20
+			dataIndex : 'targetPrice',
+			align : 'right'
 		}, {
 			header : 'TargetPriceCons12M',
-			dataIndex : 'TargetPriceCons12M',
-			align : 'right',
-			width : 20
+			dataIndex : 'targetPriceCons12M',
+			align : 'right'
 		}, {
 			header : 'YearHigh',
-			dataIndex : 'YearHigh',
-			align : 'right',
-			width : 20
+			dataIndex : 'yearHigh',
+			align : 'right'
 		}, {
 			header : 'YearLow',
-			dataIndex : 'YearLow',
-			align : 'right',
-			width : 20
+			dataIndex : 'yearLow',
+			align : 'right'
 		}, {
 			header : 'PE_current',
-			dataIndex : 'PE_current',
-			align : 'right',
-			width : 20
+			dataIndex : 'pe_current',
+			align : 'right'
 		}, {
 			header : 'PE_5',
-			dataIndex : 'PE_5',
-			align : 'right',
-			width : 20
+			dataIndex : 'pe_5',
+			align : 'right'
 		}, {
 			header : 'PE_10',
-			dataIndex : 'PE_10',
-			align : 'right',
-			width : 20
+			dataIndex : 'pe_10',
+			align : 'right'
 		}, {
 			header : 'DividendYield',
-			dataIndex : 'DividendYield',
-			align : 'right',
-			width : 20
+			dataIndex : 'dividendYield',
+			align : 'right'
 		}, {
 			header : 'Currency',
-			dataIndex : 'Currency',
-			width : 20
+			dataIndex : 'currency'
 		} ]
 	});
 })();

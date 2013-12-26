@@ -37,8 +37,8 @@ public class BrokersForecastController
 	public @ResponseBody
 	List<BrokersForecastItem> show(
 			@RequestParam(required = false) String date,
-			@RequestParam(required = false) String broker,
-			@RequestParam(required = false) String equity)
+			@RequestParam(required = false) Long broker,
+			@RequestParam(required = false) Long equity)
 	{
 		return dao.execute(date, broker, equity);
 	}

@@ -3,15 +3,18 @@
  */
 package ru.prbb.analytics.repo.bloomberg;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SimpleItem;
 
 /**
@@ -36,9 +39,19 @@ public class RequestBDHDaoImpl implements RequestBDHDao
 
 	@Override
 	public List<SimpleItem> findParams() {
-		// select code from multy_request_params_v
-		String sql = "select 0 as id, code as name from multy_request_params_v";
-		return em.createQuery(sql, SimpleItem.class).getResultList();
+		String sql = "select code as name from multy_request_params_v";
+		Query q = em.createNativeQuery(sql);
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<SimpleItem> res = new ArrayList<>();
+		long id = 0;
+		for (Object object : list) {
+			SimpleItem item = new SimpleItem();
+			item.setId(++id);
+			item.setName(Utils.toString(object));
+			res.add(item);
+		}
+		return res;
 	}
 
 }

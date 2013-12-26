@@ -5,7 +5,8 @@ package ru.prbb.middleoffice.repo.services.contacts;
 
 import java.util.List;
 
-import ru.prbb.middleoffice.domain.GroupItem;
+import ru.prbb.middleoffice.domain.GroupAddressItem;
+import ru.prbb.middleoffice.domain.GroupContactsItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
@@ -17,53 +18,68 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 public interface GroupsDao {
 
 	/**
+	 * 
 	 * @return
 	 */
 	List<SimpleItem> findAll();
 
 	/**
+	 * 
 	 * @param id
+	 * @return
 	 */
 	SimpleItem findById(Long id);
 
 	/**
+	 * 
 	 * @param name
+	 * @return
 	 */
-	void put(String name);
+	int put(String name);
 
 	/**
+	 * 
 	 * @param id
 	 * @param name
+	 * @return
 	 */
-	void updateById(Long id, String name);
+	int updateById(Long id, String name);
 
 	/**
-	 * @param id
-	 */
-	void deleteById(Long id);
-
-	/**
+	 * 
 	 * @param id
 	 * @return
 	 */
-	List<GroupItem> findAllAddresses(Long id);
+	int deleteById(Long id);
 
 	/**
+	 * 
 	 * @param id
 	 * @return
 	 */
-	List<GroupItem> getContacts(Long id);
+	List<GroupAddressItem> findAllAddresses(Long id);
 
 	/**
+	 * 
 	 * @param id
-	 * @param cids
+	 * @return
 	 */
-	void putStaff(Long id, Long[] cids);
+	List<GroupContactsItem> findAllContacts(Long id);
 
 	/**
+	 * 
 	 * @param id
 	 * @param cids
+	 * @return
 	 */
-	void deleteStaff(Long id, Long[] cids);
+	int[] putStaff(Long id, Long[] cids);
+
+	/**
+	 * 
+	 * @param id
+	 * @param cids
+	 * @return
+	 */
+	int[] deleteStaff(Long id, Long[] cids);
 
 }

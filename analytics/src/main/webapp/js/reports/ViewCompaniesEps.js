@@ -9,7 +9,7 @@
 		url : 'rest/ViewCompaniesEps.do',
 		reader : new Ext.data.JsonReader({
 			// root : 'info',
-			fields : [ 'id_sec', 'sector', 'EPS', 'related_security',
+			fields : [ 'id_sec', 'sector', 'eps', 'related_security',
 					'security_code' ],
 		}),
 		groupField : 'sector',
@@ -49,7 +49,7 @@
 			sortable : true
 		}, {
 			header : 'EPS',
-			dataIndex : 'EPS',
+			dataIndex : 'eps',
 			width : 50
 		}, {
 			header : 'Сектор',

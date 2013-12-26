@@ -28,17 +28,19 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CountryTaxItem> findAll() {
-		String sql = "execute dbo.mo_WebGet_CountryTaxes_sp";
+		String sql = "{call dbo.mo_WebGet_CountryTaxes_sp}";
 		Query q = em.createNativeQuery(sql, CountryTaxItem.class);
 		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public CountryTaxItem findById(Long id) {
-		String sql = "execute dbo.mo_WebGet_CountryTaxes_sp ?";
+		String sql = "{call dbo.mo_WebGet_CountryTaxes_sp ?}";
 		Query q = em.createNativeQuery(sql, CountryTaxItem.class)
 				.setParameter(1, id);
 		return (CountryTaxItem) q.getSingleResult();
@@ -46,7 +48,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 
 	@Override
 	public int put(Long securityType, Long country, Long broker, Double value, Date dateBegin) {
-		String sql = "execute dbo.mo_WebSet_putCountryTaxes_sp ?, ?, ?, ?, ?";
+		String sql = "{call dbo.mo_WebSet_putCountryTaxes_sp ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, securityType)
 				.setParameter(2, country)
@@ -58,7 +60,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 
 	@Override
 	public int updateById(Long id, Double value, Date dateBegin, Date dateEnd) {
-		String sql = "execute dbo.mo_WebSet_udCountryTaxes_sp 'u', ?, ?, ?, ?";
+		String sql = "{call dbo.mo_WebSet_udCountryTaxes_sp 'u', ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, value)
@@ -69,7 +71,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "execute dbo.mo_WebSet_udCountryTaxes_sp 'd', ?";
+		String sql = "{call dbo.mo_WebSet_udCountryTaxes_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();

@@ -28,10 +28,11 @@ public class DividendsDaoImpl implements DividendsDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DividendItem> findAll(Long security, Long client, Long broker, Long account, Date begin, Date end) {
-		String sql = "execute dbo.mo_WebGet_Dividends_sp null, ?, ?, ?, ?, ?, ?";
+		String sql = "{call dbo.mo_WebGet_Dividends_sp null, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql, DividendItem.class)
 				.setParameter(1, security)
 				.setParameter(2, client)
@@ -42,9 +43,10 @@ public class DividendsDaoImpl implements DividendsDao
 		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public DividendItem findById(Long id) {
-		String sql = "execute dbo.mo_WebGet_Dividends_sp ?";
+		String sql = "{call dbo.mo_WebGet_Dividends_sp ?}";
 		Query q = em.createNativeQuery(sql, DividendItem.class)
 				.setParameter(1, id);
 		return (DividendItem) q.getSingleResult();
@@ -54,7 +56,7 @@ public class DividendsDaoImpl implements DividendsDao
 	public int put(Long security, Long account, Long currency,
 			Date record, Date receive, Integer quantity,
 			Double dividend_per_share, Double extra_costs_per_share) {
-		String sql = "execute dbo.mo_WebSet_putDividends_sp ?, ?, ?, ?, ?, ?, ?, ?";
+		String sql = "{call dbo.mo_WebSet_putDividends_sp ?, ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, security)
 				.setParameter(2, account)
@@ -69,7 +71,7 @@ public class DividendsDaoImpl implements DividendsDao
 
 	@Override
 	public int updateById(Long id, Date receive) {
-		String sql = "execute dbo.mo_WebSet_uActualDividends_sp ?, ?";
+		String sql = "{call dbo.mo_WebSet_uActualDividends_sp ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, receive);
@@ -78,7 +80,7 @@ public class DividendsDaoImpl implements DividendsDao
 
 	@Override
 	public int updateAttrById(Long id, String type, String value) {
-		String sql = "execute dbo.mo_WebSet_setDividendAttributes_sp ?, ?, ?";
+		String sql = "{call dbo.mo_WebSet_setDividendAttributes_sp ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, type)
@@ -88,7 +90,7 @@ public class DividendsDaoImpl implements DividendsDao
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "execute dbo.mo_WebSet_dDividends_sp ?";
+		String sql = "{call dbo.mo_WebSet_dDividends_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();

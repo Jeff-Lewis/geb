@@ -10,19 +10,13 @@
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'portfolio/TransferOperationsSelect.html',
-		root : 'info',
-		fields : [ 'id', 'Client', 'Accout', 'Security', 'Currency',
-				'TransferQuantity', 'TransferPrice', 'TransferDate',
-				'SourceFund', 'SourceBatch', 'SourceQuantity',
-				'SourceOperation', 'DestinationFund', 'DestinationBatch',
-				'DestinationOperation', 'Comment', {
-					name : 'Funding',
-					type : 'boolean'
-				}, {
-					name : 'selected',
-					type : 'boolean'
-				} ],
+		url : 'rest/TransferOperations.do',
+		// root : 'info',
+		fields : [ 'id', 'client', 'accout', 'security', 'currency',
+				'transferQuantity', 'transferPrice', 'transferDate',
+				'sourceFund', 'sourceBatch', 'sourceQuantity',
+				'sourceOperation', 'destinationFund', 'destinationBatch',
+				'destinationOperation', 'comment', 'funding', 'selected' ],
 		listeners : App.ui.listenersJsonStore()
 	});
 
@@ -37,8 +31,8 @@
 
 		info.reload({
 			params : {
-				fromDate : App.util.Format.dateYMD(fd),
-				toDate : App.util.Format.dateYMD(td),
+				dateBegin : App.util.Format.dateYMD(fd),
+				dateEnd : App.util.Format.dateYMD(td),
 				ticker : Ext.getCmp(_ticker).getValue()
 			}
 		});
@@ -59,7 +53,7 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'portfolio/TransferOperationsDelete.html',
+			url : 'rest/TransferOperations/Del.do',
 			params : {
 				ids : ids
 			},
@@ -97,7 +91,7 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'portfolio/TransferOperationsUpdate.html',
+			url : 'rest/TransferOperations/Set.do',
 			params : {
 				ids : ids,
 				field : column,
@@ -124,30 +118,20 @@
 	var editorTransferQuantity = new Ext.form.NumberField({
 		allowBlank : false,
 		allowDecimals : false,
-	// listeners : {
-	// change : function(field, newValue) {
-	// updateField('TransferQuantity', newValue);
-	// }
-	// }
 	});
 
 	var editorTransferPrice = new Ext.form.NumberField({
 		allowBlank : false,
 		allowNegative : false,
 		decimalPrecision : 6,
-	// listeners : {
-	// change : function(field, newValue) {
-	// updateField('TransferPrice', newValue);
-	// }
-	// }
 	});
 
 	var editorDestinationFund = new Ext.form.ComboBox({
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
-			url : 'dictionary/funds/funds-cb.html',
-			root : 'info',
-			fields : [ 'name' ],
+			url : 'rest/TransferOperations/Funds.do',
+			// root : 'info',
+			fields : [ 'id', 'name' ],
 			sortInfo : {
 				field : 'name'
 			}
@@ -157,30 +141,15 @@
 		loadingText : 'Поиск...',
 		triggerAction : 'all',
 		editable : false,
-	// listeners : {
-	// change : function(field, newValue) {
-	// updateField('DestinationFund', newValue);
-	// }
-	// }
 	});
 
 	var editorDestinationBatch = new Ext.form.NumberField({
 		allowBlank : false,
 		allowDecimals : false,
-	// listeners : {
-	// change : function(field, newValue) {
-	// updateField('DestinationBatch', newValue);
-	// }
-	// }
 	});
 
 	var editorComment = new Ext.form.TextField({
 		allowBlank : false,
-	// listeners : {
-	// change : function(field, newValue) {
-	// updateField('Comment', newValue);
-	// }
-	// }
 	});
 
 	function exportExcel() {
@@ -192,7 +161,7 @@
 			return;
 		}
 
-		window.open('print/TransferOperationsExport.html?' + 'dateBegin='
+		window.open('rest/TransferOperations/Export.do?' + 'dateBegin='
 				+ App.util.Format.dateYMD(fd) + '&dateEnd='
 				+ App.util.Format.dateYMD(td) + '&ticker='
 				+ Ext.getCmp(_ticker).getValue());
@@ -251,25 +220,21 @@
 			xtype : 'combo',
 			width : 150,
 			fieldLabel : 'Тикер Блумберг',
+			valueField : 'id',
 			displayField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'utils/choose-ticker1.html',
-				root : 'info',
-				fields : [ 'name' ],
+				url : 'rest/TransferOperations/Tickers.do',
+				// root : 'info',
+				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
 				}
 			}),
 			loadingText : 'Поиск...',
+			triggerAction : 'all',
 			minChars : 2,
-			typeAhead : false,
-			listeners : {
-				beforequery : function(qe) {
-					qe.query = qe.combo.getValue();
-					qe.forceAll = !qe.query;
-				}
-			}
+			typeAhead : false
 		}, {
 			xtype : 'button',
 			text : 'Х',
@@ -308,14 +273,6 @@
 		} ]
 	});
 
-	function renderFunding(value, meta, record) {
-		if (value) {
-			meta.attr = 'style="background: url(img/vwicn082.gif) no-repeat center transparent;"';
-		} else {
-			meta.attr = 'style="background: url(img/vwicn081.gif) no-repeat center transparent;"';
-		}
-	}
-
 	return new Ext.grid.EditorGridPanel({
 		id : 'TransferOperations-component',
 		title : 'Список перекидок',
@@ -337,67 +294,67 @@
 			width : 35
 		}), {
 			header : 'Client',
-			dataIndex : 'Client'
+			dataIndex : 'client'
 		}, {
 			header : 'Accout',
-			dataIndex : 'Accout'
+			dataIndex : 'accout'
 		}, {
 			header : 'Security',
-			dataIndex : 'Security'
+			dataIndex : 'security'
 		}, {
 			header : 'Currency',
-			dataIndex : 'Currency'
+			dataIndex : 'currency'
 		}, {
 			header : 'Funding',
-			dataIndex : 'Funding',
+			dataIndex : 'funding',
 			width : 30,
 			align : 'center',
-			renderer : renderFunding
+			renderer : App.util.Renderer.bool()
 		}, {
 			header : 'TransferQuantity',
-			dataIndex : 'TransferQuantity',
+			dataIndex : 'transferQuantity',
 			align : 'right',
 			renderer : App.util.Renderer.number(0),
 			editor : editorTransferQuantity
 		}, {
 			header : 'TransferPrice',
-			dataIndex : 'TransferPrice',
+			dataIndex : 'transferPrice',
 			align : 'right',
 			renderer : App.util.Renderer.number(3),
 			editor : editorTransferPrice
 		}, {
 			header : 'TransferDate',
-			dataIndex : 'TransferDate',
+			dataIndex : 'transferDate',
 			renderer : App.util.Renderer.date(),
 			width : 50,
 		}, {
 			header : 'SourceFund',
-			dataIndex : 'SourceFund'
+			dataIndex : 'sourceFund'
 		}, {
 			header : 'SourceBatch',
-			dataIndex : 'SourceBatch'
+			dataIndex : 'sourceBatch'
 		}, {
 			header : 'SourceQuantity',
-			dataIndex : 'SourceQuantity',
+			dataIndex : 'sourceQuantity',
 			align : 'right',
 			renderer : App.util.Renderer.number(0),
 		}, {
 			header : 'SourceOperation',
-			dataIndex : 'SourceOperation'
+			dataIndex : 'sourceOperation'
 		}, {
 			header : 'DestinationFund',
-			dataIndex : 'DestinationFund',
+			dataIndex : 'destinationFund',
 			editor : editorDestinationFund
 		}, {
 			header : 'DestinationBatch',
-			dataIndex : 'DestinationBatch',
+			dataIndex : 'destinationBatch',
 			editor : editorDestinationBatch
 		}, {
 			header : 'DestinationOperation',
-			dataIndex : 'DestinationOperation'
+			dataIndex : 'destinationOperation'
 		}, {
 			header : 'Comment',
-			dataIndex : 'Comment',
+			dataIndex : 'comment',
 			editor : editorComment
 		} ],
 		viewConfig : {
@@ -410,11 +367,11 @@
 				var sc = sm.getSelectedCell();
 
 				switch (grid.getColumnModel().getDataIndex(sc[1])) {
-				case 'TransferQuantity':
-				case 'TransferPrice':
-				case 'DestinationFund':
-				case 'DestinationBatch':
-				case 'Comment':
+				case 'transferQuantity':
+				case 'transferPrice':
+				case 'destinationFund':
+				case 'destinationBatch':
+				case 'comment':
 					return;
 				}
 

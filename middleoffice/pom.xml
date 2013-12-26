@@ -24,6 +24,7 @@
         <!-- JBoss AS plugin for deployment -->
         <version.jboss.as.maven.plugin>7.1.1.Final</version.jboss.as.maven.plugin>
 
+        <version.java>1.7</version.java>
     </properties>
 
     <dependencyManagement>
@@ -307,8 +308,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>${version.java}</source>
+                    <target>${version.java}</target>
                 </configuration>
             </plugin>
             <!-- Deployent on AS from console -->

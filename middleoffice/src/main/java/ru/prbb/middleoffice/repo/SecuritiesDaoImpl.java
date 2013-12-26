@@ -66,7 +66,7 @@ public class SecuritiesDaoImpl implements SecuritiesDao
 		}
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
-		List<SimpleItem> res = new ArrayList<SimpleItem>(list.size());
+		List<SimpleItem> res = new ArrayList<>(list.size());
 		long id = 0;
 		for (Object object : list) {
 			SimpleItem item = new SimpleItem();

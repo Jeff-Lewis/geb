@@ -198,7 +198,7 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'bloomberg/RequestBDHeps.do',
+			url : 'rest/RequestBDHeps.do',
 			params : {
 				security : ids,
 				params : idsp,

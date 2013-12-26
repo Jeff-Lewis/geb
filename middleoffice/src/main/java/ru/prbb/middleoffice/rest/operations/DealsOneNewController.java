@@ -30,7 +30,7 @@ import ru.prbb.middleoffice.repo.operations.DealsOneNewDao;
 @RequestMapping("/rest/DealsOneNew")
 public class DealsOneNewController
 {
-	// @Autowired
+	@Autowired
 	private DealsOneNewDao dao;
 	@Autowired
 	private SecurityTypeDao daoSecurityType;

@@ -4,7 +4,6 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -26,7 +25,7 @@ public class LogContactItem implements Serializable {
 	private Long gid;
 	private String gname;
 	private String action;
-	private Date date;
+	private String date;
 
 	/**
 	 * @return the number
@@ -151,7 +150,7 @@ public class LogContactItem implements Serializable {
 	/**
 	 * @return the date
 	 */
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
@@ -159,7 +158,7 @@ public class LogContactItem implements Serializable {
 	 * @param date
 	 *            the date to set
 	 */
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

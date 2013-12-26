@@ -19,12 +19,12 @@ public interface ViewPortfolioDao {
 	/**
 	 * @return
 	 */
-	List<ViewPortfolioSecurityItem> getSecurities();
+	List<ViewPortfolioSecurityItem> findAll();
 
 	/**
 	 * @return
 	 */
-	List<ViewPortfolioItem> getPortfolio();
+	List<ViewPortfolioItem> findAllPortfolio();
 
 	/**
 	 * @param ids

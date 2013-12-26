@@ -4,25 +4,21 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.math.BigDecimal;
 
 /**
  * @author RBr
  * 
  */
-@Entity
 public class ViewModelPriceItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
 	private String equity_fund_ticker;
 	private String company_short_name;
 	private String firm_name;
 	private String bloomberg_code;
 	private Integer firm_rating;
-	private Double target_price;
+	private BigDecimal target_price;
 	private String price_date;
 	private String price_period;
 	private Integer TR;
@@ -105,7 +101,7 @@ public class ViewModelPriceItem implements Serializable {
 	/**
 	 * @return the target_price
 	 */
-	public Double getTarget_price() {
+	public BigDecimal getTarget_price() {
 		return target_price;
 	}
 
@@ -113,7 +109,7 @@ public class ViewModelPriceItem implements Serializable {
 	 * @param target_price
 	 *            the target_price to set
 	 */
-	public void setTarget_price(Double target_price) {
+	public void setTarget_price(BigDecimal target_price) {
 		this.target_price = target_price;
 	}
 

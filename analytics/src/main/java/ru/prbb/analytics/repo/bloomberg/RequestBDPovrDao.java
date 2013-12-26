@@ -37,4 +37,10 @@ public interface RequestBDPovrDao {
 	 */
 	List<SimpleItem> findParams();
 
+	/**
+	 * @param query
+	 * @return
+	 */
+	List<SimpleItem> comboFilterOverride(String query);
+
 }

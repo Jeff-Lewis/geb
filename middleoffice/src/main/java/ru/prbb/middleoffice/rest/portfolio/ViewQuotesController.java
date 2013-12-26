@@ -1,6 +1,5 @@
 package ru.prbb.middleoffice.rest.portfolio;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
@@ -26,7 +26,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewQuotesDao;
 @RequestMapping("/rest/ViewQuotes")
 public class ViewQuotesController
 {
-	//@Autowired
+	@Autowired
 	private ViewQuotesDao dao;
 	@Autowired
 	private SecuritiesDao daoSecurities;
@@ -34,11 +34,11 @@ public class ViewQuotesController
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	ResultData show(
-			@RequestParam Long[] securities,
 			@RequestParam String dateBegin,
-			@RequestParam String dateEnd)
+			@RequestParam String dateEnd,
+			@RequestParam Long[] securities)
 	{
-		return new ResultData(new HashMap<String, Object>());
+		return new ResultData(dao.execute(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), securities));
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

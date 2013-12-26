@@ -24,33 +24,62 @@ public interface ViewSubscriptionDao {
 	/**
 	 * @param name
 	 * @param comment
+	 * @return
 	 */
-	void put(String name, String comment);
+	int put(String name, String comment);
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	ViewSubscriptionItem findById(Long id);
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	int deleteById(Long id);
 
 	/**
 	 * @param id
+	 * @return
 	 */
-	ViewSubscriptionItem get(Long id);
+	int start(Long id);
 
 	/**
 	 * @param id
+	 * @return
 	 */
-	void delete(Long id);
+	int stop(Long id);
 
 	/**
 	 * @param id
+	 * @return
 	 */
-	void start(Long id);
-
-	/**
-	 * @param id
-	 */
-	void stop(Long id);
+	List<SecuritySubscrItem> findAllSecurities();
 
 	/**
 	 * @param id
 	 * @return
 	 */
 	List<SecuritySubscrItem> findAllSecurities(Long id);
+
+	/**
+	 * 
+	 * @param id
+	 * @param ids
+	 * @return
+	 */
+	int[] staffAdd(Long id, Long[] ids);
+
+	/**
+	 * 
+	 * @param id
+	 * @param ids
+	 * @return
+	 */
+	int[] staffDel(Long id, Long[] ids);
 
 }

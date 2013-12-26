@@ -27,14 +27,16 @@ public class SwapsDaoImpl implements SwapsDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SwapItem> findAll() {
-		String sql = "execute dbo.mo_WebGet_TrsContracts_sp";
+		String sql = "{call dbo.mo_WebGet_TrsContracts_sp}";
 		Query q = em.createNativeQuery(sql, SwapItem.class);
 		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public SwapItem findById(Long id) {
 		// "{call dbo.mo_WebGet_TrsContracts_sp ?}"
@@ -43,7 +45,7 @@ public class SwapsDaoImpl implements SwapsDao
 
 	@Override
 	public int put(String swap, Long security) {
-		String sql = "execute dbo.mo_WebSet_putTrsContract_sp ?, ?";
+		String sql = "{call dbo.mo_WebSet_putTrsContract_sp ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, swap)
 				.setParameter(2, security);
@@ -52,7 +54,7 @@ public class SwapsDaoImpl implements SwapsDao
 
 	@Override
 	public int updateById(Long id, String swap) {
-		String sql = "execute dbo.mo_WebSet_udTrsContracts_sp 'u', ?, ?";
+		String sql = "{call dbo.mo_WebSet_udTrsContracts_sp 'u', ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, swap);
@@ -61,7 +63,7 @@ public class SwapsDaoImpl implements SwapsDao
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "execute dbo.mo_WebSet_udTrsContracts_sp 'd', ?";
+		String sql = "{call dbo.mo_WebSet_udTrsContracts_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();

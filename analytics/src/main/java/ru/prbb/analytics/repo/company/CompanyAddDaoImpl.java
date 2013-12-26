@@ -27,7 +27,7 @@ public class CompanyAddDaoImpl implements CompanyAddDao
 
 	@Override
 	public List<String[]> execute(String[] codes) {
-		final List<String[]> info = new ArrayList<String[]>();
+		final List<String[]> info = new ArrayList<>();
 
 		//		final Map<String, Map<String, String>> a = bs.executeReferenceDataRequest("company-add", codes,
 		//				new String[] {
@@ -40,7 +40,6 @@ public class CompanyAddDaoImpl implements CompanyAddDao
 		//				});
 
 		for (String code : codes) {
-			info.add(new String[] { code, "Загружено" });
 			//			final Map<String, String> answer = a.get(code);
 			//			if (answer.containsKey("securityError")) {
 			//				info.add(new String[] { code, answer.get("securityError") });
@@ -78,7 +77,7 @@ public class CompanyAddDaoImpl implements CompanyAddDao
 			//							answer.get("EARN_EST_CRNCY"),
 			//							answer.get("EQY_FUND_TICKER"),
 			//							answer.get("EQY_FISCAL_YR_END"));
-			//					info.add(new String[] { code, "Загружено" });
+			info.add(new String[] { code, "Загружено" });
 			//				} catch (DataAccessException e) {
 			//					info.add(new String[] { code, e.toString() });
 			//				}

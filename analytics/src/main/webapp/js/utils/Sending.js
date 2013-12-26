@@ -12,12 +12,12 @@
 	var receiver1 = new Ext.form.ComboBox({
 		fieldLabel : 'Кому SMS',
 		emptyText : 'Введите фамилию сотрудника',
-		displayField : 'value',
+		displayField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
 			url : 'rest/Sending/Phone.do',
 			// root : 'answer',
-			fields : [ 'value' ]
+			fields : [ 'name' ]
 		}),
 		minChars : 2,
 		typeAhead : false,
@@ -28,12 +28,12 @@
 	var receiver2 = new Ext.form.ComboBox({
 		fieldLabel : 'Кому E-Mail',
 		emptyText : 'Введите E-Mail',
-		displayField : 'value',
+		displayField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
 			url : 'rest/Sending/Mail.do',
 			// root : 'answer',
-			fields : [ 'value' ]
+			fields : [ 'name' ]
 		}),
 		minChars : 2,
 		typeAhead : false,
@@ -99,8 +99,8 @@
 			waitMsg : 'Отправка сообщения ...',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					storeRes.loadData(answer.item);
+				if (answer.length) {
+					storeRes.loadData(answer);
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {

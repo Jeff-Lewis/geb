@@ -8,8 +8,8 @@
 		autoLoad : true,
 		url : 'rest/BrokersEstimateChange.do',
 		// root : 'info',
-		fields : [ 'Security', 'Broker', 'targetChange', 'pcntChange',
-				'Recommendation', 'DateInsert' ],
+		fields : [ 'security', 'broker', 'targetChange', 'pcntChange',
+				'recommendation', 'dateInsert' ],
 		listeners : App.ui.listenersJsonStore()
 	});
 
@@ -23,10 +23,10 @@
 		store : info,
 		columns : [ {
 			header : 'Security',
-			dataIndex : 'Security'
+			dataIndex : 'security'
 		}, {
 			header : 'Broker',
-			dataIndex : 'Broker'
+			dataIndex : 'broker'
 		}, {
 			header : 'Target Change',
 			dataIndex : 'targetChange'
@@ -35,10 +35,10 @@
 			dataIndex : 'pcntChange'
 		}, {
 			header : 'Recommendation',
-			dataIndex : 'Recommendation'
+			dataIndex : 'recommendation'
 		}, {
 			header : 'Date Insert',
-			dataIndex : 'DateInsert'
+			dataIndex : 'dateInsert'
 		} ],
 		viewConfig : {
 			forceFit : true,

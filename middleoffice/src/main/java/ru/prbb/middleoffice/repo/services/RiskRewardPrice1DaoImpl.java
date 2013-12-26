@@ -45,7 +45,7 @@ public class RiskRewardPrice1DaoImpl implements RiskRewardPrice1Dao
 		String sql = "{call dbo.mo_WebSet_dSecuritiesAttributes_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		return q.executeUpdate();
+		return 0;//q.executeUpdate();
 	}
 
 }

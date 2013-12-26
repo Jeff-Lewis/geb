@@ -54,12 +54,7 @@
 		autoDestroy : true,
 		autoLoad : true,
 		url : 'rest/BuildModel/Equities.do',
-		baseParams : {
-			fundamentals : 2
-		},
-		// root : 'info',
-		fields : [ 'id_sec', 'security_code', 'short_name', 'portfolio',
-				'wl_flag', 'pivot' ],
+		fields : [ 'id_sec', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
 		},
@@ -70,7 +65,8 @@
 		companies.reload({
 			params : {
 				filter : filter.getValue(),
-				equity : App.Combo.getValueId(equities)
+				equity : App.Combo.getValueId(equities),
+				fundamentals : 2
 			}
 		});
 	}

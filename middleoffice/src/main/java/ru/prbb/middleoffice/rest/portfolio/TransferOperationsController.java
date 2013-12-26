@@ -1,16 +1,20 @@
 package ru.prbb.middleoffice.rest.portfolio;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.domain.TransferOperationsItem;
+import ru.prbb.middleoffice.repo.EquitiesDao;
+import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.portfolio.TransferOperationsDao;
 
 /**
@@ -23,17 +27,21 @@ import ru.prbb.middleoffice.repo.portfolio.TransferOperationsDao;
 @RequestMapping("/rest/TransferOperations")
 public class TransferOperationsController
 {
-	// @Autowired
+	@Autowired
 	private TransferOperationsDao dao;
+	@Autowired
+	private FundsDao daoFunds;
+	@Autowired
+	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Object> show(
+	List<TransferOperationsItem> show(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
-			@RequestParam String ticker)
+			@RequestParam Long ticker)
 	{
-		return new ArrayList<Object>();
+		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
@@ -41,7 +49,7 @@ public class TransferOperationsController
 	Result export(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
-			@RequestParam String ticker)
+			@RequestParam Long ticker)
 	{
 		return Result.SUCCESS;
 	}
@@ -49,43 +57,34 @@ public class TransferOperationsController
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result del(
-			@RequestParam Long[] deals)
+			@RequestParam Long[] ids)
 	{
+		dao.deleteById(ids);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Set", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result set(
-			@RequestParam Long[] deals,
+			@RequestParam Long[] ids,
 			@RequestParam String field,
 			@RequestParam String value)
 	{
+		char ch = Character.toUpperCase(field.charAt(0));
+		StringBuilder sb = new StringBuilder(field);
+		sb.setCharAt(0, ch);
+		field = sb.toString();
+
+		dao.updateById(ids, field, value);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/TradeSystems", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
-	List<SimpleItem> comboTradeSystems(
+	List<SimpleItem> comboFunds(
 			@RequestParam(required = false) String query)
 	{
-		return new ArrayList<SimpleItem>();
-	}
-
-	@RequestMapping(value = "/Accounts", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboAccounts(
-			@RequestParam(required = false) String query)
-	{
-		return new ArrayList<SimpleItem>();
-	}
-
-	@RequestMapping(value = "/Portfolio", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboPortfolio(
-			@RequestParam(required = false) String query)
-	{
-		return new ArrayList<SimpleItem>();
+		return daoFunds.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Tickers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
@@ -93,6 +92,6 @@ public class TransferOperationsController
 	List<SimpleItem> comboTickers(
 			@RequestParam(required = false) String query)
 	{
-		return new ArrayList<SimpleItem>();
+		return daoEquities.findComboPortfolio(query);
 	}
 }

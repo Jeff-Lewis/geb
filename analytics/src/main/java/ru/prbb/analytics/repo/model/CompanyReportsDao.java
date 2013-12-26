@@ -5,6 +5,7 @@ package ru.prbb.analytics.repo.model;
 
 import java.util.List;
 
+import ru.prbb.analytics.domain.CompanyAllItem;
 import ru.prbb.analytics.domain.CompanyStaffItem;
 import ru.prbb.analytics.domain.SimpleItem;
 
@@ -29,25 +30,28 @@ public interface CompanyReportsDao {
 
 	/**
 	 * @param name
+	 * @return
 	 */
-	void put(String name);
+	int put(String name);
 
 	/**
 	 * @param id
 	 * @param name
+	 * @return
 	 */
-	void renameById(Long id, String name);
-
-	/**
-	 * @param id
-	 */
-	void deleteById(Long id);
+	int renameById(Long id, String name);
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	List<CompanyStaffItem> findStaff(Long id);
+	int deleteById(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<CompanyAllItem> findStaff(Long id);
 
 	/**
 	 * @param id

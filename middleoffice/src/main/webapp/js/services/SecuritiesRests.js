@@ -12,8 +12,8 @@
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'services/SecuritiesRests.html',
-		root : 'info',
+		url : 'rest/SecuritiesRests.do',
+		// root : 'info',
 		fields : [ 'check_flag', 'id', 'security_code', 'rest_date', 'client',
 				'fund', 'quantity', 'price', 'currency', 'batch', 'lock_rate',
 				'price_usd', 'quantity_flag', 'nkd', 'nkd_usd', 'yield',
@@ -24,10 +24,10 @@
 	function reload() {
 		info.reload({
 			params : {
-				securityId : Ext.getCmp(_security).getValue(),
-				clientId : Ext.getCmp(_client).getValue(),
+				security : Ext.getCmp(_security).getValue(),
+				client : Ext.getCmp(_client).getValue(),
+				fund : Ext.getCmp(_fund).getValue(),
 				batch : Ext.getCmp(_batch).getValue(),
-				fundId : Ext.getCmp(_fund).getValue(),
 				date : App.util.Format.dateYMD(Ext.getCmp(_date).getValue()),
 			}
 		});
@@ -41,12 +41,11 @@
 		}
 
 		var r = grid.getStore().getAt(rowIndex);
+		var id = r.data.id;
 		var val = r.get(fieldName) ? 0 : 1;
-
 		Ext.Ajax.request({
-			url : 'services/SecuritiesRests-set.html',
+			url : 'rest/SecuritiesRests/' + id + '.do',
 			params : {
-				id : r.data.id,
 				checkFlag : val
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -85,8 +84,8 @@
 			displayField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'utils/equities-cb.html',
-				root : 'info',
+				url : 'rest/SecuritiesRests/Equities.do',
+				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
@@ -116,8 +115,8 @@
 			displayField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'dictionary/clients/clients-cb.html',
-				root : 'info',
+				url : 'rest/SecuritiesRests/Clients.do',
+				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
@@ -146,8 +145,8 @@
 			displayField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'dictionary/funds/funds-cb.html',
-				root : 'info',
+				url : 'rest/SecuritiesRests/Funds.do',
+				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'

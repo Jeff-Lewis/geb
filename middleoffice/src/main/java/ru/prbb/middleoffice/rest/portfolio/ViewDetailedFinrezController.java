@@ -1,6 +1,5 @@
 package ru.prbb.middleoffice.rest.portfolio;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.domain.ViewDetailedFinrezItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
@@ -27,7 +28,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDetailedFinrezDao;
 @RequestMapping("/rest/ViewDetailedFinrez")
 public class ViewDetailedFinrezController
 {
-	// @Autowired
+	@Autowired
 	private ViewDetailedFinrezDao dao;
 	@Autowired
 	private ClientsDao daoClients;
@@ -38,14 +39,14 @@ public class ViewDetailedFinrezController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Object> show(
+	List<ViewDetailedFinrezItem> show(
+			@RequestParam Long security,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long client,
-			@RequestParam Long fund,
-			@RequestParam Long security)
+			@RequestParam Long fund)
 	{
-		return new ArrayList<Object>();
+		return dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
@@ -73,7 +74,7 @@ public class ViewDetailedFinrezController
 		return daoFunds.findCombo(query);
 	}
 
-	@RequestMapping(value = "/Tickers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> comboSecurities(
 			@RequestParam(required = false) String query)

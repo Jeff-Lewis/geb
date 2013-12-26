@@ -9,7 +9,7 @@
 
 	var addresses = new Ext.data.JsonStore({
 		autoDestroy : true,
-		autoLoad : true,
+		autoLoad : false,
 		url : 'rest/Groups/Addresses.do',
 		// root : 'addresses',
 		fields : [ 'name', 'cid', 'value', 'type_id' ],
@@ -23,7 +23,7 @@
 
 	var contacts = new Ext.data.JsonStore({
 		autoDestroy : true,
-		autoLoad : true,
+		autoLoad : false,
 		url : 'rest/Groups/Contacts.do',
 		// root : 'contacts',
 		fields : [ 'name', 'cid', 'value' ],
@@ -39,6 +39,10 @@
 		addresses.reload({
 			params : {
 				id : idGroup
+			},
+			callback : function() {
+				var b = Ext.getCmp(_rbEMail).getValue();
+				addresses.filter('type_id', b ? 2 : 1);
 			}
 		});
 		contacts.reload({
@@ -61,7 +65,7 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'rest/Groups/Staff/' + idGroup + '.do',
+			url : 'rest/Groups/Staff/' + idGroup + '/Add.do',
 			params : {
 				cids : ids
 			},
@@ -97,8 +101,7 @@
 		});
 
 		Ext.Ajax.request({
-			method : 'DELETE',
-			url : 'rest/Groups/Staff/' + idGroup + '.do',
+			url : 'rest/Groups/Staff/' + idGroup + '/Del.do',
 			params : {
 				cids : ids
 			},
@@ -121,17 +124,9 @@
 		});
 	}
 
-	function filterEMail(radio, checked) {
+	function filterAddress(radio, checked) {
 		if (checked) {
-			addresses.clearFilter();
-			addresses.filter('type_id', 2);
-		}
-	}
-
-	function filterSMS(radio, checked) {
-		if (checked) {
-			addresses.clearFilter();
-			addresses.filter('type_id', 1);
+			addresses.filter('type_id', radio.inputValue);
 		}
 	}
 
@@ -160,22 +155,22 @@
 			}, '->', {
 				id : _rbEMail,
 				xtype : 'radio',
-				boxLabel : 'E-MAIL',
 				name : 'rgType',
+				boxLabel : 'E-MAIL',
 				inputValue : 2,
 				width : 60,
 				checked : true,
 				listeners : {
-					check : filterEMail
+					check : filterAddress
 				}
 			}, {
 				xtype : 'radio',
-				boxLabel : 'SMS',
 				name : 'rgType',
+				boxLabel : 'SMS',
 				width : 60,
 				inputValue : 1,
 				listeners : {
-					check : filterSMS
+					check : filterAddress
 				}
 			} ],
 
@@ -231,13 +226,6 @@
 			this.setTitle('Редактирование группы: ' + data.item.name);
 
 			reload();
-
-			// Ext.getCmp(_rbEMail).setValue(true);
-			if (Ext.getCmp(_rbEMail)) {
-				filterEMail(null, true);
-			} else {
-				filterSMS(null, true);
-			}
 		}
 	});
 })();

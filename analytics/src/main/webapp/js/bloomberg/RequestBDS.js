@@ -37,9 +37,9 @@
 		autoLoad : true,
 		url : 'rest/RequestBDS/Params.do',
 		// root : 'params',
-		fields : [ 'code' ],
+		fields : [ 'name' ],
 		sortInfo : {
-			field : 'code'
+			field : 'name'
 		}
 	});
 
@@ -83,7 +83,9 @@
 		}),
 		loadingText : 'Поиск...',
 		minChars : 2,
-		typeAhead : false,
+		allowBlank : true,
+		loadingText : 'Поиск...',
+		triggerAction : 'all',
 		listeners : {
 			select : function(combo, record, index) {
 				filterUpdate();
@@ -231,7 +233,7 @@
 			selModel : smParams,
 			columns : [ smParams, {
 				header : 'PARAMETER',
-				dataIndex : 'code'
+				dataIndex : 'name'
 			} ],
 			viewConfig : {
 				forceFit : true,

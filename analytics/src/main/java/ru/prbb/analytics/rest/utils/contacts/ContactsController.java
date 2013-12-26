@@ -29,6 +29,11 @@ public class ContactsController
 	@Autowired
 	private ContactsDao dao;
 
+	/**
+	 * Список контактов
+	 * 
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> listAllMembers()
@@ -36,6 +41,12 @@ public class ContactsController
 		return dao.findAll();
 	}
 
+	/**
+	 * Добавить контакт
+	 * 
+	 * @param name
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result add(
@@ -45,6 +56,13 @@ public class ContactsController
 		return Result.SUCCESS;
 	}
 
+	/**
+	 * Переименовать контакт
+	 * 
+	 * @param id
+	 * @param name
+	 * @return
+	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result update(
@@ -55,6 +73,12 @@ public class ContactsController
 		return Result.SUCCESS;
 	}
 
+	/**
+	 * Контакт
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	ResultData lookupById(
@@ -63,6 +87,12 @@ public class ContactsController
 		return new ResultData(dao.findById(id));
 	}
 
+	/**
+	 * Удалить контакт
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	public @ResponseBody
 	Result deleteById(

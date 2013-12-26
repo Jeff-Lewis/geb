@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  * @author RBr
@@ -52,6 +53,7 @@ public class BrokersForecastDateItem implements Serializable {
 		this.value = value;
 	}
 
+	@Transient
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
 	public String getDisplay() {

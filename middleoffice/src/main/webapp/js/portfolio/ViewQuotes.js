@@ -92,8 +92,8 @@
 		autoDestroy : true,
 		autoLoad : false,
 		// root : 'info',
-		fields : [ 'id_sec', 'SecurityCode', 'ShortName', 'SecurityType',
-				'QuoteDate', 'Price', 'Closeprice' ]
+		fields : [ 'id_sec', 'securityCode', 'shortName', 'securityType',
+				'quoteDate', 'price', 'closeprice' ]
 	});
 
 	var gridResult = new Ext.grid.GridPanel({
@@ -107,36 +107,36 @@
 			width : 30
 		}), {
 			header : 'Тикер',
-			dataIndex : 'SecurityCode',
+			dataIndex : 'securityCode',
 			width : 50,
 			sortable : true
 		}, {
 			header : 'Наименование',
-			dataIndex : 'ShortName',
+			dataIndex : 'shortName',
 			width : 50,
 			sortable : true
 		}, {
 			header : 'Тип',
-			dataIndex : 'SecurityType',
+			dataIndex : 'securityType',
 			width : 50,
 			sortable : true
 		}, {
 			header : 'Дата',
-			dataIndex : 'QuoteDate',
+			dataIndex : 'quoteDate',
 			// align : 'center',
 			renderer : App.util.Renderer.date(),
 			width : 40,
 			sortable : true
 		}, {
 			header : 'Цена закрытия',
-			dataIndex : 'Price',
+			dataIndex : 'price',
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
 			width : 70,
 			sortable : true
 		}, {
 			header : 'Цена закр. на пред. дату',
-			dataIndex : 'Closeprice',
+			dataIndex : 'closeprice',
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
 			width : 70,

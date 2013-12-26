@@ -14,8 +14,8 @@
 		reader : new Ext.data.JsonReader({
 			// root : 'info',
 			fields : [ 'id_sec', 'security_code', 'short_name', 'pivot_group',
-					'broker', 'EPS1Q', 'EPS2Q', 'EPS3Q', 'EPS4Q', 'EPS1CY',
-					'EPS2CY', 'TargetConsensus12m', 'TargetConsensus',
+					'broker', 'eps1Q', 'eps2Q', 'eps3Q', 'eps4Q', 'eps1CY',
+					'eps2CY', 'targetConsensus12m', 'targetConsensus',
 					'recommendation', 'period', 'target_date', 'currency',
 					'date_insert' ],
 		}),
@@ -87,19 +87,20 @@
 				id : _broker,
 				xtype : 'combo',
 				width : 100,
+				valueField : 'id',
 				displayField : 'name',
 				store : new Ext.data.JsonStore({
 					autoDestroy : true,
 					url : 'rest/BrokersForecast/Brokers.do',
 					// root : 'info',
-					fields : [ 'name' ],
+					fields : [ 'id', 'name' ],
 					sortInfo : {
 						field : 'name'
 					}
 				}),
 				loadingText : 'Поиск...',
-				minChars : 1,
-				typeAhead : false
+				triggerAction : 'all',
+				minChars : 1
 			}, {
 				xtype : 'button',
 				text : 'X',
@@ -116,19 +117,20 @@
 				id : _equity,
 				xtype : 'combo',
 				width : 150,
+				valueField : 'id',
 				displayField : 'name',
 				store : new Ext.data.JsonStore({
 					autoDestroy : true,
 					url : 'rest/BrokersForecast/Equities.do',
 					// root : 'info',
-					fields : [ 'name' ],
+					fields : [ 'id', 'name' ],
 					sortInfo : {
 						field : 'name'
 					}
 				}),
 				loadingText : 'Поиск...',
-				minChars : 2,
-				typeAhead : false
+				triggerAction : 'all',
+				minChars : 2
 			}, {
 				xtype : 'button',
 				text : 'X',
@@ -165,48 +167,48 @@
 			dataIndex : 'broker'
 		}, {
 			header : 'EPS1Q',
-			dataIndex : 'EPS1Q',
+			dataIndex : 'eps1Q',
 			align : 'right',
 			width : 60,
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'EPS2Q',
-			dataIndex : 'EPS2Q',
+			dataIndex : 'eps2Q',
 			align : 'right',
 			width : 60,
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'EPS3Q',
-			dataIndex : 'EPS3Q',
+			dataIndex : 'eps3Q',
 			align : 'right',
 			width : 60,
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'EPS4Q',
-			dataIndex : 'EPS4Q',
+			dataIndex : 'eps4Q',
 			align : 'right',
 			width : 60,
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'EPS1CY',
-			dataIndex : 'EPS1CY',
+			dataIndex : 'eps1CY',
 			align : 'right',
 			width : 70,
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'EPS2CY',
-			dataIndex : 'EPS2CY',
+			dataIndex : 'eps2CY',
 			align : 'right',
 			width : 70,
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'TargetConsensus12m',
-			dataIndex : 'TargetConsensus12m',
+			dataIndex : 'targetConsensus12m',
 			align : 'right',
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'TargetConsensus',
-			dataIndex : 'TargetConsensus',
+			dataIndex : 'targetConsensus',
 			align : 'right',
 			renderer : App.util.Renderer.number()
 		}, {

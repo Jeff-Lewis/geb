@@ -5,30 +5,25 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 /**
  * @author RBr
  * 
  */
-@Entity
 public class BrokersEstimateChangeItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	private String Security;
-	private String Broker;
+	private String security;
+	private String broker;
 	private String targetChange;
 	private String pcntChange;
-	private String Recommendation;
-	private String DateInsert;
+	private String recommendation;
+	private String dateInsert;
 
 	/**
 	 * @return the security
 	 */
 	public String getSecurity() {
-		return Security;
+		return security;
 	}
 
 	/**
@@ -36,14 +31,14 @@ public class BrokersEstimateChangeItem implements Serializable {
 	 *            the security to set
 	 */
 	public void setSecurity(String security) {
-		Security = security;
+		this.security = security;
 	}
 
 	/**
 	 * @return the broker
 	 */
 	public String getBroker() {
-		return Broker;
+		return broker;
 	}
 
 	/**
@@ -51,7 +46,7 @@ public class BrokersEstimateChangeItem implements Serializable {
 	 *            the broker to set
 	 */
 	public void setBroker(String broker) {
-		Broker = broker;
+		this.broker = broker;
 	}
 
 	/**
@@ -88,7 +83,7 @@ public class BrokersEstimateChangeItem implements Serializable {
 	 * @return the recommendation
 	 */
 	public String getRecommendation() {
-		return Recommendation;
+		return recommendation;
 	}
 
 	/**
@@ -96,14 +91,14 @@ public class BrokersEstimateChangeItem implements Serializable {
 	 *            the recommendation to set
 	 */
 	public void setRecommendation(String recommendation) {
-		Recommendation = recommendation;
+		this.recommendation = recommendation;
 	}
 
 	/**
 	 * @return the dateInsert
 	 */
 	public String getDateInsert() {
-		return DateInsert;
+		return dateInsert;
 	}
 
 	/**
@@ -111,6 +106,6 @@ public class BrokersEstimateChangeItem implements Serializable {
 	 *            the dateInsert to set
 	 */
 	public void setDateInsert(String dateInsert) {
-		DateInsert = dateInsert;
+		this.dateInsert = dateInsert;
 	}
 }

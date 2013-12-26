@@ -3,9 +3,9 @@
  */
 (function() {
 
-	var _security = Ext.id();
 	var _dateBegin = Ext.id();
 	var _dateEnd = Ext.id();
+	var _security = Ext.id();
 
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
@@ -28,7 +28,7 @@
 			params : {
 				dateBegin : App.util.Format.dateYMD(db),
 				dateEnd : App.util.Format.dateYMD(de),
-				securityId : App.Combo.getValueId(Ext.getCmp(_security))
+				security : Ext.getCmp(_security).getValue()
 			}
 		});
 	}
@@ -112,8 +112,8 @@
 			id : _security,
 			xtype : 'combo',
 			width : 150,
+			valueField : 'id',
 			displayField : 'name',
-			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/ViewDealsREPO/Equities.do',

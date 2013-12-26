@@ -21,7 +21,7 @@
 		autoLoad : false,
 		url : 'rest/Companies/Exceptions.do',
 		// root : 'infoEx',
-		fields : [ 'Exception', 'comment' ]
+		fields : [ 'exception', 'comment' ]
 	});
 
 	var exGrid = new Ext.grid.GridPanel({
@@ -33,12 +33,10 @@
 		store : exStore,
 		columns : [ {
 			header : 'Exception',
-			dataIndex : 'Exception',
-			width : 50
+			dataIndex : 'exception'
 		}, {
 			header : 'Comment',
-			dataIndex : 'comment',
-			width : 50
+			dataIndex : 'comment'
 		} ],
 
 		viewConfig : {
@@ -80,35 +78,27 @@
 		store : quarters,
 		columns : [ {
 			header : 'ПЕРИОД',
-			width : 30,
 			dataIndex : 'period'
 		}, {
 			header : 'EPS',
-			width : 30,
 			dataIndex : 'value'
 		}, {
 			header : 'EQY_DPS',
-			width : 30,
 			dataIndex : 'eqy_dps'
 		}, {
 			header : 'EQY_DVD_YLD_IND',
-			width : 50,
 			dataIndex : 'eqy_dvd_yld_ind'
 		}, {
 			header : 'SALES_REV_TURN',
-			width : 50,
 			dataIndex : 'sales_rev_turn'
 		}, {
 			header : 'PROF_MARGIN',
-			width : 40,
 			dataIndex : 'prof_margin'
 		}, {
 			header : 'OPER_MARGIN',
-			width : 40,
 			dataIndex : 'oper_margin'
 		}, {
 			header : 'Валюта',
-			width : 30,
 			dataIndex : 'crnc'
 		} ],
 		viewConfig : {
@@ -139,43 +129,33 @@
 		store : years,
 		columns : [ {
 			header : 'ПЕРИОД',
-			width : 30,
 			dataIndex : 'period'
 		}, {
 			header : 'EPS',
-			width : 30,
 			dataIndex : 'value'
 		}, {
 			header : 'EPS_RECONTR_FLAG',
-			width : 50,
 			dataIndex : 'eps_recon_flag'
 		}, {
 			header : 'EQY_DPS',
-			width : 30,
 			dataIndex : 'eqy_dps'
 		}, {
 			header : 'EQY_WEIGHTED_AVG_PX',
-			width : 50,
 			dataIndex : 'eqy_weighted_avg_px'
 		}, {
 			header : 'EQY_WEIGHTED_AVG_PX_ADR',
-			width : 50,
 			dataIndex : 'eqy_weighted_avg_px_adr'
 		}, {
 			header : 'BOOK_VAL_PER_SH',
-			width : 50,
 			dataIndex : 'book_val_per_sh'
 		}, {
 			header : 'OPER_ROE',
-			width : 40,
 			dataIndex : 'oper_roe'
 		}, {
 			header : 'RETENTION_RATIO',
-			width : 50,
 			dataIndex : 'r_ratio'
 		}, {
 			header : 'Валюта',
-			width : 30,
 			dataIndex : 'crnc'
 		} ],
 		viewConfig : {
@@ -190,11 +170,7 @@
 		autoLoad : false,
 		url : 'rest/Companies/Files.do',
 		// root : 'file',
-		fields : [ 'id_doc', 'file_name', {
-			name : 'insert_date',
-			type : 'date',
-			format : App.util.Format.datetime
-		} ]
+		fields : [ 'id_doc', 'file_name', 'insert_date' ]
 	});
 
 	var sm = new Ext.grid.RowSelectionModel({
@@ -454,30 +430,30 @@
 		items : [ {
 			fieldLabel : 'ISIN',
 			xtype : 'displayfield',
-			name : 'ISIN'
+			name : 'isin'
 		}, {
 			fieldLabel : 'Название компании',
 			xtype : 'displayfield',
-			name : 'Название компании'
+			name : 'security_name'
 		}, {
 			id : _bloomCode,
 			fieldLabel : 'Код Блумберг',
 			xtype : 'textfield',
-			name : 'Код Блумберг'
+			name : 'security_code'
 		}, {
 			fieldLabel : 'Родной тикер',
 			xtype : 'displayfield',
-			name : 'Родной тикер'
+			name : 'ticker'
 		}, {
 			id : _adr,
 			fieldLabel : 'АДР',
 			xtype : 'numberfield',
 			decimalPrecision : 4,
-			name : 'ADR'
+			name : 'adr'
 		}, {
 			id : _currency,
 			fieldLabel : 'Валюта расчёта',
-			name : 'Валюта расчета',
+			name : 'currency',
 			xtype : 'combo',
 			displayField : 'name',
 			valueField : 'name',
@@ -496,11 +472,11 @@
 		}, {
 			fieldLabel : 'Сектор',
 			xtype : 'displayfield',
-			name : 'Сектор'
+			name : 'indstry_grp'
 		}, {
 			id : _group,
 			fieldLabel : 'Группа сводной',
-			name : 'Группа в сводной',
+			name : 'svod_grp',
 			xtype : 'combo',
 			displayField : 'name',
 			valueField : 'name',
@@ -520,17 +496,17 @@
 			fieldLabel : 'Koef Upside',
 			xtype : 'numberfield',
 			decimalPrecision : 6,
-			name : 'Koef Upside'
+			name : 'koefUpside'
 		}, {
 			id : _koef_1,
 			fieldLabel : 'Koef Upside н.м.',
 			xtype : 'numberfield',
 			decimalPrecision : 6,
-			name : 'Koef Upside н.м.'
+			name : 'koefUpsideNM'
 		}, {
 			id : _period,
 			fieldLabel : 'Периодичность отчётности',
-			name : 'Периодичность отчетности',
+			name : 'period',
 			xtype : 'combo',
 			displayField : 'name',
 			valueField : 'name',
@@ -549,7 +525,7 @@
 		}, {
 			id : _eps,
 			fieldLabel : 'EPS',
-			name : 'EPS',
+			name : 'eps',
 			xtype : 'combo',
 			displayField : 'name',
 			valueField : 'name',
@@ -586,27 +562,27 @@
 		items : [ {
 			fieldLabel : 'g10',
 			xtype : 'displayfield',
-			name : 'g10 = '
+			name : 'g10'
 		}, {
 			fieldLabel : 'g5',
 			xtype : 'displayfield',
-			name : 'g5 = '
+			name : 'g5'
 		}, {
 			fieldLabel : 'b10',
 			xtype : 'displayfield',
-			name : 'b10 = '
+			name : 'b10'
 		}, {
 			fieldLabel : 'b5',
 			xtype : 'displayfield',
-			name : 'b5 = '
+			name : 'b5'
 		}, {
 			fieldLabel : 'PE10',
 			xtype : 'displayfield',
-			name : 'PE10 = '
+			name : 'pe10'
 		}, {
 			fieldLabel : 'PE5',
 			xtype : 'displayfield',
-			name : 'PE5 = '
+			name : 'pe5'
 		} ]
 	});
 
@@ -871,7 +847,7 @@
 		loadData : function(data) {
 			id_sec = data.item.id_sec;
 
-			this.setTitle('Компания: ' + data.item['Название компании']);
+			this.setTitle('Компания: ' + data.item.security_name);
 
 			if (yearsGrid.collapsed) {
 				yearsGrid.expand(false);
@@ -904,8 +880,8 @@
 				}
 			});
 
-			// leftInfoForm.getForm().setValues(data);
-			// rightInfoForm.getForm().setValues(data);
+			leftInfoForm.getForm().setValues(data.item);
+			rightInfoForm.getForm().setValues(data.item);
 		}
 	});
 })();

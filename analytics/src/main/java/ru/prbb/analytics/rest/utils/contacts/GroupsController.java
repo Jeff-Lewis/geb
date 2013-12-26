@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.analytics.domain.GroupItem;
+import ru.prbb.analytics.domain.GroupAddressItem;
+import ru.prbb.analytics.domain.GroupContactsItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
@@ -74,7 +75,7 @@ public class GroupsController
 
 	@RequestMapping(value = "/Addresses", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<GroupItem> getAddresses(
+	List<GroupAddressItem> getAddresses(
 			@RequestParam Long id)
 	{
 		return dao.findAllAddresses(id);
@@ -82,13 +83,13 @@ public class GroupsController
 
 	@RequestMapping(value = "/Contacts", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<GroupItem> getContacts(
+	List<GroupContactsItem> getContacts(
 			@RequestParam Long id)
 	{
-		return dao.getContacts(id);
+		return dao.findAllContacts(id);
 	}
 
-	@RequestMapping(value = "/Staff/{id}", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/Staff/{id}/Add", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result addStaff(
 			@PathVariable("id") Long id,
@@ -98,7 +99,7 @@ public class GroupsController
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Staff/{id}", method = RequestMethod.DELETE, produces = "application/json")
+	@RequestMapping(value = "/Staff/{id}/Del", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result delStaff(
 			@PathVariable("id") Long id,

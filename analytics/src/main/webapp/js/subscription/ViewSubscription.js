@@ -8,8 +8,7 @@
 		autoLoad : true,
 		url : 'rest/ViewSubscription.do',
 		// root : 'info',
-		fields : [ 'id_subscr', 'subscription_name', 'subscription_comment',
-				'subscription_status' ],
+		fields : [ 'id', 'name', 'comment', 'status' ],
 		listeners : App.ui.listenersJsonStore()
 	});
 
@@ -27,9 +26,9 @@
 			return;
 		}
 
-		var data = smInfo.getSelected().data;
+		var id = smInfo.getSelected().data.id;
 		menu.submitDataRequest(menu, 'subscription/ViewSubscriptionEdit',
-				'rest/ViewSubscription/' + data.id_subscr + '.do');
+				'rest/ViewSubscription/' + id + '.do');
 	}
 
 	function del(b, e) {
@@ -38,12 +37,11 @@
 			return;
 		}
 
-		App.ui.confirm('Удалить подписку '
-				+ smInfo.getSelected().data.subscription_name + '?',
-				delCallback);
+		var name = smInfo.getSelected().data.name;
+		App.ui.confirm('Удалить подписку ' + name + '?', delCallback);
 	}
 	function delCallback() {
-		var id = smInfo.getSelected().data.id_subscr;
+		var id = smInfo.getSelected().data.id;
 		Ext.Ajax.request({
 			method : 'DELETE',
 			url : 'rest/ViewSubscription/' + id + '.do',
@@ -65,44 +63,15 @@
 		});
 	}
 
-	function subscrStart(b, e) {
+	function subscr(b, e) {
 		if (smInfo.getCount() == 0) {
 			App.ui.message('Необходимо выбрать подписку.');
 			return;
 		}
 
-		var id = smInfo.getSelected().data.id_subscr;
+		var id = smInfo.getSelected().data.id;
 		Ext.Ajax.request({
-			method : 'GET',
-			url : 'rest/ViewSubscription/' + id + '/start.do',
-			timeout : 10 * 60 * 10000, // 10 min
-			waitMsg : 'Выполняется запрос.',
-			success : function(xhr) {
-				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					stInfo.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
-				}
-			},
-			failure : function() {
-				App.ui.error('Сервер недоступен');
-			}
-		});
-	}
-
-	function subscrStop(b, e) {
-		if (smInfo.getCount() == 0) {
-			App.ui.message('Необходимо выбрать подписку.');
-			return;
-		}
-
-		var id = smInfo.getSelected().data.id_subscr;
-		Ext.Ajax.request({
-			method : 'GET',
-			url : 'rest/ViewSubscription/' + id + '/stop.do',
+			url : 'rest/ViewSubscription/' + id + '/' + b.id + '.do',
 			timeout : 10 * 60 * 10000, // 10 min
 			waitMsg : 'Выполняется запрос.',
 			success : function(xhr) {
@@ -126,6 +95,7 @@
 		title : 'Список подписок',
 		frame : true,
 		closable : true,
+		enableHdMenu : false,
 
 		tbar : [ {
 			text : 'Добавить',
@@ -137,11 +107,13 @@
 			text : 'Удалить',
 			handler : del
 		}, ' ', ' ', ' ', {
+			id : 'start',
 			text : 'Запустить',
-			handler : subscrStart
+			handler : subscr
 		}, {
+			id : 'stop',
 			text : 'Остановить',
-			handler : subscrStop
+			handler : subscr
 		} ],
 
 		store : stInfo,
@@ -150,15 +122,15 @@
 			width : 30
 		}), {
 			header : 'SUBSCRIPTION_NAME',
-			dataIndex : 'subscription_name',
+			dataIndex : 'name',
 			width : 50
 		}, {
 			header : 'COMMENT',
-			dataIndex : 'subscription_comment',
+			dataIndex : 'comment',
 			width : 100
 		}, {
 			header : 'STATUS',
-			dataIndex : 'subscription_status',
+			dataIndex : 'status',
 			width : 30
 		} ],
 		viewConfig : {

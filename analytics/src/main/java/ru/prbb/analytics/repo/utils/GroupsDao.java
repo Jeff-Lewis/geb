@@ -5,7 +5,8 @@ package ru.prbb.analytics.repo.utils;
 
 import java.util.List;
 
-import ru.prbb.analytics.domain.GroupItem;
+import ru.prbb.analytics.domain.GroupAddressItem;
+import ru.prbb.analytics.domain.GroupContactsItem;
 import ru.prbb.analytics.domain.SimpleItem;
 
 /**
@@ -17,22 +18,27 @@ import ru.prbb.analytics.domain.SimpleItem;
 public interface GroupsDao {
 
 	/**
+	 * 
 	 * @return
 	 */
 	List<SimpleItem> findAll();
 
 	/**
+	 * 
 	 * @param id
+	 * @return
 	 */
 	SimpleItem findById(Long id);
 
 	/**
+	 * 
 	 * @param name
 	 * @return
 	 */
 	int put(String name);
 
 	/**
+	 * 
 	 * @param id
 	 * @param name
 	 * @return
@@ -40,24 +46,28 @@ public interface GroupsDao {
 	int updateById(Long id, String name);
 
 	/**
+	 * 
 	 * @param id
 	 * @return
 	 */
 	int deleteById(Long id);
 
 	/**
+	 * 
 	 * @param id
 	 * @return
 	 */
-	List<GroupItem> findAllAddresses(Long id);
+	List<GroupAddressItem> findAllAddresses(Long id);
 
 	/**
+	 * 
 	 * @param id
 	 * @return
 	 */
-	List<GroupItem> getContacts(Long id);
+	List<GroupContactsItem> findAllContacts(Long id);
 
 	/**
+	 * 
 	 * @param id
 	 * @param cids
 	 * @return
@@ -65,6 +75,7 @@ public interface GroupsDao {
 	int[] putStaff(Long id, Long[] cids);
 
 	/**
+	 * 
 	 * @param id
 	 * @param cids
 	 * @return

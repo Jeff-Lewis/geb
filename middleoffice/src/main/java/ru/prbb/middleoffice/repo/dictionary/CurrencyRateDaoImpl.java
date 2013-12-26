@@ -28,6 +28,7 @@ public class CurrencyRateDaoImpl implements CurrencyRateDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<CurrencyRateItem> findAll(Date dated, String iso) {
 		String sql = "{call dbo.mo_WebGet_CurrencyRate_sp ?, ?}";
@@ -36,7 +37,7 @@ public class CurrencyRateDaoImpl implements CurrencyRateDao
 				.setParameter(2, iso);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
-		List<CurrencyRateItem> res = new ArrayList<CurrencyRateItem>(list.size());
+		List<CurrencyRateItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
 			CurrencyRateItem item = new CurrencyRateItem();

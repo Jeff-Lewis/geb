@@ -6,6 +6,7 @@ package ru.prbb.analytics.repo.params;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,10 +28,12 @@ public class ViewParamsDaoImpl implements ViewParamsDao
 	@Autowired
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewParamsItem> findAll() {
 		String sql = "select param_id, blm_id, code, name from dbo.params";
-		return em.createQuery(sql, ViewParamsItem.class).getResultList();
+		Query q = em.createNativeQuery(sql, ViewParamsItem.class);
+		return q.getResultList();
 	}
 
 	@Override
@@ -41,8 +44,10 @@ public class ViewParamsDaoImpl implements ViewParamsDao
 				" current_maximum_width, bval, bval_blocked, getfundamentals, gethistory, getcompany," +
 				" old_mnemonic, data_license_category_2, psboopt" +
 				" from dbo.bloomberg_dl_fields" +
-				" where field_id=:blm_id";
-		return em.createQuery(sql, ViewParamItem.class).setParameter(1, blm_id).getSingleResult();
+				" where field_id=?";
+		Query q = em.createNativeQuery(sql, ViewParamItem.class)
+				.setParameter(1, blm_id);
+		return (ViewParamItem) q.getSingleResult();
 	}
 
 }

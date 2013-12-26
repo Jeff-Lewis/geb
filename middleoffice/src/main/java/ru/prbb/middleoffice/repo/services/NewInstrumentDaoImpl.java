@@ -27,12 +27,12 @@ public class NewInstrumentDaoImpl implements NewInstrumentDao
 
 	@Override
 	public List<String[]> execute(String[] instruments) {
-		final List<String> shares = new ArrayList<String>();
-		final List<String> indexes = new ArrayList<String>();
-		final List<String> bonds = new ArrayList<String>();
-		final List<String> futures = new ArrayList<String>();
+		final List<String> shares = new ArrayList<>();
+		final List<String> indexes = new ArrayList<>();
+		final List<String> bonds = new ArrayList<>();
+		final List<String> futures = new ArrayList<>();
 
-		final List<String[]> info = new ArrayList<String[]>();
+		final List<String[]> info = new ArrayList<>();
 		for (String item : instruments) {
 			final int p = item.indexOf('|');
 			final String type = item.substring(0, p);

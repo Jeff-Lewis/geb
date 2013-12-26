@@ -29,6 +29,7 @@ public class CurrenciesDaoImpl implements CurrenciesDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CurrenciesItem> findAll() {
@@ -37,6 +38,7 @@ public class CurrenciesDaoImpl implements CurrenciesDao
 		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {

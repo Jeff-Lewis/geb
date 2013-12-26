@@ -10,8 +10,8 @@
 		reader : new Ext.data.JsonReader({
 			// root : 'info',
 			fields : [ 'id_sec', 'security_code', 'short_name', 'pivot_group',
-					'Credit_Suisse', 'Goldman_Sachs', 'JP_Morgan', 'UBS',
-					'Merrill_Lynch', 'Morgan_Stanley', 'Deutsche_Bank' ],
+					'credit_Suisse', 'goldman_Sachs', 'jp_Morgan', 'ubs',
+					'merrill_Lynch', 'morgan_Stanley', 'deutsche_Bank' ],
 		}),
 		groupField : 'pivot_group',
 		sortInfo : {
@@ -78,43 +78,43 @@
 			}
 		}, {
 			header : 'Credit Suisse',
-			dataIndex : 'Credit_Suisse',
+			dataIndex : 'credit_Suisse',
 			align : 'center',
 			width : 100,
 			renderer : App.util.Renderer.bool()
 		}, {
 			header : 'Goldman Sachs',
-			dataIndex : 'Goldman_Sachs',
+			dataIndex : 'goldman_Sachs',
 			align : 'center',
 			width : 100,
 			renderer : App.util.Renderer.bool()
 		}, {
 			header : 'JP Morgan',
-			dataIndex : 'JP_Morgan',
+			dataIndex : 'jp_Morgan',
 			align : 'center',
 			width : 100,
 			renderer : App.util.Renderer.bool()
 		}, {
 			header : 'UBS',
-			dataIndex : 'UBS',
+			dataIndex : 'ubs',
 			align : 'center',
 			width : 100,
 			renderer : App.util.Renderer.bool()
 		}, {
 			header : 'Merrill Lynch',
-			dataIndex : 'Merrill_Lynch',
+			dataIndex : 'merrill_Lynch',
 			align : 'center',
 			width : 100,
 			renderer : App.util.Renderer.bool()
 		}, {
 			header : 'Morgan Stanley',
-			dataIndex : 'Morgan_Stanley',
+			dataIndex : 'morgan_Stanley',
 			align : 'center',
 			width : 100,
 			renderer : App.util.Renderer.bool()
 		}, {
 			header : 'Deutsche Bank',
-			dataIndex : 'Deutsche_Bank',
+			dataIndex : 'deutsche_Bank',
 			align : 'center',
 			width : 100,
 			renderer : App.util.Renderer.bool()

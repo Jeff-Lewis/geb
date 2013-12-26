@@ -12,15 +12,10 @@
 		autoLoad : false,
 		url : 'rest/ViewDeals.do',
 		// root : 'info',
-		fields : [ {
-			name : 'selected',
-			type : 'boolean'
-		}, 'id', 'Batch', 'TradeNum', 'SecShortName', 'Operation', 'Quantity',
-				'Price', 'PriceNKD', 'Currency', 'TradeDate', 'SettleDate',
-				'TradeSystem', 'Broker', 'Account', 'Client', 'Portfolio', {
-					name : 'Funding',
-					type : 'boolean'
-				} ],
+		fields : [ 'selected', 'id', 'batch', 'tradeNum', 'secShortName',
+				'operation', 'quantity', 'price', 'priceNKD', 'currency',
+				'tradeDate', 'settleDate', 'tradeSystem', 'broker', 'account',
+				'client', 'portfolio', 'funding' ],
 		listeners : App.ui.listenersJsonStore()
 	});
 
@@ -267,12 +262,13 @@
 			xtype : 'combo',
 			width : 150,
 			fieldLabel : 'Тикер Блумберг',
+			valueField : 'id',
 			displayField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/ViewDeals/Tickers.do',
 				// root : 'info',
-				fields : [ 'name' ],
+				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
 				}
@@ -319,14 +315,6 @@
 		} ]
 	});
 
-	function renderFunding(value, meta, record) {
-		if (value) {
-			meta.attr = 'style="background: url(img/vwicn082.gif) no-repeat center transparent;"';
-		} else {
-			meta.attr = 'style="background: url(img/vwicn081.gif) no-repeat center transparent;"';
-		}
-	}
-
 	function clickFunding(col, grid, rowIndex, e) {
 		var record = grid.getStore().getAt(rowIndex);
 		var v = !record.data.Funding;
@@ -354,121 +342,102 @@
 			sortable : false
 		}, new Ext.grid.RowNumberer({
 			header : '#',
-			sortable : false,
 			width : 35
 		}), {
 			header : 'Id',
 			dataIndex : 'id',
-			sortable : true,
 			width : 35,
 			editable : false
 		}, {
 			header : 'Batch',
-			dataIndex : 'Batch',
-			sortable : true,
+			dataIndex : 'batch',
 			width : 35,
 			editor : editorBatch
 		}, {
 			header : 'TradeNum',
-			dataIndex : 'TradeNum',
-			sortable : true,
+			dataIndex : 'tradeNum',
 			width : 35,
 			editor : editorTradeNum
 		}, {
 			header : 'SecShortName',
-			dataIndex : 'SecShortName',
-			sortable : true,
+			dataIndex : 'secShortName',
 			width : 30,
 			editable : false
 		}, {
 			header : 'Operation',
-			dataIndex : 'Operation',
-			sortable : true,
+			dataIndex : 'operation',
 			width : 30,
 			editor : editorOperation
 		}, {
 			header : 'Quantity',
-			dataIndex : 'Quantity',
-			sortable : true,
+			dataIndex : 'quantity',
 			width : 50,
 			align : 'right',
 			renderer : App.util.Renderer.number(0),
 			editor : editorQuantity
 		}, {
 			header : 'Price',
-			dataIndex : 'Price',
-			sortable : true,
+			dataIndex : 'price',
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
 			width : 60,
 			editor : editorPrice
 		}, {
 			header : 'PriceNKD',
-			dataIndex : 'PriceNKD',
-			sortable : true,
+			dataIndex : 'priceNKD',
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
 			width : 60,
 			editable : false
-		// editor : editorPrice
 		}, {
 			header : 'Currency',
-			dataIndex : 'Currency',
-			sortable : true,
+			dataIndex : 'currency',
 			width : 30,
 			editable : false
 		}, {
 			header : 'TradeDate',
-			dataIndex : 'TradeDate',
+			dataIndex : 'tradeDate',
 			// align : 'center',
 			renderer : App.util.Renderer.date(),
 			width : 50,
-			sortable : true,
 			editable : false
 		}, {
 			header : 'SettleDate',
-			dataIndex : 'SettleDate',
+			dataIndex : 'settleDate',
 			// align : 'center',
 			renderer : App.util.Renderer.date(),
 			width : 50,
-			sortable : true,
 			editable : false
 		}, {
 			header : 'TradeSystem',
-			dataIndex : 'TradeSystem',
-			sortable : true,
+			dataIndex : 'tradeSystem',
 			width : 50,
 			editor : editorTradeSystem
 		}, {
 			header : 'Broker',
-			dataIndex : 'Broker',
-			sortable : true,
+			dataIndex : 'broker',
 			width : 30,
 			editable : false
 		}, {
 			header : 'Account',
-			dataIndex : 'Account',
-			sortable : true,
+			dataIndex : 'account',
 			width : 30,
 			editor : editorAccount
 		}, {
 			header : 'Client',
-			dataIndex : 'Client',
-			sortable : true,
+			dataIndex : 'client',
 			width : 30
 		}, {
 			header : 'Portfolio',
-			dataIndex : 'Portfolio',
-			sortable : true,
+			dataIndex : 'portfolio',
 			width : 30,
 			editor : editorPortfolio
 		}, {
 			header : 'Funding',
-			dataIndex : 'Funding',
-			sortable : true,
+			dataIndex : 'funding',
 			width : 30,
 			align : 'center',
-			renderer : renderFunding,
+			renderer : App.util.Renderer.bool(),
 			listeners : {
 				click : clickFunding
 			}

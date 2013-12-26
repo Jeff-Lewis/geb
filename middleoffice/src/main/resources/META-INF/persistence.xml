@@ -24,9 +24,10 @@
 		</properties>
 	</persistence-unit>
  -->
-	<persistence-unit
+<!-- 
+ 	<persistence-unit 
 		name="bloomberg"
-		transaction-type="RESOURCE_LOCAL">
+		transaction-type="RESOURCE_LOCAL" >
 		<jta-data-source>java:jboss/datasources/BloombergDS</jta-data-source>
 		<properties>
 			<property
@@ -43,4 +44,26 @@
 				value="false" />
 		</properties>
 	</persistence-unit>
+ -->
+
+  	<persistence-unit
+		name="bloombergTest"
+		transaction-type="RESOURCE_LOCAL">
+		<jta-data-source>java:jboss/datasources/TestDS</jta-data-source>
+		<properties>
+			<property
+				name="jboss.entity.manager.factory.jndi.name"
+				value="java:jboss/spring-quickstart/persistence" />
+			<property
+				name="hibernate.dialect"
+				value="org.hibernate.dialect.SybaseDialect" />
+			<property
+				name="show_sql"
+				value="true" />
+			<property
+				name="hibernate.temp.use_jdbc_metadata_defaults"
+				value="false" />
+		</properties>
+	</persistence-unit>
+ 
 </persistence>

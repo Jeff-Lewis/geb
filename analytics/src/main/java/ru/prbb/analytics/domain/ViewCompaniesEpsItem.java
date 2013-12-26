@@ -5,6 +5,7 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -19,7 +20,8 @@ public class ViewCompaniesEpsItem implements Serializable {
 	@Id
 	private Long id_sec;
 	private String sector;
-	private String EPS;
+	@Column(name = "EPS")
+	private String eps;
 	private String related_security;
 	private String security_code;
 
@@ -54,18 +56,18 @@ public class ViewCompaniesEpsItem implements Serializable {
 	}
 
 	/**
-	 * @return the ePS
+	 * @return the EPS
 	 */
 	public String getEPS() {
-		return EPS;
+		return eps;
 	}
 
 	/**
-	 * @param ePS
-	 *            the ePS to set
+	 * @param eps
+	 *            the EPS to set
 	 */
-	public void setEPS(String ePS) {
-		EPS = ePS;
+	public void setEPS(String eps) {
+		this.eps = eps;
 	}
 
 	/**

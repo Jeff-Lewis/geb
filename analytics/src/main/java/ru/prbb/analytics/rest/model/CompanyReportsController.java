@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.analytics.domain.CompanyAllItem;
 import ru.prbb.analytics.domain.CompanyStaffItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
@@ -74,7 +75,7 @@ public class CompanyReportsController
 
 	@RequestMapping(value = "Staff/All", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<CompanyStaffItem> listA(
+	List<CompanyAllItem> listAll(
 			@RequestParam Long id)
 	{
 		return dao.findStaff(id);
@@ -82,7 +83,7 @@ public class CompanyReportsController
 
 	@RequestMapping(value = "Staff/Report", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<CompanyStaffItem> listR(
+	List<CompanyStaffItem> listStaff(
 			@RequestParam Long id)
 	{
 		return dao.findStaffReport(id);
@@ -97,10 +98,14 @@ public class CompanyReportsController
 	{
 		if ("ADD".equals(action)) {
 			dao.putStaff(id, ids);
+			return Result.SUCCESS;
 		}
+
 		if ("DEL".equals(action)) {
 			dao.deleteStaff(id, ids);
+			return Result.SUCCESS;
 		}
-		return Result.SUCCESS;
+
+		return Result.FAIL;
 	}
 }

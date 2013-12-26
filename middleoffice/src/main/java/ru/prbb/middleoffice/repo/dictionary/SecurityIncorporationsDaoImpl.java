@@ -29,14 +29,16 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SecurityIncorporationListItem> findAll() {
-		String sql = "execute dbo.mo_WebGet_SecurityIncorporations_sp";
+		String sql = "{call dbo.mo_WebGet_SecurityIncorporations_sp}";
 		Query q = em.createNativeQuery(sql, SecurityIncorporationListItem.class);
 		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public SecurityIncorporationItem findById(Long id) {
 		String sql = "select * from mo_WebGet_SecurityIncorporations_v where id = ?";
@@ -47,7 +49,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 
 	@Override
 	public int put(Long security, Long country, Date dateBegin) {
-		String sql = "execute dbo.mo_WebSet_putSecurityIncorporations_sp ?, ?, ?";
+		String sql = "{call dbo.mo_WebSet_putSecurityIncorporations_sp ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, security)
 				.setParameter(2, country)
@@ -57,7 +59,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 
 	@Override
 	public int updateById(Long id, Date dateBegin, Date dateEnd) {
-		String sql = "execute dbo.mo_WebSet_udSecurityIncorporations_sp 'u', ?, ?, ?";
+		String sql = "{call dbo.mo_WebSet_udSecurityIncorporations_sp 'u', ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, dateBegin)
@@ -67,7 +69,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "execute dbo.mo_WebSet_udSecurityIncorporations_sp 'd', ?";
+		String sql = "{call dbo.mo_WebSet_udSecurityIncorporations_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();

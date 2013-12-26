@@ -3,16 +3,17 @@
  */
 package ru.prbb.middleoffice.repo.services.contacts;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.prbb.middleoffice.domain.GroupItem;
+import ru.prbb.middleoffice.domain.GroupAddressItem;
+import ru.prbb.middleoffice.domain.GroupContactsItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
@@ -28,65 +29,92 @@ public class GroupsDaoImpl implements GroupsDao
 	@Autowired
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findAll() {
-		String sql = "{call dbo.WebGet_SelectContacts_sp}";
-		ArrayList<SimpleItem> list = new ArrayList<SimpleItem>();
-		for (long i = 1; i < 11; i++) {
-			SimpleItem e = new SimpleItem();
-			e.setId(i);
-			e.setName("name" + i);
-			list.add(e);
-		}
-		return list;
+		String sql = "{call dbo.WebGet_SelectGroups_sp}";
+		Query q = em.createNativeQuery(sql, SimpleItem.class);
+		return q.getResultList();
 	}
 
 	@Override
 	public SimpleItem findById(Long id) {
-		String sql = "{call dbo.WebGet_SelectContactInfo_sp ?}";
+		List<SimpleItem> list = findAll();
+		for (SimpleItem item : list) {
+			if (id.equals(item.getId())) {
+				return item;
+			}
+		}
 		return null;
 	}
 
 	@Override
-	public void put(String name) {
+	public int put(String name) {
 		String sql = "{call dbo.WebSet_putСontact_sp ?}";
-
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, name);
+		return q.executeUpdate();
 	}
 
 	@Override
-	public void updateById(Long id, String name) {
+	public int updateById(Long id, String name) {
 		String sql = "{call dbo.WebSet_udContact_sp 'u', ?, ?}";
-
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, name);
+		return q.executeUpdate();
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public int deleteById(Long id) {
 		String sql = "{call dbo.WebSet_udContact_sp 'd', ?}";
-
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<GroupItem> findAllAddresses(Long id) {
+	public List<GroupAddressItem> findAllAddresses(Long id) {
 		String sql = "{call dbo.WebGet_SelectContactsAddress_sp ?}";
-		return null;
+		Query q = em.createNativeQuery(sql, GroupAddressItem.class)
+				.setParameter(1, id);
+		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<GroupItem> getContacts(Long id) {
+	public List<GroupContactsItem> findAllContacts(Long id) {
 		String sql = "{call dbo.WebGet_SelectGroupContacts_sp ?}";
-		return null;
+		Query q = em.createNativeQuery(sql, GroupContactsItem.class)
+				.setParameter(1, id);
+		return q.getResultList();
 	}
 
 	@Override
-	public void putStaff(Long id, Long[] cids) {
+	public int[] putStaff(Long id, Long[] cids) {
+		int[] res = new int[cids.length];
 		String sql = "{call dbo.WebSet_mapContactToGroup_sp ?, ?}";
-
+		for (int i = 0; i < cids.length; i++) {
+			Query q = em.createNativeQuery(sql)
+					.setParameter(1, id)
+					.setParameter(2, cids[i]);
+			res[i] = q.executeUpdate();
+		}
+		return res;
 	}
 
 	@Override
-	public void deleteStaff(Long id, Long[] cids) {
+	public int[] deleteStaff(Long id, Long[] cids) {
+		int[] res = new int[cids.length];
 		String sql = "{call dbo.WebSet_dContactFromGroup_sp ?, ?}";
-
+		for (int i = 0; i < cids.length; i++) {
+			Query q = em.createNativeQuery(sql)
+					.setParameter(1, id)
+					.setParameter(2, cids[i]);
+			res[i] = q.executeUpdate();
+		}
+		return res;
 	}
 
 }

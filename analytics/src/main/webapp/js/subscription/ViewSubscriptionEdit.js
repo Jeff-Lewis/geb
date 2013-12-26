@@ -50,7 +50,7 @@
 		Ext.Ajax.request({
 			url : 'rest/ViewSubscription/' + idSubscr + '.do',
 			params : {
-				action : 'add',
+				action : 'ADD',
 				ids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -86,7 +86,7 @@
 		Ext.Ajax.request({
 			url : 'rest/ViewSubscription/' + idSubscr + '.do',
 			params : {
-				action : 'del',
+				action : 'DEL',
 				ids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -181,9 +181,9 @@
 		} ],
 
 		loadData : function(data) {
-			idSubscr = data.item.id_subscr;
+			idSubscr = data.item.id;
 
-			this.setTitle('Подписка ' + data.item.subscription_name);
+			this.setTitle('Подписка ' + data.item.name);
 
 			reload();
 		}

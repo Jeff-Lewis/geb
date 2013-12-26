@@ -33,7 +33,7 @@
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
 			url : 'rest/BuildEPS/FilterEquities.do',
-			root : 'info',
+			// root : 'info',
 			fields : [ 'id', 'name' ],
 			sortInfo : {
 				field : 'name'
@@ -53,12 +53,8 @@
 		autoDestroy : true,
 		autoLoad : true,
 		url : 'rest/BuildEPS/Equities.do',
-		baseParams : {
-			fundamentals : 1
-		},
 		// root : 'info',
-		fields : [ 'id_sec', 'security_code', 'short_name', 'portfolio',
-				'wl_flag', 'pivot' ],
+		fields : [ 'id_sec', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
 		},
@@ -69,7 +65,8 @@
 		companies.reload({
 			params : {
 				filter : filter.getValue(),
-				equity : App.Combo.getValueId(equities)
+				equity : App.Combo.getValueId(equities),
+				fundamentals : 1
 			}
 		});
 	}
@@ -77,13 +74,13 @@
 	var tbarFilter = [ 'Фильтр', filter, {
 		text : 'X',
 		handler : function() {
-			filter.setValue('');
+			filter.setValue(filter.originalValue);
 			filterUpdate();
 		}
 	}, ' ', 'Компания', equities, {
 		text : 'X',
 		handler : function() {
-			equities.setValue('');
+			equities.setValue(equities.originalValue);
 			filterUpdate();
 		}
 	} ];

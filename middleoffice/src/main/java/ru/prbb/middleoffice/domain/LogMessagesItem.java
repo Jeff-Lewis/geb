@@ -4,7 +4,6 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,7 +22,7 @@ public class LogMessagesItem implements Serializable {
 	private String value;
 	private String text;
 	private String status;
-	private Date date_insert;
+	private String date_insert;
 
 	/**
 	 * @return the sl_id
@@ -103,7 +102,7 @@ public class LogMessagesItem implements Serializable {
 	/**
 	 * @return the date_insert
 	 */
-	public Date getDate_insert() {
+	public String getDate_insert() {
 		return date_insert;
 	}
 
@@ -111,7 +110,7 @@ public class LogMessagesItem implements Serializable {
 	 * @param date_insert
 	 *            the date_insert to set
 	 */
-	public void setDate_insert(Date date_insert) {
+	public void setDate_insert(String date_insert) {
 		this.date_insert = date_insert;
 	}
 

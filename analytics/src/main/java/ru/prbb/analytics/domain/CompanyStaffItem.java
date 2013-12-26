@@ -17,23 +17,41 @@ public class CompanyStaffItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Long id_sec;
+	private Long id;
+	private Long security_id;
 	private String security_code;
 	private String short_name;
+	private Long report_id;
+	private String report_name;
 
 	/**
-	 * @return the id_sec
+	 * @return the id
 	 */
-	public Long getId_sec() {
-		return id_sec;
+	public Long getId() {
+		return id;
 	}
 
 	/**
-	 * @param id_sec
-	 *            the id_sec to set
+	 * @param id
+	 *            the id to set
 	 */
-	public void setId_sec(Long id_sec) {
-		this.id_sec = id_sec;
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the security_id
+	 */
+	public Long getSecurity_id() {
+		return security_id;
+	}
+
+	/**
+	 * @param security_id
+	 *            the security_id to set
+	 */
+	public void setSecurity_id(Long security_id) {
+		this.security_id = security_id;
 	}
 
 	/**
@@ -66,4 +84,33 @@ public class CompanyStaffItem implements Serializable {
 		this.short_name = short_name;
 	}
 
+	/**
+	 * @return the report_id
+	 */
+	public Long getReport_id() {
+		return report_id;
+	}
+
+	/**
+	 * @param report_id
+	 *            the report_id to set
+	 */
+	public void setReport_id(Long report_id) {
+		this.report_id = report_id;
+	}
+
+	/**
+	 * @return the report_name
+	 */
+	public String getReport_name() {
+		return report_name;
+	}
+
+	/**
+	 * @param report_name
+	 *            the report_name to set
+	 */
+	public void setReport_name(String report_name) {
+		this.report_name = report_name;
+	}
 }

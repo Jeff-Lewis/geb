@@ -4,24 +4,20 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.math.BigDecimal;
 
 /**
  * @author RBr
  * 
  */
-@Entity
 public class SubscriptionItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
 	private String security_type;
 	private String ticker;
 	private String name;
-	private Double last;
-	private Double lastchange;
+	private BigDecimal last;
+	private BigDecimal lastchange;
 	private String lastchangetime;
 	private String attention;
 
@@ -73,7 +69,7 @@ public class SubscriptionItem implements Serializable {
 	/**
 	 * @return the last
 	 */
-	public Double getLast() {
+	public BigDecimal getLast() {
 		return last;
 	}
 
@@ -81,14 +77,14 @@ public class SubscriptionItem implements Serializable {
 	 * @param last
 	 *            the last to set
 	 */
-	public void setLast(Double last) {
+	public void setLast(BigDecimal last) {
 		this.last = last;
 	}
 
 	/**
 	 * @return the lastchange
 	 */
-	public Double getLastchange() {
+	public BigDecimal getLastchange() {
 		return lastchange;
 	}
 
@@ -96,7 +92,7 @@ public class SubscriptionItem implements Serializable {
 	 * @param lastchange
 	 *            the lastchange to set
 	 */
-	public void setLastchange(Double lastchange) {
+	public void setLastchange(BigDecimal lastchange) {
 		this.lastchange = lastchange;
 	}
 

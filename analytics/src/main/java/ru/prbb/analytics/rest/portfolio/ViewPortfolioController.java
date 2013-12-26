@@ -31,31 +31,33 @@ public class ViewPortfolioController
 	public @ResponseBody
 	List<ViewPortfolioSecurityItem> showSecurities()
 	{
-		return dao.getSecurities();
+		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	List<ViewPortfolioItem> showPortfolio()
 	{
-		return dao.getPortfolio();
+		return dao.findAllPortfolio();
 	}
 
-	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result add(
+			@RequestParam String action,
 			@RequestParam String[] ids)
 	{
-		dao.put(ids);
-		return Result.SUCCESS;
+		if ("ADD".equals(action)) {
+			dao.put(ids);
+			return Result.SUCCESS;
+		}
+
+		if ("DEL".equals(action)) {
+			dao.del(ids);
+			return Result.SUCCESS;
+		}
+
+		return Result.FAIL;
 	}
 
-	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result del(
-			@RequestParam String[] ids)
-	{
-		dao.del(ids);
-		return Result.SUCCESS;
-	}
 }

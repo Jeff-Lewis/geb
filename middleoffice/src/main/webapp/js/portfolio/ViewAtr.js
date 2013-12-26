@@ -91,8 +91,8 @@
 	var storeResult = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		root : 'info',
-		fields : [ 'id_sec', 'security_code', 'date_time', 'ATR', 'atr_period',
+		// root : 'info',
+		fields : [ 'id_sec', 'security_code', 'date_time', 'atr', 'atr_period',
 				'algorithm', 'ds_high_code', 'ds_low_code', 'ds_close_code',
 				'period_type', 'calendar', 'date_insert' ]
 	});
@@ -115,7 +115,7 @@
 			renderer : App.util.Renderer.date()
 		}, {
 			header : 'ATR',
-			dataIndex : 'ATR',
+			dataIndex : 'atr',
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
 		}, {
@@ -174,7 +174,7 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'rest/rest/ViewAtr/.do',
+			url : 'rest/ViewAtr.do',
 			params : {
 				securities : ids,
 				dateBegin : _start,

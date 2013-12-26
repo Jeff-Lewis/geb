@@ -1,8 +1,7 @@
 package ru.prbb.middleoffice.rest.portfolio;
 
-import java.util.HashMap;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
+import ru.prbb.middleoffice.domain.SecurityRiscsItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
@@ -30,7 +31,7 @@ import ru.prbb.middleoffice.repo.portfolio.SecurityRiscsDao;
 @RequestMapping("/rest/SecurityRiscs")
 public class SecurityRiscsController
 {
-	// @Autowired
+	@Autowired
 	private SecurityRiscsDao dao;
 	@Autowired
 	private EquitiesDao daoEquities;
@@ -41,22 +42,22 @@ public class SecurityRiscsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	ResultData show(
-			@RequestParam String security,
+	List<SecurityRiscsItem> show(
+			@RequestParam Long security,
 			@RequestParam Long client,
 			@RequestParam Long fund,
 			@RequestParam Integer batch,
 			@RequestParam String date)
 	{
-		return new ResultData(new HashMap<String, Object>());
+		return dao.findAll(security, fund, batch, client, Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	Map<String, Object> get(
+	ResultData get(
 			@PathVariable("id") Long id)
 	{
-		return new HashMap<String, Object>();
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
@@ -66,13 +67,15 @@ public class SecurityRiscsController
 			@RequestParam Long client,
 			@RequestParam Long fund,
 			@RequestParam Integer batch,
-			@RequestParam Double riskATH,
-			@RequestParam Double riskAVG,
-			@RequestParam Double stopLoss,
+			@RequestParam BigDecimal riskATH,
+			@RequestParam BigDecimal riskAVG,
+			@RequestParam BigDecimal stopLoss,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam String comment)
 	{
+		dao.updateById(id, client, fund, batch, riskATH, riskAVG, stopLoss,
+				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), comment);
 		return Result.SUCCESS;
 	}
 
@@ -81,6 +84,7 @@ public class SecurityRiscsController
 	Result deleteById(
 			@PathVariable("id") Long id)
 	{
+		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 

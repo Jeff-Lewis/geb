@@ -11,7 +11,7 @@ import ru.prbb.middleoffice.domain.ViewFuturesItem;
 
 /**
  * @author RBr
- *
+ * 
  */
 public interface EquitiesDao {
 
@@ -36,15 +36,27 @@ public interface EquitiesDao {
 	List<ViewFuturesItem> findAllFutures();
 
 	/**
+	 * mo_WebGet_ajaxEquity_v
+	 * 
 	 * @param query
 	 * @return
 	 */
-	public List<SimpleItem> findCombo(String query);
+	List<SimpleItem> findCombo(String query);
 
 	/**
+	 * investment_portfolio
+	 * 
 	 * @param query
 	 * @return
 	 */
-	public List<SimpleItem> findComboInvestmentPortfolio(String query);
+	List<SimpleItem> findComboInvestmentPortfolio(String query);
+
+	/**
+	 * mo_WebGet_Portfolio_v
+	 * 
+	 * @param query
+	 * @return
+	 */
+	List<SimpleItem> findComboPortfolio(String query);
 
 }

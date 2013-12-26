@@ -6,6 +6,7 @@ package ru.prbb.analytics.repo.utils;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,16 +29,20 @@ public class BrokersDaoImpl implements BrokersDao
 	@Autowired
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<BrokerItem> findAll() {
 		String sql = "{call dbo.anca_WebGet_SelectBrokers_sp}";
-		return em.createQuery(sql, BrokerItem.class).getResultList();
+		Query q = em.createNativeQuery(sql, BrokerItem.class);
+		return q.getResultList();
 	}
 
 	@Override
 	public BrokerItem findById(Long id) {
-		String sql = "{call dbo.anca_WebGet_SelectBrokers_sp :id}";
-		return em.createQuery(sql, BrokerItem.class).setParameter(1, id).getSingleResult();
+		String sql = "{call dbo.anca_WebGet_SelectBrokers_sp ?}";
+		Query q = em.createNativeQuery(sql, BrokerItem.class)
+				.setParameter(1, id);
+		return (BrokerItem) q.getSingleResult();
 	}
 
 	/**
@@ -57,10 +62,14 @@ public class BrokersDaoImpl implements BrokersDao
 	@Override
 	public int put(String full_name, Integer rating, String bloomberg_code,
 			Integer cover_russian, String short_name) {
-		String sql = "{call dbo.anca_WebSet_putBrokers_sp :full_name, :rating, :bloomberg_code, :cover_russian, :short_name}";
-		return em.createQuery(sql).setParameter(1, full_name).setParameter(2, rating)
-				.setParameter(3, bloomberg_code).setParameter(4, cover_russian).setParameter(5, short_name)
-				.executeUpdate();
+		String sql = "{call dbo.anca_WebSet_putBrokers_sp ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, full_name)
+				.setParameter(2, rating)
+				.setParameter(3, bloomberg_code)
+				.setParameter(4, cover_russian)
+				.setParameter(5, short_name);
+		return q.executeUpdate();
 	}
 
 	/**
@@ -84,28 +93,37 @@ public class BrokersDaoImpl implements BrokersDao
 	@Override
 	public int updateById(Long id, String full_name, Integer rating, String bloomberg_code,
 			Integer cover_russian, String short_name) {
-		String sql = "{call dbo.anca_WebSet_udBrokers_sp 'u', :id, :full_name, :rating, :bloomberg_code, :cover_russian, :short_name}";
-		return em.createQuery(sql).setParameter(1, id).setParameter(2, full_name)
-				.setParameter(3, rating).setParameter(4, bloomberg_code)
-				.setParameter(5, cover_russian).setParameter(6, short_name)
-				.executeUpdate();
+		String sql = "{call dbo.anca_WebSet_udBrokers_sp 'u', ?, ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, full_name)
+				.setParameter(3, rating)
+				.setParameter(4, bloomberg_code)
+				.setParameter(5, cover_russian)
+				.setParameter(6, short_name);
+		return q.executeUpdate();
 	}
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "{call dbo.anca_WebSet_udBrokers_sp 'd', :id}";
-		return em.createQuery(sql).setParameter(1, id).executeUpdate();
+		String sql = "{call dbo.anca_WebSet_udBrokers_sp 'd', ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {
 		String sql = "select id, name from dbo.anca_WebGet_ajaxBrokers_v";
+		Query q;
 		if (Utils.isEmpty(query)) {
-			return em.createQuery(sql, SimpleItem.class).getResultList();
+			q = em.createNativeQuery(sql, SimpleItem.class);
 		} else {
-			sql += " where lower(name) like :q";
-			query = '%' + query.toLowerCase() + '%';
-			return em.createQuery(sql, SimpleItem.class).setParameter(1, query).getResultList();
+			sql += " where lower(name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
 		}
+		return q.getResultList();
 	}
 }

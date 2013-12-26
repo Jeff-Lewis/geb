@@ -6,13 +6,14 @@ package ru.prbb.analytics.repo.utils;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.prbb.analytics.domain.GroupItem;
+import ru.prbb.analytics.domain.GroupAddressItem;
+import ru.prbb.analytics.domain.GroupContactsItem;
 import ru.prbb.analytics.domain.SimpleItem;
 
 /**
@@ -28,74 +29,90 @@ public class GroupsDaoImpl implements GroupsDao
 	@Autowired
 	private EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findAll() {
-		String sql = "{call dbo.WebGet_SelectContacts_sp}";
-		return em.createQuery(sql, SimpleItem.class).getResultList();
+		String sql = "{call dbo.WebGet_SelectGroups_sp}";
+		Query q = em.createNativeQuery(sql, SimpleItem.class);
+		return q.getResultList();
 	}
 
 	@Override
 	public SimpleItem findById(Long id) {
-		String sql = "{call dbo.WebGet_SelectContactInfo_sp :id}";
-		return em.createQuery(sql, SimpleItem.class).setParameter(1, id).getSingleResult();
+		List<SimpleItem> list = findAll();
+		for (SimpleItem item : list) {
+			if (id.equals(item.getId())) {
+				return item;
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public int put(String name) {
-		String sql = "{call dbo.WebSet_putСontact_sp :name}";
-		return em.createQuery(sql).setParameter(1, name).executeUpdate();
+		String sql = "{call dbo.WebSet_putСontact_sp ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, name);
+		return q.executeUpdate();
 	}
 
 	@Override
 	public int updateById(Long id, String name) {
-		String sql = "{call dbo.WebSet_udContact_sp 'u', :id, :name}";
-		return em.createQuery(sql).setParameter(1, id).setParameter(2, name).executeUpdate();
+		String sql = "{call dbo.WebSet_udContact_sp 'u', ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, name);
+		return q.executeUpdate();
 	}
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "{call dbo.WebSet_udContact_sp 'd', :id}";
-		return em.createQuery(sql).setParameter(1, id).executeUpdate();
+		String sql = "{call dbo.WebSet_udContact_sp 'd', ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<GroupItem> findAllAddresses(Long id) {
-		String sql = "{call dbo.WebGet_SelectContactsAddress_sp :id}";
-		return em.createQuery(sql, GroupItem.class).setParameter(1, id).getResultList();
+	public List<GroupAddressItem> findAllAddresses(Long id) {
+		String sql = "{call dbo.WebGet_SelectContactsAddress_sp ?}";
+		Query q = em.createNativeQuery(sql, GroupAddressItem.class)
+				.setParameter(1, id);
+		return q.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<GroupItem> getContacts(Long id) {
+	public List<GroupContactsItem> findAllContacts(Long id) {
 		String sql = "{call dbo.WebGet_SelectGroupContacts_sp ?}";
-		return em.createQuery(sql, GroupItem.class).setParameter(1, id).getResultList();
+		Query q = em.createNativeQuery(sql, GroupContactsItem.class)
+				.setParameter(1, id);
+		return q.getResultList();
 	}
 
 	@Override
 	public int[] putStaff(Long id, Long[] cids) {
-		String sql = "{call dbo.WebSet_mapContactToGroup_sp :id, :cid}";
-		int i = 0;
 		int[] res = new int[cids.length];
-		for (Long cid : cids) {
-			try {
-				res[i++] = em.createQuery(sql).setParameter(1, id).setParameter(2, cid).executeUpdate();
-			} catch (DataAccessException e) {
-				// TODO: handle exception
-			}
+		String sql = "{call dbo.WebSet_mapContactToGroup_sp ?, ?}";
+		for (int i = 0; i < cids.length; i++) {
+			Query q = em.createNativeQuery(sql)
+					.setParameter(1, id)
+					.setParameter(2, cids[i]);
+			res[i] = q.executeUpdate();
 		}
 		return res;
 	}
 
 	@Override
 	public int[] deleteStaff(Long id, Long[] cids) {
-		String sql = "{call dbo.WebSet_dContactFromGroup_sp :id, :cid}";
-		int i = 0;
 		int[] res = new int[cids.length];
-		for (Long cid : cids) {
-			try {
-				res[i++] = em.createQuery(sql).setParameter(1, id).setParameter(2, cid).executeUpdate();
-			} catch (DataAccessException e) {
-				// TODO: handle exception
-			}
+		String sql = "{call dbo.WebSet_dContactFromGroup_sp ?, ?}";
+		for (int i = 0; i < cids.length; i++) {
+			Query q = em.createNativeQuery(sql)
+					.setParameter(1, id)
+					.setParameter(2, cids[i]);
+			res[i] = q.executeUpdate();
 		}
 		return res;
 	}

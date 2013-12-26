@@ -1,6 +1,5 @@
 package ru.prbb.middleoffice.rest.portfolio;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.domain.ViewPortfolioItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 
@@ -25,26 +26,27 @@ import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 @RequestMapping("/rest/ViewPortfolio")
 public class ViewPortfolioController
 {
-	// @Autowired
+	@Autowired
 	private ViewPortfolioDao dao;
 	@Autowired
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Object> show(
+	List<ViewPortfolioItem> show(
 			@RequestParam String date,
-			@RequestParam Long ticker)
+			@RequestParam Long security)
 	{
-		return new ArrayList<Object>();
+		return dao.executeSelect(Utils.parseDate(date), security);
 	}
 
 	@RequestMapping(value = "/Calculate", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result calculate(
 			@RequestParam String date,
-			@RequestParam Long ticker)
+			@RequestParam Long security)
 	{
+		dao.executeCalc(Utils.parseDate(date), security);
 		return Result.SUCCESS;
 	}
 
@@ -52,12 +54,12 @@ public class ViewPortfolioController
 	public @ResponseBody
 	Result export(
 			@RequestParam String date,
-			@RequestParam Long ticker)
+			@RequestParam Long security)
 	{
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Tickers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> comboSecurities(
 			@RequestParam(required = false) String query)

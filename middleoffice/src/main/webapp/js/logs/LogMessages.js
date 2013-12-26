@@ -139,7 +139,7 @@
 				header : 'date_insert',
 				dataIndex : 'date_insert',
 				width : 30,
-				renderer : App.util.Renderer.datetime('d-m-Y H:i:s')
+				renderer : App.util.Renderer.datetime()
 			} ],
 
 			viewConfig : {

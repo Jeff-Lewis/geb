@@ -10,11 +10,9 @@ import java.math.BigDecimal;
  * @author RBr
  * 
  */
-//@Entity
 public class SubscriptionItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	//	@Id
 	private String security_type;
 	private String ticker;
 	private String name;

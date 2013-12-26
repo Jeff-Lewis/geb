@@ -30,15 +30,19 @@ public class NoConformityDaoImpl implements NoConformityDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NoConformityItem> show() {
-		String sql = "execute dbo.mo_WebGet_DealBlmTickerUnSet_sp";
+		String sql = "{call dbo.mo_WebGet_DealBlmTickerUnSet_sp}";
 		Query q = em.createNativeQuery(sql, NoConformityItem.class);
 		return q.getResultList();
 	}
 
 	@Override
 	public void delete(Long[] ids) {
-		String sql = "execute dbo.mo_WebSet_dTickerUnSetDeals_sp ?";
-		// TODO em.createNativeQuery(sql).setParameter(1, id);
+		String sql = "{call dbo.mo_WebSet_dTickerUnSetDeals_sp ?}";
+		for (Long id : ids) {
+			Query q = em.createNativeQuery(sql)
+					.setParameter(1, id);
+			//q.executeUpdate();
+		}
 	}
 
 }

@@ -5,10 +5,11 @@
 
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
-		// root : 'info',
+		autoLoad : false,
+		// root : 'item',
 		fields : [ 'equity_fund_ticker', 'company_short_name', 'firm_name',
 				'bloomberg_code', 'firm_rating', 'target_price', 'price_date',
-				'price_period', 'TR' ],
+				'price_period', 'tr' ],
 		sortInfo : {
 			field : 'firm_name'
 		}
@@ -16,42 +17,35 @@
 
 	return new Ext.grid.GridPanel({
 		id : 'ViewModelPrice-component',
-		title : 'Расчёт по <br/><b>Target Price Cons 12m</b>',
+		title : 'Расчёт по <b>TargetPriceCons12m</b>',
 		frame : true,
 		closable : true,
-		autoScroll : true,
 		enableHdMenu : false,
 
 		store : info,
 		columns : [ {
 			header : 'firm_name',
 			dataIndex : 'firm_name',
-			width : 40,
 			css : 'color: #0099ff;'
 		}, {
 			header : 'bloomberg_code',
-			dataIndex : 'bloomberg_code',
-			width : 40
+			dataIndex : 'bloomberg_code'
 		}, {
 			header : 'firm_rating',
-			dataIndex : 'firm_rating',
-			width : 40,
+			dataIndex : 'firm_rating'
 		}, {
 			header : 'target_price',
-			dataIndex : 'target_price',
-			width : 40
+			dataIndex : 'target_price'
 		}, {
 			header : 'price_date',
 			dataIndex : 'price_date',
-			width : 40
+			renderer : App.util.Renderer.date()
 		}, {
 			header : 'price_period',
-			dataIndex : 'price_period',
-			width : 40
+			dataIndex : 'price_period'
 		}, {
 			header : 'TR',
-			dataIndex : 'TR',
-			width : 40
+			dataIndex : 'tr'
 		} ],
 		viewConfig : {
 			forceFit : true,
@@ -59,7 +53,7 @@
 		},
 
 		loadData : function(data) {
-			info.loadData(data);
+			info.loadData(data.item);
 		}
 	});
 })();

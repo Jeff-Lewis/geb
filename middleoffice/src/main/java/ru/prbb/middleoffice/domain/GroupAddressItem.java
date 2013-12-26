@@ -13,29 +13,15 @@ import javax.persistence.Id;
  * 
  */
 @Entity
-public class GroupItem implements Serializable {
+public class GroupAddressItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String name;
 	@Id
 	private Long cid;
+	private String name;
 	private String value;
-	private Integer type_id;
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+	private Byte type_id;
+	private String type;
 
 	/**
 	 * @return the cid
@@ -50,6 +36,21 @@ public class GroupItem implements Serializable {
 	 */
 	public void setCid(Long cid) {
 		this.cid = cid;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class GroupItem implements Serializable {
 	/**
 	 * @return the type_id
 	 */
-	public Integer getType_id() {
+	public Byte getType_id() {
 		return type_id;
 	}
 
@@ -78,7 +79,22 @@ public class GroupItem implements Serializable {
 	 * @param type_id
 	 *            the type_id to set
 	 */
-	public void setType_id(Integer type_id) {
+	public void setType_id(Byte type_id) {
 		this.type_id = type_id;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
 	}
 }

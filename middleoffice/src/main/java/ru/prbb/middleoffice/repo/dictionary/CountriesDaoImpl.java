@@ -29,6 +29,7 @@ public class CountriesDaoImpl implements CountriesDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CountryItem> findAll() {
@@ -37,6 +38,7 @@ public class CountriesDaoImpl implements CountriesDao
 		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {

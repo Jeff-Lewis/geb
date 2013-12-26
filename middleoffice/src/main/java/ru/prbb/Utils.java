@@ -66,6 +66,24 @@ public class Utils {
 	}
 
 	/**
+	 * Подготовить число для записи в БД<br>
+	 * <code>
+	 * null -> null<br>
+	 * 0 -> null<br>
+	 * x -> x<br>
+	 * </code>
+	 * 
+	 * @param n
+	 * @return null для пустого числа
+	 */
+	public static Long parseLong(Long n) {
+		if ((null != n) && (0 != n)) {
+			return n;
+		}
+		return null;
+	}
+
+	/**
 	 * Декодирует строку даты для SQL
 	 * 
 	 * @param date
@@ -89,8 +107,11 @@ public class Utils {
 	}
 
 	/**
+	 * Приведение к типу String
+	 * 
 	 * @param object
-	 * @return
+	 *            объект из БД
+	 * @return String
 	 */
 	public static String toString(Object object) {
 		if (null != object) {
@@ -100,8 +121,11 @@ public class Utils {
 	}
 
 	/**
+	 * Приведение к типу BigDecimal
+	 * 
 	 * @param object
-	 * @return
+	 *            объект из БД
+	 * @return BigDecimal
 	 */
 	public static BigDecimal toDouble(Object object) {
 		if (null != object) {
@@ -111,8 +135,11 @@ public class Utils {
 	}
 
 	/**
+	 * Приведение к типу Long
+	 * 
 	 * @param object
-	 * @return
+	 *            объект из БД
+	 * @return Long
 	 */
 	public static Long toLong(Object object) {
 		if (null != object) {
@@ -122,8 +149,11 @@ public class Utils {
 	}
 
 	/**
+	 * Приведение к типу Integer
+	 * 
 	 * @param object
-	 * @return
+	 *            объект из БД
+	 * @return Integer
 	 */
 	public static Integer toInteger(Object object) {
 		if (null != object) {
@@ -133,8 +163,11 @@ public class Utils {
 	}
 
 	/**
+	 * Приведение к типу Byte
+	 * 
 	 * @param object
-	 * @return
+	 *            объект из БД
+	 * @return Byte
 	 */
 	public static Byte toByte(Object object) {
 		if (null != object) {

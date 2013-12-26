@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
  * @author RBr
- *
+ * 
  */
 @Service
 @Transactional
@@ -30,11 +31,11 @@ public class SendingDaoImpl implements SendingDao
 
 	@Override
 	public List<Map<String, Object>> execute(String text, String recp, String recm) {
-		final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		final List<Map<String, Object>> list = new ArrayList<>();
 		for (int i = 1; i < 3; ++i) {
 			final Map<String, Object> map = new HashMap<String, Object>();
-			map.put("status", "status" + i);
 			map.put("mail", "mail" + i);
+			map.put("status", i % 2);
 			list.add(map);
 		}
 		return list;
@@ -42,38 +43,64 @@ public class SendingDaoImpl implements SendingDao
 
 	@Override
 	public List<SimpleItem> findComboPhone(String query) {
-		String sql = "select 0 as id, value as name from ncontacts_request_v where type != 'E-mail'";
+		String sql = "select value from ncontacts_request_v where type != 'E-mail'";
+		Query q;
 		if (Utils.isEmpty(query)) {
-			return em.createQuery(sql, SimpleItem.class).getResultList();
+			q = em.createNativeQuery(sql);
 		} else {
-			sql += " and lower(name) like :query";
-			query = '%' + query.toLowerCase() + '%';
-			return em.createQuery(sql, SimpleItem.class).setParameter(1, query).getResultList();
+			sql += " and lower(name) like ?";
+			q = em.createNativeQuery(sql)
+					.setParameter(1, '%' + query.toLowerCase() + '%');
 		}
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<SimpleItem> res = new ArrayList<>(list.size());
+		long id = 0;
+		for (Object object : list) {
+			SimpleItem item = new SimpleItem();
+			item.setId(++id);
+			item.setName(Utils.toString(object));
+			res.add(item);
+		}
+		return res;
 	}
 
 	@Override
 	public List<SimpleItem> findComboMail(String query) {
-		String sql = "select 0 as id, value as name from ncontacts_request_v where type = 'E-mail'";
+		String sql = "select value from ncontacts_request_v where type = 'E-mail'";
+		Query q;
 		if (Utils.isEmpty(query)) {
-			return em.createQuery(sql, SimpleItem.class).getResultList();
+			q = em.createNativeQuery(sql);
 		} else {
-			sql += " and lower(name) like :query";
-			query = '%' + query.toLowerCase() + '%';
-			return em.createQuery(sql, SimpleItem.class).setParameter(1, query).getResultList();
+			sql += " and lower(name) like ?";
+			q = em.createNativeQuery(sql)
+					.setParameter(1, '%' + query.toLowerCase() + '%');
 		}
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<SimpleItem> res = new ArrayList<>(list.size());
+		long id = 0;
+		for (Object object : list) {
+			SimpleItem item = new SimpleItem();
+			item.setId(++id);
+			item.setName(Utils.toString(object));
+			res.add(item);
+		}
+		return res;
 	}
 
 	@Override
 	public String getAnalitic() {
-		// {call dbo.sms_template_proc}
-		return "{call dbo.sms_template_proc}";
+		String sql = "{call dbo.sms_template_proc}";
+		Query q = em.createNativeQuery(sql);
+		return Utils.toString(q.getSingleResult());
 	}
 
 	@Override
 	public String getTrader() {
-		// {call dbo.sms_template_trader}
-		return "{call dbo.sms_template_trader}";
+		String sql = "{call dbo.sms_template_trader}";
+		Query q = em.createNativeQuery(sql);
+		return Utils.toString(q.getSingleResult());
 	}
 
 }

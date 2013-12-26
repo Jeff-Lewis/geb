@@ -29,17 +29,19 @@ public class BrokersDaoImpl implements BrokersDao
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ReferenceItem> findAll() {
-		String sql = "execute dbo.mo_WebGet_SelectBrokers_sp";
+		String sql = "{call dbo.mo_WebGet_SelectBrokers_sp}";
 		Query q = em.createNativeQuery(sql, ReferenceItem.class);
 		return q.getResultList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public ReferenceItem findById(Long id) {
-		String sql = "execute dbo.mo_WebGet_SelectBrokers_sp ?";
+		String sql = "{call dbo.mo_WebGet_SelectBrokers_sp ?}";
 		Query q = em.createNativeQuery(sql, ReferenceItem.class)
 				.setParameter(1, id);
 		return (ReferenceItem) q.getSingleResult();
@@ -47,7 +49,7 @@ public class BrokersDaoImpl implements BrokersDao
 
 	@Override
 	public int put(String name, String comment) {
-		String sql = "execute dbo.mo_WebSet_putBrokers_sp ?, ?";
+		String sql = "{call dbo.mo_WebSet_putBrokers_sp ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name)
 				.setParameter(2, comment);
@@ -56,7 +58,7 @@ public class BrokersDaoImpl implements BrokersDao
 
 	@Override
 	public int updateById(Long id, String name, String comment) {
-		String sql = "execute dbo.mo_WebSet_udBrokers_sp 'u', ?, ?, ?";
+		String sql = "{call dbo.mo_WebSet_udBrokers_sp 'u', ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, name)
@@ -66,12 +68,13 @@ public class BrokersDaoImpl implements BrokersDao
 
 	@Override
 	public int deleteById(Long id) {
-		String sql = "execute dbo.mo_WebSet_udBrokers_sp 'd', ?";
+		String sql = "{call dbo.mo_WebSet_udBrokers_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();
 	}
 
+	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {

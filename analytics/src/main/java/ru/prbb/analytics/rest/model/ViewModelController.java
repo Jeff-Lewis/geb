@@ -30,7 +30,7 @@ public class ViewModelController
 	public @ResponseBody
 	List<ViewModelItem> list()
 	{
-		return dao.current();
+		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}/Info", method = RequestMethod.GET, produces = "application/json")
@@ -46,6 +46,6 @@ public class ViewModelController
 	ResultData getPrice(
 			@PathVariable("id") Long id)
 	{
-		return new ResultData(dao.getPriceById(id));
+		return new ResultData(dao.findPriceById(id));
 	}
 }

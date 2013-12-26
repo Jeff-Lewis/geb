@@ -5,6 +5,7 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -13,15 +14,20 @@ import javax.persistence.Id;
  * 
  */
 @Entity
-public class CompanyItem implements Serializable {
+public class CompaniesListItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private Long id_sec;
+	@Column(name = "ISIN")
 	private String id_isin;
+	@Column(name = "Код Блумберг")
 	private String security_code;
+	@Column(name = "Название компании")
 	private String security_name;
+	@Column(name = "Валюта расчета")
 	private String currency;
+	@Column(name = "Сектор")
 	private String indstry_grp;
 
 	/**

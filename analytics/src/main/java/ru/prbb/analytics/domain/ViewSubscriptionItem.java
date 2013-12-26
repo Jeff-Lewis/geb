@@ -5,6 +5,7 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -17,68 +18,72 @@ public class ViewSubscriptionItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Long id_subscr;
-	private String subscription_name;
-	private String subscription_comment;
-	private String subscription_status;
+	@Column(name = "id_subscr")
+	private Long id;
+	@Column(name = "subscription_name")
+	private String name;
+	@Column(name = "subscription_comment")
+	private String comment;
+	@Column(name = "subscription_status")
+	private String status;
 
 	/**
-	 * @return the id_subscr
+	 * @return the id
 	 */
-	public Long getId_subscr() {
-		return id_subscr;
+	public Long getId() {
+		return id;
 	}
 
 	/**
-	 * @param id_subscr
-	 *            the id_subscr to set
+	 * @param id
+	 *            the id to set
 	 */
-	public void setId_subscr(Long id_subscr) {
-		this.id_subscr = id_subscr;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**
-	 * @return the subscription_name
+	 * @return the name
 	 */
-	public String getSubscription_name() {
-		return subscription_name;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * @param subscription_name
-	 *            the subscription_name to set
+	 * @param name
+	 *            the name to set
 	 */
-	public void setSubscription_name(String subscription_name) {
-		this.subscription_name = subscription_name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * @return the subscription_comment
+	 * @return the comment
 	 */
-	public String getSubscription_comment() {
-		return subscription_comment;
+	public String getComment() {
+		return comment;
 	}
 
 	/**
-	 * @param subscription_comment
-	 *            the subscription_comment to set
+	 * @param comment
+	 *            the comment to set
 	 */
-	public void setSubscription_comment(String subscription_comment) {
-		this.subscription_comment = subscription_comment;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	/**
-	 * @return the subscription_status
+	 * @return the status
 	 */
-	public String getSubscription_status() {
-		return subscription_status;
+	public String getStatus() {
+		return status;
 	}
 
 	/**
-	 * @param subscription_status
-	 *            the subscription_status to set
+	 * @param status
+	 *            the status to set
 	 */
-	public void setSubscription_status(String subscription_status) {
-		this.subscription_status = subscription_status;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

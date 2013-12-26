@@ -12,59 +12,55 @@
 
 	var _name = Ext.id();
 
-	function showHolidays() {
-		menu.submitDataRequest(menu, 'dictionary/Holidays', 'rest/Holidays.do');
-	}
-
-	var store = new Ext.data.JsonStore(
-			{
-				autoDestroy : true,
-				autoLoad : false,
-				autoSave : false,
-				root : 'info',
-				fields : [ 'country', 'holiday_date', 'holiday_name',
-						'holiday_time_start', 'holiday_time_stop', 'sms',
-						'portfolio' ],
-				sortInfo : {
-					field : 'holiday_date'
-				}
-			});
+	var info = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : false,
+		autoSave : false,
+		url : 'rest/Holidays.do',
+		// root : 'info',
+		fields : [ 'country', 'date', 'name', 'time_start', 'time_stop', 'sms',
+				'portfolio' ],
+		sortInfo : {
+			field : 'date'
+		},
+		listeners : App.ui.listenersJsonStore()
+	});
 
 	var sm = new Ext.grid.RowSelectionModel({
 		singleSelect : true
 	});
 
-	var storeRU = new Ext.data.JsonStore({
+	var infoRU = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
 		autoSave : false,
-		root : 'infoHR',
-		fields : [ 'country', {
-			name : 'day_week',
-			type : 'int'
-		}, 'start', 'stop' ],
+		url : 'rest/Holidays/RU.do',
+		// root : 'infoHR',
+		fields : [ 'country', 'day_week', 'start', 'stop' ],
 		sortInfo : {
 			field : 'day_week'
-		}
+		},
+		listeners : App.ui.listenersJsonStore()
 	});
 
-	var storeHU = new Ext.data.JsonStore({
+	var infoUS = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
 		autoSave : false,
-		root : 'infoHU',
-		fields : [ 'country', {
-			name : 'day_week',
-			type : 'int'
-		}, 'start', 'stop' ],
+		url : 'rest/Holidays/US.do',
+		// root : 'infoHU',
+		fields : [ 'country', 'day_week', 'start', 'stop' ],
 		sortInfo : {
 			field : 'day_week'
-		}
+		},
+		listeners : App.ui.listenersJsonStore()
 	});
 
-	var pics = {
-		p82 : 'style="background: url(img/vwicn082.gif) no-repeat center transparent;"'
-	};
+	function reload() {
+		info.reload();
+		infoRU.reload();
+		infoUS.reload();
+	}
 
 	function addHoliday(self) {
 		menu.showModal(menu, 'dictionary/HolidaysAdd');
@@ -83,7 +79,7 @@
 			url : 'rest/Holidays/Delete.do',
 			params : {
 				name : _data.country,
-				date : _data.holiday_date
+				date : _data.date
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Выполняется запрос к Bloomberg',
@@ -91,7 +87,7 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Контакт удален!');
-					showHolidays();
+					reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -119,7 +115,7 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Успешно!');
-					showHolidays();
+					reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -147,7 +143,7 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Успешно!');
-					showHolidays();
+					reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -172,7 +168,7 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Успешно!');
-					showHolidays();
+					reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -183,6 +179,12 @@
 				App.ui.error('Сервер недоступен');
 			}
 		});
+	}
+
+	function rendererBool(v, m, r) {
+		if ('1' == v) {
+			m.attr = 'style="background: url(images/vwicn082.gif) no-repeat center transparent;"';
+		}
 	}
 
 	var grid = new Ext.grid.GridPanel({
@@ -198,7 +200,7 @@
 			handler : delHoliday
 		} ],
 
-		store : store,
+		store : info,
 		selModel : sm,
 		columns : [ new Ext.grid.RowNumberer({
 			width : 30
@@ -208,41 +210,33 @@
 			width : 30
 		}, {
 			header : 'holiday_date',
-			dataIndex : 'holiday_date',
+			dataIndex : 'date',
 			renderer : App.util.Renderer.date(),
 			width : 50
 		}, {
 			header : 'holiday_time_start',
-			dataIndex : 'holiday_time_start',
+			dataIndex : 'time_start',
 			renderer : App.util.Renderer.time('H:i'),
 			width : 40
 		}, {
 			header : 'holiday_time_stop',
-			dataIndex : 'holiday_time_stop',
+			dataIndex : 'time_stop',
 			renderer : App.util.Renderer.time('H:i'),
 			width : 40
 		}, {
 			header : 'holiday_name',
-			dataIndex : 'holiday_name',
+			dataIndex : 'name',
 			width : 50
 		}, {
 			header : 'sms',
 			dataIndex : 'sms',
 			width : 30,
-			renderer : function(value, meta, record) {
-				if (value == '1') {
-					meta.attr = pics.p82;
-				}
-			}
+			renderer : rendererBool
 		}, {
 			header : 'portfolio',
 			dataIndex : 'portfolio',
 			width : 30,
-			renderer : function(value, meta, record) {
-				if (value == '1') {
-					meta.attr = pics.p82;
-				}
-			}
+			renderer : rendererBool
 		} ],
 		viewConfig : {
 			forceFit : true,
@@ -284,7 +278,7 @@
 			handler : timeSetRus
 		} ],
 
-		store : storeRU,
+		store : infoRU,
 		columns : [ {
 			header : 'country',
 			dataIndex : 'country',
@@ -331,7 +325,7 @@
 			handler : timeSetUsa
 		} ],
 
-		store : storeHU,
+		store : infoUS,
 		columns : [ {
 			header : 'country',
 			dataIndex : 'country',
@@ -371,10 +365,11 @@
 
 	return new Ext.Panel({
 		id : 'Holidays-component',
+		title : 'Справочник праздников',
 		frame : false,
 		closable : true,
 		layout : 'border',
-		title : 'Справочник праздников',
+
 		items : [ {
 			region : 'north',
 			border : true,
@@ -421,9 +416,11 @@
 			udw = '';
 			udr = '';
 			Ext.getCmp(_name).setValue(data.offset);
-			// store.loadData(data);
-			// storeRU.loadData(data);
-			// storeHU.loadData(data);
+		},
+		listeners : {
+			show : function(grid) {
+				setTimeout(reload, 0);
+			}
 		}
 	});
 })();

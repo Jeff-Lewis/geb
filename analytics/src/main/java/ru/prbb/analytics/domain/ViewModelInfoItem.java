@@ -4,7 +4,9 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,43 +20,55 @@ public class ViewModelInfoItem implements Serializable {
 
 	@Id
 	private String id_sec;
-	private Double factEPS1Q;
-	private Double factEPS2Q;
-	private Double factEPS3Q;
-	private Double factEPS4Q;
-	private Double TargetPriceCons12M;
-	private Double TargetPriceDecCons;
-	private Double TargetPrice;
-	private Double BestPrice;
-	private Double r;
-	private Double teta;
-	private Double PriceMedian;
-	private Double LastYearAvgWhtPrice;
-	private Double M1Q;
-	private Double M2Q;
-	private Double M3Q;
-	private Double M4Q;
-	private Double forecastEPS2Q;
-	private Double forecastEPS3Q;
-	private Double forecastEPS4Q;
-	private Double forecastEPS;
-	private Double forecastEPS12M;
-	private Double forecastEPS_NextYear;
-	private Double forecastEPS1QNext;
-	private Double forecastEPS2QNext;
-	private Double forecastEPS3QNext;
-	private Double forecastEPS4QNext;
-	private Double forecastEPScons;
-	private Double forecastEPScons12M;
-	private Double EPSttm;
-	private Double g5;
-	private Double g10;
-	private Double gk;
-	private Double PE_5;
-	private Double PE_10;
-	private Double PE_current;
-	private Double PE_ttm;
-	private Double PE_cons;
+	private BigDecimal factEPS1Q;
+	private BigDecimal factEPS2Q;
+	private BigDecimal factEPS3Q;
+	private BigDecimal factEPS4Q;
+	@Column(name = "TargetPriceCons12M")
+	private BigDecimal targetPriceCons12M;
+	@Column(name = "TargetPriceDecCons")
+	private BigDecimal targetPriceDecCons;
+	@Column(name = "TargetPrice")
+	private BigDecimal targetPrice;
+	@Column(name = "BestPrice")
+	private BigDecimal bestPrice;
+	private BigDecimal r;
+	private BigDecimal teta;
+	@Column(name = "PriceMedian")
+	private BigDecimal priceMedian;
+	@Column(name = "LastYearAvgWhtPrice")
+	private BigDecimal lastYearAvgWhtPrice;
+	private BigDecimal m1Q;
+	private BigDecimal m2Q;
+	private BigDecimal m3Q;
+	private BigDecimal m4Q;
+	private BigDecimal forecastEPS2Q;
+	private BigDecimal forecastEPS3Q;
+	private BigDecimal forecastEPS4Q;
+	private BigDecimal forecastEPS;
+	private BigDecimal forecastEPS12M;
+	private BigDecimal forecastEPS_NextYear;
+	private BigDecimal forecastEPS1QNext;
+	private BigDecimal forecastEPS2QNext;
+	private BigDecimal forecastEPS3QNext;
+	private BigDecimal forecastEPS4QNext;
+	private BigDecimal forecastEPScons;
+	private BigDecimal forecastEPScons12M;
+	@Column(name = "EPSttm")
+	private BigDecimal eps_ttm;
+	private BigDecimal g5;
+	private BigDecimal g10;
+	private BigDecimal gk;
+	@Column(name = "PE_5")
+	private BigDecimal pe_5;
+	@Column(name = "PE_10")
+	private BigDecimal pe_10;
+	@Column(name = "PE_current")
+	private BigDecimal pe_current;
+	@Column(name = "PE_ttm")
+	private BigDecimal pe_ttm;
+	@Column(name = "PE_cons")
+	private BigDecimal pe_cons;
 	private String date_ins;
 
 	/**
@@ -75,7 +89,7 @@ public class ViewModelInfoItem implements Serializable {
 	/**
 	 * @return the factEPS1Q
 	 */
-	public Double getFactEPS1Q() {
+	public BigDecimal getFactEPS1Q() {
 		return factEPS1Q;
 	}
 
@@ -83,14 +97,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param factEPS1Q
 	 *            the factEPS1Q to set
 	 */
-	public void setFactEPS1Q(Double factEPS1Q) {
+	public void setFactEPS1Q(BigDecimal factEPS1Q) {
 		this.factEPS1Q = factEPS1Q;
 	}
 
 	/**
 	 * @return the factEPS2Q
 	 */
-	public Double getFactEPS2Q() {
+	public BigDecimal getFactEPS2Q() {
 		return factEPS2Q;
 	}
 
@@ -98,14 +112,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param factEPS2Q
 	 *            the factEPS2Q to set
 	 */
-	public void setFactEPS2Q(Double factEPS2Q) {
+	public void setFactEPS2Q(BigDecimal factEPS2Q) {
 		this.factEPS2Q = factEPS2Q;
 	}
 
 	/**
 	 * @return the factEPS3Q
 	 */
-	public Double getFactEPS3Q() {
+	public BigDecimal getFactEPS3Q() {
 		return factEPS3Q;
 	}
 
@@ -113,14 +127,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param factEPS3Q
 	 *            the factEPS3Q to set
 	 */
-	public void setFactEPS3Q(Double factEPS3Q) {
+	public void setFactEPS3Q(BigDecimal factEPS3Q) {
 		this.factEPS3Q = factEPS3Q;
 	}
 
 	/**
 	 * @return the factEPS4Q
 	 */
-	public Double getFactEPS4Q() {
+	public BigDecimal getFactEPS4Q() {
 		return factEPS4Q;
 	}
 
@@ -128,74 +142,74 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param factEPS4Q
 	 *            the factEPS4Q to set
 	 */
-	public void setFactEPS4Q(Double factEPS4Q) {
+	public void setFactEPS4Q(BigDecimal factEPS4Q) {
 		this.factEPS4Q = factEPS4Q;
 	}
 
 	/**
 	 * @return the targetPriceCons12M
 	 */
-	public Double getTargetPriceCons12M() {
-		return TargetPriceCons12M;
+	public BigDecimal getTargetPriceCons12M() {
+		return targetPriceCons12M;
 	}
 
 	/**
 	 * @param targetPriceCons12M
 	 *            the targetPriceCons12M to set
 	 */
-	public void setTargetPriceCons12M(Double targetPriceCons12M) {
-		TargetPriceCons12M = targetPriceCons12M;
+	public void setTargetPriceCons12M(BigDecimal targetPriceCons12M) {
+		this.targetPriceCons12M = targetPriceCons12M;
 	}
 
 	/**
 	 * @return the targetPriceDecCons
 	 */
-	public Double getTargetPriceDecCons() {
-		return TargetPriceDecCons;
+	public BigDecimal getTargetPriceDecCons() {
+		return targetPriceDecCons;
 	}
 
 	/**
 	 * @param targetPriceDecCons
 	 *            the targetPriceDecCons to set
 	 */
-	public void setTargetPriceDecCons(Double targetPriceDecCons) {
-		TargetPriceDecCons = targetPriceDecCons;
+	public void setTargetPriceDecCons(BigDecimal targetPriceDecCons) {
+		this.targetPriceDecCons = targetPriceDecCons;
 	}
 
 	/**
 	 * @return the targetPrice
 	 */
-	public Double getTargetPrice() {
-		return TargetPrice;
+	public BigDecimal getTargetPrice() {
+		return targetPrice;
 	}
 
 	/**
 	 * @param targetPrice
 	 *            the targetPrice to set
 	 */
-	public void setTargetPrice(Double targetPrice) {
-		TargetPrice = targetPrice;
+	public void setTargetPrice(BigDecimal targetPrice) {
+		this.targetPrice = targetPrice;
 	}
 
 	/**
 	 * @return the bestPrice
 	 */
-	public Double getBestPrice() {
-		return BestPrice;
+	public BigDecimal getBestPrice() {
+		return bestPrice;
 	}
 
 	/**
 	 * @param bestPrice
 	 *            the bestPrice to set
 	 */
-	public void setBestPrice(Double bestPrice) {
-		BestPrice = bestPrice;
+	public void setBestPrice(BigDecimal bestPrice) {
+		this.bestPrice = bestPrice;
 	}
 
 	/**
 	 * @return the r
 	 */
-	public Double getR() {
+	public BigDecimal getR() {
 		return r;
 	}
 
@@ -203,14 +217,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param r
 	 *            the r to set
 	 */
-	public void setR(Double r) {
+	public void setR(BigDecimal r) {
 		this.r = r;
 	}
 
 	/**
 	 * @return the teta
 	 */
-	public Double getTeta() {
+	public BigDecimal getTeta() {
 		return teta;
 	}
 
@@ -218,104 +232,104 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param teta
 	 *            the teta to set
 	 */
-	public void setTeta(Double teta) {
+	public void setTeta(BigDecimal teta) {
 		this.teta = teta;
 	}
 
 	/**
 	 * @return the priceMedian
 	 */
-	public Double getPriceMedian() {
-		return PriceMedian;
+	public BigDecimal getPriceMedian() {
+		return priceMedian;
 	}
 
 	/**
 	 * @param priceMedian
 	 *            the priceMedian to set
 	 */
-	public void setPriceMedian(Double priceMedian) {
-		PriceMedian = priceMedian;
+	public void setPriceMedian(BigDecimal priceMedian) {
+		this.priceMedian = priceMedian;
 	}
 
 	/**
 	 * @return the lastYearAvgWhtPrice
 	 */
-	public Double getLastYearAvgWhtPrice() {
-		return LastYearAvgWhtPrice;
+	public BigDecimal getLastYearAvgWhtPrice() {
+		return lastYearAvgWhtPrice;
 	}
 
 	/**
 	 * @param lastYearAvgWhtPrice
 	 *            the lastYearAvgWhtPrice to set
 	 */
-	public void setLastYearAvgWhtPrice(Double lastYearAvgWhtPrice) {
-		LastYearAvgWhtPrice = lastYearAvgWhtPrice;
+	public void setLastYearAvgWhtPrice(BigDecimal lastYearAvgWhtPrice) {
+		this.lastYearAvgWhtPrice = lastYearAvgWhtPrice;
 	}
 
 	/**
 	 * @return the m1Q
 	 */
-	public Double getM1Q() {
-		return M1Q;
+	public BigDecimal getM1Q() {
+		return m1Q;
 	}
 
 	/**
 	 * @param m1q
 	 *            the m1Q to set
 	 */
-	public void setM1Q(Double m1q) {
-		M1Q = m1q;
+	public void setM1Q(BigDecimal m1q) {
+		m1Q = m1q;
 	}
 
 	/**
 	 * @return the m2Q
 	 */
-	public Double getM2Q() {
-		return M2Q;
+	public BigDecimal getM2Q() {
+		return m2Q;
 	}
 
 	/**
 	 * @param m2q
 	 *            the m2Q to set
 	 */
-	public void setM2Q(Double m2q) {
-		M2Q = m2q;
+	public void setM2Q(BigDecimal m2q) {
+		m2Q = m2q;
 	}
 
 	/**
 	 * @return the m3Q
 	 */
-	public Double getM3Q() {
-		return M3Q;
+	public BigDecimal getM3Q() {
+		return m3Q;
 	}
 
 	/**
 	 * @param m3q
 	 *            the m3Q to set
 	 */
-	public void setM3Q(Double m3q) {
-		M3Q = m3q;
+	public void setM3Q(BigDecimal m3q) {
+		m3Q = m3q;
 	}
 
 	/**
 	 * @return the m4Q
 	 */
-	public Double getM4Q() {
-		return M4Q;
+	public BigDecimal getM4Q() {
+		return m4Q;
 	}
 
 	/**
 	 * @param m4q
 	 *            the m4Q to set
 	 */
-	public void setM4Q(Double m4q) {
-		M4Q = m4q;
+	public void setM4Q(BigDecimal m4q) {
+		m4Q = m4q;
 	}
 
 	/**
 	 * @return the forecastEPS2Q
 	 */
-	public Double getForecastEPS2Q() {
+	public BigDecimal getForecastEPS2Q() {
 		return forecastEPS2Q;
 	}
 
@@ -323,14 +337,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS2Q
 	 *            the forecastEPS2Q to set
 	 */
-	public void setForecastEPS2Q(Double forecastEPS2Q) {
+	public void setForecastEPS2Q(BigDecimal forecastEPS2Q) {
 		this.forecastEPS2Q = forecastEPS2Q;
 	}
 
 	/**
 	 * @return the forecastEPS3Q
 	 */
-	public Double getForecastEPS3Q() {
+	public BigDecimal getForecastEPS3Q() {
 		return forecastEPS3Q;
 	}
 
@@ -338,14 +352,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS3Q
 	 *            the forecastEPS3Q to set
 	 */
-	public void setForecastEPS3Q(Double forecastEPS3Q) {
+	public void setForecastEPS3Q(BigDecimal forecastEPS3Q) {
 		this.forecastEPS3Q = forecastEPS3Q;
 	}
 
 	/**
 	 * @return the forecastEPS4Q
 	 */
-	public Double getForecastEPS4Q() {
+	public BigDecimal getForecastEPS4Q() {
 		return forecastEPS4Q;
 	}
 
@@ -353,14 +367,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS4Q
 	 *            the forecastEPS4Q to set
 	 */
-	public void setForecastEPS4Q(Double forecastEPS4Q) {
+	public void setForecastEPS4Q(BigDecimal forecastEPS4Q) {
 		this.forecastEPS4Q = forecastEPS4Q;
 	}
 
 	/**
 	 * @return the forecastEPS
 	 */
-	public Double getForecastEPS() {
+	public BigDecimal getForecastEPS() {
 		return forecastEPS;
 	}
 
@@ -368,14 +382,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS
 	 *            the forecastEPS to set
 	 */
-	public void setForecastEPS(Double forecastEPS) {
+	public void setForecastEPS(BigDecimal forecastEPS) {
 		this.forecastEPS = forecastEPS;
 	}
 
 	/**
 	 * @return the forecastEPS12M
 	 */
-	public Double getForecastEPS12M() {
+	public BigDecimal getForecastEPS12M() {
 		return forecastEPS12M;
 	}
 
@@ -383,14 +397,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS12M
 	 *            the forecastEPS12M to set
 	 */
-	public void setForecastEPS12M(Double forecastEPS12M) {
+	public void setForecastEPS12M(BigDecimal forecastEPS12M) {
 		this.forecastEPS12M = forecastEPS12M;
 	}
 
 	/**
 	 * @return the forecastEPS_NextYear
 	 */
-	public Double getForecastEPS_NextYear() {
+	public BigDecimal getForecastEPS_NextYear() {
 		return forecastEPS_NextYear;
 	}
 
@@ -398,14 +412,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS_NextYear
 	 *            the forecastEPS_NextYear to set
 	 */
-	public void setForecastEPS_NextYear(Double forecastEPS_NextYear) {
+	public void setForecastEPS_NextYear(BigDecimal forecastEPS_NextYear) {
 		this.forecastEPS_NextYear = forecastEPS_NextYear;
 	}
 
 	/**
 	 * @return the forecastEPS1QNext
 	 */
-	public Double getForecastEPS1QNext() {
+	public BigDecimal getForecastEPS1QNext() {
 		return forecastEPS1QNext;
 	}
 
@@ -413,14 +427,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS1QNext
 	 *            the forecastEPS1QNext to set
 	 */
-	public void setForecastEPS1QNext(Double forecastEPS1QNext) {
+	public void setForecastEPS1QNext(BigDecimal forecastEPS1QNext) {
 		this.forecastEPS1QNext = forecastEPS1QNext;
 	}
 
 	/**
 	 * @return the forecastEPS2QNext
 	 */
-	public Double getForecastEPS2QNext() {
+	public BigDecimal getForecastEPS2QNext() {
 		return forecastEPS2QNext;
 	}
 
@@ -428,14 +442,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS2QNext
 	 *            the forecastEPS2QNext to set
 	 */
-	public void setForecastEPS2QNext(Double forecastEPS2QNext) {
+	public void setForecastEPS2QNext(BigDecimal forecastEPS2QNext) {
 		this.forecastEPS2QNext = forecastEPS2QNext;
 	}
 
 	/**
 	 * @return the forecastEPS3QNext
 	 */
-	public Double getForecastEPS3QNext() {
+	public BigDecimal getForecastEPS3QNext() {
 		return forecastEPS3QNext;
 	}
 
@@ -443,14 +457,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS3QNext
 	 *            the forecastEPS3QNext to set
 	 */
-	public void setForecastEPS3QNext(Double forecastEPS3QNext) {
+	public void setForecastEPS3QNext(BigDecimal forecastEPS3QNext) {
 		this.forecastEPS3QNext = forecastEPS3QNext;
 	}
 
 	/**
 	 * @return the forecastEPS4QNext
 	 */
-	public Double getForecastEPS4QNext() {
+	public BigDecimal getForecastEPS4QNext() {
 		return forecastEPS4QNext;
 	}
 
@@ -458,14 +472,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPS4QNext
 	 *            the forecastEPS4QNext to set
 	 */
-	public void setForecastEPS4QNext(Double forecastEPS4QNext) {
+	public void setForecastEPS4QNext(BigDecimal forecastEPS4QNext) {
 		this.forecastEPS4QNext = forecastEPS4QNext;
 	}
 
 	/**
 	 * @return the forecastEPScons
 	 */
-	public Double getForecastEPScons() {
+	public BigDecimal getForecastEPScons() {
 		return forecastEPScons;
 	}
 
@@ -473,14 +487,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPScons
 	 *            the forecastEPScons to set
 	 */
-	public void setForecastEPScons(Double forecastEPScons) {
+	public void setForecastEPScons(BigDecimal forecastEPScons) {
 		this.forecastEPScons = forecastEPScons;
 	}
 
 	/**
 	 * @return the forecastEPScons12M
 	 */
-	public Double getForecastEPScons12M() {
+	public BigDecimal getForecastEPScons12M() {
 		return forecastEPScons12M;
 	}
 
@@ -488,29 +502,29 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param forecastEPScons12M
 	 *            the forecastEPScons12M to set
 	 */
-	public void setForecastEPScons12M(Double forecastEPScons12M) {
+	public void setForecastEPScons12M(BigDecimal forecastEPScons12M) {
 		this.forecastEPScons12M = forecastEPScons12M;
 	}
 
 	/**
-	 * @return the ePSttm
+	 * @return the eps_ttm
 	 */
-	public Double getEPSttm() {
-		return EPSttm;
+	public BigDecimal getEps_ttm() {
+		return eps_ttm;
 	}
 
 	/**
-	 * @param ePSttm
-	 *            the ePSttm to set
+	 * @param eps_ttm
+	 *            the eps_ttm to set
 	 */
-	public void setEPSttm(Double ePSttm) {
-		EPSttm = ePSttm;
+	public void setEps_ttm(BigDecimal eps_ttm) {
+		this.eps_ttm = eps_ttm;
 	}
 
 	/**
 	 * @return the g5
 	 */
-	public Double getG5() {
+	public BigDecimal getG5() {
 		return g5;
 	}
 
@@ -518,14 +532,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param g5
 	 *            the g5 to set
 	 */
-	public void setG5(Double g5) {
+	public void setG5(BigDecimal g5) {
 		this.g5 = g5;
 	}
 
 	/**
 	 * @return the g10
 	 */
-	public Double getG10() {
+	public BigDecimal getG10() {
 		return g10;
 	}
 
@@ -533,14 +547,14 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param g10
 	 *            the g10 to set
 	 */
-	public void setG10(Double g10) {
+	public void setG10(BigDecimal g10) {
 		this.g10 = g10;
 	}
 
 	/**
 	 * @return the gk
 	 */
-	public Double getGk() {
+	public BigDecimal getGk() {
 		return gk;
 	}
 
@@ -548,83 +562,83 @@ public class ViewModelInfoItem implements Serializable {
 	 * @param gk
 	 *            the gk to set
 	 */
-	public void setGk(Double gk) {
+	public void setGk(BigDecimal gk) {
 		this.gk = gk;
 	}
 
 	/**
-	 * @return the pE_5
+	 * @return the pe_5
 	 */
-	public Double getPE_5() {
-		return PE_5;
+	public BigDecimal getPe_5() {
+		return pe_5;
 	}
 
 	/**
-	 * @param pE_5
-	 *            the pE_5 to set
+	 * @param pe_5
+	 *            the pe_5 to set
 	 */
-	public void setPE_5(Double pE_5) {
-		PE_5 = pE_5;
+	public void setPe_5(BigDecimal pe_5) {
+		this.pe_5 = pe_5;
 	}
 
 	/**
-	 * @return the pE_10
+	 * @return the pe_10
 	 */
-	public Double getPE_10() {
-		return PE_10;
+	public BigDecimal getPe_10() {
+		return pe_10;
 	}
 
 	/**
-	 * @param pE_10
-	 *            the pE_10 to set
+	 * @param pe_10
+	 *            the pe_10 to set
 	 */
-	public void setPE_10(Double pE_10) {
-		PE_10 = pE_10;
+	public void setPe_10(BigDecimal pe_10) {
+		this.pe_10 = pe_10;
 	}
 
 	/**
-	 * @return the pE_current
+	 * @return the pe_current
 	 */
-	public Double getPE_current() {
-		return PE_current;
+	public BigDecimal getPe_current() {
+		return pe_current;
 	}
 
 	/**
-	 * @param pE_current
-	 *            the pE_current to set
+	 * @param pe_current
+	 *            the pe_current to set
 	 */
-	public void setPE_current(Double pE_current) {
-		PE_current = pE_current;
+	public void setPe_current(BigDecimal pe_current) {
+		this.pe_current = pe_current;
 	}
 
 	/**
-	 * @return the pE_ttm
+	 * @return the pe_ttm
 	 */
-	public Double getPE_ttm() {
-		return PE_ttm;
+	public BigDecimal getPe_ttm() {
+		return pe_ttm;
 	}
 
 	/**
-	 * @param pE_ttm
-	 *            the pE_ttm to set
+	 * @param pe_ttm
+	 *            the pe_ttm to set
 	 */
-	public void setPE_ttm(Double pE_ttm) {
-		PE_ttm = pE_ttm;
+	public void setPe_ttm(BigDecimal pe_ttm) {
+		this.pe_ttm = pe_ttm;
 	}
 
 	/**
-	 * @return the pE_cons
+	 * @return the pe_cons
 	 */
-	public Double getPE_cons() {
-		return PE_cons;
+	public BigDecimal getPe_cons() {
+		return pe_cons;
 	}
 
 	/**
-	 * @param pE_cons
-	 *            the pE_cons to set
+	 * @param pe_cons
+	 *            the pe_cons to set
 	 */
-	public void setPE_cons(Double pE_cons) {
-		PE_cons = pE_cons;
+	public void setPe_cons(BigDecimal pe_cons) {
+		this.pe_cons = pe_cons;
 	}
 
 	/**

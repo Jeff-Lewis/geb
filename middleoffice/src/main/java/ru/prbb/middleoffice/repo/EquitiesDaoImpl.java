@@ -35,7 +35,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
-		List<PortfolioItem> res = new ArrayList<PortfolioItem>(list.size());
+		List<PortfolioItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
 			PortfolioItem item = new PortfolioItem();
@@ -54,7 +54,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
-		List<PortfolioItem> res = new ArrayList<PortfolioItem>(list.size());
+		List<PortfolioItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
 			PortfolioItem item = new PortfolioItem();
@@ -73,7 +73,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
-		List<PortfolioItem> res = new ArrayList<PortfolioItem>(list.size());
+		List<PortfolioItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
 			PortfolioItem item = new PortfolioItem();
@@ -118,6 +118,21 @@ public class EquitiesDaoImpl implements EquitiesDao
 			q = em.createNativeQuery(sql, SimpleItem.class);
 		} else {
 			sql += " where lower(name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
+		}
+		return q.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SimpleItem> findComboPortfolio(String query) {
+		String sql = "select id_sec as id, security_code as name from dbo.mo_WebGet_Portfolio_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(security_code) like ?";
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
