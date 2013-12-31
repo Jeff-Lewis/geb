@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.DealsPatternItem;
@@ -21,12 +22,12 @@ import ru.prbb.middleoffice.domain.DealsPatternItem;
  * 
  */
 @Repository
-@Transactional
 public class DealsPatternDaoImpl implements DealsPatternDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DealsPatternItem> show() {
@@ -35,11 +36,13 @@ public class DealsPatternDaoImpl implements DealsPatternDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
-		String sql = "delete from dbo.DealsTemplateStorage where id = ?";
-		Query q = em.createNativeQuery(sql).setParameter(1, id);
-		return 0;//q.executeUpdate();
+		String sql = "delete from dbo.DealsTemplateStorage where id=?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return q.executeUpdate();
 	}
 
 }

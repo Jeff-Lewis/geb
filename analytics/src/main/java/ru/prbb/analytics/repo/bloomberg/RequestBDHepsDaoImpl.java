@@ -3,7 +3,6 @@
  */
 package ru.prbb.analytics.repo.bloomberg;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -24,7 +24,6 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Service
-@Transactional
 public class RequestBDHepsDaoImpl implements RequestBDHepsDao
 {
 	@Autowired
@@ -33,25 +32,15 @@ public class RequestBDHepsDaoImpl implements RequestBDHepsDao
 	@Override
 	public void execute(String dateStart, String dateEnd, String period, String calendar, String[] security,
 			String[] params, Set<String> _currency) {
-		// TODO Auto-generated method stub
-
+		// TODO RequestBDHepsDaoImpl
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findParams() {
-		String sql = "select code as name from dbo.fundamentals_params_v";
+		String sql = "select code from dbo.fundamentals_params_v";
 		Query q = em.createNativeQuery(sql);
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
-		List<SimpleItem> res = new ArrayList<>();
-		long id = 0;
-		for (Object object : list) {
-			SimpleItem item = new SimpleItem();
-			item.setId(++id);
-			item.setName(Utils.toString(object));
-			res.add(item);
-		}
-		return res;
+		return Utils.toSimpleItem(q.getResultList());
 	}
 
 }

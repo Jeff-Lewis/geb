@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,12 +24,12 @@ import ru.prbb.analytics.domain.BuildEPSItem;
  * 
  */
 @Service
-@Transactional
 public class BuildEPSDaoImpl implements BuildEPSDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<BuildEPSItem> calculate(Long[] ids) {
 		final List<BuildEPSItem> list = new ArrayList<>();
@@ -55,13 +56,15 @@ public class BuildEPSDaoImpl implements BuildEPSDao
 		return list;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	public BuildEPSItem calculateEps(Long id) {
-		String sql = "{call main_create_eps_proc ?}";
+		String sql = "{call dbo.main_create_eps_proc ?}";
 		Query q = em.createNativeQuery(sql, BuildEPSItem.class)
 				.setParameter(1, id);
 		return (BuildEPSItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<BuildEPSItem> calculate() {

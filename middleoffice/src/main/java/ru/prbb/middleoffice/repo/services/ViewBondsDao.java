@@ -13,14 +13,14 @@ public interface ViewBondsDao {
 
 	/**
 	 * @param code
-	 * @param ticker
+	 * @param deal
 	 */
-	void put(Long code, String ticker);
+	void put(Long code, String deal);
 
 	/**
 	 * @param code
-	 * @param ticker
+	 * @param deal
 	 */
-	void del(Long code, String ticker);
+	void del(Long code, String deal);
 
 }

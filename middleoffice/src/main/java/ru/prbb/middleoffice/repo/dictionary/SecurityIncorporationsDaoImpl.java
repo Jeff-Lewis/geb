@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SecurityIncorporationItem;
@@ -23,13 +24,12 @@ import ru.prbb.middleoffice.domain.SecurityIncorporationListItem;
  * 
  */
 @Repository
-@Transactional
 public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SecurityIncorporationListItem> findAll() {
@@ -38,7 +38,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public SecurityIncorporationItem findById(Long id) {
 		String sql = "select * from mo_WebGet_SecurityIncorporations_v where id = ?";
@@ -47,6 +47,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 		return (SecurityIncorporationItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(Long security, Long country, Date dateBegin) {
 		String sql = "{call dbo.mo_WebSet_putSecurityIncorporations_sp ?, ?, ?}";
@@ -57,6 +58,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, Date dateBegin, Date dateEnd) {
 		String sql = "{call dbo.mo_WebSet_udSecurityIncorporations_sp 'u', ?, ?, ?}";
@@ -67,6 +69,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.mo_WebSet_udSecurityIncorporations_sp 'd', ?}";

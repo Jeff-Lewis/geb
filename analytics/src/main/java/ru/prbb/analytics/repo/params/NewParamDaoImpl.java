@@ -8,6 +8,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.NewParamItem;
@@ -20,12 +21,12 @@ import ru.prbb.analytics.domain.NewParamItem;
  * 
  */
 @Service
-@Transactional
 public class NewParamDaoImpl implements NewParamDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public NewParamItem setup(String code) {
 		String sql = "select field_mnemonic as code, field_id as blmId, description as name" +
@@ -48,6 +49,7 @@ public class NewParamDaoImpl implements NewParamDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int save(String blm_id, String code, String name) {
 		String sql = "{call dbo.put_params_data ?, ?, ?}";
@@ -58,6 +60,7 @@ public class NewParamDaoImpl implements NewParamDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int saveOvr(String code, String broker) {
 		String sql = "insert into dbo.blm_datasource_ovr (code, brocker) values (?, ?)";

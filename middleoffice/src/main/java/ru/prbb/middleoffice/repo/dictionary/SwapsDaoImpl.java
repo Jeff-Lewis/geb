@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SwapItem;
@@ -21,13 +22,12 @@ import ru.prbb.middleoffice.domain.SwapItem;
  * 
  */
 @Repository
-@Transactional
 public class SwapsDaoImpl implements SwapsDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SwapItem> findAll() {
@@ -36,13 +36,14 @@ public class SwapsDaoImpl implements SwapsDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public SwapItem findById(Long id) {
 		// "{call dbo.mo_WebGet_TrsContracts_sp ?}"
 		throw new IllegalAccessError("Method not implemented.");
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(String swap, Long security) {
 		String sql = "{call dbo.mo_WebSet_putTrsContract_sp ?, ?}";
@@ -52,6 +53,7 @@ public class SwapsDaoImpl implements SwapsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, String swap) {
 		String sql = "{call dbo.mo_WebSet_udTrsContracts_sp 'u', ?, ?}";
@@ -61,6 +63,7 @@ public class SwapsDaoImpl implements SwapsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.mo_WebSet_udTrsContracts_sp 'd', ?}";

@@ -53,38 +53,8 @@ var menu = new App.ui.MainMenu({
 			fn : view.onAction,
 			scope : view
 		}
-	},
-
-	/*
-	 * Сервис
-	 */
-
-	// Справочник контактов - редактирование группы
-	contactsGroupEdit : function(id, name) {
-		this.submitDataRequest(this, 'contacts/mail-group-edit',
-				'contacts/GroupShow.html', {
-					id : id,
-					name : name
-				});
-	},
-
-	/*
-	 * Портфель
-	 */
-
-	// Текущий финрез
-	showDeleteCompanyForm : function() {
-		this.submitDataRequest(this, 'portfolio/view-portfolio-ticker-grid',
-				'portfolio/show-ticker.html');
-	},
-	// Список перекидок
-
-	showTransferOperation : function(id) {
-		this.submitDataRequest(this, 'portfolio/transfer-operation',
-				'portfolio/TransferOperationsShow.html', {
-					id : id
-				});
 	}
+
 });
 
 Ext.onReady(function() {
@@ -95,7 +65,7 @@ Ext.onReady(function() {
 		items : [ header, menu, view ],
 		listeners : {
 			afterrender : function() {
-				// menu.showCurrentModel();
+				// menu.showPane(menu, 'portfolio/ViewPortfolio');
 			}
 		}
 	});

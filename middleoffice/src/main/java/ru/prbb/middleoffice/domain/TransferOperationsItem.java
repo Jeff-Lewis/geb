@@ -6,6 +6,7 @@ package ru.prbb.middleoffice.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -19,22 +20,32 @@ public class TransferOperationsItem implements Serializable {
 
 	@Id
 	private Long id;
-	private String Client;
-	private String Accout;
-	private String Security;
-	private String Currency;
-	private Integer TransferQuantity;
-	private BigDecimal TransferPrice;
-	private String TransferDate;
-	private String SourceFund;
-	private Integer SourceBatch;
-	private Integer SourceQuantity;
-	private String SourceOperation;
-	private String DestinationFund;
-	private Integer DestinationBatch;
-	private String DestinationOperation;
-	private String Comment;
-	private Byte Funding;
+	@Column(name = "Batch")
+	private Integer batch;
+	@Column(name = "Security")
+	private String security;
+	@Column(name = "Operation")
+	private String operation;
+	@Column(name = "Quantity")
+	private Integer quantity;
+	@Column(name = "Price")
+	private BigDecimal price;
+	@Column(name = "Currency")
+	private String currency;
+	@Column(name = "TradeDate")
+	private String tradeDate;
+	@Column(name = "TradeSystem")
+	private String tradeSystem;
+	@Column(name = "Broker")
+	private String broker;
+	@Column(name = "Account")
+	private String account;
+	@Column(name = "Client")
+	private String client;
+	@Column(name = "Portfolio")
+	private String portfolio;
+	@Column(name = "Funding")
+	private Integer funding;
 
 	/**
 	 * @return the id
@@ -52,40 +63,25 @@ public class TransferOperationsItem implements Serializable {
 	}
 
 	/**
-	 * @return the client
+	 * @return the batch
 	 */
-	public String getClient() {
-		return Client;
+	public Integer getBatch() {
+		return batch;
 	}
 
 	/**
-	 * @param client
-	 *            the client to set
+	 * @param batch
+	 *            the batch to set
 	 */
-	public void setClient(String client) {
-		Client = client;
-	}
-
-	/**
-	 * @return the accout
-	 */
-	public String getAccout() {
-		return Accout;
-	}
-
-	/**
-	 * @param accout
-	 *            the accout to set
-	 */
-	public void setAccout(String accout) {
-		Accout = accout;
+	public void setBatch(Integer batch) {
+		this.batch = batch;
 	}
 
 	/**
 	 * @return the security
 	 */
 	public String getSecurity() {
-		return Security;
+		return security;
 	}
 
 	/**
@@ -93,14 +89,59 @@ public class TransferOperationsItem implements Serializable {
 	 *            the security to set
 	 */
 	public void setSecurity(String security) {
-		Security = security;
+		this.security = security;
+	}
+
+	/**
+	 * @return the operation
+	 */
+	public String getOperation() {
+		return operation;
+	}
+
+	/**
+	 * @param operation
+	 *            the operation to set
+	 */
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
+
+	/**
+	 * @return the quantity
+	 */
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	/**
+	 * @param quantity
+	 *            the quantity to set
+	 */
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	/**
+	 * @return the price
+	 */
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	/**
+	 * @param price
+	 *            the price to set
+	 */
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 
 	/**
 	 * @return the currency
 	 */
 	public String getCurrency() {
-		return Currency;
+		return currency;
 	}
 
 	/**
@@ -108,186 +149,111 @@ public class TransferOperationsItem implements Serializable {
 	 *            the currency to set
 	 */
 	public void setCurrency(String currency) {
-		Currency = currency;
+		this.currency = currency;
 	}
 
 	/**
-	 * @return the transferQuantity
+	 * @return the tradeDate
 	 */
-	public Integer getTransferQuantity() {
-		return TransferQuantity;
+	public String getTradeDate() {
+		return tradeDate;
 	}
 
 	/**
-	 * @param transferQuantity
-	 *            the transferQuantity to set
+	 * @param tradeDate
+	 *            the tradeDate to set
 	 */
-	public void setTransferQuantity(Integer transferQuantity) {
-		TransferQuantity = transferQuantity;
+	public void setTradeDate(String tradeDate) {
+		this.tradeDate = tradeDate;
 	}
 
 	/**
-	 * @return the transferPrice
+	 * @return the tradeSystem
 	 */
-	public BigDecimal getTransferPrice() {
-		return TransferPrice;
+	public String getTradeSystem() {
+		return tradeSystem;
 	}
 
 	/**
-	 * @param transferPrice
-	 *            the transferPrice to set
+	 * @param tradeSystem
+	 *            the tradeSystem to set
 	 */
-	public void setTransferPrice(BigDecimal transferPrice) {
-		TransferPrice = transferPrice;
+	public void setTradeSystem(String tradeSystem) {
+		this.tradeSystem = tradeSystem;
 	}
 
 	/**
-	 * @return the transferDate
+	 * @return the broker
 	 */
-	public String getTransferDate() {
-		return TransferDate;
+	public String getBroker() {
+		return broker;
 	}
 
 	/**
-	 * @param transferDate
-	 *            the transferDate to set
+	 * @param broker
+	 *            the broker to set
 	 */
-	public void setTransferDate(String transferDate) {
-		TransferDate = transferDate;
+	public void setBroker(String broker) {
+		this.broker = broker;
 	}
 
 	/**
-	 * @return the sourceFund
+	 * @return the account
 	 */
-	public String getSourceFund() {
-		return SourceFund;
+	public String getAccount() {
+		return account;
 	}
 
 	/**
-	 * @param sourceFund
-	 *            the sourceFund to set
+	 * @param account
+	 *            the account to set
 	 */
-	public void setSourceFund(String sourceFund) {
-		SourceFund = sourceFund;
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	/**
-	 * @return the sourceBatch
+	 * @return the client
 	 */
-	public Integer getSourceBatch() {
-		return SourceBatch;
+	public String getClient() {
+		return client;
 	}
 
 	/**
-	 * @param sourceBatch
-	 *            the sourceBatch to set
+	 * @param client
+	 *            the client to set
 	 */
-	public void setSourceBatch(Integer sourceBatch) {
-		SourceBatch = sourceBatch;
+	public void setClient(String client) {
+		this.client = client;
 	}
 
 	/**
-	 * @return the sourceQuantity
+	 * @return the portfolio
 	 */
-	public Integer getSourceQuantity() {
-		return SourceQuantity;
+	public String getPortfolio() {
+		return portfolio;
 	}
 
 	/**
-	 * @param sourceQuantity
-	 *            the sourceQuantity to set
+	 * @param portfolio
+	 *            the portfolio to set
 	 */
-	public void setSourceQuantity(Integer sourceQuantity) {
-		SourceQuantity = sourceQuantity;
-	}
-
-	/**
-	 * @return the sourceOperation
-	 */
-	public String getSourceOperation() {
-		return SourceOperation;
-	}
-
-	/**
-	 * @param sourceOperation
-	 *            the sourceOperation to set
-	 */
-	public void setSourceOperation(String sourceOperation) {
-		SourceOperation = sourceOperation;
-	}
-
-	/**
-	 * @return the destinationFund
-	 */
-	public String getDestinationFund() {
-		return DestinationFund;
-	}
-
-	/**
-	 * @param destinationFund
-	 *            the destinationFund to set
-	 */
-	public void setDestinationFund(String destinationFund) {
-		DestinationFund = destinationFund;
-	}
-
-	/**
-	 * @return the destinationBatch
-	 */
-	public Integer getDestinationBatch() {
-		return DestinationBatch;
-	}
-
-	/**
-	 * @param destinationBatch
-	 *            the destinationBatch to set
-	 */
-	public void setDestinationBatch(Integer destinationBatch) {
-		DestinationBatch = destinationBatch;
-	}
-
-	/**
-	 * @return the destinationOperation
-	 */
-	public String getDestinationOperation() {
-		return DestinationOperation;
-	}
-
-	/**
-	 * @param destinationOperation
-	 *            the destinationOperation to set
-	 */
-	public void setDestinationOperation(String destinationOperation) {
-		DestinationOperation = destinationOperation;
-	}
-
-	/**
-	 * @return the comment
-	 */
-	public String getComment() {
-		return Comment;
-	}
-
-	/**
-	 * @param comment
-	 *            the comment to set
-	 */
-	public void setComment(String comment) {
-		Comment = comment;
+	public void setPortfolio(String portfolio) {
+		this.portfolio = portfolio;
 	}
 
 	/**
 	 * @return the funding
 	 */
-	public Byte getFunding() {
-		return Funding;
+	public Integer getFunding() {
+		return funding;
 	}
 
 	/**
 	 * @param funding
 	 *            the funding to set
 	 */
-	public void setFunding(Byte funding) {
-		Funding = funding;
+	public void setFunding(Integer funding) {
+		this.funding = funding;
 	}
 }

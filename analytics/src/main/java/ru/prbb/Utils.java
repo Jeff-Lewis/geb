@@ -8,9 +8,13 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.Column;
+
+import ru.prbb.analytics.domain.SimpleItem;
 
 /**
  * @author RBr
@@ -244,6 +248,25 @@ public class Utils {
 			// TODO Auto-generated catch block
 		}
 		return field;
+	}
+
+	/**
+	 * Из списка строк сделать список {id, name}, id c 1
+	 * 
+	 * @param list
+	 *            name
+	 * @return [ {id, name} ]
+	 */
+	public static List<SimpleItem> toSimpleItem(List<?> list) {
+		List<SimpleItem> res = new ArrayList<>(list.size());
+		long id = 0;
+		for (Object object : list) {
+			SimpleItem item = new SimpleItem();
+			item.setId(++id);
+			item.setName(Utils.toString(object));
+			res.add(item);
+		}
+		return res;
 	}
 
 }

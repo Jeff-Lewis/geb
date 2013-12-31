@@ -12,6 +12,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SecurityRiscsItem;
@@ -23,12 +24,12 @@ import ru.prbb.middleoffice.domain.SecurityRiscsItem;
  * 
  */
 @Repository
-@Transactional
 public class SecurityRiscsDaoImpl implements SecurityRiscsDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SecurityRiscsItem> findAll(Long security_id, Long fund_id, Integer batch, Long p_id, Date date) {
@@ -42,6 +43,7 @@ public class SecurityRiscsDaoImpl implements SecurityRiscsDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public SecurityRiscsItem findById(Long id) {
 		String sql = "{call dbo.mo_WebGet_SecurityRiscs_sp ?}";
@@ -50,14 +52,16 @@ public class SecurityRiscsDaoImpl implements SecurityRiscsDao
 		return (SecurityRiscsItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.mo_WebSet_dSecurityRiscs_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		return 0;//q.executeUpdate();
+		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, Long client_id, Long fund_id, Integer batch,
 			BigDecimal risk_ath, BigDecimal risk_avg, BigDecimal stop_loss,
@@ -74,6 +78,6 @@ public class SecurityRiscsDaoImpl implements SecurityRiscsDao
 				.setParameter(8, date_begin)
 				.setParameter(9, date_end)
 				.setParameter(10, comment);
-		return 0;//q.executeUpdate();
+		return q.executeUpdate();
 	}
 }

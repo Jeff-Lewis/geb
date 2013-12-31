@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.ViewCompaniesEpsItem;
@@ -21,12 +22,12 @@ import ru.prbb.analytics.domain.ViewCompaniesEpsItem;
  * 
  */
 @Service
-@Transactional
 public class ViewCompaniesEpsDaoImpl implements ViewCompaniesEpsDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewCompaniesEpsItem> execute() {

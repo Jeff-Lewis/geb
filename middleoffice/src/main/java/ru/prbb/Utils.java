@@ -3,11 +3,18 @@
  */
 package ru.prbb;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import javax.persistence.Column;
+
+import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
  * @author RBr
@@ -31,6 +38,20 @@ public class Utils {
 					return false;
 				}
 			}
+		}
+		return true;
+	}
+
+	/**
+	 * Проверить число на содержимое
+	 * 
+	 * @param n
+	 *            проверяемое число
+	 * @return <code>true</code>, если <code>null</code> или <code>0</code>
+	 */
+	public static boolean isEmpty(Number n) {
+		if (null != n) {
+			return n.doubleValue() != 0; // FIXME Проверка на 0
 		}
 		return true;
 	}
@@ -207,6 +228,45 @@ public class Utils {
 			return object.toString();
 		}
 		return null;
+	}
+
+	/**
+	 * Получить имя колонки БД по имени поля Жава
+	 * 
+	 * @param field
+	 *            имя поля
+	 * @param _class
+	 *            класс отображения
+	 * @return имя поля
+	 */
+	public static String getColumnNameByField(String field, Class<?> _class) {
+		try {
+			Field f = _class.getDeclaredField(field);
+			Column column = f.getAnnotation(Column.class);
+			return column.name();
+		} catch (NoSuchFieldException | SecurityException e) {
+			// TODO Auto-generated catch block
+		}
+		return field;
+	}
+
+	/**
+	 * Из списка строк сделать список {id, name}, id c 1
+	 * 
+	 * @param list
+	 *            name
+	 * @return [ {id, name} ]
+	 */
+	public static List<SimpleItem> toSimpleItem(List<?> list) {
+		List<SimpleItem> res = new ArrayList<>(list.size());
+		long id = 0;
+		for (Object object : list) {
+			SimpleItem item = new SimpleItem();
+			item.setId(++id);
+			item.setName(Utils.toString(object));
+			res.add(item);
+		}
+		return res;
 	}
 
 }

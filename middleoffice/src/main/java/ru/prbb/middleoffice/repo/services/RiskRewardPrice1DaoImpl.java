@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.RiskRewardPrice1Item;
@@ -19,12 +20,13 @@ import ru.prbb.middleoffice.domain.RiskRewardPrice1Item;
  * 
  */
 @Repository
-@Transactional
 public class RiskRewardPrice1DaoImpl implements RiskRewardPrice1Dao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiskRewardPrice1Item> findAll() {
 		String sql = "{call dbo.mo_WebGet_SecuritiesAttributes_sp}";
@@ -32,6 +34,7 @@ public class RiskRewardPrice1DaoImpl implements RiskRewardPrice1Dao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public RiskRewardPrice1Item findById(Long id) {
 		String sql = "{call dbo.mo_WebGet_SecuritiesAttributes_sp ?}";
@@ -40,12 +43,13 @@ public class RiskRewardPrice1DaoImpl implements RiskRewardPrice1Dao
 		return (RiskRewardPrice1Item) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.mo_WebSet_dSecuritiesAttributes_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		return 0;//q.executeUpdate();
+		return q.executeUpdate();
 	}
 
 }

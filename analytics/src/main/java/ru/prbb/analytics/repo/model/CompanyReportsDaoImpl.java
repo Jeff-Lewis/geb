@@ -25,13 +25,12 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-@Transactional
 public class CompanyReportsDaoImpl implements CompanyReportsDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findAll() {
@@ -40,7 +39,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public SimpleItem findById(Long id) {
 		String sql = "{call dbo.anca_WebGet_Reports_sp ?}";
@@ -49,6 +48,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		return (SimpleItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(String name) {
 		String sql = "{call dbo.anca_WebSet_putReports_sp ?}";
@@ -57,6 +57,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int renameById(Long id, String name) {
 		String sql = "{call dbo.anca_WebSet_udReports_sp 'u', ?, ?}";
@@ -66,6 +67,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.anca_WebSet_udReports_sp 'd', ?}";
@@ -74,7 +76,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		return q.executeUpdate();
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompanyAllItem> findStaff(Long id) {
@@ -84,7 +86,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompanyStaffItem> findStaffReport(Long id) {
@@ -94,6 +96,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int[] putStaff(Long id, Long[] cids) {
 		String sql = "{call dbo.anca_WebSet_putSecurity_report_maps_sp ?, ?}";
@@ -112,6 +115,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int[] deleteStaff(Long id, Long[] cids) {
 		String sql = "{call dbo.anca_WebSet_udSecurity_report_maps_sp ?, ?}";

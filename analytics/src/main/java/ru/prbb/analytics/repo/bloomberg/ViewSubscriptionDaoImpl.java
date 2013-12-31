@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.SecuritySubscrItem;
@@ -22,12 +23,12 @@ import ru.prbb.analytics.domain.ViewSubscriptionItem;
  * 
  */
 @Service
-@Transactional
 public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewSubscriptionItem> findAll() {
@@ -36,6 +37,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public ViewSubscriptionItem findById(Long id) {
 		List<ViewSubscriptionItem> list = findAll();
@@ -52,6 +54,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return item;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(String name, String comment) {
 		String sql = "{call dbo.create_subscription_proc ?, ?}";
@@ -61,6 +64,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.remove_subscription_proc ?}";
@@ -69,6 +73,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SecuritySubscrItem> findAllSecurities() {
@@ -77,6 +82,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SecuritySubscrItem> findAllSecurities(Long id) {
@@ -86,6 +92,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int[] staffAdd(Long id_subscr, Long[] ids) {
 		String sql = "{call dbo.subscribe_security_proc ?, ?}";
@@ -100,6 +107,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int[] staffDel(Long id_subscr, Long[] ids) {
 		String sql = "{call dbo.unsubscribe_security_proc ?, ?}";
@@ -114,6 +122,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int start(Long id) {
 		String sql = "{call dbo.run_subscription_proc ?}";
@@ -122,6 +131,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int stop(Long id) {
 		String sql = "{call dbo.stop_subscription_proc ?}";

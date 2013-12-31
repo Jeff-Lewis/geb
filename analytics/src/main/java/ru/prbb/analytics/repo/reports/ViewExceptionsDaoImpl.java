@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,12 +24,12 @@ import ru.prbb.analytics.domain.ViewExceptionsItem;
  * 
  */
 @Service
-@Transactional
 public class ViewExceptionsDaoImpl implements ViewExceptionsDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<ViewExceptionsItem> execute() {
 		String sql = "{call dbo.output_equities_exceptions}";

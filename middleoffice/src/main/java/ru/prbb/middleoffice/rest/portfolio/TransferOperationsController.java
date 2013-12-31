@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
+import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SimpleItem;
-import ru.prbb.middleoffice.domain.TransferOperationsItem;
+import ru.prbb.middleoffice.domain.TransferOperationsListItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.portfolio.TransferOperationsDao;
@@ -36,12 +38,20 @@ public class TransferOperationsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<TransferOperationsItem> show(
+	List<TransferOperationsListItem> show(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker)
 	{
 		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody
+	ResultData get(
+			@PathVariable("id") Long id)
+	{
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")

@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -22,13 +23,12 @@ import ru.prbb.middleoffice.domain.HolidaysWeekItem;
  * 
  */
 @Repository
-@Transactional
 public class HolidaysDaoImpl implements HolidaysDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<HolidaysItem> showHolidays() {
 		String sql = "select country, holiday_date, holiday_name," +
@@ -53,7 +53,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 		return res;
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<HolidaysWeekItem> showHolidaysWeek(String country) {
 		String sql = "select country, day_week, start, stop from dbo.quotes_send_sms_time_v_" + country;

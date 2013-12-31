@@ -3,7 +3,6 @@
  */
 package ru.prbb.middleoffice.repo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -22,12 +22,12 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  *
  */
 @Repository
-@Transactional
 public class SecuritiesDaoImpl implements SecuritiesDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SecurityItem> findAll(String filter, Long security) {
@@ -38,6 +38,7 @@ public class SecuritiesDaoImpl implements SecuritiesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {
@@ -53,6 +54,7 @@ public class SecuritiesDaoImpl implements SecuritiesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findComboFilter(String query) {
 		String sql = "select name from dbo.mo_WebGet_ajaxFilterRequest_v";
@@ -64,17 +66,7 @@ public class SecuritiesDaoImpl implements SecuritiesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
-		List<SimpleItem> res = new ArrayList<>(list.size());
-		long id = 0;
-		for (Object object : list) {
-			SimpleItem item = new SimpleItem();
-			item.setId(++id);
-			item.setName(Utils.toString(object));
-			res.add(item);
-		}
-		return res;
+		return Utils.toSimpleItem(q.getResultList());
 	}
 
 }

@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.ViewPortfolioItem;
@@ -22,12 +23,12 @@ import ru.prbb.analytics.domain.ViewPortfolioSecurityItem;
  * 
  */
 @Repository
-@Transactional
 public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewPortfolioSecurityItem> findAll() {
@@ -36,6 +37,7 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewPortfolioItem> findAllPortfolio() {
@@ -44,6 +46,7 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int[] put(String[] ids) {
 		String sql = "update dbo.securities set portfolio='portfolio' where security_code=?";
@@ -61,6 +64,7 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int[] del(String[] ids) {
 		String sql = "update dbo.securities set portfolio='' where security_code=?";

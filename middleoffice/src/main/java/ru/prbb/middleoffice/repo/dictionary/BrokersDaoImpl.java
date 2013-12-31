@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,13 +24,12 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-@Transactional
 public class BrokersDaoImpl implements BrokersDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ReferenceItem> findAll() {
@@ -38,7 +38,7 @@ public class BrokersDaoImpl implements BrokersDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public ReferenceItem findById(Long id) {
 		String sql = "{call dbo.mo_WebGet_SelectBrokers_sp ?}";
@@ -47,6 +47,7 @@ public class BrokersDaoImpl implements BrokersDao
 		return (ReferenceItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(String name, String comment) {
 		String sql = "{call dbo.mo_WebSet_putBrokers_sp ?, ?}";
@@ -56,6 +57,7 @@ public class BrokersDaoImpl implements BrokersDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, String name, String comment) {
 		String sql = "{call dbo.mo_WebSet_udBrokers_sp 'u', ?, ?, ?}";
@@ -66,6 +68,7 @@ public class BrokersDaoImpl implements BrokersDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.mo_WebSet_udBrokers_sp 'd', ?}";
@@ -74,7 +77,7 @@ public class BrokersDaoImpl implements BrokersDao
 		return q.executeUpdate();
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {

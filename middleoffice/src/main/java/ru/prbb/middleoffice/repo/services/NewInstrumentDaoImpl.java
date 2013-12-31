@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Ввод нового инструмента
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @Repository
-@Transactional
 public class NewInstrumentDaoImpl implements NewInstrumentDao
 {
 	@Autowired
@@ -82,19 +80,19 @@ public class NewInstrumentDaoImpl implements NewInstrumentDao
 	}
 
 	private void processShares(List<String[]> info, List<String> codes) {
-
+		// TODO NewInstrumentDaoImpl.processShares
 	}
 
 	private void processIndexes(List<String[]> info, List<String> codes) {
-
+		// TODO NewInstrumentDaoImpl.processIndexes
 	}
 
 	private void processBonds(List<String[]> info, List<String> codes) {
-
+		// TODO NewInstrumentDaoImpl.processBonds
 	}
 
 	private void processFutures(List<String[]> info, List<String> codes) {
-
+		// TODO NewInstrumentDaoImpl.processFutures
 	}
 
 	private void updateInfo(List<String[]> info, String code, String type, String state) {

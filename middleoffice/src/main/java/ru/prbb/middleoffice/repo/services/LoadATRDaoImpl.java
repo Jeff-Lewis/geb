@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,7 +24,6 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-@Transactional
 public class LoadATRDaoImpl implements LoadATRDao
 {
 	@Autowired
@@ -32,10 +32,11 @@ public class LoadATRDaoImpl implements LoadATRDao
 	@Override
 	public List<Object> execute(String dateStart, String dateEnd, String[] securities, String typeMA, Integer periodTA,
 			String period, String calendar) {
-		// TODO Auto-generated method stub
+		// TODO LoadATRDaoImpl.execute
 		return new ArrayList<Object>();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> getTypeMA(String query) {
@@ -51,6 +52,7 @@ public class LoadATRDaoImpl implements LoadATRDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> getPeriod(String query) {
@@ -66,6 +68,7 @@ public class LoadATRDaoImpl implements LoadATRDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> getCalendar(String query) {

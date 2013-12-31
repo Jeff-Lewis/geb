@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.ViewDealsREPOItem;
@@ -22,12 +23,12 @@ import ru.prbb.middleoffice.domain.ViewDealsREPOItem;
  * 
  */
 @Repository
-@Transactional
 public class ViewDealsREPODaoImpl implements ViewDealsREPODao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewDealsREPOItem> findAll(Date begin, Date end, Long security) {
@@ -39,6 +40,7 @@ public class ViewDealsREPODaoImpl implements ViewDealsREPODao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public ViewDealsREPOItem findById(Long id) {
 		String sql = "{call dbo.mo_WebGet_RepoDeals_sp ?}";
@@ -47,6 +49,7 @@ public class ViewDealsREPODaoImpl implements ViewDealsREPODao
 		return (ViewDealsREPOItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, Double rate, Integer quantity, Double price, Integer days) {
 		String sql = "{call dbo.mo_WebSet_setRepoDeals_sp ?, ?, ?, ?, ?}";
@@ -56,15 +59,16 @@ public class ViewDealsREPODaoImpl implements ViewDealsREPODao
 				.setParameter(3, quantity)
 				.setParameter(4, price)
 				.setParameter(5, days);
-		return 0;//q.executeUpdate();
+		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.mo_WebSet_dRepoDeals_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		return 0;//q.executeUpdate();
+		return q.executeUpdate();
 	}
 
 }

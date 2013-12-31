@@ -52,7 +52,7 @@ public class GroupsController
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
-		dao.updateById(id, name);
+		int r = dao.updateById(id, name);
 		return Result.SUCCESS;
 	}
 

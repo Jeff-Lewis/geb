@@ -11,7 +11,6 @@ import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Загрузка ставки по купонам
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @Service
-@Transactional
 public class LoadRateCouponDaoImpl implements LoadRateCouponDao
 {
 	@Autowired
@@ -28,7 +26,7 @@ public class LoadRateCouponDaoImpl implements LoadRateCouponDao
 
 	@Override
 	public List<Map<String, Object>> execute(String[] securities) {
-		// TODO Auto-generated method stub
+		// TODO LoadRateCouponDaoImpl.execute
 		return new ArrayList<Map<String, Object>>();
 	}
 

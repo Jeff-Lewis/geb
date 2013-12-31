@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -27,12 +28,12 @@ import ru.prbb.middleoffice.domain.SubscriptionItem;
  * 
  */
 @Service
-@Transactional
 public class LogDaoImpl implements LogDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogContactItem> getLogContacts(String start, String stop) {
@@ -43,6 +44,7 @@ public class LogDaoImpl implements LogDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<LogMessagesItem> getLogMessages(String type, String start, String stop) {
@@ -54,6 +56,7 @@ public class LogDaoImpl implements LogDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SubscriptionItem> getLogSubscription() {
 		String sql = "{call dbo.subscription_data_v_proc}";

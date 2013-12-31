@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -29,12 +30,12 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-@Transactional
 public class CompaniesDaoImpl implements CompaniesDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompaniesListItem> findAll() {
@@ -43,6 +44,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public CompaniesItem findById(Long id) {
 		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 1, ?}";
@@ -72,6 +74,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return item;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void updateById(Long id, List<AttrVal> params) {
 		String sql = "{call dbo.anca_WebSet_EquityAttributes_sp ?, ?, ?}";
@@ -84,6 +87,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		}
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<CompaniesQuarterItem> findQuarters(Long id) {
 		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 21, ?}";
@@ -110,6 +114,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<CompaniesYearItem> findYears(Long id) {
 		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 22, ?}";
@@ -138,6 +143,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompaniesFileItem> findFiles(Long id) {
@@ -147,6 +153,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<CompaniesExceptionItem> findVarException(Long id) {
 		String sql = "{call dbo.anca_WebGet_EquityVarException_sp ?}";
@@ -165,6 +172,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findComboCurrencies(String query) {
 		String sql = "select iso as name from dbo.currency_iso_v";
@@ -176,19 +184,10 @@ public class CompaniesDaoImpl implements CompaniesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
-		List<SimpleItem> res = new ArrayList<>(list.size());
-		long id = 0;
-		for (Object object : list) {
-			SimpleItem item = new SimpleItem();
-			item.setId(++id);
-			item.setName(Utils.toString(object));
-			res.add(item);
-		}
-		return res;
+		return Utils.toSimpleItem(q.getResultList());
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findComboGroupSvod(String query) {
 		String sql = "select name from dbo.PivotGroupsV";
@@ -200,19 +199,10 @@ public class CompaniesDaoImpl implements CompaniesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
-		List<SimpleItem> res = new ArrayList<>(list.size());
-		long id = 0;
-		for (Object object : list) {
-			SimpleItem item = new SimpleItem();
-			item.setId(++id);
-			item.setName(Utils.toString(object));
-			res.add(item);
-		}
-		return res;
+		return Utils.toSimpleItem(q.getResultList());
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findComboPeriod(String query) {
@@ -228,6 +218,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findComboEps(String query) {
@@ -243,6 +234,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findComboVariables(String query) {
 		String sql = "select var_user_name as name from dbo.model_variables";
@@ -254,17 +246,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
-		List<SimpleItem> res = new ArrayList<>(list.size());
-		long id = 0;
-		for (Object object : list) {
-			SimpleItem item = new SimpleItem();
-			item.setId(++id);
-			item.setName(Utils.toString(object));
-			res.add(item);
-		}
-		return res;
+		return Utils.toSimpleItem(q.getResultList());
 	}
 
 }

@@ -1,7 +1,6 @@
 package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.ResultData;
+import ru.prbb.middleoffice.domain.SendingItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.services.SendingDao;
 
@@ -28,25 +28,19 @@ public class SendingController
 	@Autowired
 	private SendingDao dao;
 
-	@RequestMapping(value = "/Phone", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<SimpleItem> comboPhone(
-			@RequestParam(required = false) String query)
+	List<SendingItem> show(
+			@RequestParam String text,
+			@RequestParam String recp,
+			@RequestParam String recm)
 	{
-		return dao.findComboPhone(query);
-	}
-
-	@RequestMapping(value = "/Mail", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboMail(
-			@RequestParam(required = false) String query)
-	{
-		return dao.findComboMail(query);
+		return dao.execute(text, recp, recm);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	ResultData download(
+	ResultData getText(
 			@PathVariable("id") Long id)
 	{
 		String text;
@@ -65,13 +59,19 @@ public class SendingController
 		return new ResultData(text);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/Phone", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
-	List<Map<String, Object>> show(
-			@RequestParam String text,
-			@RequestParam String recp,
-			@RequestParam String recm)
+	List<SimpleItem> comboPhone(
+			@RequestParam(required = false) String query)
 	{
-		return dao.execute(text, recp, recm);
+		return dao.findComboPhone(query);
+	}
+
+	@RequestMapping(value = "/Mail", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	public @ResponseBody
+	List<SimpleItem> comboMail(
+			@RequestParam(required = false) String query)
+	{
+		return dao.findComboMail(query);
 	}
 }

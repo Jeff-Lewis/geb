@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,12 +24,12 @@ import ru.prbb.analytics.domain.BrokersEstimateChangeItem;
  * 
  */
 @Service
-@Transactional
 public class BrokersEstimateChangeDaoImpl implements BrokersEstimateChangeDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<BrokersEstimateChangeItem> execute() {
 		String sql = "{call dbo.anca_WebGet_BrokerEstimatesChange_sp}";

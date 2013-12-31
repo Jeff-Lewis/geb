@@ -11,7 +11,6 @@ import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Загрузка доходности облигаций
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @Service
-@Transactional
 public class LoadBondYeildDaoImpl implements LoadBondYeildDao
 {
 	@Autowired
@@ -28,7 +26,7 @@ public class LoadBondYeildDaoImpl implements LoadBondYeildDao
 
 	@Override
 	public List<Map<String, Object>> execute(String dateStart, String dateEnd, String[] securities) {
-		// TODO Auto-generated method stub
+		// TODO LoadBondYeildDaoImpl.execute
 		return new ArrayList<Map<String, Object>>();
 	}
 

@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,12 +24,12 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-@Transactional
 public class EquitiesDaoImpl implements EquitiesDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<PortfolioItem> findAllPortfolio() {
 		// select id_sec, ticker, deal_name, date_insert from portfolio_equity_v
@@ -44,6 +45,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return list;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findCombo(String query) {
 		// "select id, security_code as name from dbo.mo_WebGet_ajaxEquity_v"
@@ -58,6 +60,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return list;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findComboInvestmentPortfolio(String query) {
 		// select name from dbo.investment_portfolio
@@ -71,18 +74,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return list;
 	}
 
-	/**
-	 * dbo.anca_WebGet_EquityFilter_sp
-	 * 
-	 * @param filter
-	 *            varchar(255) = 'Все',
-	 * @param fund_flag
-	 *            int = 0,
-	 * @param security_id
-	 *            numeric(18) = null
-	 * 
-	 */
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<EquitiesItem> findAllEquities(String filter, Long security_id, Integer fund_flag) {
@@ -100,7 +92,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> comboFilter(String query) {
 		String sql = "select name from dbo.anca_WebGet_ajaxEquityFilter_v";
@@ -112,20 +104,10 @@ public class EquitiesDaoImpl implements EquitiesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
-		List<SimpleItem> res = new ArrayList<>(list.size());
-		long id = 0;
-		for (Object object : list) {
-			SimpleItem item = new SimpleItem();
-			item.setId(++id);
-			item.setName(Utils.toString(object));
-			res.add(item);
-		}
-		return res;
+		return Utils.toSimpleItem(q.getResultList());
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> comboEquities(String query) {

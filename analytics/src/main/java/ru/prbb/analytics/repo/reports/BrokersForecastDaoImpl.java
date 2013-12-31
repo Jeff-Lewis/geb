@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -24,12 +25,12 @@ import ru.prbb.analytics.domain.BrokersForecastItem;
  * 
  */
 @Service
-@Transactional
 public class BrokersForecastDaoImpl implements BrokersForecastDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<BrokersForecastItem> execute(String date_time, Long broker_id, Long id_sec) {
 		String sql = "{call dbo.anca_WebGet_BrokerForecastData_sp ?, ?, ?}";
@@ -66,6 +67,7 @@ public class BrokersForecastDaoImpl implements BrokersForecastDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<BrokersForecastDateItem> findBrokerDates() {

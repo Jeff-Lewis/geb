@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Добавление компаний
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @Service
-@Transactional
 public class CompanyAddDaoImpl implements CompanyAddDao
 {
 	@Autowired
@@ -27,6 +25,7 @@ public class CompanyAddDaoImpl implements CompanyAddDao
 
 	@Override
 	public List<String[]> execute(String[] codes) {
+		// TODO CompanyAddDaoImpl
 		final List<String[]> info = new ArrayList<>();
 
 		//		final Map<String, Map<String, String>> a = bs.executeReferenceDataRequest("company-add", codes,

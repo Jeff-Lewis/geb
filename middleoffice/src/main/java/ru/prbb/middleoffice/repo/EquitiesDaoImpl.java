@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,12 +24,12 @@ import ru.prbb.middleoffice.domain.ViewFuturesItem;
  *
  */
 @Repository
-@Transactional
 public class EquitiesDaoImpl implements EquitiesDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<PortfolioItem> findAllPortfolio() {
 		String sql = "select id_sec, ticker, deal_name, date_insert from portfolio_equity_v";
@@ -48,6 +49,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<PortfolioItem> findAllSwaps() {
 		String sql = "{call mo_WebGet_SecuritiesDealNameMapping_sp 4}";
@@ -67,6 +69,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<PortfolioItem> findAllBonds() {
 		String sql = "{call dbo.mo_WebGet_SecuritiesDealNameMapping_sp 5}";
@@ -86,6 +89,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewFuturesItem> findAllFutures() {
@@ -94,6 +98,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {
@@ -109,6 +114,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findComboInvestmentPortfolio(String query) {
@@ -124,6 +130,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findComboPortfolio(String query) {

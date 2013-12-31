@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -25,12 +26,12 @@ import ru.prbb.analytics.domain.ViewModelPriceItem;
  * 
  */
 @Service
-@Transactional(readOnly = true)
 public class ViewModelDaoImpl implements ViewModelDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewModelItem> findAll() {
@@ -39,6 +40,7 @@ public class ViewModelDaoImpl implements ViewModelDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public ViewModelInfoItem getInfoById(Long id_sec) {
 		String sql = "select id_sec, factEPS1Q, factEPS2Q, factEPS3Q, factEPS4Q, TargetPriceCons12M, " +
@@ -58,6 +60,7 @@ public class ViewModelDaoImpl implements ViewModelDao
 		return (ViewModelInfoItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<ViewModelPriceItem> findPriceById(Long id_sec) {
 		String sql = "select equity_fund_ticker, company_short_name, firm_name, bloomberg_code, " +

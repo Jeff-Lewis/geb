@@ -24,13 +24,12 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-@Transactional
 public class CompanyGroupDaoImpl implements CompanyGroupDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findAll() {
@@ -39,7 +38,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public SimpleItem findById(Long id) {
 		String sql = "{call dbo.anca_WebGet_PivotGroups_sp ?}";
@@ -48,6 +47,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		return (SimpleItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(String name) {
 		String sql = "{call dbo.anca_WebSet_putPivotGroup_sp ?}";
@@ -56,6 +56,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int renameById(Long id, String name) {
 		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'u', ?, ?}";
@@ -65,6 +66,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'd', ?}";
@@ -73,7 +75,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		return q.executeUpdate();
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompanyStaffItem> findStaff() {
@@ -82,7 +84,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompanyStaffItem> findStaff(Long id) {
@@ -92,6 +94,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int[] putStaff(Long id, Long[] cids) {
 		String sql = "{call dbo.anca_WebSet_addEquityPivotGroup_sp ?, ?}";
@@ -110,6 +113,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int[] deleteStaff(Long _id, Long[] cids) {
 		String sql = "{call dbo.anca_WebSet_removeEquityPivotGroup_sp ?}";

@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,12 +24,12 @@ import ru.prbb.analytics.domain.BrokersCoverageItem;
  * 
  */
 @Service
-@Transactional
 public class BrokersCoverageDaoImpl implements BrokersCoverageDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<BrokersCoverageItem> execute() {
 		String sql = "{call dbo.anca_WebGet_EquityBrokerCoverage_sp}";
@@ -55,6 +56,7 @@ public class BrokersCoverageDaoImpl implements BrokersCoverageDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int change(Long id, String broker, Integer value) {
 		String sql = "{call dbo.anca_WebSet_setEquityBrokerCoverage_sp ?, ?, ?}";

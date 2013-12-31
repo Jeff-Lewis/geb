@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.RiskRewardSetupParamsItem;
@@ -20,12 +21,13 @@ import ru.prbb.middleoffice.domain.RiskRewardSetupParamsItem;
  * 
  */
 @Repository
-@Transactional
 public class RiskRewardSetupParamsDaoImpl implements RiskRewardSetupParamsDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<RiskRewardSetupParamsItem> findAll(Long security, Date date) {
 		String sql = "{call dbo.mo_WebGet_SecurityParams_sp null, ?, ?}";
@@ -35,6 +37,7 @@ public class RiskRewardSetupParamsDaoImpl implements RiskRewardSetupParamsDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public RiskRewardSetupParamsItem findById(Long id) {
 		String sql = "{call dbo.mo_WebGet_SecurityParams_sp ?}";

@@ -12,6 +12,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SecurityCashFlowItem;
@@ -23,7 +24,6 @@ import ru.prbb.middleoffice.domain.SecurityCashFlowItem;
  * 
  */
 @Service
-@Transactional
 public class LoadCashFlowDaoImpl implements LoadCashFlowDao
 {
 	@Autowired
@@ -31,10 +31,12 @@ public class LoadCashFlowDaoImpl implements LoadCashFlowDao
 
 	@Override
 	public List<Map<String, Object>> execute(String[] securities) {
-		// TODO Auto-generated method stub
+		// TODO LoadCashFlowDaoImpl.execute
 		return new ArrayList<Map<String, Object>>();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SecurityCashFlowItem> findAllSecurities() {
 		String sql = "select * from dbo.mo_WebGet_bonds_v";

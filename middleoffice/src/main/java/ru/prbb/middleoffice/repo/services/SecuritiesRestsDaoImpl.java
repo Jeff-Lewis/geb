@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SecuritiesRestsItem;
@@ -20,12 +21,12 @@ import ru.prbb.middleoffice.domain.SecuritiesRestsItem;
  * 
  */
 @Repository
-@Transactional
 public class SecuritiesRestsDaoImpl implements SecuritiesRestsDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SecuritiesRestsItem> execute(Long security, Long client, Long fund, Integer batch, Date date) {
@@ -39,13 +40,14 @@ public class SecuritiesRestsDaoImpl implements SecuritiesRestsDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, Byte checkFlag) {
 		String sql = "{call dbo.mo_WebSet_set_securities_rests_sp ?, ?}";
 		Query q = em.createNativeQuery(sql, SecuritiesRestsItem.class)
 				.setParameter(1, id)
 				.setParameter(2, checkFlag);
-		return 0;//q.executeUpdate();
+		return q.executeUpdate();
 	}
 
 }

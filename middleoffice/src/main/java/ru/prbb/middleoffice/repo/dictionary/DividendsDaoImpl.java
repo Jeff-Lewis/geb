@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.DividendItem;
@@ -22,13 +23,12 @@ import ru.prbb.middleoffice.domain.DividendItem;
  * 
  */
 @Repository
-@Transactional
 public class DividendsDaoImpl implements DividendsDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DividendItem> findAll(Long security, Long client, Long broker, Long account, Date begin, Date end) {
@@ -43,7 +43,7 @@ public class DividendsDaoImpl implements DividendsDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public DividendItem findById(Long id) {
 		String sql = "{call dbo.mo_WebGet_Dividends_sp ?}";
@@ -52,6 +52,7 @@ public class DividendsDaoImpl implements DividendsDao
 		return (DividendItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(Long security, Long account, Long currency,
 			Date record, Date receive, Integer quantity,
@@ -69,6 +70,7 @@ public class DividendsDaoImpl implements DividendsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, Date receive) {
 		String sql = "{call dbo.mo_WebSet_uActualDividends_sp ?, ?}";
@@ -78,6 +80,7 @@ public class DividendsDaoImpl implements DividendsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateAttrById(Long id, String type, String value) {
 		String sql = "{call dbo.mo_WebSet_setDividendAttributes_sp ?, ?, ?}";
@@ -88,6 +91,7 @@ public class DividendsDaoImpl implements DividendsDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.mo_WebSet_dDividends_sp ?}";

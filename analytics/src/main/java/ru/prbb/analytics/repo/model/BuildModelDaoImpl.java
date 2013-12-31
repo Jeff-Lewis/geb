@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,12 +24,12 @@ import ru.prbb.analytics.domain.BuildModelItem;
  * 
  */
 @Service
-@Transactional
 public class BuildModelDaoImpl implements BuildModelDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<BuildModelItem> calculateModel(Long[] ids) {
 		final List<BuildModelItem> list = new ArrayList<>();
@@ -50,6 +51,7 @@ public class BuildModelDaoImpl implements BuildModelDao
 		return list;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<BuildModelItem> calculateSvod() {
 		String sql = "{call dbo.build_model_proc}";

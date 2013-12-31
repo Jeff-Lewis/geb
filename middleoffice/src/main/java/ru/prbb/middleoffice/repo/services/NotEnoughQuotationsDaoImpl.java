@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.NotEnoughQuotationsItem;
@@ -21,12 +22,12 @@ import ru.prbb.middleoffice.domain.NotEnoughQuotationsItem;
  * 
  */
 @Repository
-@Transactional
 public class NotEnoughQuotationsDaoImpl implements NotEnoughQuotationsDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NotEnoughQuotationsItem> show() {

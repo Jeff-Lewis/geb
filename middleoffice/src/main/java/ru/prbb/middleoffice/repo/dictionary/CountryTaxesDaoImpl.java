@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.CountryTaxItem;
@@ -22,13 +23,12 @@ import ru.prbb.middleoffice.domain.CountryTaxItem;
  * 
  */
 @Repository
-@Transactional
 public class CountryTaxesDaoImpl implements CountryTaxesDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CountryTaxItem> findAll() {
@@ -37,7 +37,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 		return q.getResultList();
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public CountryTaxItem findById(Long id) {
 		String sql = "{call dbo.mo_WebGet_CountryTaxes_sp ?}";
@@ -46,6 +46,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 		return (CountryTaxItem) q.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(Long securityType, Long country, Long broker, Double value, Date dateBegin) {
 		String sql = "{call dbo.mo_WebSet_putCountryTaxes_sp ?, ?, ?, ?, ?}";
@@ -58,6 +59,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, Double value, Date dateBegin, Date dateEnd) {
 		String sql = "{call dbo.mo_WebSet_udCountryTaxes_sp 'u', ?, ?, ?, ?}";
@@ -69,6 +71,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.mo_WebSet_udCountryTaxes_sp 'd', ?}";

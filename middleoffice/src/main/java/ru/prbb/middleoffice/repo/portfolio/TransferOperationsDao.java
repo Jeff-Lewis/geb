@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.util.List;
 
 import ru.prbb.middleoffice.domain.TransferOperationsItem;
+import ru.prbb.middleoffice.domain.TransferOperationsListItem;
 
 /**
  * Список перекидок
@@ -23,7 +24,13 @@ public interface TransferOperationsDao {
 	 * @param security
 	 * @return
 	 */
-	List<TransferOperationsItem> findAll(Date begin, Date end, Long security);
+	List<TransferOperationsListItem> findAll(Date begin, Date end, Long security);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<TransferOperationsItem> findById(Long id);
 
 	/**
 	 * @param ids

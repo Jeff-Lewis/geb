@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.ViewParamItem;
@@ -22,12 +23,12 @@ import ru.prbb.analytics.domain.ViewParamsItem;
  * 
  */
 @Repository
-@Transactional
 public class ViewParamsDaoImpl implements ViewParamsDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewParamsItem> findAll() {
@@ -36,6 +37,7 @@ public class ViewParamsDaoImpl implements ViewParamsDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public ViewParamItem findById(String blm_id) {
 		String sql = "select field_id, field_mnemonic, description, data_license_category, category," +

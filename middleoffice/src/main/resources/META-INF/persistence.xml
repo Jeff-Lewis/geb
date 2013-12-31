@@ -13,7 +13,7 @@
 		<properties>
 			<property
 				name="jboss.entity.manager.factory.jndi.name"
-				value="java:jboss/spring-quickstart/persistence" />
+				value="java:jboss/middleoffice/persistence" />
 			Properties for Hibernate
 			<property
 				name="hibernate.hbm2ddl.auto"
@@ -26,13 +26,13 @@
  -->
 <!-- 
  	<persistence-unit 
-		name="bloomberg"
-		transaction-type="RESOURCE_LOCAL" >
+		name="moBloomberg"
+		transaction-type="JTA" >
 		<jta-data-source>java:jboss/datasources/BloombergDS</jta-data-source>
 		<properties>
 			<property
 				name="jboss.entity.manager.factory.jndi.name"
-				value="java:jboss/spring-quickstart/persistence" />
+				value="java:jboss/middleoffice/persistence" />
 			<property
 				name="hibernate.dialect"
 				value="org.hibernate.dialect.SybaseDialect" />
@@ -47,13 +47,13 @@
  -->
 
   	<persistence-unit
-		name="bloombergTest"
-		transaction-type="RESOURCE_LOCAL">
+		name="moBloombergTest"
+		transaction-type="JTA">
 		<jta-data-source>java:jboss/datasources/TestDS</jta-data-source>
 		<properties>
 			<property
 				name="jboss.entity.manager.factory.jndi.name"
-				value="java:jboss/spring-quickstart/persistence" />
+				value="java:jboss/middleoffice/persistence" />
 			<property
 				name="hibernate.dialect"
 				value="org.hibernate.dialect.SybaseDialect" />

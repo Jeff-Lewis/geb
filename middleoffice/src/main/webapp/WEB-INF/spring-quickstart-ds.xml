@@ -6,6 +6,7 @@
    xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd">
 
    <!-- The datasource is bound into JNDI at this location. We reference this in META-INF/persistence.xml -->
+<!--
    <datasource jndi-name="java:jboss/datasources/SpringQuickstartDS"
       pool-name="kitchensink-quickstart" enabled="true"
       use-java-context="true">
@@ -16,6 +17,7 @@
          <password>sa</password>
       </security>
    </datasource>
+-->
 <!--
    <datasource jndi-name="java:jboss/datasources/BloombergDS"
       pool-name="middleoffice-bloomberg" enabled="true"
@@ -25,6 +27,19 @@
       <security>
          <user-name>dgluhov</user-name>
          <password>lbfcjan</password>
+      </security>
+   </datasource>
+-->
+
+<!--
+   <datasource jndi-name="java:jboss/datasources/BloombergDS"
+      pool-name="middleoffice-bloomberg" enabled="true"
+      use-java-context="true">
+      <connection-url>jdbc:sybase:Tds:172.16.20.177:5000/inv_db</connection-url>
+      <driver>sybase</driver>
+      <security>
+         <user-name>ArmWebAccess</user-name>
+         <password>cdj,jlentktgepbrfv!</password>
       </security>
    </datasource>
 -->

@@ -22,11 +22,23 @@ public class UtilsTest extends Assert {
 	 * Test method for {@link ru.prbb.Utils#isEmpty(java.lang.String)}.
 	 */
 	@Test
-	public void testIsEmpty() {
-		assertEquals(true, Utils.isEmpty(null));
+	public void testIsEmptyString() {
+		assertEquals(true, Utils.isEmpty((String) null));
 		assertEquals(true, Utils.isEmpty(""));
 		assertEquals(true, Utils.isEmpty("   "));
 		assertEquals(false, Utils.isEmpty(" x "));
+	}
+
+	/**
+	 * Test method for {@link ru.prbb.Utils#isEmpty(java.lang.Number)}.
+	 */
+	@Test
+	public void testIsEmptyNumber() {
+		assertEquals(true, Utils.isEmpty((Number) null));
+		assertEquals(true, Utils.isEmpty(1));
+		assertEquals(true, Utils.isEmpty(12.3));
+		assertEquals(false, Utils.isEmpty(0));
+		assertEquals(false, Utils.isEmpty(0.0));
 	}
 
 	/**

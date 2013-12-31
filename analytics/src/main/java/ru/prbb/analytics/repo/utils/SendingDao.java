@@ -4,8 +4,8 @@
 package ru.prbb.analytics.repo.utils;
 
 import java.util.List;
-import java.util.Map;
 
+import ru.prbb.analytics.domain.SendingItem;
 import ru.prbb.analytics.domain.SimpleItem;
 
 /**
@@ -22,7 +22,7 @@ public interface SendingDao {
 	 * @param recm
 	 * @return
 	 */
-	List<Map<String, Object>> execute(String text, String recp, String recm);
+	List<SendingItem> execute(String text, String recp, String recm);
 
 	/**
 	 * @param query

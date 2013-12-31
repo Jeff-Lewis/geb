@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.NoConformityItem;
@@ -21,12 +22,12 @@ import ru.prbb.middleoffice.domain.NoConformityItem;
  * 
  */
 @Repository
-@Transactional
 public class NoConformityDaoImpl implements NoConformityDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NoConformityItem> show() {
@@ -35,13 +36,16 @@ public class NoConformityDaoImpl implements NoConformityDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void delete(Long[] ids) {
 		String sql = "{call dbo.mo_WebSet_dTickerUnSetDeals_sp ?}";
+		Query q = em.createNativeQuery(sql);
+		int[] res = new int[ids.length];
+		int i = 0;
 		for (Long id : ids) {
-			Query q = em.createNativeQuery(sql)
-					.setParameter(1, id);
-			//q.executeUpdate();
+			q.setParameter(1, id);
+			res[i++] = q.executeUpdate();
 		}
 	}
 

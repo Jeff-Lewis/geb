@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -23,12 +24,12 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-@Transactional
 public class BrokersDaoImpl implements BrokersDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<BrokerItem> findAll() {
@@ -37,6 +38,7 @@ public class BrokersDaoImpl implements BrokersDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public BrokerItem findById(Long id) {
 		String sql = "{call dbo.anca_WebGet_SelectBrokers_sp ?}";
@@ -59,6 +61,7 @@ public class BrokersDaoImpl implements BrokersDao
 	 * @return
 	 * 
 	 */
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(String full_name, Integer rating, String bloomberg_code,
 			Integer cover_russian, String short_name) {
@@ -90,6 +93,7 @@ public class BrokersDaoImpl implements BrokersDao
 	 * @return
 	 * 
 	 */
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, String full_name, Integer rating, String bloomberg_code,
 			Integer cover_russian, String short_name) {
@@ -104,6 +108,7 @@ public class BrokersDaoImpl implements BrokersDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
 		String sql = "{call dbo.anca_WebSet_udBrokers_sp 'd', ?}";
@@ -112,6 +117,7 @@ public class BrokersDaoImpl implements BrokersDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {

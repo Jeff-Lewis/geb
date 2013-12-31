@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.SimpleItem;
@@ -21,7 +22,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class BloombergParamsDaoImpl implements BloombergParamsDao
 {
 	@Autowired

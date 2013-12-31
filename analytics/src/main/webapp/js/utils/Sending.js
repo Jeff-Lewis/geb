@@ -6,7 +6,7 @@
 	var storeRes = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		fields : [ 'status', 'mail' ]
+		fields : [ 'mail', 'status' ]
 	});
 
 	var receiver1 = new Ext.form.ComboBox({

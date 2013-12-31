@@ -12,6 +12,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -24,12 +25,12 @@ import ru.prbb.middleoffice.domain.ViewPortfolioItem;
  * 
  */
 @Repository
-@Transactional
 public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<ViewPortfolioItem> executeSelect(Date date, Long security) {
 		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, ?}";
@@ -62,13 +63,14 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void executeCalc(Date date, Long security) {
 		String sql = "{call dbo.mo_WebSet_PlReport_sp ?, null, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, date)
 				.setParameter(2, security);
-		//q.executeUpdate();
+		q.executeUpdate();
 	}
 
 }

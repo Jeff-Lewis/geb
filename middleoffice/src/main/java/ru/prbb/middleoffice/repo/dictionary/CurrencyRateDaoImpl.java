@@ -12,6 +12,7 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
@@ -22,13 +23,12 @@ import ru.prbb.middleoffice.domain.CurrencyRateItem;
  *
  */
 @Repository
-@Transactional
 public class CurrencyRateDaoImpl implements CurrencyRateDao
 {
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<CurrencyRateItem> findAll(Date dated, String iso) {
 		String sql = "{call dbo.mo_WebGet_CurrencyRate_sp ?, ?}";
