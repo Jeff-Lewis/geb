@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -82,7 +81,7 @@ public class UtilsTest extends Assert {
 	@Test
 	public void testParseDate() {
 		assertEquals(null, Utils.parseDate(null));
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", new Locale("RU", "ru"));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Utils.LOCALE);
 		Date date = Calendar.getInstance().getTime();
 		java.sql.Date expected = new java.sql.Date(date.getTime());
 		java.sql.Date actual = Utils.parseDate(sdf.format(date));

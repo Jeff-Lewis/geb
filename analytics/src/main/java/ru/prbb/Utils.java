@@ -22,7 +22,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  */
 public class Utils {
 
-	private static final Locale LOCALE = new Locale("RU", "ru");
+	public static final Locale LOCALE = new Locale("RU", "ru");
 
 	/**
 	 * Проверить строку на содержимое
