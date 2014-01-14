@@ -64,6 +64,8 @@ public class HolidaysController
 			@RequestParam Boolean sms,
 			@RequestParam Boolean portfolio)
 	{
+		//		jdbcTemplate.update("{call dbo.check_holidays ?, ?, ?, ?, ?, ?, ?, 'i'}",
+		//				country, date, times, timee, name, sms, portfolio);
 		return Result.SUCCESS;
 	}
 

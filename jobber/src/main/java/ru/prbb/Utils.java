@@ -14,7 +14,7 @@ import java.util.Locale;
 
 import javax.persistence.Column;
 
-import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.jobber.domain.SimpleItem;
 
 /**
  * @author RBr
@@ -269,4 +269,19 @@ public class Utils {
 		return res;
 	}
 
+	/***************************************************************************************/
+
+	/**
+	 * Форматирует дату
+	 * 
+	 * @param date
+	 * @return yyyyMMdd
+	 */
+	public static String toStringYMD2(Date date) {
+		return (date == null) ? "" : new SimpleDateFormat("yyyyMMdd", LOCALE).format(date);
+	}
+
+	public static SimpleDateFormat createDateFormatYMD() {
+		return new SimpleDateFormat("yyyy-MM-dd", LOCALE);
+	}
 }
