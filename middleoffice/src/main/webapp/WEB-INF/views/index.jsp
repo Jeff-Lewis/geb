@@ -1,13 +1,12 @@
-<%@ page language="java"%>
-<%@ page contentType="text/html; charset=UTF-8"%>
-<%@ page pageEncoding="UTF-8"%>
+<%@ page language="java" pageEncoding="utf-8"%>
+<%@ page contentType="text/html;charset=utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
 <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>АРМ Middle-Office</title>
 <link rel="icon" type="image/png" href="images/favicon.png" />
 <link rel="shortcut icon" type="image/vnd.microsoft.icon"
@@ -40,7 +39,7 @@
 	<div id="loading-mask" style=""></div>
 
 	<div id="header-table" class="x-hidden">
-		<table style="width: 100%; background-color: #F0F0F0;">
+		<table style="width: 100%; padding: 0; border-spacing: 0">
 			<tr>
 				<td align="center" width="200px"><img
 					src="images/bank_v_life.png" /></td>
