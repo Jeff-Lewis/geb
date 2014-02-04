@@ -30,6 +30,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 	public List<SubscriptionItem> getSubscriptions() {
 		String sql = "{call dbo.output_subscriptions_prc}";
 		Query q = em.createNativeQuery(sql, SubscriptionItem.class);
+		showSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -40,6 +41,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 		String sql = "{call dbo.secs_in_subscription_prc ?}";
 		Query q = em.createNativeQuery(sql, SecurityItem.class)
 				.setParameter(1, id);
+		showSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -51,6 +53,15 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 				.setParameter(1, security_code)
 				.setParameter(2, last_price)
 				.setParameter(3, last_chng);
+		showSql(sql, q);
 		return 0;// TODO q.executeUpdate();
+	}
+
+	/**
+	 * @param sql
+	 * @param q
+	 */
+	private void showSql(String sql, Query q) {
+		System.out.println(sql);
 	}
 }

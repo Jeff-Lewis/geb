@@ -43,6 +43,7 @@ public class BloombergDaoImpl implements BloombergDao
 	public List<String> getSecForAtr() {
 		String sql = "select security_code from dbo.mo_job_LoadATR_v";
 		Query q = em.createNativeQuery(sql);
+		showSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -65,6 +66,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(9, item.period);
 				q.setParameter(10, item.calendar);
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -78,6 +80,7 @@ public class BloombergDaoImpl implements BloombergDao
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
+		showSql(sql, q);
 		List<SecForJobRequest> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -102,6 +105,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(4, item.period);
 				q.setParameter(5, item.blm_data_src_over);
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -129,6 +133,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(10, item.barr);
 				q.setParameter(11, item.year_return);
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -151,6 +156,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(7, item.group);
 				q.setParameter(8, item.sub);
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -167,6 +173,7 @@ public class BloombergDaoImpl implements BloombergDao
 			try {
 				q.setParameter(1, item);
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -179,6 +186,7 @@ public class BloombergDaoImpl implements BloombergDao
 	public List<String> getSecForBonds() {
 		String sql = "select security_code from mo_job_UpdateBondQuotes_v";
 		Query q = em.createNativeQuery(sql);
+		showSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -193,6 +201,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(2, item.getParams());
 				q.setParameter(3, item.getValue());
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -206,6 +215,7 @@ public class BloombergDaoImpl implements BloombergDao
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
+		showSql(sql, q);
 		List<SecForJobRequest> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -231,6 +241,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(6, item.curncy);
 				q.setParameter(7, item.calendar);
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -243,6 +254,7 @@ public class BloombergDaoImpl implements BloombergDao
 	public List<String> getSecForQuotes() {
 		String sql = "select security_code from dbo.mo_job_LoadQuotes_v";
 		Query q = em.createNativeQuery(sql);
+		showSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -257,6 +269,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(2, item.getValue());
 				q.setParameter(3, item.getDate());
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -270,6 +283,7 @@ public class BloombergDaoImpl implements BloombergDao
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
+		showSql(sql, q);
 		List<SecurityItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -294,6 +308,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(4, item.short_name);
 				q.setParameter(5, item.type_id);
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -311,6 +326,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(3, item.getDate());
 				q.setParameter(4, item.getValue());
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				item.setValue(e.getMessage());
 			}
@@ -329,6 +345,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(3, item.getValue());
 				q.setParameter(4, item.getValue2());
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -346,6 +363,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(2, item.getValue());
 				q.setParameter(3, item.getDate());
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				item.setValue(e.getMessage());
 			}
@@ -363,6 +381,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(2, Utils.parseDate(item.getDate()));
 				q.setParameter(3, item.getValue());
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -380,6 +399,7 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(2, Utils.parseDate(item.getDate()));
 				q.setParameter(3, item.getValue());
 				// TODO q.executeUpdate();
+				showSql(sql, q);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -431,7 +451,8 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(29, values.get("EARN_EST_CRNCY"))
 				.setParameter(30, values.get("EQY_FUND_TICKER"))
 				.setParameter(31, values.get("EQY_FISCAL_YR_END"));
-		q.executeUpdate();
+		// TODO q.executeUpdate();
+		showSql(sql, q);
 	}
 
 	/**
@@ -460,7 +481,8 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(12, values.get("FEED_SOURCE"))
 				.setParameter(13, values.get("CRNCY"))
 				.setParameter(14, values.get("EQY_FUND_CRNCY"));
-		q.executeUpdate();
+		// TODO q.executeUpdate();
+		showSql(sql, q);
 	}
 
 	/**
@@ -508,7 +530,8 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(29, values.get("FIXED"))
 				.setParameter(30, Utils.toDouble(values.get("CPN")))
 				.setParameter(31, Utils.toDouble(values.get("PAR_AMT")));
-		q.executeUpdate();
+		// TODO q.executeUpdate();
+		showSql(sql, q);
 	}
 
 	/**
@@ -550,6 +573,15 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(24, values.get("FUT_FIRST_TRADE_DT"))
 				.setParameter(25, values.get("LAST_TRADEABLE_DT"))
 				.setParameter(26, values.get("FUT_GEN_MONTH"));
-		q.executeUpdate();
+		// TODO q.executeUpdate();
+		showSql(sql, q);
+	}
+
+	/**
+	 * @param sql
+	 * @param q
+	 */
+	private void showSql(String sql, Query q) {
+		System.out.println(sql);
 	}
 }
