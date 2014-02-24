@@ -63,7 +63,7 @@
 	</div>
 
 	<div>
-		<ul id="task-dictionary" class="x-hidden">
+		<ul id="task-dictionary" class="x-hidden" title="Справочники">
 			<li><img class="icon-show-all" src="images/excel.png"><a
 				href="#" onclick="menu.showPane(menu, 'dictionary/Brokers');">
 					Брокеры </a></li>
@@ -124,7 +124,7 @@
 
 		</ul>
 
-		<ul id="task-services" class="x-hidden">
+		<ul id="task-services" class="x-hidden" title="Сервис">
 			<li><img class="icon-show-all" src="images/excel.png"><a
 				href="#" onclick="menu.showPane(menu, 'services/NoConformity');">
 					Нет соответствия </a></li>
@@ -207,7 +207,7 @@
 					Справочник контактов </a></li>
 		</ul>
 
-		<ul id="operations-cb" class="x-hidden">
+		<ul id="operations-cb" class="x-hidden" title="Операции с ЦБ">
 			<li><img class="icon-show-all" src="images/30.png"><a
 				href="#" onclick="menu.showModal(menu, 'operations/DealsOneNew');">
 					Загрузка единичной сделки </a></li>
@@ -237,7 +237,7 @@
 
 		</ul>
 
-		<ul id="task-portfolio" class="x-hidden">
+		<ul id="task-portfolio" class="x-hidden" title="Портфель">
 			<li><img class="icon-show-all" src="images/grid.png"><a
 				href="#"
 				onclick="menu.showPane(menu, 'portfolio/ViewPortfolio');">
@@ -275,7 +275,7 @@
 
 		</ul>
 
-		<ul id="task-logs" class="x-hidden">
+		<ul id="task-logs" class="x-hidden" title="Журнализация">
 			<li><img class="icon-show-all" src="images/user-plus.png">
 				<a href="#" onclick="menu.showPane(menu, 'logs/LogMessages');">
 					Журнал отправки сообщений </a></li>
