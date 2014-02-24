@@ -21,9 +21,11 @@
 	<!-- Add typical dependencies for a web application -->
 	<dependencies>
 		<dependency>
-			<groupId>blpapi3</groupId>
-			<artifactId>blpapi3</artifactId>
-			<version>3</version>
+			<groupId>com.bloomberg</groupId>
+			<artifactId>blpapi</artifactId>
+			<version>3.4.5</version>
+			<scope>system</scope>
+			<systemPath>${basedir}\lib\blpapi\blpapi-3.4.5-5.jar</systemPath>
 		</dependency>
 
 		<dependency>
