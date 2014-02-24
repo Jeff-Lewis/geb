@@ -3,6 +3,8 @@
  */
 package ru.prbb.analytics.repo.params;
 
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -12,27 +14,31 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.NewParamItem;
+import ru.prbb.bloomberg.BloombergServices;
 
 /**
  * Ввод нового параметра<br>
  * Ввод нового параметра blm_datasource_ovr
  * 
  * @author RBr
- * 
  */
 @Service
 public class NewParamDaoImpl implements NewParamDao
 {
+
 	@Autowired
 	private EntityManager em;
+
+	@Autowired
+	private BloombergServices bs;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public NewParamItem setup(String code) {
-		String sql = "select field_mnemonic as code, field_id as blmId, description as name" +
-				" from bloomberg_dl_fields where field_mnemonic=?";
 		NewParamItem res = null;
 		try {
+			String sql = "select field_mnemonic as code, field_id as blmId, description as name" +
+					" from bloomberg_dl_fields where field_mnemonic=?";
 			Query q = em.createNativeQuery(sql, NewParamItem.class)
 					.setParameter(1, code);
 			res = (NewParamItem) q.getSingleResult();
@@ -40,11 +46,11 @@ public class NewParamDaoImpl implements NewParamDao
 			// TODO: handle exception
 		}
 		if (null == res) {
-			// TODO answer = bs.executeFieldInfoRequest("Ввод нового параметра", code);
+			Map<String, Object> answer = bs.executeFieldInfoRequest("Ввод нового параметра", code);
 			res = new NewParamItem();
-			res.setCode(code);
-			res.setBlmId("blmId");
-			res.setName("name");
+			res.setCode(answer.get("CODE").toString());
+			res.setBlmId(answer.get("BLM_ID").toString());
+			res.setName(answer.get("NAME").toString());
 		}
 		return res;
 	}

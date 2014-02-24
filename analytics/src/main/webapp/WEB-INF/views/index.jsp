@@ -63,7 +63,7 @@
 	</div>
 
 	<div>
-		<ul id="current-model" class="x-hidden">
+		<ul id="current-model" class="x-hidden" title="Текущая модель">
 			<li><img class="icon-show-all" src="images/bogus.png"> <a
 				href="#" onclick="menu.showPane(menu, 'model/BuildModel');">
 					Расчёт модели по компании </a></li>
@@ -86,13 +86,13 @@
 
 		</ul>
 
-		<ul id="task-portfolio" class="x-hidden">
+		<ul id="task-portfolio" class="x-hidden" title="Portfolio">
 			<li><img class="icon-show-all" src="images/bogus.png"> <a
 				href="#" onclick="menu.showPane(menu, 'portfolio/ViewPortfolio');">
 					Добавление организаций в Portfolio </a></li>
 		</ul>
 
-		<ul id="task-sprav-org" class="x-hidden">
+		<ul id="task-sprav-org" class="x-hidden" title="Компании">
 			<li><img class="icon-show-all" src="images/bogus.png"> <a
 				href="#" onclick="menu.showPane(menu, 'company/Companies');">
 					Список компаний </a></li>
@@ -103,7 +103,7 @@
 
 		</ul>
 
-		<ul id="task-sprav-params" class="x-hidden">
+		<ul id="task-sprav-params" class="x-hidden" title="Параметры">
 			<li><img class="icon-show-all" src="images/bogus.png"> <a
 				href="#" onclick="menu.showPane(menu, 'params/ViewParams');">
 					Справочник параметров </a></li>
@@ -118,7 +118,7 @@
 
 		</ul>
 
-		<ul id="task-reports" class="x-hidden">
+		<ul id="task-reports" class="x-hidden" title="Отчётные формы">
 			<li><img class="icon-show-all" src="images/excel.png"> <a
 				href="#" onclick="menu.showPane(menu, 'reports/ViewExceptions');">
 					Отчёт по исключениям </a></li>
@@ -142,7 +142,7 @@
 
 		</ul>
 
-		<ul id="task-grid" class="x-hidden">
+		<ul id="task-grid" class="x-hidden" title="Запросы к терминалу Bloomberg">
 
 			<li><img class="icon-show-all" src="images/bogus.png"> <a
 				href="#" onclick="menu.showPane(menu, 'bloomberg/RequestBDHeps');">
@@ -179,7 +179,7 @@
 
 		</ul>
 
-		<ul id="task-utils" class="x-hidden">
+		<ul id="task-utils" class="x-hidden" title="Утилиты">
 
 			<li><img class="icon-show-all" src="images/users.png"> <a
 				href="#" onclick="menu.showPane(menu, 'utils/Sending');">
@@ -195,7 +195,7 @@
 
 		</ul>
 
-		<ul id="task-logs" class="x-hidden">
+		<ul id="task-logs" class="x-hidden" title="Журнализация">
 			<li><img class="icon-show-all" src="images/user-plus.png">
 				<a href="#" onclick="menu.showPane(menu, 'logs/LogMessages');">
 					Журнал отправки сообщений </a></li>

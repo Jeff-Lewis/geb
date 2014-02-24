@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.bloomberg.BloombergServices;
 
 /**
  * BDS запрос
@@ -27,11 +28,12 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 {
 	@Autowired
 	private EntityManager em;
+	@Autowired
+	private BloombergServices bs;
 
 	@Override
 	public void execute(String[] security, String[] params) {
-		// TODO RequestBDSDaoImpl
-
+		bs.executeBdsRequest("BDS запрос", security, params);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

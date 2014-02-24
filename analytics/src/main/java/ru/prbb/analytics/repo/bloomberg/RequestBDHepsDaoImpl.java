@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.bloomberg.BloombergServices;
 
 /**
  * BDH запрос с EPS
@@ -29,10 +30,14 @@ public class RequestBDHepsDaoImpl implements RequestBDHepsDao
 	@Autowired
 	private EntityManager em;
 
+	@Autowired
+	private BloombergServices bs;
+
 	@Override
-	public void execute(String dateStart, String dateEnd, String period, String calendar, String[] security,
-			String[] params, Set<String> _currency) {
-		// TODO RequestBDHepsDaoImpl
+	public void execute(String dateStart, String dateEnd, String period, String calendar,
+			String[] security, String[] params, Set<String> _currency) {
+		bs.executeBdhEpsRequest("BDH запрос с EPS", dateStart, dateEnd, period, calendar,
+				_currency, security, params);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

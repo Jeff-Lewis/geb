@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.bloomberg.BloombergServices;
 
 /**
  * BDP с override
@@ -28,15 +29,18 @@ public class RequestBDPovrDaoImpl implements RequestBDPovrDao
 {
 	@Autowired
 	private EntityManager em;
+	@Autowired
+	private BloombergServices bs;
 
 	@Override
 	public void execute(String[] security, String[] params, String over, String period) {
-		// TODO RequestBDPovrDaoImpl
+		bs.executeBdpRequestOverride("BDP с override", security, params, period, over);
 	}
 
 	@Override
 	public void execute(String[] security, String[] params, String over, Set<String> _currency) {
-		// TODO RequestBDPovrDaoImpl
+		bs.executeBdpRequestOverrideQuarter("BDP с override-quarter", security, params,
+				_currency, over);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
