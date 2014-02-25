@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.rest;
+package ru.prbb.agent.web;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,15 +17,15 @@ import ru.prbb.agent.service.BloombergServices;
  * @author RBr
  */
 @RestController
-@RequestMapping("/ReferenceData")
-public class ReferenceDataController {
+@RequestMapping("/BdhRequest")
+public class BdhRequestController {
 
 	private final Log log = LogFactory.getLog(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public ReferenceDataController(BloombergServices bs) {
+	public BdhRequestController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -40,19 +40,25 @@ public class ReferenceDataController {
 				+ "fields\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ { field, value } ] ]\n"
+				+ "[ security -> [ date -> [ {field -> value;period;currency;calendar } ] ] ]\n"
 				+ "\n"
 				+ "\n";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam String dateStart,
+			@RequestParam String dateEnd,
+			@RequestParam String period,
+			@RequestParam String calendar,
+			@RequestParam String[] currencies,
 			@RequestParam String[] securities,
 			@RequestParam String[] fields) {
 		log.trace("POST");
 
 		try {
-			return bs.executeReferenceDataRequest("ReferenceDataRequest", securities, fields);
+			return bs.executeBdhRequest("BdhRequest", dateStart, dateEnd, period, calendar,
+					currencies, securities, fields);
 		} catch (Exception e) {
 			return e;
 		}

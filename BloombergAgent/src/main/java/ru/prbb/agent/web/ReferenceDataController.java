@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.rest;
+package ru.prbb.agent.web;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,15 +17,15 @@ import ru.prbb.agent.service.BloombergServices;
  * @author RBr
  */
 @RestController
-@RequestMapping("/ReferenceDataOverrideQuarter")
-public class ReferenceDataOverrideQuarterController {
+@RequestMapping("/ReferenceData")
+public class ReferenceDataController {
 
 	private final Log log = LogFactory.getLog(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public ReferenceDataOverrideQuarterController(BloombergServices bs) {
+	public ReferenceDataController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -38,8 +38,6 @@ public class ReferenceDataOverrideQuarterController {
 				+ "Параметр\n"
 				+ "securities\n"
 				+ "fields\n"
-				+ "currencies\n"
-				+ "over\n"
 				+ "\n"
 				+ "Результат\n"
 				+ "[ security -> [ { field, value } ] ]\n"
@@ -50,14 +48,11 @@ public class ReferenceDataOverrideQuarterController {
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
 			@RequestParam String[] securities,
-			@RequestParam String[] fields,
-			@RequestParam String[] currencies,
-			@RequestParam String over) {
+			@RequestParam String[] fields) {
 		log.trace("POST");
 
 		try {
-			return bs.executeBdpRequestOverrideQuarter("BdpRequestOverrideQuarter",
-					securities, fields, currencies, over);
+			return bs.executeReferenceDataRequest("ReferenceDataRequest", securities, fields);
 		} catch (Exception e) {
 			return e;
 		}

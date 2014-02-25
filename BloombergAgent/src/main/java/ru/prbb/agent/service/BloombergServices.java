@@ -27,6 +27,8 @@ import ru.prbb.bloomberg.model.CashFlowResultItem;
 import ru.prbb.bloomberg.model.SecForJobRequest;
 import ru.prbb.bloomberg.model.SecurityItem;
 import ru.prbb.bloomberg.request.AtrRequest;
+import ru.prbb.bloomberg.request.BdhEpsRequest;
+import ru.prbb.bloomberg.request.BdhRequest;
 import ru.prbb.bloomberg.request.BdpOverrideRequest;
 import ru.prbb.bloomberg.request.BdpRequest;
 import ru.prbb.bloomberg.request.BdpRequestOverride;
@@ -34,6 +36,7 @@ import ru.prbb.bloomberg.request.BdpRequestOverrideQuarter;
 import ru.prbb.bloomberg.request.BdsRequest;
 import ru.prbb.bloomberg.request.BdsRequest.BEST_ANALYST_RECS_BULK;
 import ru.prbb.bloomberg.request.BdsRequest.PeerData;
+import ru.prbb.bloomberg.request.FieldInfoRequest;
 import ru.prbb.bloomberg.request.HistoricalDataRequest;
 import ru.prbb.bloomberg.request.ReferenceDataRequest;
 
@@ -46,7 +49,7 @@ import com.bloomberglp.blpapi.Service;
  * @author RBr
  */
 @Component
-public final class BloombergServices/* implements BloombergServices*/{
+public final class BloombergServices {
 
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -494,5 +497,52 @@ public final class BloombergServices/* implements BloombergServices*/{
 
 	private String[] toArray(Collection<String> securities) {
 		return securities.toArray(new String[securities.size()]);
+	}
+
+	/**
+	 * @param name
+	 * @param dateStart
+	 * @param dateEnd
+	 * @param period
+	 * @param calendar
+	 * @param currencies
+	 * @param securities
+	 * @param fields
+	 * @return
+	 */
+	public Object executeBdhRequest(String name, String dateStart, String dateEnd, String period, String calendar, String[] currencies,
+			String[] securities, String[] fields) {
+		final BdhRequest r = new BdhRequest(dateStart, dateEnd, period, calendar, currencies, securities, fields);
+		r.execute(name);
+		return r.getAnswer();
+	}
+
+	/**
+	 * @param name
+	 * @param dateStart
+	 * @param dateEnd
+	 * @param period
+	 * @param calendar
+	 * @param currencies
+	 * @param securities
+	 * @param fields
+	 * @return
+	 */
+	public Object executeBdhEpsRequest(String name, String dateStart, String dateEnd, String period, String calendar,
+			String[] currencies, String[] securities, String[] fields) {
+		final BdhEpsRequest r = new BdhEpsRequest(dateStart, dateEnd, period, calendar, currencies, securities, fields);
+		r.execute(name);
+		return r.getAnswer();
+	}
+
+	/**
+	 * @param name
+	 * @param code
+	 * @return
+	 */
+	public Object executeFieldInfoRequest(String name, String code) {
+		final FieldInfoRequest r = new FieldInfoRequest(code);
+		r.execute(name);
+		return r.getAnswer();
 	}
 }

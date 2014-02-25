@@ -47,7 +47,7 @@ public class BdpRequestOverrideQuarter implements BloombergRequest, MessageHandl
 		this.securities = securities;
 		this.fields = fields;
 		this.currency = currency;
-		this.over = over;
+		this.over = ((null != over) && !over.isEmpty()) ? over : null;
 	}
 
 	private String period;
@@ -88,7 +88,7 @@ public class BdpRequestOverrideQuarter implements BloombergRequest, MessageHandl
 					overrideCrncy.setElement("fieldId", "EQY_FUND_CRNCY");
 					overrideCrncy.setElement("value", crncy);
 
-					if ((null != over) && !over.isEmpty()) {
+					if (null != over) {
 						final Element overrideDataSource = overrides.appendElement();
 						overrideDataSource.setElement("fieldId", "BEST_DATA_SOURCE_OVERRIDE");
 						overrideDataSource.setElement("value", over);
