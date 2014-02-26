@@ -3,7 +3,6 @@
  */
 package ru.prbb.agent.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -26,6 +25,7 @@ import ru.prbb.bloomberg.model.CashFlowData;
 import ru.prbb.bloomberg.model.CashFlowResultItem;
 import ru.prbb.bloomberg.model.SecForJobRequest;
 import ru.prbb.bloomberg.model.SecurityItem;
+import ru.prbb.bloomberg.request.AtrLoadRequest;
 import ru.prbb.bloomberg.request.AtrRequest;
 import ru.prbb.bloomberg.request.BdhEpsRequest;
 import ru.prbb.bloomberg.request.BdhRequest;
@@ -36,9 +36,12 @@ import ru.prbb.bloomberg.request.BdpRequestOverrideQuarter;
 import ru.prbb.bloomberg.request.BdsRequest;
 import ru.prbb.bloomberg.request.BdsRequest.BEST_ANALYST_RECS_BULK;
 import ru.prbb.bloomberg.request.BdsRequest.PeerData;
+import ru.prbb.bloomberg.request.CashFlowLoadRequest;
 import ru.prbb.bloomberg.request.FieldInfoRequest;
 import ru.prbb.bloomberg.request.HistoricalDataRequest;
+import ru.prbb.bloomberg.request.RateCouponLoadRequest;
 import ru.prbb.bloomberg.request.ReferenceDataRequest;
+import ru.prbb.bloomberg.request.ValuesLoadRequest;
 
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
@@ -53,9 +56,8 @@ public final class BloombergServices {
 
 	private final Log log = LogFactory.getLog(getClass());
 
-	//@Override
-	public Map<String, Map<Date, Map<String, String>>> executeBondYeildLoad(
-			Date startDate, Date endDate, String[] securities) {
+	public Map<String, Map<String, Map<String, String>>> executeBondYeildLoad(
+			String startDate, String endDate, String[] securities) {
 		log.info("BondYeildLoad:");
 
 		String[] fields = { "YLD_CNV_MID" };
@@ -64,7 +66,6 @@ public final class BloombergServices {
 		return r.getAnswer();
 	}
 
-	//@Override
 	public List<CashFlowResultItem> executeCashFlowLoad(final List<CashFlowData> items) {
 		log.info("CashFlowLoad:");
 
@@ -142,31 +143,29 @@ public final class BloombergServices {
 		return res;
 	}
 
-	//@Override
-	public List<BloombergResultItem> executeQuotesLoad(Date startDate, Date endDate, String[] securities) {
+	public List<BloombergResultItem> executeQuotesLoad(String startDate, String endDate, String[] securities) {
 		log.info("QuotesLoad:");
 
 		final String PX_LAST = "PX_LAST";
 
-		final Map<String, Map<Date, Map<String, String>>> a = executeHistoricalDataRequest("Загрузка котировок", startDate, endDate,
-				securities, new String[] { PX_LAST });
+		final Map<String, Map<String, Map<String, String>>> a =
+				executeHistoricalDataRequest("Загрузка котировок", startDate, endDate,
+						securities, new String[] { PX_LAST });
 
 		final List<BloombergResultItem> res = new ArrayList<>();
 
-		final SimpleDateFormat sdf = Utils.createDateFormatYMD();
-
 		for (String security : securities) {
 			// security -> {date -> { field, value } }
-			final Map<Date, Map<String, String>> datevalues = a.get(security);
+			final Map<String, Map<String, String>> datevalues = a.get(security);
 
-			for (Date date : datevalues.keySet()) {
+			for (String date : datevalues.keySet()) {
 				final Map<String, String> values = datevalues.get(date);
 				final String value = values.get(PX_LAST);
 
 				final BloombergResultItem item = new BloombergResultItem();
 				item.setSecurity(security);
 				item.setParams(PX_LAST);
-				item.setDate(sdf.format(date));
+				item.setDate(date);
 				item.setValue(value);
 				res.add(item);
 			}
@@ -175,7 +174,6 @@ public final class BloombergServices {
 		return res;
 	}
 
-	//@Override
 	public List<BloombergResultItem> executeRateCouponLoad(final Map<String, Long> items) {
 		log.info("RateCouponLoad:");
 
@@ -238,7 +236,6 @@ public final class BloombergServices {
 		return info;
 	}
 
-	//@Override
 	public List<BloombergResultItem> executeValuesLoad(final Map<String, Long> items) {
 		log.info("ValuesLoad:");
 
@@ -301,7 +298,6 @@ public final class BloombergServices {
 		return info;
 	}
 
-	//@Override
 	public Map<String, Map<java.sql.Date, Double>> executeAtrLoad(Date date, List<String> securities) {
 		log.info("AtrLoad:");
 
@@ -315,7 +311,6 @@ public final class BloombergServices {
 		return r.getAnswer();
 	}
 
-	//@Override
 	public Map<String, Map<String, String>> executeBdpOverrideLoad(List<SecForJobRequest> securities) {
 		log.info("BdpOverrideLoad:");
 
@@ -358,7 +353,6 @@ public final class BloombergServices {
 		return r.getAnswer();
 	}
 
-	//@Override
 	public Map<String, Object> executeBdsRequest(String name, String[] securities, String[] fields) {
 		log.info("BdsRequest:");
 
@@ -377,7 +371,6 @@ public final class BloombergServices {
 		return res;
 	}
 
-	//@Override
 	public Map<String, Map<String, String>> executeBondsLoad(List<String> securities) {
 		log.info("BondsLoad:");
 
@@ -391,8 +384,7 @@ public final class BloombergServices {
 		return r.getAnswer();
 	}
 
-	//@Override
-	public Map<String, Map<Date, Map<String, String>>> executeHistDataLoad(Date date, List<SecForJobRequest> securities) {
+	public Map<String, Map<String, Map<String, String>>> executeHistDataLoad(String date, List<SecForJobRequest> securities) {
 		log.info("HistDataLoad:");
 
 		// final List<SecForJobRequest> securities = dao.getSecForHistData();
@@ -418,8 +410,7 @@ public final class BloombergServices {
 		return r.getAnswer();
 	}
 
-	//@Override
-	public Map<String, Map<Date, Map<String, String>>> executeQuotesLoad(Date date, List<String> securities) {
+	public Map<String, Map<String, Map<String, String>>> executeQuotesLoad(String date, List<String> securities) {
 		log.info("QuotesLoad:");
 
 		// final List<String> securities = dao.getSecForQuotes();
@@ -432,7 +423,6 @@ public final class BloombergServices {
 		return r.getAnswer();
 	}
 
-	//@Override
 	public Map<String, Map<String, String>> executeFuturesLoad(List<SecurityItem> securities) {
 		log.info("FuturesLoad:");
 
@@ -486,8 +476,8 @@ public final class BloombergServices {
 	 *            Поля
 	 * @return security -> {date -> { field, value } }
 	 */
-	public Map<String, Map<Date, Map<String, String>>> executeHistoricalDataRequest(
-			String name, Date startDate, Date endDate, String[] securities, String[] fields) {
+	public Map<String, Map<String, Map<String, String>>> executeHistoricalDataRequest(
+			String name, String startDate, String endDate, String[] securities, String[] fields) {
 		log.info("HistoricalDataRequest:" + name);
 
 		final HistoricalDataRequest r = new HistoricalDataRequest(startDate, endDate, securities, fields);
@@ -542,6 +532,58 @@ public final class BloombergServices {
 	 */
 	public Object executeFieldInfoRequest(String name, String code) {
 		final FieldInfoRequest r = new FieldInfoRequest(code);
+		r.execute(name);
+		return r.getAnswer();
+	}
+
+	/**
+	 * @param name
+	 * @param ids
+	 * @param dates
+	 * @return
+	 */
+	public Object executeLoadCashFlowRequest(String name, Map<String, Long> ids, Map<String, String> dates) {
+		CashFlowLoadRequest r = new CashFlowLoadRequest(ids, dates);
+		r.execute(name);
+		return r.getAnswer();
+	}
+
+	/**
+	 * @param name
+	 * @param ids
+	 * @return
+	 */
+	public Object executeLoadValuesRequest(String name, Map<String, Long> ids) {
+		ValuesLoadRequest r = new ValuesLoadRequest(ids);
+		r.execute(name);
+		return r.getAnswer();
+	}
+
+	/**
+	 * @param name
+	 * @param ids
+	 * @return
+	 */
+	public Object executeLoadRateCouponRequest(String name, Map<String, Long> ids) {
+		RateCouponLoadRequest r = new RateCouponLoadRequest(ids);
+		r.execute(name);
+		return r.getAnswer();
+	}
+
+	/**
+	 * @param name
+	 * @param startDate
+	 * @param endDate
+	 * @param securities
+	 * @param maType
+	 * @param taPeriod
+	 * @param period
+	 * @param calendar
+	 * @return
+	 */
+	public List<Map<String, Object>> executeLoadAtrRequest(String name, String startDate, String endDate,
+			String[] securities, String maType, Integer taPeriod, String period, String calendar) {
+		AtrLoadRequest r = new AtrLoadRequest(startDate, endDate, securities, maType, taPeriod, period, calendar);
 		r.execute(name);
 		return r.getAnswer();
 	}

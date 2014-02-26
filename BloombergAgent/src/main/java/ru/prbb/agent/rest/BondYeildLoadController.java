@@ -1,8 +1,7 @@
 package ru.prbb.agent.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,7 +53,7 @@ public class BondYeildLoadController {
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	Map<String, Map<Date, Map<String, String>>> execute(
+	Object execute(
 			@RequestParam String[] securities,
 			@RequestParam String begin,
 			@RequestParam(required = false) String end)
@@ -64,10 +63,10 @@ public class BondYeildLoadController {
 		if (Utils.isEmpty(end)) {
 			final Calendar c = Calendar.getInstance(Utils.LOCALE);
 			c.add(Calendar.DAY_OF_MONTH, -1);
-			end = Utils.createDateFormatYMD().format(c.getTime());
+			end = new SimpleDateFormat("yyyy-MM-dd", Utils.LOCALE).format(c.getTime());
 			log.info("End date is empty. end = " + end);
 		}
 
-		return bs.executeBondYeildLoad(Utils.parseDate(begin), Utils.parseDate(end), securities);
+		return bs.executeBondYeildLoad(begin, end, securities);
 	}
 }

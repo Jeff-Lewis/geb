@@ -3,8 +3,6 @@
  */
 package ru.prbb.bloomberg.request;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,19 +24,19 @@ import com.bloomberglp.blpapi.Request;
 public class HistoricalDataRequest implements BloombergRequest, MessageHandler {
 	private static final Log log = LogFactory.getLog(HistoricalDataRequest.class);
 
-	private final Date startDate;
-	private final Date endDate;
+	private final String startDate;
+	private final String endDate;
 	private final String[] securities;
 	private final String[] fields;
 	private final String[] currencies;
 
-	private final Map<String, Map<Date, Map<String, String>>> answer = new HashMap<String, Map<Date, Map<String, String>>>();
+	private final Map<String, Map<String, Map<String, String>>> answer = new HashMap<>();
 
 	/**
 	 * @return
 	 *         security -> {date -> { field, value } )
 	 */
-	public Map<String, Map<Date, Map<String, String>>> getAnswer() {
+	public Map<String, Map<String, Map<String, String>>> getAnswer() {
 		return answer;
 	}
 
@@ -49,7 +47,7 @@ public class HistoricalDataRequest implements BloombergRequest, MessageHandler {
 	 *            code
 	 * @param fields
 	 */
-	public HistoricalDataRequest(Date startDate, Date endDate, String[] securities, String[] fields) {
+	public HistoricalDataRequest(String startDate, String endDate, String[] securities, String[] fields) {
 		this(startDate, endDate, securities, fields, null);
 	}
 
@@ -61,7 +59,7 @@ public class HistoricalDataRequest implements BloombergRequest, MessageHandler {
 	 * @param fields
 	 * @param currencies
 	 */
-	public HistoricalDataRequest(Date startDate, Date endDate, String[] securities, String[] fields, String[] currencies) {
+	public HistoricalDataRequest(String startDate, String endDate, String[] securities, String[] fields, String[] currencies) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.securities = securities;
@@ -73,10 +71,6 @@ public class HistoricalDataRequest implements BloombergRequest, MessageHandler {
 
 	@Override
 	public void execute(String name) {
-		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		final String sd = sdf.format(startDate.getTime());
-		final String ed = sdf.format(endDate.getTime());
-
 		final BloombergSession bs = new BloombergSession(name);
 		bs.start();
 		try {
@@ -87,8 +81,8 @@ public class HistoricalDataRequest implements BloombergRequest, MessageHandler {
 					final Request request = bs.createRequest("//blp/refdata", "HistoricalDataRequest");
 					request.set("periodicitySelection", "DAILY");
 					request.set("periodicityAdjustment", "CALENDAR");
-					request.set("startDate", sd);
-					request.set("endDate", ed);
+					request.set("startDate", startDate);
+					request.set("endDate", endDate);
 					request.set("currency", currency);
 
 					final Element _securities = request.getElement("securities");
@@ -109,8 +103,8 @@ public class HistoricalDataRequest implements BloombergRequest, MessageHandler {
 				final Request request = bs.createRequest("//blp/refdata", "HistoricalDataRequest");
 				request.set("periodicitySelection", "DAILY");
 				request.set("periodicityAdjustment", "CALENDAR");
-				request.set("startDate", sd);
-				request.set("endDate", ed);
+				request.set("startDate", startDate);
+				request.set("endDate", endDate);
 
 				final Element _securities = request.getElement("securities");
 				for (String security : securities) {
@@ -135,7 +129,7 @@ public class HistoricalDataRequest implements BloombergRequest, MessageHandler {
 
 		final String security = securityData.getElementAsString("security");
 
-		final Map<Date, Map<String, String>> datevalues = new HashMap<Date, Map<String, String>>();
+		final Map<String, Map<String, String>> datevalues = new HashMap<>();
 		if (null != currency) {
 			answer.put(currency + security, datevalues);
 		} else {
@@ -148,7 +142,7 @@ public class HistoricalDataRequest implements BloombergRequest, MessageHandler {
 			final Element element = fieldData.getValueAsElement(i);
 
 			final Map<String, String> values = new HashMap<String, String>();
-			final Date date = element.getElementAsDate("date").calendar().getTime();
+			final String date = element.getElementAsString("date");
 			datevalues.put(date, values);
 
 			for (String field : fields) {

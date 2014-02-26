@@ -1,5 +1,6 @@
 package ru.prbb.agent.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -63,10 +64,10 @@ public class QuotesLoadController {
 		if (Utils.isEmpty(end)) {
 			final Calendar c = Calendar.getInstance(Utils.LOCALE);
 			c.add(Calendar.DAY_OF_MONTH, -1);
-			end = Utils.createDateFormatYMD().format(c.getTime());
+			end = new SimpleDateFormat("yyyy-MM-dd", Utils.LOCALE).format(c.getTime());
 			log.info("End date is empty. end = " + end);
 		}
 
-		return bs.executeQuotesLoad(Utils.parseDate(begin), Utils.parseDate(end), securities);
+		return bs.executeQuotesLoad(begin, end, securities);
 	}
 }
