@@ -3,6 +3,8 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,33 +35,45 @@ public class LoadAtrRequestController {
 	public String get() {
 		log.trace("GET");
 
-		return "Выполнить запрос LoadAtrRequest"
+		return "Выполнить запрос //blp/tasvc"
 				+ "\n"
 				+ "Параметр\n"
-				+ "ids\n"
-				+ "dates\n"
+				+ "startDate : yyyymmdd\n"
+				+ "endDate : yyyymmdd\n"
+				+ "securities : []\n"
+				+ "maType\n"
+				+ "taPeriod\n"
+				+ "period\n"
+				+ "calendar\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ { field, value } ] ]\n"
+				+ "[ { security, date, value } ] ]\n"
 				+ "\n"
 				+ "\n";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
-			@RequestParam String startDate,
-			@RequestParam String endDate,
+			@RequestParam(required = false, defaultValue = "Загрузка ATR") String name,
+			@RequestParam(value = "startDate") String dateStart,
+			@RequestParam(value = "endDate") String dateEnd,
 			@RequestParam String[] securities,
 			@RequestParam String maType,
 			@RequestParam Integer taPeriod,
 			@RequestParam String period,
 			@RequestParam String calendar) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + dateStart + ", " + dateEnd + ", "
+					+ maType + ", " + taPeriod + ", " + period + ", " + calendar);
+			log.info("POST execute " + Arrays.asList(securities));
+		}
 
 		try {
-			return bs.executeLoadAtrRequest("Загрузка ATR", startDate, endDate,
+			return bs.executeLoadAtrRequest(name, dateStart, dateEnd,
 					securities, maType, taPeriod, period, calendar);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

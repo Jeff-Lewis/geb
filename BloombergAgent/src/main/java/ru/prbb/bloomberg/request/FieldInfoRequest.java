@@ -32,9 +32,9 @@ public class FieldInfoRequest implements BloombergRequest, MessageHandler {
 		this.code = code;
 	}
 
-	private final Map<String, Object> answer = new HashMap<>();
+	private final Map<String, String> answer = new HashMap<>();
 
-	public Map<String, Object> getAnswer() {
+	public Map<String, String> getAnswer() {
 		return answer;
 	}
 
@@ -66,9 +66,7 @@ public class FieldInfoRequest implements BloombergRequest, MessageHandler {
 				final String description = fieldInfo.getElementAsString("description");
 
 				if (log.isDebugEnabled()) {
-					log.debug("fldId=" + id);
-					log.debug("fldMnemonic=" + mnemonic);
-					log.debug("fldDesc=" + description);
+					log.debug("fldId=" + id + ", fldMnemonic=" + mnemonic + ", fldDesc=" + description);
 				}
 
 				answer.put("BLM_ID", id);

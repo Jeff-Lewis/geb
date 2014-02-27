@@ -3,6 +3,8 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,28 +35,37 @@ public class BdsRequestController {
 	public String get() {
 		log.trace("GET");
 
-		return "BdsRequest"
+		return "BdsRequest //blp/refdata, ReferenceDataRequest"
 				+ "\n"
 				+ "Параметр\n"
-				+ "name\n"
 				+ "securities\n"
 				+ "fields"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ { id, security, date, value } ]\n"
+				+ "BEST_ANALYST_RECS_BULK -> [ security -> [ { field, value } ] ]\n"
+				+ "EARN_ANN_DT_TIME_HIST_WITH_EPS -> [ security -> [ { field, value } ] ]\n"
+				+ "ERN_ANN_DT_AND_PER -> [ security -> [ { field, value } ] ]\n"
+				+ "PeerTicker -> [ security -> [ peer ] ]\n"
+				+ "Peers -> [ PeerData ]\n"
 				+ "\n"
 				+ "\n";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "BdsRequest") String name,
 			@RequestParam String[] securities,
 			@RequestParam String[] fields) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + Arrays.asList(securities));
+			log.info("POST execute " + Arrays.asList(fields));
+		}
 
 		try {
-			return bs.executeBdsRequest("BdsRequest", securities, fields);
+			return bs.executeBdsRequest(name, securities, fields);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

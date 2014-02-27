@@ -100,7 +100,7 @@ public class BdhEpsRequest implements BloombergRequest, MessageHandler {
 
 		final String security = sd.getElementAsString("security");
 		final Map<String, Map<String, String>> datevalues = new HashMap<>();
-		answer.put(security, datevalues);
+		answer.put(security + '|' + currency, datevalues);
 
 		final Element arrayFieldData = sd.getElement("fieldData");
 		final int count = arrayFieldData.numValues();

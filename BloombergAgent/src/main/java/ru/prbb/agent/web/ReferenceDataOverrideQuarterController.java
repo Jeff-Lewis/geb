@@ -3,6 +3,8 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,16 +51,23 @@ public class ReferenceDataOverrideQuarterController {
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "BdpRequestOverrideQuarter") String name,
 			@RequestParam String[] securities,
 			@RequestParam String[] fields,
 			@RequestParam String[] currencies,
 			@RequestParam String over) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + Arrays.asList(securities));
+			log.info("POST execute " + Arrays.asList(fields));
+			log.info("POST execute " + Arrays.asList(currencies));
+			log.info("POST execute " + over);
+		}
 
 		try {
-			return bs.executeBdpRequestOverrideQuarter("BdpRequestOverrideQuarter",
-					securities, fields, currencies, over);
+			return bs.executeBdpRequestOverrideQuarter(name, securities, fields, currencies, over);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

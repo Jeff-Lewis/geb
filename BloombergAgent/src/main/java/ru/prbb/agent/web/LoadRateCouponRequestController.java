@@ -3,6 +3,7 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,19 +40,22 @@ public class LoadRateCouponRequestController {
 		return "Выполнить запрос LoadRateCouponRequest"
 				+ "\n"
 				+ "Параметр\n"
-				+ "ids\n"
-				+ "dates\n"
+				+ "ids : [ id;security ]\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ { field, value } ] ]\n"
+				+ "[ { id_sec, security, date, value } ]\n"
 				+ "\n"
 				+ "\n";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "Загрузка ставки по купонам") String name,
 			@RequestParam String[] ids) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + Arrays.asList(ids));
+		}
 
 		try {
 			Map<String, Long> _ids = new HashMap<>(ids.length, 1);
@@ -61,8 +65,9 @@ public class LoadRateCouponRequestController {
 				String security = s.substring(p + 1);
 				_ids.put(security, id);
 			}
-			return bs.executeLoadRateCouponRequest("Загрузка ставки по купонам", _ids);
+			return bs.executeLoadRateCouponRequest(name, _ids);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

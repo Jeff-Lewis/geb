@@ -3,6 +3,8 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +49,19 @@ public class ReferenceDataController {
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "ReferenceDataRequest") String name,
 			@RequestParam String[] securities,
 			@RequestParam String[] fields) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + Arrays.asList(securities));
+			log.info("POST execute " + Arrays.asList(fields));
+		}
 
 		try {
-			return bs.executeReferenceDataRequest("ReferenceDataRequest", securities, fields);
+			return bs.executeReferenceDataRequest(name, securities, fields);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

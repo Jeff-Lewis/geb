@@ -3,6 +3,8 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,22 +33,28 @@ public class BdhEpsRequestController {
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
 	public String get() {
-		log.trace("GET");
+		log.info("GET help");
 
-		return "Выполнить запрос //blp/refdata"
+		return "Выполнить запрос //blp/refdata, HistoricalDataRequest"
 				+ "\n"
 				+ "Параметр\n"
-				+ "securities\n"
+				+ "dateStart : yyyymmdd\n"
+				+ "dateEnd : yyyymmdd\n"
+				+ "period\n"
+				+ "calendar\n"
+				+ "currencies\n"
+				+ "securities : [ security|currency ]\n"
 				+ "fields\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ date -> [ {field -> value;period;relative_date;currency;calendar } ] ] ]\n"
+				+ "[ security|currency -> [ date -> [ {field -> value;period;relative_date;currency;calendar } ] ] ]\n"
 				+ "\n"
 				+ "\n";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "BdhEpsRequest") String name,
 			@RequestParam String dateStart,
 			@RequestParam String dateEnd,
 			@RequestParam String period,
@@ -54,12 +62,19 @@ public class BdhEpsRequestController {
 			@RequestParam String[] currencies,
 			@RequestParam String[] securities,
 			@RequestParam String[] fields) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + dateStart + ", " + dateEnd + ", " + period + ", " + calendar);
+			log.info("POST execute " + Arrays.asList(currencies));
+			log.info("POST execute " + Arrays.asList(securities));
+			log.info("POST execute " + Arrays.asList(fields));
+		}
 
 		try {
-			return bs.executeBdhEpsRequest("BdhEpsRequest", dateStart, dateEnd, period, calendar,
+			return bs.executeBdhEpsRequest(name, dateStart, dateEnd, period, calendar,
 					currencies, securities, fields);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

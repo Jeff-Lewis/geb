@@ -3,6 +3,8 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,20 +35,26 @@ public class BdhRequestController {
 	public String get() {
 		log.trace("GET");
 
-		return "Выполнить запрос //blp/refdata"
+		return "Выполнить запрос //blp/refdata, HistoricalDataRequest"
 				+ "\n"
 				+ "Параметр\n"
-				+ "securities\n"
+				+ "dateStart : yyyymmdd\n"
+				+ "dateEnd : yyyymmdd\n"
+				+ "period\n"
+				+ "calendar\n"
+				+ "currencies\n"
+				+ "securities : [ security|currency ]\n"
 				+ "fields\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ date -> [ {field -> value;period;currency;calendar } ] ] ]\n"
+				+ "[ security|currency -> [ date -> [ {field -> value;period;currency;calendar } ] ] ]\n"
 				+ "\n"
 				+ "\n";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "BdhRequest") String name,
 			@RequestParam String dateStart,
 			@RequestParam String dateEnd,
 			@RequestParam String period,
@@ -54,12 +62,19 @@ public class BdhRequestController {
 			@RequestParam String[] currencies,
 			@RequestParam String[] securities,
 			@RequestParam String[] fields) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + dateStart + ", " + dateEnd + ", " + period + ", " + calendar);
+			log.info("POST execute " + Arrays.asList(currencies));
+			log.info("POST execute " + Arrays.asList(securities));
+			log.info("POST execute " + Arrays.asList(fields));
+		}
 
 		try {
-			return bs.executeBdhRequest("BdhRequest", dateStart, dateEnd, period, calendar,
+			return bs.executeBdhRequest(name, dateStart, dateEnd, period, calendar,
 					currencies, securities, fields);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

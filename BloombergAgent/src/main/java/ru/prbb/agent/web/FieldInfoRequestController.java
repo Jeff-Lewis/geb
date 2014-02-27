@@ -33,26 +33,30 @@ public class FieldInfoRequestController {
 	public String get() {
 		log.trace("GET");
 
-		return "FieldInfoRequest"
+		return "FieldInfoRequest //blp/apiflds, FieldInfoRequest"
 				+ "\n"
 				+ "Параметр\n"
-				+ "securities\n"
-				+ "fields\n"
+				+ "code\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ { field, value } ] ]\n"
+				+ "{ BLM_ID, NAME, CODE }\n"
 				+ "\n"
 				+ "\n";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "FieldInfoRequest") String name,
 			@RequestParam String code) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + code);
+		}
 
 		try {
-			return bs.executeFieldInfoRequest("FieldInfoRequest", code);
+			return bs.executeFieldInfoRequest(name, code);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

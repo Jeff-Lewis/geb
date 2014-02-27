@@ -3,6 +3,8 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,9 @@ public class HistoricalDataRequestController {
 		return "Выполнить запрос HistoricalDataRequest"
 				+ "\n"
 				+ "Параметр\n"
-				+ "securities\n"
+				+ "dateStart : yyyymmdd\n"
+				+ "dateEnd : yyyymmdd\n"
+				+ "securities : [ security|currency ]\n"
 				+ "fields\n"
 				+ "\n"
 				+ "Результат\n"
@@ -47,16 +51,22 @@ public class HistoricalDataRequestController {
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "HistoricalDataRequest") String name,
 			@RequestParam String dateStart,
 			@RequestParam String dateEnd,
 			@RequestParam String[] securities,
 			@RequestParam String[] fields) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + dateStart + ", " + dateEnd);
+			log.info("POST execute " + Arrays.asList(securities));
+			log.info("POST execute " + Arrays.asList(fields));
+		}
 
 		try {
-			return bs.executeHistoricalDataRequest("HistoricalDataRequest",
-					dateStart, dateEnd, securities, fields);
+			return bs.executeHistoricalDataRequest(name, dateStart, dateEnd, securities, fields);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

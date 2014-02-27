@@ -3,6 +3,7 @@
  */
 package ru.prbb.agent.web;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,20 +40,25 @@ public class LoadCashFlowRequestController {
 		return "Выполнить запрос LoadCashFlowRequest"
 				+ "\n"
 				+ "Параметр\n"
-				+ "ids\n"
-				+ "dates\n"
+				+ "ids : [ id;security ]\n"
+				+ "dates : [ date;security ]\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ { field, value } ] ]\n"
+				+ "[ { id_sec, security, date, value, value2 } ]\n"
 				+ "\n"
 				+ "\n";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public Object execute(
+			@RequestParam(required = false, defaultValue = "Загрузка дат погашений") String name,
 			@RequestParam String[] ids,
 			@RequestParam String[] dates) {
-		log.trace("POST");
+
+		if (log.isInfoEnabled()) {
+			log.info("POST execute " + Arrays.asList(ids));
+			log.info("POST execute " + Arrays.asList(dates));
+		}
 
 		try {
 			Map<String, Long> _ids = new HashMap<>(ids.length, 1);
@@ -69,8 +75,9 @@ public class LoadCashFlowRequestController {
 				String security = s.substring(p + 1);
 				_dates.put(security, date);
 			}
-			return bs.executeLoadCashFlowRequest("Загрузка дат погашений", _ids, _dates);
+			return bs.executeLoadCashFlowRequest(name, _ids, _dates);
 		} catch (Exception e) {
+			log.error("POST execute " + e.getMessage(), e);
 			return e;
 		}
 	}

@@ -335,6 +335,8 @@ public final class BloombergServices {
 	 */
 	public Map<String, Map<String, String>> executeBdpRequestOverride(String name,
 			String[] securities, String[] fields, String period, String over) {
+		log.info("BdpRequestOverride:" + name);
+
 		final BdpRequestOverride r = new BdpRequestOverride(securities, fields, period, over);
 		r.execute(name);
 		return r.getAnswer();
@@ -350,6 +352,8 @@ public final class BloombergServices {
 	 */
 	public Map<String, Map<String, String>> executeBdpRequestOverrideQuarter(String name,
 			String[] securities, String[] fields, String[] currencies, String over) {
+		log.info("BdpRequestOverrideQuarter:" + name);
+
 		final BdpRequestOverrideQuarter r = new BdpRequestOverrideQuarter(securities, fields, currencies, over);
 		r.execute(name);
 		return r.getAnswer();
@@ -510,9 +514,13 @@ public final class BloombergServices {
 	 * @param securities
 	 * @param fields
 	 * @return
+	 * @return
 	 */
-	public Object executeBdhRequest(String name, String dateStart, String dateEnd, String period, String calendar, String[] currencies,
-			String[] securities, String[] fields) {
+	public Map<String, Map<String, Map<String, String>>> executeBdhRequest(String name,
+			String dateStart, String dateEnd, String period, String calendar,
+			String[] currencies, String[] securities, String[] fields) {
+		log.info("BdhRequest:" + name);
+
 		final BdhRequest r = new BdhRequest(dateStart, dateEnd, period, calendar, currencies, securities, fields);
 		r.execute(name);
 		return r.getAnswer();
@@ -528,9 +536,13 @@ public final class BloombergServices {
 	 * @param securities
 	 * @param fields
 	 * @return
+	 * @return
 	 */
-	public Object executeBdhEpsRequest(String name, String dateStart, String dateEnd, String period, String calendar,
+	public Map<String, Map<String, Map<String, String>>> executeBdhEpsRequest(String name,
+			String dateStart, String dateEnd, String period, String calendar,
 			String[] currencies, String[] securities, String[] fields) {
+		log.info("BdhEpsRequest:" + name);
+
 		final BdhEpsRequest r = new BdhEpsRequest(dateStart, dateEnd, period, calendar, currencies, securities, fields);
 		r.execute(name);
 		return r.getAnswer();
@@ -540,8 +552,11 @@ public final class BloombergServices {
 	 * @param name
 	 * @param code
 	 * @return
+	 * @return
 	 */
-	public Object executeFieldInfoRequest(String name, String code) {
+	public Map<String, String> executeFieldInfoRequest(String name, String code) {
+		log.info("FieldInfoRequest:" + name);
+
 		final FieldInfoRequest r = new FieldInfoRequest(code);
 		r.execute(name);
 		return r.getAnswer();
@@ -552,8 +567,12 @@ public final class BloombergServices {
 	 * @param ids
 	 * @param dates
 	 * @return
+	 * @return
 	 */
-	public Object executeLoadCashFlowRequest(String name, Map<String, Long> ids, Map<String, String> dates) {
+	public List<Map<String, Object>> executeLoadCashFlowRequest(String name,
+			Map<String, Long> ids, Map<String, String> dates) {
+		log.info("LoadCashFlowRequest:" + name);
+
 		CashFlowLoadRequest r = new CashFlowLoadRequest(ids, dates);
 		r.execute(name);
 		return r.getAnswer();
@@ -563,8 +582,11 @@ public final class BloombergServices {
 	 * @param name
 	 * @param ids
 	 * @return
+	 * @return
 	 */
-	public Object executeLoadValuesRequest(String name, Map<String, Long> ids) {
+	public List<Map<String, Object>> executeLoadValuesRequest(String name, Map<String, Long> ids) {
+		log.info("LoadValuesRequest:" + name);
+
 		ValuesLoadRequest r = new ValuesLoadRequest(ids);
 		r.execute(name);
 		return r.getAnswer();
@@ -574,8 +596,11 @@ public final class BloombergServices {
 	 * @param name
 	 * @param ids
 	 * @return
+	 * @return
 	 */
-	public Object executeLoadRateCouponRequest(String name, Map<String, Long> ids) {
+	public List<Map<String, Object>> executeLoadRateCouponRequest(String name, Map<String, Long> ids) {
+		log.info("LoadRateCouponRequest:" + name);
+
 		RateCouponLoadRequest r = new RateCouponLoadRequest(ids);
 		r.execute(name);
 		return r.getAnswer();
@@ -591,9 +616,12 @@ public final class BloombergServices {
 	 * @param period
 	 * @param calendar
 	 * @return
+	 * @return
 	 */
 	public List<Map<String, Object>> executeLoadAtrRequest(String name, String startDate, String endDate,
 			String[] securities, String maType, Integer taPeriod, String period, String calendar) {
+		log.info("LoadAtrRequest:" + name);
+
 		AtrLoadRequest r = new AtrLoadRequest(startDate, endDate, securities, maType, taPeriod, period, calendar);
 		r.execute(name);
 		return r.getAnswer();
