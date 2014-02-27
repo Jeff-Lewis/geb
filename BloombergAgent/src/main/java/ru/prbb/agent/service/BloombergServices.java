@@ -35,6 +35,8 @@ import ru.prbb.bloomberg.request.BdpRequestOverride;
 import ru.prbb.bloomberg.request.BdpRequestOverrideQuarter;
 import ru.prbb.bloomberg.request.BdsRequest;
 import ru.prbb.bloomberg.request.BdsRequest.BEST_ANALYST_RECS_BULK;
+import ru.prbb.bloomberg.request.BdsRequest.EARN_ANN_DT_TIME_HIST_WITH_EPS;
+import ru.prbb.bloomberg.request.BdsRequest.ERN_ANN_DT_AND_PER;
 import ru.prbb.bloomberg.request.BdsRequest.PeerData;
 import ru.prbb.bloomberg.request.CashFlowLoadRequest;
 import ru.prbb.bloomberg.request.FieldInfoRequest;
@@ -360,14 +362,23 @@ public final class BloombergServices {
 
 		r.execute(name);
 
-		List<PeerData> pd = r.getPeersData();
-		Map<String, List<BEST_ANALYST_RECS_BULK>> ba = r.getBestAnalyst();
-		Map<String, List<String>> pt = r.getPeerTicker();
-
 		Map<String, Object> res = new HashMap<>();
-		res.put("PeersData", pd);
-		res.put("BestAnalyst", ba);
+
+		Map<String, List<BEST_ANALYST_RECS_BULK>> ba = r.getBestAnalyst();
+		res.put("BEST_ANALYST_RECS_BULK", ba);
+
+		Map<String, List<EARN_ANN_DT_TIME_HIST_WITH_EPS>> ehwe = r.getEarnHistWithEps();
+		res.put("EARN_ANN_DT_TIME_HIST_WITH_EPS", ehwe);
+
+		Map<String, List<ERN_ANN_DT_AND_PER>> eap = r.getErnAnnDTandPer();
+		res.put("ERN_ANN_DT_AND_PER", eap);
+
+		Map<String, List<String>> pt = r.getPeerTicker();
 		res.put("PeerTicker", pt);
+
+		List<PeerData> pd = r.getPeersData();
+		res.put("Peers", pd);
+
 		return res;
 	}
 

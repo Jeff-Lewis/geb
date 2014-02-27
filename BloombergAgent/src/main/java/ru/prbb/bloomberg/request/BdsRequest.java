@@ -24,9 +24,9 @@ import com.bloomberglp.blpapi.Request;
 
 /**
  * @author RBr
- * 
  */
 public class BdsRequest implements BloombergRequest, MessageHandler {
+
 	private static final Log log = LogFactory.getLog(BdsRequest.class);
 
 	private final String[] securities;
@@ -114,6 +114,7 @@ public class BdsRequest implements BloombergRequest, MessageHandler {
 	}
 
 	public static class PeerData {
+
 		public final String sec;
 		public final Double cur_mkt_cap;
 		public final Double oper_roe;
@@ -145,6 +146,7 @@ public class BdsRequest implements BloombergRequest, MessageHandler {
 	}
 
 	public static class BEST_ANALYST_RECS_BULK {
+
 		public final String firm;
 		public final String analyst;
 		public final String recom;
@@ -182,6 +184,59 @@ public class BdsRequest implements BloombergRequest, MessageHandler {
 		return bestAnalyst;
 	}
 
+	public static class EARN_ANN_DT_TIME_HIST_WITH_EPS {
+
+		public final String year_period;
+		public final String announsment_date;
+		public final String announsment_time;
+		public final String earnings_EPS;
+		public final String comparable_EPS;
+		public final String estimate_EPS;
+
+		public EARN_ANN_DT_TIME_HIST_WITH_EPS(Element e) {
+			this.year_period = e.getElementAsString("Year/Period");
+			this.announsment_date = e.getElementAsString("Announcement Date");
+			this.announsment_time = e.getElementAsString("Announcement Time");
+			this.earnings_EPS = e.getElementAsString("Earnings EPS");
+			this.comparable_EPS = e.getElementAsString("Comparable EPS");
+			this.estimate_EPS = e.getElementAsString("Estimate EPS");
+		}
+
+	}
+
+	private final Map<String, List<EARN_ANN_DT_TIME_HIST_WITH_EPS>> earnHistWithEps = new HashMap<>();
+
+	/**
+	 * security -> [ EARN_ANN_DT_TIME_HIST_WITH_EPS ]
+	 */
+	public Map<String, List<EARN_ANN_DT_TIME_HIST_WITH_EPS>> getEarnHistWithEps() {
+		return earnHistWithEps;
+	}
+
+	public static class ERN_ANN_DT_AND_PER {
+
+		public final String ead;
+		public final String eyap;
+
+		/**
+		 * @param e
+		 */
+		public ERN_ANN_DT_AND_PER(Element e) {
+			this.ead = e.getElementAsString("Earnings Announcement Date");
+			this.eyap = e.getElementAsString("Earnings Year and Period");
+		}
+
+	}
+
+	private final Map<String, List<ERN_ANN_DT_AND_PER>> ernAnnDTandPer = new HashMap<>();
+
+	/**
+	 * security -> [ ERN_ANN_DT_AND_PER ]
+	 */
+	public Map<String, List<ERN_ANN_DT_AND_PER>> getErnAnnDTandPer() {
+		return ernAnnDTandPer;
+	}
+
 	/**
 	 * security -> [ peer ]
 	 */
@@ -212,13 +267,36 @@ public class BdsRequest implements BloombergRequest, MessageHandler {
 
 			for (String p : fields) {
 				if (p.equals("BEST_ANALYST_RECS_BULK")) {
-					final List<BEST_ANALYST_RECS_BULK> values = new ArrayList<BEST_ANALYST_RECS_BULK>();
+					final List<BEST_ANALYST_RECS_BULK> values = new ArrayList<>();
 					bestAnalyst.put(security, values);
 
 					final Element best_anal_recs_bulk = fieldData.getElement("BEST_ANALYST_RECS_BULK");
 					for (int m = 0; m < best_anal_recs_bulk.numValues(); m++) {
 						final Element e = best_anal_recs_bulk.getValueAsElement(m);
 						values.add(new BEST_ANALYST_RECS_BULK(e));
+					}
+				}
+
+				if (p.equals("EARN_ANN_DT_TIME_HIST_WITH_EPS")) {
+					final List<EARN_ANN_DT_TIME_HIST_WITH_EPS> values = new ArrayList<>();
+					earnHistWithEps.put(security, values);
+
+					final Element element = fieldData.getElement("EARN_ANN_DT_TIME_HIST_WITH_EPS");
+					for (int t = 0; t < element.numValues(); t++) {
+						final Element e = element.getValueAsElement(t);
+						values.add(new EARN_ANN_DT_TIME_HIST_WITH_EPS(e));
+					}
+				}
+
+				if (p.equals("ERN_ANN_DT_AND_PER")) {
+					final List<ERN_ANN_DT_AND_PER> values = new ArrayList<>();
+					ernAnnDTandPer.put(security, values);
+
+					final Element element = fieldData.getElement("ERN_ANN_DT_AND_PER");
+					final int ernItems = element.numValues();
+					for (int j = 0; j < ernItems; ++j) {
+						final Element e = element.getValueAsElement(j);
+						values.add(new ERN_ANN_DT_AND_PER(e));
 					}
 				}
 
