@@ -121,8 +121,8 @@ public class BdpRequestOverrideQuarter implements BloombergRequest, MessageHandl
 				continue;
 			}
 
-			values.put("PERIOD", period);
-			values.put("OVERRIDE", over);
+//			values.put("PERIOD", period);
+//			values.put("OVERRIDE", over);
 
 			final Element fieldData = securityData.getElement("fieldData");
 			for (String field : fields) {
