@@ -92,7 +92,7 @@ public class ReferenceDataRequest implements BloombergRequest, MessageHandler {
 			log.trace(security);
 
 			final Map<String, String> values = new HashMap<>();
-			answer.put(security.toUpperCase(), values);
+			answer.put(security, values);
 
 			if (securityData.hasElement("securityError")) {
 				final Element securityError = securityData.getElement("securityError");
