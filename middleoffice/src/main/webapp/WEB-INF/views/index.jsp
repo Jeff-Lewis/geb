@@ -111,6 +111,10 @@
 					Дивиденды </a></li>
 
 			<li><img class="icon-show-all" src="images/excel.png"><a
+				href="#" onclick="menu.showPane(menu, 'dictionary/Coupons');">
+					Купоны (погашение) </a></li>
+
+			<li><img class="icon-show-all" src="images/excel.png"><a
 				href="#" onclick="menu.showPane(menu, 'dictionary/Swaps');">
 					Свопы </a></li>
 
@@ -229,6 +233,11 @@
 				href="#"
 				onclick="menu.showPane(menu, 'operations/DividendsLoading');">
 					Загрузка дивидендов из файла </a></li>
+
+			<li><img class="icon-show-all" src="images/30.png"><a
+				href="#"
+				onclick="menu.showPane(menu, 'operations/CouponsLoading');">
+					Загрузка погашения купонов из файла </a></li>
 
 			<li><img class="icon-show-all" src="images/30.png"><a
 				href="#"
