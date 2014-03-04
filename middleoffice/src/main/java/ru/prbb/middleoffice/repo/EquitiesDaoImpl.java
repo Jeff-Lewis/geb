@@ -90,12 +90,25 @@ public class EquitiesDaoImpl implements EquitiesDao
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewFuturesItem> findAllFutures() {
 		String sql = "select * from portfolio_cmdt_v";
-		Query q = em.createNativeQuery(sql, ViewFuturesItem.class);
-		return q.getResultList();
+		Query q = em.createNativeQuery(sql);
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<ViewFuturesItem> res = new ArrayList<>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			ViewFuturesItem item = new ViewFuturesItem();
+			item.setId_sec(Utils.toLong(arr[0]));
+			item.setTicker(Utils.toString(arr[1]));
+			item.setDeal_name(Utils.toString(arr[2]));
+			item.setCoef(Utils.toDouble(arr[3]));
+			item.setName(Utils.toString(arr[4]));
+			item.setDate_insert(Utils.toTimestamp(arr[5]));
+			res.add(item);
+		}
+		return res;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

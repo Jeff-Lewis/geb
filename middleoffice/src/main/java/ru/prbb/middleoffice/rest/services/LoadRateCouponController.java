@@ -1,6 +1,8 @@
 package ru.prbb.middleoffice.rest.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.services.LoadRateCouponDao;
 
@@ -26,6 +29,8 @@ import ru.prbb.middleoffice.repo.services.LoadRateCouponDao;
 public class LoadRateCouponController
 {
 	@Autowired
+	private BloombergServicesM bs;
+	@Autowired
 	private LoadRateCouponDao dao;
 	@Autowired
 	private SecuritiesDao daoSecurities;
@@ -35,7 +40,19 @@ public class LoadRateCouponController
 	ResultData show(
 			@RequestParam String[] securities)
 	{
-		return new ResultData(dao.execute(securities));
+		final Map<String, Long> ids = new HashMap<>();
+
+		for (String s : securities) {
+			final int p = s.indexOf(';');
+			final Long id = new Long(s.substring(0, p));
+			final String name = s.substring(p + 1);
+
+			ids.put(name, id);
+		}
+
+		List<Map<String, Object>> answer = bs.executeRateCouponLoad(ids);
+
+		return new ResultData(dao.execute(answer));
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

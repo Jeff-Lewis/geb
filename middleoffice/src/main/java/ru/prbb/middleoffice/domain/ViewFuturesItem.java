@@ -6,18 +6,13 @@ package ru.prbb.middleoffice.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 /**
  * @author RBr
  * 
  */
-@Entity
 public class ViewFuturesItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
 	private Long id_sec;
 	private String ticker;
 	private String deal_name;

@@ -15,11 +15,10 @@ import java.util.Map;
 public interface LoadQuotesDao {
 
 	/**
-	 * @param dateStart
-	 * @param dateEnd
 	 * @param securities
+	 * @param answer
 	 * @return
 	 */
-	List<Map<String, Object>> execute(String dateStart, String dateEnd, String[] securities);
+	List<Map<String, Object>> execute(String[] securities, Map<String, Map<String, Map<String, String>>> answer);
 
 }

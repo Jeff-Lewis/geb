@@ -71,7 +71,7 @@ public class FundsDaoImpl implements FundsDao
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
-		String sql = "{call dbo.mo_WebSet_udBrokers_sp 'd', ?}";
+		String sql = "{call dbo.mo_WebSet_udInvestPortfolio_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();

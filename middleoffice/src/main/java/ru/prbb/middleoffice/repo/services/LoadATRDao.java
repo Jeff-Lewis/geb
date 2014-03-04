@@ -4,6 +4,7 @@
 package ru.prbb.middleoffice.repo.services;
 
 import java.util.List;
+import java.util.Map;
 
 import ru.prbb.middleoffice.domain.SimpleItem;
 
@@ -25,7 +26,7 @@ public interface LoadATRDao {
 	 * @param calendar
 	 * @return
 	 */
-	List<Object> execute(String dateStart, String dateEnd, String[] securities,
+	List<Map<String, Object>> execute(List<Map<String, Object>> answer,
 			String typeMA, Integer periodTA, String period, String calendar);
 
 	/**

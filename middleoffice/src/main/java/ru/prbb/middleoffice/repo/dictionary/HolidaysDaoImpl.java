@@ -3,6 +3,7 @@
  */
 package ru.prbb.middleoffice.repo.dictionary;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
+import ru.prbb.middleoffice.domain.CountryOffsetItem;
 import ru.prbb.middleoffice.domain.HolidaysItem;
 import ru.prbb.middleoffice.domain.HolidaysWeekItem;
 
@@ -53,6 +55,32 @@ public class HolidaysDaoImpl implements HolidaysDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Override
+	public int addHoliday(String country, Date date, String times, String timee,
+			String name, Boolean sms, Boolean portfolio) {
+		String sql = "{call dbo.check_holidays ?, ?, ?, ?, ?, ?, ?, 'i'}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, country)
+				.setParameter(2, date)
+				.setParameter(3, times)
+				.setParameter(4, timee)
+				.setParameter(5, name)
+				.setParameter(6, sms)
+				.setParameter(7, portfolio);
+		return q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Override
+	public int delHoliday(String country, Date date) {
+		String sql = "{call dbo.check_holidays ?, ?, '', '', '', 0, 0, 'd'}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, country)
+				.setParameter(2, date);
+		return q.executeUpdate();
+	}
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<HolidaysWeekItem> showHolidaysWeek(String country) {
@@ -73,4 +101,41 @@ public class HolidaysDaoImpl implements HolidaysDao
 		return res;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Override
+	public void setHolidaysWeek(List<HolidaysWeekItem> items) {
+		String sql = "{call dbo.quotes_send_sms_time_set ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		for (HolidaysWeekItem item : items) {
+			q.setParameter(1, item.getCountry());
+			q.setParameter(2, item.getDay_week());
+			q.setParameter(3, item.getStart());
+			q.setParameter(4, item.getStop());
+			q.executeUpdate();
+		}
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CountryOffsetItem> showCountryOffset() {
+		String sql = "{call dbo.mo_WebGet_offset_sp}";
+		Query q = em.createNativeQuery(sql, CountryOffsetItem.class);
+		return q.getResultList();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Override
+	public void setCountryOffset(List<CountryOffsetItem> items) {
+		String sql = "{call dbo.mo_WebSet_TradeTimeOffset_sp ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		for (CountryOffsetItem item : items) {
+			q.setParameter(1, item.getId());
+			q.setParameter(2, item.getCountry());
+			q.setParameter(3, item.getOffset());
+			q.setParameter(4, item.getStart());
+			q.setParameter(5, item.getStop());
+			q.executeUpdate();
+		}
+	}
 }

@@ -12,7 +12,7 @@
 
 	var countrySelect = new Ext.form.ComboBox({
 		fieldLabel : 'Страна',
-		width : 150,
+		displayField : 'name',
 		valueField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
@@ -20,9 +20,7 @@
 			// root : 'info',
 			fields : [ 'id', 'name' ]
 		}),
-		allowBlank : false,
 		emptyText : 'Выберите страну',
-		displayField : 'name',
 		loadingText : 'Поиск...',
 		triggerAction : 'all',
 		editable : false
@@ -35,43 +33,45 @@
 		labelWidth : 160,
 		width : 420,
 		height : 280,
+		defaults : {
+			width : 200,
+			allowBlank : false
+		},
 
 		items : [ countrySelect, {
 			id : _date,
 			xtype : 'datefield',
 			fieldLabel : 'Дата праздника',
 			format : 'd.m.Y',
-			allowBlank : false
+			width : 100
 		}, {
 			id : _name,
 			xtype : 'textfield',
-			fieldLabel : 'Название праздника',
-			width : 200,
-			allowBlank : false
+			fieldLabel : 'Название праздника'
 		}, {
 			id : _time_start,
-			xtype : 'textfield',
+			xtype : 'timefield',
 			fieldLabel : 'Время (начало)',
-			width : 200,
-			allowBlank : false,
+			maskRe : /[:\d]/,
+			format : 'H:i',
+			hideTrigger : true,
 			value : '00:00'
 		}, {
 			id : _time_stop,
-			xtype : 'textfield',
+			xtype : 'timefield',
 			fieldLabel : 'Время (окончание)',
-			width : 200,
-			allowBlank : false,
+			maskRe : /[:\d]/,
+			format : 'H:i',
+			hideTrigger : true,
 			value : '23:59'
 		}, {
 			id : _sms,
 			xtype : 'checkbox',
-			fieldLabel : 'sms',
-			inputValue : '1'
+			fieldLabel : 'sms'
 		}, {
 			id : _portfolio,
 			xtype : 'checkbox',
-			fieldLabel : 'portfolio',
-			inputValue : '1'
+			fieldLabel : 'portfolio'
 		} ],
 
 		buttons : [ {
@@ -106,8 +106,7 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					container.window.close();
-					menu.submitDataRequest(menu, 'dictionary/Holidays',
-							'rest/Holidays.do');
+					Ext.getCmp('Holidays-component').refresh();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {

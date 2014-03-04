@@ -17,10 +17,10 @@ import ru.prbb.middleoffice.domain.SecurityCashFlowItem;
 public interface LoadCashFlowDao {
 
 	/**
-	 * @param securities
+	 * @param answer
 	 * @return
 	 */
-	List<Map<String, Object>> execute(String[] securities);
+	List<Map<String, Object>> execute(List<Map<String, Object>> answer);
 
 	/**
 	 * @return

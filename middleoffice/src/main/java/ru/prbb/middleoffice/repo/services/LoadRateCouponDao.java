@@ -15,9 +15,9 @@ import java.util.Map;
 public interface LoadRateCouponDao {
 
 	/**
-	 * @param securities
+	 * @param answer
 	 * @return
 	 */
-	List<Map<String, Object>> execute(String[] securities);
+	List<Map<String, Object>> execute(List<Map<String, Object>> answer);
 
 }

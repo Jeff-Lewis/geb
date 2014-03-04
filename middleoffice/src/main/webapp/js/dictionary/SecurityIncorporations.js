@@ -43,8 +43,9 @@
 			return;
 		}
 
-		App.ui.confirm('Удалить запись для "' + sm.getSelected().data.name
-				+ '"?', cbDel);
+		var d = sm.getSelected().data;
+		App.ui.confirm('Удалить запись для "' + d.security_code + ' '
+				+ d.short_name + '"?', cbDel);
 	}
 	function cbDel() {
 		var id = sm.getSelected().data.sip;

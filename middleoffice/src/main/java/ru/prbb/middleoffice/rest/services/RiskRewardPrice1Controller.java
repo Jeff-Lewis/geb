@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.RiskRewardPrice1Item;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
+import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 import ru.prbb.middleoffice.repo.services.RiskRewardPrice1Dao;
 
 /**
@@ -34,6 +37,8 @@ public class RiskRewardPrice1Controller
 	private ClientsDao daoClients;
 	@Autowired
 	private FundsDao daoFunds;
+	@Autowired
+	private ViewPortfolioDao daoPortfolio;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
@@ -96,5 +101,12 @@ public class RiskRewardPrice1Controller
 			@RequestParam(required = false) String query)
 	{
 		return daoFunds.findCombo(query);
+	}
+
+	@RequestMapping(value = "/PortfolioShowTransfer", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	public @ResponseBody
+	List<ViewPortfolioTransferItem> get(
+			@RequestParam String date) {
+		return daoPortfolio.executeSelect(Utils.parseDate(date));
 	}
 }

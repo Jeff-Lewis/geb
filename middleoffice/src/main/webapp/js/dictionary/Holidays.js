@@ -3,21 +3,12 @@
  */
 (function() {
 
-	var ids = '';
-	var idw = '';
-	var idr = '';
-	var uds = '';
-	var udw = '';
-	var udr = '';
-
-	var _name = Ext.id();
-
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
-		autoLoad : false,
+		autoLoad : true,
 		autoSave : false,
 		url : 'rest/Holidays.do',
-		// root : 'info',
+		//root : 'info',
 		fields : [ 'country', 'date', 'name', 'time_start', 'time_stop', 'sms',
 				'portfolio' ],
 		sortInfo : {
@@ -30,45 +21,73 @@
 		singleSelect : true
 	});
 
-	var infoRU = new Ext.data.JsonStore({
-		autoDestroy : true,
-		autoLoad : false,
-		autoSave : false,
-		url : 'rest/Holidays/RU.do',
-		// root : 'infoHR',
-		fields : [ 'country', 'day_week', 'start', 'stop' ],
-		sortInfo : {
-			field : 'day_week'
-		},
-		listeners : App.ui.listenersJsonStore()
-	});
-
-	var infoUS = new Ext.data.JsonStore({
-		autoDestroy : true,
-		autoLoad : false,
-		autoSave : false,
-		url : 'rest/Holidays/US.do',
-		// root : 'infoHU',
-		fields : [ 'country', 'day_week', 'start', 'stop' ],
-		sortInfo : {
-			field : 'day_week'
-		},
-		listeners : App.ui.listenersJsonStore()
-	});
-
-	function reload() {
-		info.reload();
-		infoRU.reload();
-		infoUS.reload();
+	function cnvtTime(v, rec) {
+		return Ext.util.Format.substr(v, 0, 5);
 	}
 
-	function addHoliday(self) {
+	var infoHR = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : true,
+		autoSave : false,
+		url : 'rest/Holidays/Time/rus.do',
+		// root : 'infoHR',
+		fields : [ 'country', 'day_week', {
+			name : 'start',
+			convert : cnvtTime
+		}, {
+			name : 'stop',
+			convert : cnvtTime
+		} ],
+		sortInfo : {
+			field : 'day_week'
+		}
+	});
+
+	var infoHU = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : true,
+		autoSave : false,
+		url : 'rest/Holidays/Time/usa.do',
+		// root : 'infoHU',
+		fields : [ 'country', 'day_week', {
+			name : 'start',
+			convert : cnvtTime
+		}, {
+			name : 'stop',
+			convert : cnvtTime
+		} ],
+		sortInfo : {
+			field : 'day_week'
+		}
+	});
+
+	var infoCO = new Ext.data.JsonStore({
+		autoDestroy : true,
+		autoLoad : true,
+		autoSave : false,
+		url : 'rest/Holidays/TimeOffset.do',
+		//root : 'infoCO',
+		fields : [ 'id', 'country', 'offset', {
+			name : 'start',
+			convert : cnvtTime
+		}, {
+			name : 'stop',
+			convert : cnvtTime
+		} ],
+		sortInfo : {
+			field : 'country'
+		}
+	});
+
+	function addHoliday() {
 		menu.showModal(menu, 'dictionary/HolidaysAdd');
 	}
 
-	function delHoliday(self) {
+	function delHoliday() {
 		if (sm.getCount() > 0) {
-			App.ui.confirm('Удалить помеченные записи?', delHolidayAjax);
+			var _data = sm.getSelected().data;
+			App.ui.confirm('Удалить ' + _data.name + '(' + _data.date + ')?',
+					delHolidayAjax);
 		} else {
 			App.ui.message('Необходимо выбрать запись  для удаления!');
 		}
@@ -78,7 +97,7 @@
 		Ext.Ajax.request({
 			url : 'rest/Holidays/Delete.do',
 			params : {
-				name : _data.country,
+				country : _data.country,
 				date : _data.date
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -86,8 +105,7 @@
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					App.ui.message('Контакт удален!');
-					reload();
+					info.reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -100,149 +118,87 @@
 		});
 	}
 
-	function timeSetRus(self) {
-		Ext.Ajax.request({
-			url : 'rest/Holidays/SetTime.do',
-			params : {
-				country : 'rus',
-				start : ids.substr(1),
-				stop : idr.substr(1),
-				date : idw.substr(1)
-			},
-			timeout : 10 * 60 * 1000, // 10 min
-			waitMsg : 'Установка расписания',
-			success : function(xhr) {
-				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					App.ui.message('Успешно!');
-					reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
-				}
-			},
-			failure : function() {
-				App.ui.error('Сервер недоступен');
+	function setTime(_store) {
+		var _v = [];
+		_store.each(function(r) {
+			if (r.dirty) {
+				var d = r.data;
+				_v.push(d.country + ';' + d.day_week + ';' + d.start + ';'
+						+ d.stop);
+				r.commit(true);
 			}
+			return true;
 		});
-	}
 
-	function timeSetUsa(self) {
-		Ext.Ajax.request({
-			url : 'rest/Holidays/SetTime.do',
-			params : {
-				country : 'usa',
-				start : uds.substr(1),
-				stop : udr.substr(1),
-				date : udw.substr(1)
-			},
-			timeout : 10 * 60 * 1000, // 10 min
-			waitMsg : 'Установка расписания',
-			success : function(xhr) {
-				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					App.ui.message('Успешно!');
-					reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
-				}
-			},
-			failure : function() {
-				App.ui.error('Сервер недоступен');
-			}
-		});
-	}
-
-	function timeOffset(self) {
-		Ext.Ajax.request({
-			url : 'rest/Holidays/SetTimeOffset.do',
-			params : {
-				value : Ext.getCmp(_name).getValue()
-			},
-			timeout : 10 * 60 * 1000, // 10 min
-			waitMsg : 'Установка расписания',
-			success : function(xhr) {
-				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					App.ui.message('Успешно!');
-					reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
-				}
-			},
-			failure : function() {
-				App.ui.error('Сервер недоступен');
-			}
-		});
-	}
-
-	function rendererBool(v, m, r) {
-		if ('1' == v) {
-			m.attr = 'style="background: url(images/vwicn082.gif) no-repeat center transparent;"';
+		if (_v.length == 0) {
+			return;
 		}
+
+		Ext.Ajax.request({
+			url : 'rest/Holidays/Time.do',
+			params : {
+				values : _v,
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Установка расписания',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					_store.reload();
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
 	}
 
-	var grid = new Ext.grid.GridPanel({
-		region : 'center',
-		frame : true,
-		enableHdMenu : false,
+	function setTimeOffset() {
+		var _v = [];
+		infoCO.each(function(r) {
+			if (r.dirty) {
+				var d = r.data;
+				_v.push(d.id + ';' + d.country + ';' + d.offset + ';' + d.start
+						+ ':00;' + d.stop + ':00');
+				r.commit(true);
+			}
+			return true;
+		});
 
-		tbar : [ {
-			text : 'Добавить праздник',
-			handler : addHoliday
-		}, {
-			text : 'Удалить праздник',
-			handler : delHoliday
-		} ],
-
-		store : info,
-		selModel : sm,
-		columns : [ new Ext.grid.RowNumberer({
-			width : 30
-		}), {
-			header : 'country',
-			dataIndex : 'country',
-			width : 30
-		}, {
-			header : 'holiday_date',
-			dataIndex : 'date',
-			renderer : App.util.Renderer.date(),
-			width : 50
-		}, {
-			header : 'holiday_time_start',
-			dataIndex : 'time_start',
-			renderer : App.util.Renderer.time('H:i'),
-			width : 40
-		}, {
-			header : 'holiday_time_stop',
-			dataIndex : 'time_stop',
-			renderer : App.util.Renderer.time('H:i'),
-			width : 40
-		}, {
-			header : 'holiday_name',
-			dataIndex : 'name',
-			width : 50
-		}, {
-			header : 'sms',
-			dataIndex : 'sms',
-			width : 30,
-			renderer : rendererBool
-		}, {
-			header : 'portfolio',
-			dataIndex : 'portfolio',
-			width : 30,
-			renderer : rendererBool
-		} ],
-		viewConfig : {
-			forceFit : true,
-			emptyText : 'Записи не найдены'
+		if (_v.length == 0) {
+			return;
 		}
-	});
+
+		Ext.Ajax.request({
+			url : 'rest/Holidays/TimeOffset.do',
+			params : {
+				values : _v
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Сохранение.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					infoCO.reload();
+					return;
+				}
+				if (answer.code == 'login') {
+					App.ui.sessionExpired();
+					return;
+				}
+				e.record.data.offset = e.originalValue;
+				e.grid.getView().refresh();
+				App.ui.error(answer.message);
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
 
 	function rendererWeek(value) {
 		switch (value) {
@@ -266,7 +222,7 @@
 	var timeFieldCfg = {
 		maskRe : /[:\d]/,
 		format : 'H:i',
-		queryDelay : 10000
+		hideTrigger : true
 	};
 
 	var gridHR = new Ext.grid.EditorGridPanel({
@@ -275,10 +231,12 @@
 
 		tbar : [ {
 			text : 'Установить',
-			handler : timeSetRus
+			handler : function() {
+				setTime(infoHR);
+			}
 		} ],
 
-		store : infoRU,
+		store : infoHR,
 		columns : [ {
 			header : 'country',
 			dataIndex : 'country',
@@ -301,17 +259,15 @@
 			width : 70,
 			renderer : rendererWeek
 		} ],
+
 		viewConfig : {
 			forceFit : true,
 			emptyText : 'Записи не найдены'
 		},
+
 		listeners : {
-			afteredit : function(e) {
-				if ((e.field == 'start') || (e.field == 'stop')) {
-					ids += ',' + e.record.get('start');
-					idr += ',' + e.record.get('stop');
-					idw += ',' + e.record.get('day_week');
-				}
+			afteredit : function() {
+				setTime(infoHR);
 			}
 		}
 	});
@@ -322,10 +278,12 @@
 
 		tbar : [ {
 			text : 'Установить',
-			handler : timeSetUsa
+			handler : function() {
+				setTime(infoHU);
+			}
 		} ],
 
-		store : infoUS,
+		store : infoHU,
 		columns : [ {
 			header : 'country',
 			dataIndex : 'country',
@@ -348,20 +306,68 @@
 			width : 70,
 			renderer : rendererWeek
 		} ],
+
+		viewConfig : {
+			forceFit : true,
+			emptyText : 'Записи не найдены'
+		},
+
+		listeners : {
+			afteredit : function() {
+				setTime(infoHU);
+			}
+		}
+	});
+
+	var gridCO = new Ext.grid.EditorGridPanel({
+		frame : true,
+		enableHdMenu : false,
+
+		tbar : [ {
+			text : 'Установить',
+			handler : setTimeOffset
+		} ],
+
+		store : infoCO,
+		columns : [ {
+			header : 'Страна',
+			dataIndex : 'country'
+		}, {
+			xtype : 'numbercolumn',
+			header : 'Разница времени, ч',
+			dataIndex : 'offset',
+			format : '0',
+			editor : {
+				xtype : 'numberfield',
+				allowDecimals : false,
+				minValue : -23,
+				maxValue : 23
+			}
+		}, {
+			header : 'Начало торгов',
+			dataIndex : 'start',
+			renderer : App.util.Renderer.time('H:i'),
+			editor : new Ext.form.TimeField(timeFieldCfg)
+		}, {
+			header : 'Окончание торгов',
+			dataIndex : 'stop',
+			renderer : App.util.Renderer.time('H:i'),
+			editor : new Ext.form.TimeField(timeFieldCfg)
+		} ],
 		viewConfig : {
 			forceFit : true,
 			emptyText : 'Записи не найдены'
 		},
 		listeners : {
-			afteredit : function(e) {
-				if ((e.field == 'start') || (e.field == 'stop')) {
-					uds += ',' + e.record.get('start');
-					udr += ',' + e.record.get('stop');
-					udw += ',' + e.record.get('day_week');
-				}
-			}
+			afteredit : setTimeOffset
 		}
 	});
+
+	function renderFlag(value, meta, record) {
+		if ('1' == value) {
+			meta.attr = 'style="background: url(images/vwicn082.gif) no-repeat center transparent;"';
+		}
+	}
 
 	return new Ext.Panel({
 		id : 'Holidays-component',
@@ -371,31 +377,62 @@
 		layout : 'border',
 
 		items : [ {
-			region : 'north',
-			border : true,
-			baseCls : 'x-plain',
-			xtype : 'panel',
-			autoHeight : true,
-			padding : 5,
-			layout : 'hbox',
+			region : 'center',
+			xtype : 'grid',
+			frame : true,
+			enableHdMenu : false,
 
-			items : [ {
-				margins : '2 5 0 0',
-				xtype : 'label',
-				style : 'font-weight: bold;',
-				text : 'Смещение времени USA относительно Москвы:'
+			tbar : [ {
+				text : 'Добавить праздник',
+				handler : addHoliday
 			}, {
-				margins : '0 15 0 0',
-				id : _name,
-				xtype : 'numberfield',
-				align : 'right',
+				text : 'Удалить праздник',
+				handler : delHoliday
+			} ],
+
+			store : info,
+			selModel : sm,
+			columns : [ new Ext.grid.RowNumberer({
+				width : 30
+			}), {
+				header : 'country',
+				dataIndex : 'country',
 				width : 30
 			}, {
-				xtype : 'button',
-				text : 'Установить',
-				handler : timeOffset
-			} ]
-		}, grid, {
+				header : 'holiday_date',
+				dataIndex : 'date',
+				renderer : App.util.Renderer.date(),
+				width : 50
+			}, {
+				header : 'time_start',
+				dataIndex : 'time_start',
+				renderer : App.util.Renderer.time('H:i'),
+				width : 40
+			}, {
+				header : 'holiday_time_stop',
+				dataIndex : 'time_stop',
+				renderer : App.util.Renderer.time('H:i'),
+				width : 40
+			}, {
+				header : 'holiday_name',
+				dataIndex : 'name',
+				width : 50
+			}, {
+				header : 'sms',
+				dataIndex : 'sms',
+				width : 30,
+				renderer : renderFlag
+			}, {
+				header : 'portfolio',
+				dataIndex : 'portfolio',
+				width : 30,
+				renderer : renderFlag
+			} ],
+			viewConfig : {
+				forceFit : true,
+				emptyText : 'Записи не найдены'
+			}
+		}, {
 			region : 'south',
 			xtype : 'container',
 			height : 220,
@@ -404,23 +441,13 @@
 				align : 'stretch'
 			},
 			defaults : {
-				width : 400
+				width : 350
 			},
-			items : [ gridHR, gridHU ]
+			items : [ gridHR, gridHU, gridCO ]
 		} ],
-		loadData : function(data) {
-			ids = '';
-			idw = '';
-			idr = '';
-			uds = '';
-			udw = '';
-			udr = '';
-			Ext.getCmp(_name).setValue(data.offset);
-		},
-		listeners : {
-			show : function(grid) {
-				setTimeout(reload, 0);
-			}
+
+		refresh : function() {
+			info.reload();
 		}
 	});
 })();

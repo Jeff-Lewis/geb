@@ -1,17 +1,19 @@
 package ru.prbb.middleoffice.rest.operations;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
+import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
 import ru.prbb.middleoffice.repo.operations.SetSecurityRiscsDao;
+import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 
 /**
  * Задать параметры риска
@@ -23,27 +25,30 @@ import ru.prbb.middleoffice.repo.operations.SetSecurityRiscsDao;
 @RequestMapping("/rest/SetSecurityRiscs")
 public class SetSecurityRiscsController
 {
-	// @Autowired
+
+	@Autowired
 	private SetSecurityRiscsDao dao;
+	@Autowired
+	private ViewPortfolioDao daoPortfolio;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	Object save(
+	Result save(
 			@RequestParam Long id,
 			@RequestParam Double riskATH,
 			@RequestParam Double riskAVG,
 			@RequestParam Double stopLoss,
 			@RequestParam String comment)
 	{
+		dao.execute(id, riskATH, riskAVG, stopLoss, comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Map<String, Object>> getPortfolio(
+	List<ViewPortfolioTransferItem> getPortfolio(
 			@RequestParam String date)
 	{
-		// {call dbo.mo_WebGet_SelectPlReport_sp ?, null, 1}
-		return new ArrayList<Map<String, Object>>();
+		return daoPortfolio.executeSelect(Utils.parseDate(date));
 	}
 }

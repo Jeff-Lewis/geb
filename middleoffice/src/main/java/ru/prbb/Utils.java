@@ -164,7 +164,7 @@ public class Utils {
 	 */
 	public static Long toLong(Object object) {
 		if (null != object) {
-			return ((BigDecimal) object).longValue();
+			return ((Number) object).longValue();
 		}
 		return null;
 	}
@@ -178,7 +178,7 @@ public class Utils {
 	 */
 	public static Integer toInteger(Object object) {
 		if (null != object) {
-			return (Integer) object;
+			return ((Number) object).intValue();
 		}
 		return null;
 	}
@@ -192,7 +192,7 @@ public class Utils {
 	 */
 	public static Byte toByte(Object object) {
 		if (null != object) {
-			return (Byte) object;
+			return ((Number) object).byteValue();
 		}
 		return null;
 	}

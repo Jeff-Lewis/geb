@@ -7,12 +7,12 @@ import java.sql.Date;
 import java.util.List;
 
 import ru.prbb.middleoffice.domain.ViewPortfolioItem;
+import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
 
 /**
  * Текущий портфель
  * 
  * @author RBr
- * 
  */
 public interface ViewPortfolioDao {
 
@@ -22,6 +22,12 @@ public interface ViewPortfolioDao {
 	 * @return
 	 */
 	List<ViewPortfolioItem> executeSelect(Date date, Long security);
+
+	/**
+	 * @param date
+	 * @return
+	 */
+	List<ViewPortfolioTransferItem> executeSelect(Date date);
 
 	/**
 	 * @param date

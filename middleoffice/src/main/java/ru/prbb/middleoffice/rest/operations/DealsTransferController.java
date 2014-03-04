@@ -1,8 +1,6 @@
 package ru.prbb.middleoffice.rest.operations;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,10 +9,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.operations.DealsTransferDao;
+import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 
 /**
  * Перекидка ЦБ между фондами
@@ -26,14 +27,16 @@ import ru.prbb.middleoffice.repo.operations.DealsTransferDao;
 @RequestMapping("/rest/DealsTransfer")
 public class DealsTransferController
 {
-	// @Autowired
+	@Autowired
 	private DealsTransferDao dao;
+	@Autowired
+	private ViewPortfolioDao daoPortfolio;
 	@Autowired
 	private FundsDao daoFunds;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	Object save(
+	Result save(
 			@RequestParam Long portfolioId,
 			@RequestParam Integer quantity,
 			@RequestParam Double price,
@@ -41,16 +44,16 @@ public class DealsTransferController
 			@RequestParam Integer batch,
 			@RequestParam String comment)
 	{
+		dao.execute(portfolioId, quantity, price, fundId, batch, comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<Map<String, Object>> getPortfolio(
+	List<ViewPortfolioTransferItem> getPortfolio(
 			@RequestParam String date)
 	{
-		// {call dbo.mo_WebGet_SelectPlReport_sp ?, null, 1}
-		return new ArrayList<Map<String, Object>>();
+		return daoPortfolio.executeSelect(Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

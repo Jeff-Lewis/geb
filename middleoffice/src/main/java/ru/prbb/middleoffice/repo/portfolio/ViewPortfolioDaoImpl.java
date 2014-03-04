@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ViewPortfolioItem;
+import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
 
 /**
  * Текущий портфель
@@ -58,6 +59,33 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 			item.setPosition(Utils.toDouble(arr[12]));
 			item.setPosition_rep_date(Utils.toDouble(arr[13]));
 			item.setRevaluation(Utils.toDouble(arr[14]));
+			res.add(item);
+		}
+		return res;
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<ViewPortfolioTransferItem> executeSelect(Date date) {
+		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, null, 1}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, date);
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<ViewPortfolioTransferItem> res = new ArrayList<>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			ViewPortfolioTransferItem item = new ViewPortfolioTransferItem();
+			item.setId(Utils.toLong(arr[0]));
+			item.setDated(Utils.toDate(arr[1]));
+			item.setClient(Utils.toString(arr[2]));
+			item.setFund(Utils.toString(arr[3]));
+			item.setSecurity_code(Utils.toString(arr[4]));
+			item.setBatch(Utils.toInteger(arr[5]));
+			item.setQuantity(Utils.toInteger(arr[6]));
+			item.setAvg_price(Utils.toDouble(arr[7]));
+			item.setAvg_price_usd(Utils.toDouble(arr[8]));
+			item.setCurrency(Utils.toString(arr[9]));
 			res.add(item);
 		}
 		return res;

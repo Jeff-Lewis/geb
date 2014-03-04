@@ -113,7 +113,7 @@ public class ContactsDaoImpl implements ContactsDao
 	public int deleteByIdStaff(Long id, Long cid) {
 		String sql = "{call dbo.WebSet_udContactInfo_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
-				.setParameter(1, id);
+				.setParameter(1, cid);
 		return q.executeUpdate();
 	}
 

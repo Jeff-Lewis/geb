@@ -19,14 +19,14 @@ public class CurrenciesItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Long code;
+	private String code;
 	private String iso;
 	private String name;
 
 	/**
 	 * @return the code
 	 */
-	public Long getCode() {
+	public String getCode() {
 		return code;
 	}
 
@@ -34,7 +34,7 @@ public class CurrenciesItem implements Serializable {
 	 * @param code
 	 *            the code to set
 	 */
-	public void setCode(Long code) {
+	public void setCode(String code) {
 		this.code = code;
 	}
 
