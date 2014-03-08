@@ -13,32 +13,27 @@ import ru.prbb.analytics.domain.SimpleItem;
  * Справочник контактов
  * 
  * @author RBr
- * 
  */
 public interface GroupsDao {
 
 	/**
-	 * 
 	 * @return
 	 */
 	List<SimpleItem> findAll();
 
 	/**
-	 * 
 	 * @param id
 	 * @return
 	 */
 	SimpleItem findById(Long id);
 
 	/**
-	 * 
 	 * @param name
 	 * @return
 	 */
 	int put(String name);
 
 	/**
-	 * 
 	 * @param id
 	 * @param name
 	 * @return
@@ -46,28 +41,24 @@ public interface GroupsDao {
 	int updateById(Long id, String name);
 
 	/**
-	 * 
 	 * @param id
 	 * @return
 	 */
 	int deleteById(Long id);
 
 	/**
-	 * 
 	 * @param id
 	 * @return
 	 */
 	List<GroupAddressItem> findAllAddresses(Long id);
 
 	/**
-	 * 
 	 * @param id
 	 * @return
 	 */
 	List<GroupContactsItem> findAllContacts(Long id);
 
 	/**
-	 * 
 	 * @param id
 	 * @param cids
 	 * @return
@@ -75,7 +66,6 @@ public interface GroupsDao {
 	int[] putStaff(Long id, Long[] cids);
 
 	/**
-	 * 
 	 * @param id
 	 * @param cids
 	 * @return

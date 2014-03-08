@@ -1,7 +1,8 @@
 package ru.prbb.analytics.rest.company;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,6 @@ import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.company.CompaniesDao;
-import ru.prbb.analytics.repo.company.CompaniesDao.AttrVal;
 import ru.prbb.analytics.repo.model.BuildEPSDao;
 import ru.prbb.analytics.repo.model.BuildModelDao;
 
@@ -92,7 +92,7 @@ public class CompaniesController
 	@RequestMapping(value = "/{id}/EquityChange", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result execEquityChange(
-			@PathVariable Long id,
+			@PathVariable("id") Long id,
 			@RequestParam String bloomCode,
 			@RequestParam String adr,
 			@RequestParam String currency_calc,
@@ -102,23 +102,23 @@ public class CompaniesController
 			@RequestParam String period,
 			@RequestParam String eps)
 	{
-		List<AttrVal> params = new ArrayList<>();
+		Map<String, String> params = new HashMap<>();
 		if (Utils.isNotEmpty(bloomCode))
-			params.add(new AttrVal("bloomberg_code", bloomCode));
+			params.put("bloomberg_code", bloomCode);
 		if (Utils.isNotEmpty(adr))
-			params.add(new AttrVal("adr", adr));
+			params.put("adr", adr);
 		if (Utils.isNotEmpty(currency_calc))
-			params.add(new AttrVal("currency", currency_calc));
+			params.put("currency", currency_calc);
 		if (Utils.isNotEmpty(group))
-			params.add(new AttrVal("pivot_group", group));
+			params.put("pivot_group", group);
 		if (Utils.isNotEmpty(koefZero))
-			params.add(new AttrVal("koef", koefZero));
+			params.put("koef", koefZero);
 		if (Utils.isNotEmpty(koefOne))
-			params.add(new AttrVal("new_koef", koefOne));
+			params.put("new_koef", koefOne);
 		if (Utils.isNotEmpty(period))
-			params.add(new AttrVal("period", period));
+			params.put("period", period);
 		if (Utils.isNotEmpty(eps))
-			params.add(new AttrVal("eps", eps));
+			params.put("eps", eps);
 		dao.updateById(id, params);
 		return Result.SUCCESS;
 	}
@@ -126,7 +126,7 @@ public class CompaniesController
 	@RequestMapping(value = "/{id}/CalculateEps", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result execCalculateEps(
-			@PathVariable Long id)
+			@PathVariable("id") Long id)
 	{
 		daoBuildEPS.calculate(new Long[] { id });
 		return Result.SUCCESS;
@@ -135,7 +135,7 @@ public class CompaniesController
 	@RequestMapping(value = "/{id}/BuildModelCompany", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result execBuildModelCompany(
-			@PathVariable Long id)
+			@PathVariable("id") Long id)
 	{
 		daoBuildModel.calculateModel(new Long[] { id });
 		return Result.SUCCESS;
@@ -144,7 +144,7 @@ public class CompaniesController
 	@RequestMapping(value = "/{id}/ScanSave", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result getScanSave(
-			@PathVariable Long id)
+			@PathVariable("id") Long id)
 	{
 		// TODO ScanSave
 		return Result.SUCCESS;
@@ -153,7 +153,7 @@ public class CompaniesController
 	@RequestMapping(value = "/{id}/ScanOpen", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	Result getScanOpen(
-			@PathVariable Long id)
+			@PathVariable("id") Long id)
 	{
 		// TODO ScanOpen
 		return Result.SUCCESS;
@@ -162,7 +162,7 @@ public class CompaniesController
 	@RequestMapping(value = "/{id}/ScanDelete", method = RequestMethod.DELETE, produces = "application/json")
 	public @ResponseBody
 	Result getScanDelete(
-			@PathVariable Long id)
+			@PathVariable("id") Long id)
 	{
 		// TODO ScanDelete
 		return Result.SUCCESS;

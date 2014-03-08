@@ -21,11 +21,11 @@ import ru.prbb.analytics.domain.SimpleItem;
  * Справочник контактов
  * 
  * @author RBr
- * 
  */
 @Repository
 public class GroupsDaoImpl implements GroupsDao
 {
+
 	@Autowired
 	private EntityManager em;
 

@@ -29,8 +29,8 @@
 			return;
 		}
 
-		menu.showModal(menu, 'utils/BrokersEdit', 'rest/Brokers/'
-				+ sm.getSelected().data.id + '.do');
+		var id = sm.getSelected().data.id;
+		menu.showModal(menu, 'utils/BrokersEdit', 'rest/Brokers/' + id + '.do');
 	}
 
 	function delItem(self) {
@@ -47,29 +47,28 @@
 		var _data = sm.getSelected().data;
 		App.ui.confirm('Удаление брокера ' + _data.full_name + '<br/>'
 				+ 'приведет к удалению всех прогнозов этого брокера.'
-				+ '<br/>Продолжить?', function() {
-			Ext.Ajax.request({
-				method : 'DELETE',
-				url : 'rest/Brokers.do',
-				params : {
-					id : _data.id
-				},
-				timeout : 10 * 60 * 1000, // 10 min
-				waitMsg : 'Выполняется запрос',
-				success : function(xhr) {
-					var answer = Ext.decode(xhr.responseText);
-					if (answer.success) {
-						info.reload();
-					} else if (answer.code == 'login') {
-						App.ui.sessionExpired();
-					} else {
-						App.ui.error(answer.message);
-					}
-				},
-				failure : function() {
-					App.ui.error('Сервер недоступен');
+				+ '<br/>Продолжить?', ajaxDelItem);
+	}
+	function ajaxDelItem() {
+		var id = sm.getSelected().data.id;
+		Ext.Ajax.request({
+			method : 'DELETE',
+			url : 'rest/Brokers/' + id + '.do',
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Выполняется запрос',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					info.reload();
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
 				}
-			});
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
 		});
 	}
 

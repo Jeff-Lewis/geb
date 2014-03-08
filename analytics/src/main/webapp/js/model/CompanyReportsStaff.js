@@ -10,10 +10,11 @@
 		autoLoad : false,
 		url : 'rest/CompanyReports/Staff/All.do',
 		// root : 'infoCompany',
-		fields : [ 'id_sec', 'security_code', 'short_name' ],
+		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
-		}
+		},
+		listeners : App.ui.listenersJsonStore()
 	});
 
 	var smA = new Ext.grid.CheckboxSelectionModel({
@@ -25,7 +26,7 @@
 		autoLoad : false,
 		url : 'rest/CompanyReports/Staff/Report.do',
 		// root : 'infoCompany',
-		fields : [ 'id_sec', 'security_code', 'short_name' ],
+		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
 		}
@@ -56,7 +57,7 @@
 
 		var _ids = [];
 		smA.each(function(item) {
-			_ids.push(item.data.id_sec);
+			_ids.push(item.data.id);
 			return true;
 		});
 

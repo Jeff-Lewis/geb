@@ -3,6 +3,7 @@ package ru.prbb.analytics.rest.bloomberg;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.analytics.domain.EquitiesItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BloombergServicesA;
 import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.bloomberg.RequestBDPovrDao;
 
@@ -29,6 +31,8 @@ import ru.prbb.analytics.repo.bloomberg.RequestBDPovrDao;
 public class RequestBDPovrController
 {
 	@Autowired
+	private BloombergServicesA bs;
+	@Autowired
 	private RequestBDPovrDao dao;
 	@Autowired
 	private EquitiesDao daoEquities;
@@ -41,7 +45,9 @@ public class RequestBDPovrController
 			@RequestParam String over,
 			@RequestParam String period)
 	{
-		dao.execute(security, params, over, period);
+		Map<String, Map<String, Map<String, String>>> answer =
+				bs.executeBdpRequestOverride("BDP с override", security, params, period, over);
+		dao.execute(security, over, answer);
 		return Result.SUCCESS;
 	}
 
@@ -54,7 +60,10 @@ public class RequestBDPovrController
 			@RequestParam String[] currency)
 	{
 		Set<String> _currency = new HashSet<String>(Arrays.asList(currency));
-		dao.execute(security, params, over, _currency);
+		Map<String, Map<String, Map<String, String>>> answer =
+				bs.executeBdpRequestOverrideQuarter("BDP с override-quarter", security, params,
+						_currency.toArray(new String[_currency.size()]), over);
+		dao.execute(security, over, answer);
 		return Result.SUCCESS;
 	}
 

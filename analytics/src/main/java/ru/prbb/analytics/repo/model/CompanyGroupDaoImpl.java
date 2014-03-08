@@ -96,15 +96,15 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int[] putStaff(Long id, Long[] cids) {
+	public int[] putStaff(Long group_id, Long[] cids) {
 		String sql = "{call dbo.anca_WebSet_addEquityPivotGroup_sp ?, ?}";
 		int i = 0;
 		int[] res = new int[cids.length];
 		Query q = em.createNativeQuery(sql);
-		for (Long cid : cids) {
+		q.setParameter(2, group_id);
+		for (Long id_sec : cids) {
 			try {
-				q.setParameter(1, id);
-				q.setParameter(2, cid);
+				q.setParameter(1, id_sec);
 				res[i++] = q.executeUpdate();
 			} catch (DataAccessException e) {
 				// TODO: handle exception
@@ -120,9 +120,9 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		int i = 0;
 		int[] res = new int[cids.length];
 		Query q = em.createNativeQuery(sql);
-		for (Long cid : cids) {
+		for (Long id_sec : cids) {
 			try {
-				q.setParameter(1, cid);
+				q.setParameter(1, id_sec);
 				res[i++] = q.executeUpdate();
 			} catch (DataAccessException e) {
 				// TODO: handle exception

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ViewPortfolioItem;
-import ru.prbb.analytics.domain.ViewPortfolioSecurityItem;
 import ru.prbb.analytics.repo.portfolio.ViewPortfolioDao;
 
 /**
@@ -29,7 +28,7 @@ public class ViewPortfolioController
 
 	@RequestMapping(value = "/Securities", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<ViewPortfolioSecurityItem> showSecurities()
+	List<ViewPortfolioItem> showSecurities()
 	{
 		return dao.findAll();
 	}
@@ -45,7 +44,7 @@ public class ViewPortfolioController
 	public @ResponseBody
 	Result add(
 			@RequestParam String action,
-			@RequestParam String[] ids)
+			@RequestParam Long[] ids)
 	{
 		if ("ADD".equals(action)) {
 			dao.put(ids);

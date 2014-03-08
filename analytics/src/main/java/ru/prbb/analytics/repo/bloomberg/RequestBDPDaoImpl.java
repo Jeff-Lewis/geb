@@ -3,7 +3,10 @@
  */
 package ru.prbb.analytics.repo.bloomberg;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -15,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SimpleItem;
-import ru.prbb.bloomberg.BloombergServices;
 
 /**
  * BDP запрос
@@ -28,21 +30,43 @@ public class RequestBDPDaoImpl implements RequestBDPDao
 
 	@Autowired
 	private EntityManager em;
-	@Autowired
-	private BloombergServices bs;
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void execute(String[] security, String[] params) {
-		if (null == params) {
-			params = new String[] {
-					"ANNOUNCEMENT_DT", "EQY_DVD_YLD_IND", "EQY_WEIGHTED_AVG_PX",
-					"HIGH_52WEEK", "LOW_52WEEK", "PX_LAST", "PX_VOLUME", "EQY_RAW_BETA",
-					"OPER_ROE", "BS_TOT_LIAB2", "PE_RATIO", "EBITDA", "BEST_EPS_GAAP",
-					"BEST_EPS_GAAP_1WK_CHG", "BEST_EPS_GAAP_3MO_CHG", "BEST_EPS_GAAP_4WK_CHG",
-					"BOOK_VAL_PER_SH"
-			};
+	public void execute(String[] securities, Map<String, Map<String, String>> answer) {
+		final List<CurrentDailyData> data = new ArrayList<>();
+		for (String security : securities) {
+			Map<String, String> values = answer.get(security);
+			if (null == values)
+				continue;
+			for (Entry<String, String> entry : values.entrySet()) {
+				String field = entry.getKey();
+				String value = entry.getValue();
+				data.add(new CurrentDailyData(security, field, value));
+			}
 		}
-		bs.executeBdpRequest("BDP запрос", security, params);
+
+		String sql = "{call dbo.put_current_data ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		for (CurrentDailyData d : data) {
+			q.setParameter(1, d.security);
+			q.setParameter(2, d.param);
+			q.setParameter(3, d.value);
+			q.executeUpdate();
+		}
+	}
+
+	private class CurrentDailyData {
+
+		public final String security;
+		public final String param;
+		public final String value;
+
+		public CurrentDailyData(String security, String param, String value) {
+			this.security = security;
+			this.param = param;
+			this.value = value;
+		}
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

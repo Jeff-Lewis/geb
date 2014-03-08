@@ -51,12 +51,12 @@
 		} ],
 
 		loadData : function(data) {
-			_id = data.id;
-			Ext.getCmp(_full_name).setValue(data.full_name);
-			Ext.getCmp(_rating).setValue(data.rating);
-			Ext.getCmp(_bloomberg_code).setValue(data.bloomberg_code);
-			Ext.getCmp(_cover_russian).setValue(data.cover_russian);
-			Ext.getCmp(_short_name).setValue(data.short_name);
+			_id = data.item.id;
+			Ext.getCmp(_full_name).setValue(data.item.full_name);
+			Ext.getCmp(_rating).setValue(data.item.rating);
+			Ext.getCmp(_bloomberg_code).setValue(data.item.bloomberg_code);
+			Ext.getCmp(_cover_russian).setValue(data.item.cover_russian);
+			Ext.getCmp(_short_name).setValue(data.item.short_name);
 		},
 		setWindow : function(window) {
 			this.window = window;

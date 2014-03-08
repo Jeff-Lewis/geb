@@ -65,7 +65,7 @@
 		companies.reload({
 			params : {
 				filter : filter.getValue(),
-				equity : App.Combo.getValueId(equities),
+				equity : equities.getValue(),
 				fundamentals : 2
 			}
 		});

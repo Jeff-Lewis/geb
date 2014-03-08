@@ -21,12 +21,12 @@ import ru.prbb.analytics.repo.utils.GroupsDao;
  * Справочник контактов
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/Groups")
 public class GroupsController
 {
+
 	@Autowired
 	private GroupsDao dao;
 
@@ -52,7 +52,7 @@ public class GroupsController
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
-		int r = dao.updateById(id, name);
+		dao.updateById(id, name);
 		return Result.SUCCESS;
 	}
 

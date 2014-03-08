@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.ViewPortfolioItem;
-import ru.prbb.analytics.domain.ViewPortfolioSecurityItem;
 
 /**
  * Добавление организаций в Portfolio
@@ -31,9 +30,9 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ViewPortfolioSecurityItem> findAll() {
-		String sql = "select * from dbo.equity_request_v";
-		Query q = em.createNativeQuery(sql, ViewPortfolioSecurityItem.class);
+	public List<ViewPortfolioItem> findAll() {
+		String sql = "select id_sec, security_code from dbo.equity_request_v";
+		Query q = em.createNativeQuery(sql, ViewPortfolioItem.class);
 		return q.getResultList();
 	}
 
@@ -48,15 +47,15 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int[] put(String[] ids) {
-		String sql = "update dbo.securities set portfolio='portfolio' where security_code=?";
+	public int[] put(Long[] ids) {
+		String sql = "update dbo.securities set portfolio='portfolio' where id_sec=?";
 		int i = 0;
 		int[] res = new int[ids.length];
 		Query q = em.createNativeQuery(sql);
-		for (String id : ids) {
+		for (Long id_sec : ids) {
 			try {
-				q.setParameter(1, id);
-				res[i++] = 0;//q.executeUpdate();
+				q.setParameter(1, id_sec);
+				res[i++] = q.executeUpdate();
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -66,15 +65,15 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int[] del(String[] ids) {
-		String sql = "update dbo.securities set portfolio='' where security_code=?";
+	public int[] del(Long[] ids) {
+		String sql = "update dbo.securities set portfolio='' where id_sec=?";
 		int i = 0;
 		int[] res = new int[ids.length];
 		Query q = em.createNativeQuery(sql);
-		for (String id : ids) {
+		for (Long id_sec : ids) {
 			try {
-				q.setParameter(1, id);
-				res[i++] = 0;//q.executeUpdate();
+				q.setParameter(1, id_sec);
+				res[i++] = q.executeUpdate();
 			} catch (Exception e) {
 				// TODO: handle exception
 			}

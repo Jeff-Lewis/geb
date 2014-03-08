@@ -5,35 +5,30 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
  * @author RBr
- * 
  */
 @Entity
 public class CompanyAllItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Long id_sec;
+	@Column(name = "id_sec")
+	private Long id;
 	private String security_code;
 	private String short_name;
 
-	/**
-	 * @return the id_sec
-	 */
-	public Long getId_sec() {
-		return id_sec;
+	public Long getId() {
+		return id;
 	}
 
-	/**
-	 * @param id_sec
-	 *            the id_sec to set
-	 */
-	public void setId_sec(Long id_sec) {
-		this.id_sec = id_sec;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**

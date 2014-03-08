@@ -23,6 +23,7 @@ public interface ContactsDao {
 
 	/**
 	 * @param id
+	 * @return
 	 */
 	SimpleItem findById(Long id);
 

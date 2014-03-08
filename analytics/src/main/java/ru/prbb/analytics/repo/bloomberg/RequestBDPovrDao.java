@@ -4,7 +4,7 @@
 package ru.prbb.analytics.repo.bloomberg;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import ru.prbb.analytics.domain.SimpleItem;
 
@@ -17,20 +17,10 @@ import ru.prbb.analytics.domain.SimpleItem;
 public interface RequestBDPovrDao {
 
 	/**
-	 * @param security
-	 * @param params
-	 * @param over
-	 * @param period
+	 * @param securities
+	 * @param answer
 	 */
-	void execute(String[] security, String[] params, String over, String period);
-
-	/**
-	 * @param security
-	 * @param params
-	 * @param over
-	 * @param _currency
-	 */
-	void execute(String[] security, String[] params, String over, Set<String> _currency);
+	void execute(String[] securities, String over, Map<String, Map<String, Map<String, String>>> answer);
 
 	/**
 	 * @return

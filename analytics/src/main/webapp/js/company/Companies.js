@@ -93,12 +93,6 @@
 			renderer : function(value) {
 				return value.substr(2);
 			}
-		} ],
-
-		listeners : {
-		// show : function(grid) {
-		// info.reload();
-		// }
-		}
+		} ]
 	});
 })();

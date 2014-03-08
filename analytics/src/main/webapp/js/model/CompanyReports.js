@@ -111,6 +111,7 @@
 	function delCallback() {
 		var id = sm.getSelected().data.id;
 		Ext.Ajax.request({
+			method : 'DELETE',
 			url : 'rest/CompanyReports/' + id + '.do',
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Удаление',

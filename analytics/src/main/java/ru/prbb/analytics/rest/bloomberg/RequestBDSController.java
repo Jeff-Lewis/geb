@@ -1,6 +1,7 @@
 package ru.prbb.analytics.rest.bloomberg;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.analytics.domain.EquitiesItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BloombergServicesA;
 import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.bloomberg.RequestBDSDao;
 
@@ -26,6 +28,8 @@ import ru.prbb.analytics.repo.bloomberg.RequestBDSDao;
 public class RequestBDSController
 {
 	@Autowired
+	private BloombergServicesA bs;
+	@Autowired
 	private RequestBDSDao dao;
 	@Autowired
 	private EquitiesDao daoEquities;
@@ -36,7 +40,8 @@ public class RequestBDSController
 			@RequestParam String[] security,
 			@RequestParam String[] params)
 	{
-		dao.execute(security, params);
+		Map<String, Object> answer = bs.executeBdsRequest("BDS запрос", security, params);
+		dao.execute(security, answer);
 		return Result.SUCCESS;
 	}
 

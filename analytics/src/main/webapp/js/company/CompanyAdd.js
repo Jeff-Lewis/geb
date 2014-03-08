@@ -90,6 +90,41 @@
 		});
 	}
 
+	function executeBloom() {
+		if (data.getCount() == 0) {
+			App.ui.message('Список компаний пуст.');
+			return;
+		}
+
+		var _codes = [];
+		data.each(function(r) {
+			_codes.push(r.data.code);
+			return true;
+		});
+
+		Ext.Ajax.request({
+			url : 'rest/CompanyAdd/Bloom.do',
+			params : {
+				codes : _codes
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Обработка данных...',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					data.loadData(answer.item);
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
 	return new Ext.grid.GridPanel({
 		id : 'CompanyAdd-component',
 		title : 'Добавление компаний',
@@ -106,6 +141,9 @@
 		}, {
 			text : 'Загрузить',
 			handler : execute
+		}, {
+			text : 'Загрузить Bloomberg',
+			handler : executeBloom
 		} ],
 
 		store : data,

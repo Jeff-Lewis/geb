@@ -10,7 +10,7 @@
 		autoLoad : false,
 		url : 'rest/CompanyGroup/Staff/All.do',
 		// root : 'infoCompany',
-		fields : [ 'id_sec', 'security_code', 'short_name' ],
+		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
 		}
@@ -25,7 +25,7 @@
 		autoLoad : false,
 		url : 'rest/CompanyGroup/Staff/Group.do',
 		// root : 'infoCompany',
-		fields : [ 'id_sec', 'security_code', 'short_name' ],
+		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
 		}
@@ -56,7 +56,7 @@
 
 		var ids = [];
 		smA.each(function(item) {
-			ids.push(item.data.id_sec);
+			ids.push(item.data.id);
 			return true;
 		});
 
@@ -92,7 +92,7 @@
 
 		var ids = [];
 		smP.each(function(item) {
-			ids.push(item.data.id_sec);
+			ids.push(item.data.id);
 			return true;
 		});
 

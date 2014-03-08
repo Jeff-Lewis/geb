@@ -3,6 +3,7 @@
  */
 package ru.prbb.analytics.repo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.analytics.domain.CompanyAllItem;
 import ru.prbb.analytics.domain.CompanyStaffItem;
 import ru.prbb.analytics.domain.SimpleItem;
@@ -87,26 +89,36 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<CompanyStaffItem> findStaffReport(Long id) {
 		String sql = "{call dbo.anca_WebGet_Security_report_maps_sp ?}";
-		Query q = em.createNativeQuery(sql, CompanyStaffItem.class)
+		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		return q.getResultList();
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<CompanyStaffItem> res = new ArrayList<>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			CompanyStaffItem item = new CompanyStaffItem();
+			item.setId(Utils.toLong(arr[0]));
+			item.setSecurity_code(Utils.toString(arr[2]));
+			item.setShort_name(Utils.toString(arr[3]));
+			res.add(item);
+		}
+		return res;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int[] putStaff(Long id, Long[] cids) {
+	public int[] putStaff(Long report_id, Long[] cids) {
 		String sql = "{call dbo.anca_WebSet_putSecurity_report_maps_sp ?, ?}";
 		int i = 0;
 		int[] res = new int[cids.length];
 		Query q = em.createNativeQuery(sql);
-		for (Long cid : cids) {
+		q.setParameter(1, report_id);
+		for (Long security_id : cids) {
 			try {
-				q.setParameter(1, id);
-				q.setParameter(2, cid);
+				q.setParameter(2, security_id);
 				res[i++] = q.executeUpdate();
 			} catch (DataAccessException e) {
 				// TODO: handle exception
@@ -117,15 +129,15 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int[] deleteStaff(Long id, Long[] cids) {
-		String sql = "{call dbo.anca_WebSet_udSecurity_report_maps_sp ?, ?}";
+	public int[] deleteStaff(Long report_id, Long[] cids) {
+		String sql = "{call dbo.anca_WebSet_udSecurity_report_maps_sp 'd', ?}";
 		int i = 0;
 		int[] res = new int[cids.length];
 		Query q = em.createNativeQuery(sql);
 		for (Long cid : cids) {
 			try {
-				q.setParameter(1, id);
-				q.setParameter(2, cid);
+				q.setParameter(1, cid);
+				//q.setParameter(2, report_id);
 				res[i++] = q.executeUpdate();
 			} catch (Exception e) {
 				// TODO: handle exception

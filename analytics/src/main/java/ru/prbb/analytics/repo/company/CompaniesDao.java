@@ -4,6 +4,7 @@
 package ru.prbb.analytics.repo.company;
 
 import java.util.List;
+import java.util.Map;
 
 import ru.prbb.analytics.domain.CompaniesExceptionItem;
 import ru.prbb.analytics.domain.CompaniesFileItem;
@@ -50,21 +51,11 @@ public interface CompaniesDao {
 	 */
 	List<CompaniesFileItem> findFiles(Long id);
 
-	public class AttrVal {
-		public final String attribute;
-		public final String value;
-
-		public AttrVal(String attribute, String value) {
-			this.attribute = attribute;
-			this.value = value;
-		}
-	}
-
 	/**
 	 * @param id
 	 * @param params
 	 */
-	void updateById(Long id, List<AttrVal> params);
+	void updateById(Long id, Map<String, String> params);
 
 	/**
 	 * @param id

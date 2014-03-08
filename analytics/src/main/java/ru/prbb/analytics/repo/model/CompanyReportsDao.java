@@ -60,17 +60,17 @@ public interface CompanyReportsDao {
 	List<CompanyStaffItem> findStaffReport(Long id);
 
 	/**
-	 * @param id
+	 * @param report_id
 	 * @param ids
 	 * @return
 	 */
-	int[] putStaff(Long id, Long[] ids);
+	int[] putStaff(Long report_id, Long[] ids);
 
 	/**
-	 * @param id
+	 * @param report_id
 	 * @param ids
 	 * @return
 	 */
-	int[] deleteStaff(Long id, Long[] ids);
+	int[] deleteStaff(Long report_id, Long[] ids);
 
 }

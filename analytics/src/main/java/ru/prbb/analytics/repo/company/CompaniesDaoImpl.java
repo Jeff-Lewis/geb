@@ -5,6 +5,8 @@ package ru.prbb.analytics.repo.company;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -76,13 +78,13 @@ public class CompaniesDaoImpl implements CompaniesDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void updateById(Long id, List<AttrVal> params) {
+	public void updateById(Long id, Map<String, String> params) {
 		String sql = "{call dbo.anca_WebSet_EquityAttributes_sp ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
-		for (AttrVal param : params) {
-			q.setParameter(1, id);
-			q.setParameter(2, param.attribute);
-			q.setParameter(3, param.value);
+		q.setParameter(1, id);
+		for (Entry<String, String> param : params.entrySet()) {
+			q.setParameter(2, param.getKey());
+			q.setParameter(3, param.getValue());
 			q.executeUpdate();
 		}
 	}

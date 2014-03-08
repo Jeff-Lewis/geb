@@ -151,7 +151,7 @@
 	function delContactAjax() {
 		Ext.Ajax.request({
 			method : 'DELETE',
-			url : 'rest/Contacts/' + idContact + '/'
+			url : 'rest/Contacts/Staff/' + idContact + '/'
 					+ sm.getSelected().data.cid + '.do',
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Удаление',

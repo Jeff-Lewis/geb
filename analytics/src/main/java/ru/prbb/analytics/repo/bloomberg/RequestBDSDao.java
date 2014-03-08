@@ -4,6 +4,7 @@
 package ru.prbb.analytics.repo.bloomberg;
 
 import java.util.List;
+import java.util.Map;
 
 import ru.prbb.analytics.domain.SimpleItem;
 
@@ -16,10 +17,10 @@ import ru.prbb.analytics.domain.SimpleItem;
 public interface RequestBDSDao {
 
 	/**
-	 * @param security
-	 * @param params
+	 * @param securities
+	 * @param answer
 	 */
-	void execute(String[] security, String[] params);
+	void execute(String[] securities, Map<String, Object> answer);
 
 	/**
 	 * @return

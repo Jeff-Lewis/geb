@@ -45,7 +45,7 @@
 
 		var ids = [];
 		smA.each(function(item) {
-			ids.push(item.data.security_code);
+			ids.push(item.data.id_sec);
 			return true;
 		});
 
@@ -81,7 +81,7 @@
 
 		var ids = [];
 		smP.each(function(item) {
-			ids.push(item.data.security_code);
+			ids.push(item.data.id_sec);
 			return true;
 		});
 
@@ -129,7 +129,7 @@
 			title : 'НЕ В ПОРТФЕЛЕ',
 
 			tbar : [ {
-				text : '>>>',
+				text : 'Добавить',
 				handler : add
 			} ],
 
@@ -155,7 +155,7 @@
 			title : 'В ПОРТФЕЛЕ',
 
 			tbar : [ {
-				text : '<<<',
+				text : 'Удалить',
 				handler : del
 			} ],
 

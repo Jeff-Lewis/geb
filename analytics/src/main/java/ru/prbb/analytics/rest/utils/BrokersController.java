@@ -59,7 +59,7 @@ public class BrokersController
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result update(
-			@PathVariable Long id,
+			@PathVariable("id") Long id,
 			@RequestParam String fullName,
 			@RequestParam Integer rating,
 			@RequestParam String bloombergCode,

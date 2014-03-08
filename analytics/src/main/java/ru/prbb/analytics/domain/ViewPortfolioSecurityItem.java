@@ -13,6 +13,7 @@ import javax.persistence.Id;
  * 
  */
 @Entity
+@Deprecated
 public class ViewPortfolioSecurityItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 

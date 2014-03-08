@@ -4,7 +4,7 @@
 package ru.prbb.analytics.repo.bloomberg;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import ru.prbb.analytics.domain.SimpleItem;
 
@@ -17,16 +17,10 @@ import ru.prbb.analytics.domain.SimpleItem;
 public interface RequestBDHepsDao {
 
 	/**
-	 * @param dateStart
-	 * @param dateEnd
-	 * @param period
-	 * @param calendar
-	 * @param security
-	 * @param params
-	 * @param _currency
+	 * @param securities
+	 * @param answer
 	 */
-	void execute(String dateStart, String dateEnd, String period, String calendar,
-			String[] security, String[] params, Set<String> _currency);
+	void execute(String[] securities, Map<String, Map<String, Map<String, String>>> answer);
 
 	/**
 	 * @return

@@ -3,6 +3,7 @@ package ru.prbb.analytics.rest.bloomberg;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.analytics.domain.EquitiesItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BloombergServicesA;
 import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.bloomberg.BloombergParamsDao;
 import ru.prbb.analytics.repo.bloomberg.RequestBDHepsDao;
@@ -29,6 +31,8 @@ import ru.prbb.analytics.repo.bloomberg.RequestBDHepsDao;
 @RequestMapping("/rest/RequestBDHeps")
 public class RequestBDHepsController
 {
+	@Autowired
+	private BloombergServicesA bs;
 	@Autowired
 	private RequestBDHepsDao dao;
 	@Autowired
@@ -48,7 +52,10 @@ public class RequestBDHepsController
 			@RequestParam String[] currency)
 	{
 		Set<String> _currency = new HashSet<String>(Arrays.asList(currency));
-		dao.execute(dateStart, dateEnd, period, calendar, security, params, _currency);
+		Map<String, Map<String, Map<String, String>>> answer =
+				bs.executeBdhEpsRequest("BDH запрос с EPS", dateStart, dateEnd, period, calendar,
+						_currency.toArray(new String[_currency.size()]), security, params);
+		dao.execute(security, answer);
 		return Result.SUCCESS;
 	}
 

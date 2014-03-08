@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.NewParamItem;
-import ru.prbb.bloomberg.BloombergServices;
+import ru.prbb.analytics.repo.BloombergServicesA;
 
 /**
  * Ввод нового параметра<br>
@@ -30,7 +30,7 @@ public class NewParamDaoImpl implements NewParamDao
 	private EntityManager em;
 
 	@Autowired
-	private BloombergServices bs;
+	private BloombergServicesA bs;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
