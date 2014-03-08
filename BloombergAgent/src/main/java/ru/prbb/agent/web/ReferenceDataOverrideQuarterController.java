@@ -44,7 +44,7 @@ public class ReferenceDataOverrideQuarterController {
 				+ "over\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ { field, value;period;over } ] ]\n"
+				+ "[ security -> period -> [ { field, value } ] ]\n"
 				+ "\n"
 				+ "\n";
 	}

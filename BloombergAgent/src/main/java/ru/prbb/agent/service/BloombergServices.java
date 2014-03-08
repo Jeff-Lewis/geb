@@ -330,14 +330,14 @@ public final class BloombergServices {
 	 * @param securities
 	 * @param fields
 	 * @param currencies
-	 * @param over
+	 * @param override
 	 * @return
 	 */
 	public Map<String, Map<String, String>> executeBdpRequestOverride(String name,
-			String[] securities, String[] fields, String period, String over) {
+			String[] securities, String[] fields, String period, String override) {
 		log.info("BdpRequestOverride:" + name);
 
-		final BdpRequestOverride r = new BdpRequestOverride(securities, fields, period, over);
+		final BdpRequestOverride r = new BdpRequestOverride(securities, fields, period, override);
 		r.execute(name);
 		return r.getAnswer();
 	}
@@ -350,7 +350,7 @@ public final class BloombergServices {
 	 * @param over
 	 * @return
 	 */
-	public Map<String, Map<String, String>> executeBdpRequestOverrideQuarter(String name,
+	public Map<String, Map<String, Map<String, String>>> executeBdpRequestOverrideQuarter(String name,
 			String[] securities, String[] fields, String[] currencies, String over) {
 		log.info("BdpRequestOverrideQuarter:" + name);
 

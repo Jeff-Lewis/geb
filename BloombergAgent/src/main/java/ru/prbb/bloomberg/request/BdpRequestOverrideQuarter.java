@@ -31,23 +31,23 @@ public class BdpRequestOverrideQuarter implements BloombergRequest, MessageHandl
 	private final String[] securities;
 	private final String[] fields;
 	private final String[] currency;
-	private final String over;
+	private final String override;
 
-	private final Map<String, Map<String, String>> answer = new HashMap<String, Map<String, String>>();
+	private final Map<String, Map<String, Map<String, String>>> answer = new HashMap<>();
 
 	/**
 	 * @return
-	 *         security -> { field, value }
+	 *         security -> [ period -> [ { field, value } ] ]
 	 */
-	public Map<String, Map<String, String>> getAnswer() {
+	public Map<String, Map<String, Map<String, String>>> getAnswer() {
 		return answer;
 	}
 
-	public BdpRequestOverrideQuarter(String[] securities, String[] fields, String[] currency, String over) {
+	public BdpRequestOverrideQuarter(String[] securities, String[] fields, String[] currency, String override) {
 		this.securities = securities;
 		this.fields = fields;
 		this.currency = currency;
-		this.over = ((null != over) && !over.isEmpty()) ? over : null;
+		this.override = ((null != override) && !override.isEmpty()) ? override : null;
 	}
 
 	private String period;
@@ -88,10 +88,10 @@ public class BdpRequestOverrideQuarter implements BloombergRequest, MessageHandl
 					overrideCrncy.setElement("fieldId", "EQY_FUND_CRNCY");
 					overrideCrncy.setElement("value", crncy);
 
-					if (null != over) {
+					if (null != override) {
 						final Element overrideDataSource = overrides.appendElement();
 						overrideDataSource.setElement("fieldId", "BEST_DATA_SOURCE_OVERRIDE");
-						overrideDataSource.setElement("value", over);
+						overrideDataSource.setElement("value", override);
 					}
 
 					bs.sendRequest(request, this);
@@ -111,8 +111,15 @@ public class BdpRequestOverrideQuarter implements BloombergRequest, MessageHandl
 
 			final String security = securityData.getElementAsString("security");
 
-			final Map<String, String> values = new HashMap<String, String>();
-			answer.put(security, values);
+			Map<String, Map<String, String>> pv;
+			if (answer.containsKey(security)) {
+				pv = answer.get(security);
+			} else {
+				pv = new HashMap<>();
+				answer.put(security, pv);
+			}
+			final Map<String, String> values = new HashMap<>();
+			pv.put(period, values);
 
 			if (securityData.hasElement("securityError")) {
 				final String value = securityData.getElementAsString("securityError");
@@ -121,14 +128,11 @@ public class BdpRequestOverrideQuarter implements BloombergRequest, MessageHandl
 				continue;
 			}
 
-//			values.put("PERIOD", period);
-//			values.put("OVERRIDE", over);
-
 			final Element fieldData = securityData.getElement("fieldData");
 			for (String field : fields) {
 				if (fieldData.hasElement(field)) {
 					try {
-						String value = fieldData.getElementAsString(field) + ";" + period + ";" + over;
+						String value = fieldData.getElementAsString(field);
 						values.put(field, value);
 					} catch (Exception e) {
 						log.error(e);

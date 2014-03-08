@@ -29,7 +29,7 @@ public class BdpRequestOverride implements BloombergRequest, MessageHandler {
 	private final String[] securities;
 	private final String[] fields;
 	private final String period;
-	private final String over;
+	private final String override;
 
 	private final Map<String, Map<String, String>> answer = new HashMap<String, Map<String, String>>();
 
@@ -41,11 +41,11 @@ public class BdpRequestOverride implements BloombergRequest, MessageHandler {
 		return answer;
 	}
 
-	public BdpRequestOverride(String[] securities, String[] fields, String period, String over) {
+	public BdpRequestOverride(String[] securities, String[] fields, String period, String override) {
 		this.securities = securities;
 		this.fields = fields;
 		this.period = period;
-		this.over = over;
+		this.override = override;
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class BdpRequestOverride implements BloombergRequest, MessageHandler {
 			for (String field : fields) {
 				if (fieldData.hasElement(field)) {
 					try {
-						String value = fieldData.getElementAsString(field) + ";" + period + ";" + over;
+						String value = fieldData.getElementAsString(field);
 						values.put(field, value);
 					} catch (Exception e) {
 						log.error(e);
