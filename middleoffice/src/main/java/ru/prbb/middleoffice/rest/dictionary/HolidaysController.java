@@ -71,7 +71,7 @@ public class HolidaysController
 	@RequestMapping(value = "/Time/{country}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	List<HolidaysWeekItem> showTime(
-			@PathVariable String country)
+			@PathVariable("country") String country)
 	{
 		return dao.showHolidaysWeek(country);
 	}

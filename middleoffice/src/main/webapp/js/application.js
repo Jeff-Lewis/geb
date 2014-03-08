@@ -44,23 +44,9 @@ App.util.Renderer = (function() {
 			if (prec == undefined) {
 				prec = 3;
 			}
-			var format = '0,000.00';
-			switch (prec) {
-			case 6:
-				format = '0,000.000000';
-				break;
-			case 3:
-				format = '0,000.000';
-				break;
-			case 9:
-				format = '0,000.000000000';
-				break;
-			case 12:
-				format = '0,000.000000000000';
-				break;
-			case 0:
-				format = '0,000';
-				break;
+			var format = '0,000';
+			if (prec > 0) {
+				format = '0,000.' + String.leftPad('0', prec, '0');
 			}
 
 			return function(v) {

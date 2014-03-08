@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.Utils;
-import ru.prbb.middleoffice.domain.DividendItem;
+import ru.prbb.middleoffice.domain.CouponItem;
 import ru.prbb.middleoffice.domain.Result;
+import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SimpleItem;
-import ru.prbb.middleoffice.repo.EquitiesDao;
+import ru.prbb.middleoffice.repo.dictionary.BondsDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
@@ -38,22 +39,23 @@ public class CouponsController
 	@Autowired
 	private BrokersDao daoBrokers;
 	@Autowired
+	private BondsDao daoBonds;
+	@Autowired
 	private BrokerAccountsDao daoAccounts;
 	@Autowired
 	private CurrenciesDao daoCurrencies;
-	@Autowired
-	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	List<DividendItem> list(
+	List<CouponItem> list(
 			@RequestParam Long clientId,
 			@RequestParam Long brokerId,
 			@RequestParam Long securityId,
+			@RequestParam Long operationId,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
-		return dao.findAll(securityId, clientId, brokerId, null,
+		return dao.findAll(securityId, clientId, brokerId, operationId,
 				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 	}
 
@@ -66,31 +68,36 @@ public class CouponsController
 			@RequestParam String dateRecord,
 			@RequestParam String dateReceive,
 			@RequestParam Integer quantity,
-			@RequestParam Double dividend,
-			@RequestParam Double extraCost)
+			@RequestParam Double coupon,
+			@RequestParam Double extraCost,
+			@RequestParam Long operationId)
 	{
 		dao.put(securityId, accountId, currencyId,
 				Utils.parseDate(dateRecord), Utils.parseDate(dateReceive),
-				quantity, dividend, extraCost);
+				quantity, coupon, extraCost, operationId);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	DividendItem lookupById(
+	ResultData lookupById(
 			@PathVariable("id") Long id)
 	{
-		return dao.findById(id);
+		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	Result deleteById(
+	Result changeById(
 			@PathVariable("id") Long id,
-			@RequestParam String type,
+			@RequestParam String field,
 			@RequestParam String value)
 	{
-		dao.updateAttrById(id, type, value);
+		if ("ACTUAL".equals(field)) {
+			dao.updateById(id, Utils.parseDate(value));
+		} else {
+			dao.updateAttrById(id, field, value);
+		}
 		return Result.SUCCESS;
 	}
 
@@ -119,6 +126,22 @@ public class CouponsController
 		return daoBrokers.findCombo(query);
 	}
 
+	@RequestMapping(value = "/Bonds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	public @ResponseBody
+	List<SimpleItem> comboBonds(
+			@RequestParam(required = false) String query)
+	{
+		return daoBonds.findCombo(query);
+	}
+
+	@RequestMapping(value = "/Operations", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	public @ResponseBody
+	List<SimpleItem> comboOperations(
+			@RequestParam(required = false) String query)
+	{
+		return dao.findComboOperations(query);
+	}
+
 	@RequestMapping(value = "/Accounts", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> comboBrokerAccounts(
@@ -133,14 +156,6 @@ public class CouponsController
 			@RequestParam(required = false) String query)
 	{
 		return daoCurrencies.findCombo(query);
-	}
-
-	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboEquities(
-			@RequestParam(required = false) String query)
-	{
-		return daoEquities.findCombo(query);
 	}
 
 }

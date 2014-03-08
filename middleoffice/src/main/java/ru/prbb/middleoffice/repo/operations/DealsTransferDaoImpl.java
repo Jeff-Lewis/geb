@@ -23,7 +23,7 @@ public class DealsTransferDaoImpl implements DealsTransferDao
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int execute(Long portfolioId, Integer quantity, Double price,
 			Long fundId, Integer batch, String comment) {

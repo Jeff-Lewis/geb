@@ -14,7 +14,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.prbb.middleoffice.domain.DividendItem;
+import ru.prbb.Utils;
+import ru.prbb.middleoffice.domain.CouponItem;
+import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
  * Дивиденды
@@ -23,7 +25,7 @@ import ru.prbb.middleoffice.domain.DividendItem;
  * 
  */
 @Repository
-public class CouponsDaoImpl implements DividendsDao
+public class CouponsDaoImpl implements CouponsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -31,13 +33,13 @@ public class CouponsDaoImpl implements DividendsDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<DividendItem> findAll(Long security, Long client, Long broker, Long account, Date begin, Date end) {
-		String sql = "";//"{call dbo.mo_WebGet_Dividends_sp null, ?, ?, ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql, DividendItem.class)
+	public List<CouponItem> findAll(Long security, Long client, Long broker, Long operation, Date begin, Date end) {
+		String sql = "{call dbo.mo_WebGet_Coupons_sp null, ?, ?, ?, null, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql, CouponItem.class)
 				.setParameter(1, security)
 				.setParameter(2, client)
 				.setParameter(3, broker)
-				.setParameter(4, account)
+				.setParameter(4, operation)
 				.setParameter(5, begin)
 				.setParameter(6, end);
 		return q.getResultList();
@@ -45,19 +47,19 @@ public class CouponsDaoImpl implements DividendsDao
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public DividendItem findById(Long id) {
-		String sql = "";//"{call dbo.mo_WebGet_Dividends_sp ?}";
-		Query q = em.createNativeQuery(sql, DividendItem.class)
+	public CouponItem findById(Long id) {
+		String sql = "{call dbo.mo_WebGet_Coupons_sp ?}";
+		Query q = em.createNativeQuery(sql, CouponItem.class)
 				.setParameter(1, id);
-		return (DividendItem) q.getSingleResult();
+		return (CouponItem) q.getSingleResult();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(Long security, Long account, Long currency,
 			Date record, Date receive, Integer quantity,
-			Double dividend_per_share, Double extra_costs_per_share) {
-		String sql = "";//"{call dbo.mo_WebSet_putDividends_sp ?, ?, ?, ?, ?, ?, ?, ?}";
+			Double coupon_per_share, Double extra_costs_per_share, Long coupon_oper_id) {
+		String sql = "{call dbo.mo_WebSet_putCoupons_sp ?, ?, ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, security)
 				.setParameter(2, account)
@@ -65,15 +67,16 @@ public class CouponsDaoImpl implements DividendsDao
 				.setParameter(4, record)
 				.setParameter(5, receive)
 				.setParameter(6, quantity)
-				.setParameter(7, dividend_per_share)
-				.setParameter(8, extra_costs_per_share);
+				.setParameter(7, coupon_per_share)
+				.setParameter(8, extra_costs_per_share)
+				.setParameter(9, coupon_oper_id);
 		return q.executeUpdate();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateById(Long id, Date receive) {
-		String sql = "";//"{call dbo.mo_WebSet_uActualDividends_sp ?, ?}";
+		String sql = "{call dbo.mo_WebSet_uActualCoupons_sp ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, receive);
@@ -83,7 +86,7 @@ public class CouponsDaoImpl implements DividendsDao
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int updateAttrById(Long id, String type, String value) {
-		String sql = "";//"{call dbo.mo_WebSet_setDividendAttributes_sp ?, ?, ?}";
+		String sql = "{call dbo.mo_WebSet_setCouponAttributes_sp ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, type)
@@ -94,10 +97,25 @@ public class CouponsDaoImpl implements DividendsDao
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
-		String sql = "";//"{call dbo.mo_WebSet_dDividends_sp ?}";
+		String sql = "{call dbo.mo_WebSet_dCoupons_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SimpleItem> findComboOperations(String query) {
+		String sql = "select id, oper_name as name from dbo.mo_WebGet_ajaxCouponOperations_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(oper_name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
+		}
+		return q.getResultList();
+	}
 }

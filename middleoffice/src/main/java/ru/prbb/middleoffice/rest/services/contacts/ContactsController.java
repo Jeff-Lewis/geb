@@ -20,12 +20,12 @@ import ru.prbb.middleoffice.repo.services.contacts.ContactsDao;
  * Справочник контактов
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/Contacts")
 public class ContactsController
 {
+
 	@Autowired
 	private ContactsDao dao;
 
@@ -113,7 +113,7 @@ public class ContactsController
 	@RequestMapping(value = "/Staff/{id}", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result addStaff(
-			@PathVariable Long id,
+			@PathVariable("id") Long id,
 			@RequestParam String name,
 			@RequestParam Integer type)
 	{
@@ -124,8 +124,8 @@ public class ContactsController
 	@RequestMapping(value = "/Staff/{id}/{cid}", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	Result renStaff(
-			@PathVariable Long id,
-			@PathVariable Long cid,
+			@PathVariable("id") Long id,
+			@PathVariable("cid") Long cid,
 			@RequestParam String name)
 	{
 		dao.updateByIdStaff(id, cid, name);
@@ -135,8 +135,8 @@ public class ContactsController
 	@RequestMapping(value = "/Staff/{id}/{cid}", method = RequestMethod.DELETE, produces = "application/json")
 	public @ResponseBody
 	Result delStaff(
-			@PathVariable Long id,
-			@PathVariable Long cid)
+			@PathVariable("id") Long id,
+			@PathVariable("cid") Long cid)
 	{
 		dao.deleteByIdStaff(id, cid);
 		return Result.SUCCESS;

@@ -51,7 +51,8 @@ public class SendingDaoImpl implements SendingDao
 		Query q = em.createNativeQuery(sql, String.class)
 				.setParameter(1, text)
 				.setParameter(2, receiver);
-		String res = Utils.toString(q.getSingleResult());
+		Object sr = q.getSingleResult();
+		String res = Utils.toString(sr);
 		/*
 		String res = jdbcTemplate.execute(sql,
 				new CallableStatementCallback<String>() {
@@ -77,7 +78,8 @@ public class SendingDaoImpl implements SendingDao
 		Query q = em.createNativeQuery(sql, String.class)
 				.setParameter(1, text)
 				.setParameter(2, receiver);
-		String res = Utils.toString(q.getSingleResult());
+		Object sr = q.getSingleResult();
+		String res = Utils.toString(sr);
 		/*
 		String res = jdbcTemplate.execute(sql,
 				new CallableStatementCallback<String>() {

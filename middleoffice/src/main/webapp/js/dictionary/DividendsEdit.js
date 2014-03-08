@@ -26,7 +26,7 @@
 		} ],
 
 		buttons : [ {
-			text : 'Добавить',
+			text : 'Сохранить',
 			handler : save
 		}, {
 			text : 'Отмена',

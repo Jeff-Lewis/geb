@@ -28,7 +28,7 @@ public class LoadQuotesDaoImpl implements LoadQuotesDao
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<Map<String, Object>> execute(String[] securities, Map<String, Map<String, Map<String, String>>> answer) {
 		final List<QuotesRecord> datas = new ArrayList<>();

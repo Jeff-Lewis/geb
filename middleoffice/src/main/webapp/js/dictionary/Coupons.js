@@ -14,16 +14,13 @@
 		autoDestroy : true,
 		autoLoad : false,
 		autoSave : false,
-		url : 'coupons/Coupons.html',
-		root : 'info',
+		url : 'rest/Coupons.do',
+		//root : 'info',
 		fields : [ 'id', 'security_code', 'short_name', 'client', 'broker',
-				'account', 'currency', {
-					name : 'record_date',
-					type : 'date',
-					dateFormat : 'Y-m-d'
-				}, 'quantity', 'coupon_per_share', 'receive_date',
-				'real_coupon_per_share', 'status', 'estimate', 'real_coupons',
-				'extra_costs_per_share', 'tax_value', 'country', 'oper' ],
+				'account', 'currency', 'record_date', 'quantity',
+				'coupon_per_share', 'receive_date', 'real_coupon_per_share',
+				'status', 'estimate', 'real_coupons', 'extra_costs_per_share',
+				'tax_value', 'country', 'oper' ],
 		sortInfo : {
 			field : 'security_code'
 		},
@@ -51,7 +48,7 @@
 	}
 
 	function add() {
-		menu.showModal(menu, 'coupons/coupons-new');
+		menu.showModal(menu, 'dictionary/CouponsAdd');
 	}
 
 	function del() {
@@ -64,17 +61,16 @@
 				+ sm.getSelected().data.short_name + '"?', cbDel);
 	}
 	function cbDel() {
+		var id = sm.getSelected().data.id;
 		Ext.Ajax.request({
-			url : 'coupons/CouponsEdit-delete.html',
-			params : {
-				id : sm.getSelected().data.id
-			},
+			method : 'DELETE',
+			url : 'rest/Coupons/' + id + '.do',
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Выполняется запрос',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					info.reload();
+					reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -93,10 +89,9 @@
 			return;
 		}
 
-		menu.showModal(menu, 'coupons/coupons-edit',
-				'coupons/CouponsEdit-edit-show.html', {
-					id : sm.getSelected().data.id
-				});
+		var id = sm.getSelected().data.id;
+		menu.showModal(menu, 'dictionary/CouponsEdit', 'rest/Coupons/' + id
+				+ '.do');
 	}
 
 	var filter = new Ext.Panel({
@@ -117,8 +112,8 @@
 			valueField : 'id',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'dictionary/clients/clients-cb.html',
-				root : 'info',
+				url : 'rest/Coupons/Clients.do',
+				//root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
@@ -147,8 +142,8 @@
 			valueField : 'id',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'dictionary/brokers/brokers-cb.html',
-				root : 'info',
+				url : 'rest/Coupons/Brokers.do',
+				//root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
@@ -177,8 +172,8 @@
 			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'utils/bonds-cb.html',
-				root : 'info',
+				url : 'rest/Coupons/Bonds.do',
+				//root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
@@ -208,8 +203,8 @@
 			valueField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'utils/CouponsOperations-cb.html',
-				root : 'info',
+				url : 'rest/Coupons/Operations.do',
+				//root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
@@ -268,9 +263,8 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'coupons/CouponsEdit-attr.html',
+			url : 'rest/Coupons/' + id + '.do',
 			params : {
-				id : id,
 				field : column,
 				value : newValue
 			},
@@ -279,7 +273,7 @@
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					dealsLoad();
+					reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -297,8 +291,8 @@
 		valueField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
-			url : 'dictionary/brokeraccounts/broker-accounts-cb.html',
-			root : 'info',
+			url : 'rest/Coupons/Accounts.do',
+			//root : 'info',
 			fields : [ 'id', 'name' ],
 			sortInfo : {
 				field : 'name'
@@ -316,8 +310,8 @@
 		valueField : 'name',
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
-			url : 'utils/choose-currency.html',
-			root : 'info',
+			url : 'rest/Coupons/Currencies.do',
+			//root : 'info',
 			fields : [ 'id', 'name' ],
 			sortInfo : {
 				field : 'name'
@@ -346,7 +340,7 @@
 	});
 
 	return new Ext.grid.EditorGridPanel({
-		id : 'coupons-grid-component',
+		id : 'Coupons-component',
 		title : 'Купоны (погашение)',
 		closable : true,
 		frame : true,

@@ -6,7 +6,8 @@ package ru.prbb.middleoffice.repo.dictionary;
 import java.sql.Date;
 import java.util.List;
 
-import ru.prbb.middleoffice.domain.DividendItem;
+import ru.prbb.middleoffice.domain.CouponItem;
+import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
  * Дивиденды
@@ -17,39 +18,38 @@ import ru.prbb.middleoffice.domain.DividendItem;
 public interface CouponsDao {
 
 	/**
-	 * 
 	 * @param security
 	 * @param client
 	 * @param broker
-	 * @param account
+	 * @param operation
 	 * @param begin
 	 * @param end
 	 * @return
 	 */
-	public List<DividendItem> findAll(Long security, Long client, Long broker, Long account, Date begin, Date end);
+	public List<CouponItem> findAll(Long security, Long client, Long broker, Long operation, Date begin, Date end);
 
 	/**
 	 * 
 	 * @param id
 	 * @return
 	 */
-	public DividendItem findById(Long id);
+	public CouponItem findById(Long id);
 
 	/**
-	 * 
 	 * @param security
 	 * @param account
 	 * @param currency
 	 * @param record
 	 * @param receive
 	 * @param quantity
-	 * @param dividend_per_share
+	 * @param coupon_per_share
 	 * @param extra_costs_per_share
+	 * @param coupon_oper_id
 	 * @return
 	 */
 	public int put(Long security, Long account, Long currency,
 			Date record, Date receive, Integer quantity,
-			Double dividend_per_share, Double extra_costs_per_share);
+			Double coupon_per_share, Double extra_costs_per_share, Long coupon_oper_id);
 
 	/**
 	 * 
@@ -73,5 +73,11 @@ public interface CouponsDao {
 	 * @return
 	 */
 	public int deleteById(Long id);
+
+	/**
+	 * @param query
+	 * @return
+	 */
+	public List<SimpleItem> findComboOperations(String query);
 
 }

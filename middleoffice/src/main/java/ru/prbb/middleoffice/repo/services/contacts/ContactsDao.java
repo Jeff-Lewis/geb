@@ -12,32 +12,27 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * Справочник контактов
  * 
  * @author RBr
- * 
  */
 public interface ContactsDao {
 
 	/**
-	 * 
 	 * @return
 	 */
 	List<SimpleItem> findAll();
 
 	/**
-	 * 
 	 * @param id
 	 * @return
 	 */
 	SimpleItem findById(Long id);
 
 	/**
-	 * 
 	 * @param name
 	 * @return
 	 */
 	int put(String name);
 
 	/**
-	 * 
 	 * @param id
 	 * @param name
 	 * @return
@@ -45,21 +40,18 @@ public interface ContactsDao {
 	int updateById(Long id, String name);
 
 	/**
-	 * 
 	 * @param id
 	 * @return
 	 */
 	int deleteById(Long id);
 
 	/**
-	 * 
 	 * @param id
 	 * @return
 	 */
 	List<ContactStaffItem> findAllStaff(Long id);
 
 	/**
-	 * 
 	 * @param id
 	 * @param name
 	 * @param type
@@ -68,7 +60,6 @@ public interface ContactsDao {
 	int putStaff(Long id, String name, Integer type);
 
 	/**
-	 * 
 	 * @param id
 	 * @param cid
 	 * @param name
@@ -77,7 +68,6 @@ public interface ContactsDao {
 	int updateByIdStaff(Long id, Long cid, String name);
 
 	/**
-	 * 
 	 * @param id
 	 * @param cid
 	 * @return

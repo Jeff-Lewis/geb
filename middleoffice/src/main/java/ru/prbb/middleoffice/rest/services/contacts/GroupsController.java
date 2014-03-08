@@ -21,12 +21,12 @@ import ru.prbb.middleoffice.repo.services.contacts.GroupsDao;
  * Справочник контактов
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/Groups")
 public class GroupsController
 {
+
 	@Autowired
 	private GroupsDao dao;
 

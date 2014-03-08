@@ -31,7 +31,7 @@ public class LoadATRDaoImpl implements LoadATRDao
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<Map<String, Object>> execute(List<Map<String, Object>> answer,
 			String maType, Integer taPeriod, String period, String calendar) {

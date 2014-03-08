@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.Utils;
-import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewDetailedFinrezItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
@@ -50,12 +49,19 @@ public class ViewDetailedFinrezController
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	Object export(
-			@RequestParam String date,
-			@RequestParam Long ticker)
+	public void export(
+			@RequestParam Long security,
+			@RequestParam String dateBegin,
+			@RequestParam String dateEnd,
+			@RequestParam Long client,
+			@RequestParam Long fund)
 	{
-		return Result.SUCCESS;
+		List<ViewDetailedFinrezItem> list =
+				dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund);
+
+		for (ViewDetailedFinrezItem item : list) {
+
+		}
 	}
 
 	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

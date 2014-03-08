@@ -48,13 +48,17 @@ public class ViewDealsController
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	Result export(
+	public void export(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
-			@RequestParam String ticker)
+			@RequestParam Long ticker)
 	{
-		return Result.SUCCESS;
+		List<ViewDealsItem> list =
+				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
+
+		for (ViewDealsItem item : list) {
+
+		}
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")

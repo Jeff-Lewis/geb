@@ -24,7 +24,7 @@ public class SetSecurityRiscsDaoImpl implements SetSecurityRiscsDao
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int execute(Long id, Double riskATH, Double riskAVG, Double stopLoss, String comment) {
 		String sql = "{call dbo.mo_WebSet_putSecurityRiscs_sp ?, ?, ?, ?, ?}";

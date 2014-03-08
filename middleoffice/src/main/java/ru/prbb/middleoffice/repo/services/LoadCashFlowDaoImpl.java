@@ -31,7 +31,7 @@ public class LoadCashFlowDaoImpl implements LoadCashFlowDao
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<Map<String, Object>> execute(List<Map<String, Object>> answer) {
 		List<SecurityCashFlowData> data = new ArrayList<>(answer.size());

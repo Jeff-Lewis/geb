@@ -31,7 +31,7 @@ public class LoadValuesDaoImpl implements LoadValuesDao
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<Map<String, Object>> execute(List<Map<String, Object>> answer) {
 		List<SecDateValueData> data = new ArrayList<>(answer.size());

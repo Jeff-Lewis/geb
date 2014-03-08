@@ -55,7 +55,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 		return res;
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int addHoliday(String country, Date date, String times, String timee,
 			String name, Boolean sms, Boolean portfolio) {
@@ -71,7 +71,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 		return q.executeUpdate();
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int delHoliday(String country, Date date) {
 		String sql = "{call dbo.check_holidays ?, ?, '', '', '', 0, 0, 'd'}";
@@ -101,7 +101,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 		return res;
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void setHolidaysWeek(List<HolidaysWeekItem> items) {
 		String sql = "{call dbo.quotes_send_sms_time_set ?, ?, ?, ?}";
@@ -124,7 +124,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 		return q.getResultList();
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void setCountryOffset(List<CountryOffsetItem> items) {
 		String sql = "{call dbo.mo_WebSet_TradeTimeOffset_sp ?, ?, ?, ?, ?}";

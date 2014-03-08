@@ -2,6 +2,7 @@ package ru.prbb.middleoffice.rest.portfolio;
 
 import java.util.List;
 
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,13 +56,18 @@ public class TransferOperationsController
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	Result export(
+	public void export(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
-			@RequestParam Long ticker)
+			@RequestParam Long ticker,
+			HttpResponse response)
 	{
-		return Result.SUCCESS;
+		List<TransferOperationsListItem> list =
+				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
+
+		for (TransferOperationsListItem item : list) {
+
+		}
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")

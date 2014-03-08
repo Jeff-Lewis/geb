@@ -51,12 +51,16 @@ public class ViewPortfolioController
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	Result export(
+	public void export(
 			@RequestParam String date,
 			@RequestParam Long security)
 	{
-		return Result.SUCCESS;
+		List<ViewPortfolioItem> list =
+				dao.executeSelect(Utils.parseDate(date), security);
+
+		for (ViewPortfolioItem item : list) {
+
+		}
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

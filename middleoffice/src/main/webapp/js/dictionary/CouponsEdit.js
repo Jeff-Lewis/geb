@@ -3,7 +3,7 @@
  */
 (function() {
 
-	var itemId;
+	var itemId = 0;
 
 	var _receive_date = Ext.id();
 
@@ -26,19 +26,17 @@
 		} ],
 
 		buttons : [ {
-			text : 'Добавить',
+			text : 'Сохранить',
 			handler : save
 
 		}, {
 			text : 'Отмена',
-			handler : function() {
-				container.window.close();
-			}
+			handler : close
 		} ],
 
 		loadData : function(data) {
-			itemId = data.info.id;
-			Ext.getCmp(_receive_date).setValue(data.info.receive_date);
+			itemId = data.item.id;
+			Ext.getCmp(_receive_date).setValue(data.item.receive_date);
 		},
 		setWindow : function(window) {
 			this.window = window;
@@ -48,10 +46,10 @@
 
 	function save(self) {
 		Ext.Ajax.request({
-			url : 'coupons/CouponsEdit-actual.html',
+			url : 'rest/Coupons/' + itemId + '.do',
 			params : {
-				id : itemId,
-				dateReceive : App.util.Format.dateYMD(Ext.getCmp(_receive_date)
+				field : 'ACTUAL',
+				value : App.util.Format.dateYMD(Ext.getCmp(_receive_date)
 						.getValue())
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -60,7 +58,7 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					container.window.close();
-					Ext.getCmp('coupons-grid-component').refresh();
+					Ext.getCmp('Coupons-component').refresh();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -72,6 +70,10 @@
 			}
 		});
 
+	}
+
+	function close() {
+		container.window.close();
 	}
 
 	return container;
