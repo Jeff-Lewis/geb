@@ -5,6 +5,7 @@
 
 	var _security = Ext.id();
 	var _account = Ext.id();
+	var _fund = Ext.id();
 	var _currency = Ext.id();
 	var _record_date = Ext.id();
 	var _receive_date = Ext.id();
@@ -18,7 +19,7 @@
 		padding : 20,
 		labelWidth : 160,
 		width : 420,
-		height : 310,
+		height : 330,
 		defaults : {
 			width : 200
 		},
@@ -53,6 +54,26 @@
 				autoDestroy : true,
 				url : 'rest/Dividends/Accounts.do',
 				// root : 'info',
+				fields : [ 'id', 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			minChars : 2,
+			triggerAction : 'all',
+			emptyText : 'Заполните',
+			allowBlank : false
+		}, {
+			id : _fund,
+			xtype : 'combo',
+			fieldLabel : 'Фонд',
+			valueField : 'id',
+			displayField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'rest/Dividends/Funds.do',
+				//root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
 					field : 'name'
@@ -138,6 +159,7 @@
 			params : {
 				securityId : Ext.getCmp(_security).getValue(),
 				accountId : Ext.getCmp(_account).getValue(),
+				fundId : Ext.getCmp(_fund).getValue(),
 				currencyId : Ext.getCmp(_currency).getValue(),
 				dateRecord : App.util.Format.dateYMD(rrd),
 				dateReceive : App.util.Format.dateYMD(rcd),

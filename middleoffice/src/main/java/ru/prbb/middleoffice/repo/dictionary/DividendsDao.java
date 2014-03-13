@@ -36,9 +36,9 @@ public interface DividendsDao {
 	public DividendItem findById(Long id);
 
 	/**
-	 * 
 	 * @param security
 	 * @param account
+	 * @param fund
 	 * @param currency
 	 * @param record
 	 * @param receive
@@ -47,7 +47,7 @@ public interface DividendsDao {
 	 * @param extra_costs_per_share
 	 * @return
 	 */
-	public int put(Long security, Long account, Long currency,
+	public int put(Long security, Long account, Long fund, Long currency,
 			Date record, Date receive, Integer quantity,
 			Double dividend_per_share, Double extra_costs_per_share);
 

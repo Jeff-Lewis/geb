@@ -21,6 +21,7 @@ public class DividendItem implements Serializable {
 	private String security_code;
 	private String short_name;
 	private String client;
+	private String fund;
 	private String broker;
 	private String account;
 	private String currency;
@@ -66,6 +67,14 @@ public class DividendItem implements Serializable {
 
 	public void setClient(String client) {
 		this.client = client;
+	}
+
+	public String getFund() {
+		return fund;
+	}
+
+	public void setFund(String fund) {
+		this.fund = fund;
 	}
 
 	public String getBroker() {

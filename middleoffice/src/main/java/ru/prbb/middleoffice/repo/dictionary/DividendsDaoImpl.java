@@ -54,19 +54,20 @@ public class DividendsDaoImpl implements DividendsDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int put(Long security, Long account, Long currency,
+	public int put(Long security, Long account, Long fund, Long currency,
 			Date record, Date receive, Integer quantity,
 			Double dividend_per_share, Double extra_costs_per_share) {
-		String sql = "{call dbo.mo_WebSet_putDividends_sp ?, ?, ?, ?, ?, ?, ?, ?}";
+		String sql = "{call dbo.mo_WebSet_putDividends_sp ?, ?, ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, security)
 				.setParameter(2, account)
-				.setParameter(3, currency)
-				.setParameter(4, record)
-				.setParameter(5, receive)
-				.setParameter(6, quantity)
-				.setParameter(7, dividend_per_share)
-				.setParameter(8, extra_costs_per_share);
+				.setParameter(3, fund)
+				.setParameter(4, currency)
+				.setParameter(5, record)
+				.setParameter(6, receive)
+				.setParameter(7, quantity)
+				.setParameter(8, dividend_per_share)
+				.setParameter(9, extra_costs_per_share);
 		return q.executeUpdate();
 	}
 

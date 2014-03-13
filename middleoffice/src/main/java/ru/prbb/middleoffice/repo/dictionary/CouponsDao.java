@@ -38,6 +38,7 @@ public interface CouponsDao {
 	/**
 	 * @param security
 	 * @param account
+	 * @param fund
 	 * @param currency
 	 * @param record
 	 * @param receive
@@ -47,7 +48,7 @@ public interface CouponsDao {
 	 * @param coupon_oper_id
 	 * @return
 	 */
-	public int put(Long security, Long account, Long currency,
+	public int put(Long security, Long account, Long fund, Long currency,
 			Date record, Date receive, Integer quantity,
 			Double coupon_per_share, Double extra_costs_per_share, Long coupon_oper_id);
 

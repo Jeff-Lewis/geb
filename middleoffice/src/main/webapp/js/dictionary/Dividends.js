@@ -15,12 +15,11 @@
 		autoSave : false,
 		url : 'rest/Dividends.do',
 		// root : 'info',
-		fields : [ 'id', 'security_code', 'short_name', 'client', 'broker',
-				'account', 'currency', 'record_date', 'quantity',
-				'dividend_per_share', 'receive_date',
-				'real_dividend_per_share', 'status', 'estimate',
-				'real_dividends', 'extra_costs_per_share', 'tax_value',
-				'country' ],
+		fields : [ 'id', 'security_code', 'short_name', 'client', 'fund',
+				'broker', 'account', 'currency', 'record_date', 'quantity',
+				'dividend_per_share', 'receive_date', 'status', 'estimate',
+				'real_dividend_per_share', 'real_dividends',
+				'extra_costs_per_share', 'tax_value', 'country' ],
 		sortInfo : {
 			field : 'security_code'
 		},
@@ -326,6 +325,9 @@
 		}, {
 			header : 'client',
 			dataIndex : 'client'
+		}, {
+			header : 'fund',
+			dataIndex : 'fund'
 		}, {
 			header : 'broker',
 			dataIndex : 'broker'

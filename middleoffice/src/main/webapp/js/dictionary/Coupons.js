@@ -16,8 +16,8 @@
 		autoSave : false,
 		url : 'rest/Coupons.do',
 		//root : 'info',
-		fields : [ 'id', 'security_code', 'short_name', 'client', 'broker',
-				'account', 'currency', 'record_date', 'quantity',
+		fields : [ 'id', 'security_code', 'short_name', 'client', 'fund',
+				'broker', 'account', 'currency', 'record_date', 'quantity',
 				'coupon_per_share', 'receive_date', 'real_coupon_per_share',
 				'status', 'estimate', 'real_coupons', 'extra_costs_per_share',
 				'tax_value', 'country', 'oper' ],
@@ -360,6 +360,9 @@
 			header : 'client',
 			dataIndex : 'client'
 		}, {
+			header : 'fund',
+			dataIndex : 'fund'
+		}, {
 			header : 'broker',
 			dataIndex : 'broker'
 		}, {
@@ -396,7 +399,7 @@
 			header : 'real_coupon_per_share',
 			dataIndex : 'real_coupon_per_share',
 			align : 'right',
-			renderer : App.util.Renderer.number()
+			renderer : App.util.Renderer.number(7)
 		}, {
 			header : 'status',
 			dataIndex : 'status'
@@ -404,12 +407,12 @@
 			header : 'estimate',
 			dataIndex : 'estimate',
 			align : 'right',
-			renderer : App.util.Renderer.number()
+			renderer : App.util.Renderer.number(2)
 		}, {
 			header : 'real_coupons',
 			dataIndex : 'real_coupons',
 			align : 'right',
-			renderer : App.util.Renderer.number(),
+			renderer : App.util.Renderer.number(2),
 		}, {
 			header : 'extra_costs_per_share',
 			dataIndex : 'extra_costs_per_share',

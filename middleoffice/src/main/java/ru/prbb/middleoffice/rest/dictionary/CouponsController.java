@@ -21,6 +21,7 @@ import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.CouponsDao;
 import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
+import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 
 /**
  * Дивиденды
@@ -43,6 +44,8 @@ public class CouponsController
 	@Autowired
 	private BrokerAccountsDao daoAccounts;
 	@Autowired
+	private FundsDao daoFunds;
+	@Autowired
 	private CurrenciesDao daoCurrencies;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -64,6 +67,7 @@ public class CouponsController
 	Result add(
 			@RequestParam Long securityId,
 			@RequestParam Long accountId,
+			@RequestParam Long fundId,
 			@RequestParam Long currencyId,
 			@RequestParam String dateRecord,
 			@RequestParam String dateReceive,
@@ -72,7 +76,7 @@ public class CouponsController
 			@RequestParam Double extraCost,
 			@RequestParam Long operationId)
 	{
-		dao.put(securityId, accountId, currencyId,
+		dao.put(securityId, accountId, fundId, currencyId,
 				Utils.parseDate(dateRecord), Utils.parseDate(dateReceive),
 				quantity, coupon, extraCost, operationId);
 		return Result.SUCCESS;
@@ -148,6 +152,14 @@ public class CouponsController
 			@RequestParam(required = false) String query)
 	{
 		return daoAccounts.findCombo(query);
+	}
+
+	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	public @ResponseBody
+	List<SimpleItem> comboFunds(
+			@RequestParam(required = false) String query)
+	{
+		return daoFunds.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Currencies", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
