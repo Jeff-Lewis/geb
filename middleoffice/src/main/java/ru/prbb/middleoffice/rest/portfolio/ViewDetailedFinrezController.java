@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.portfolio;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Export;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewDetailedFinrezItem;
@@ -21,12 +24,12 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDetailedFinrezDao;
  * Текущий финрез
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewDetailedFinrez")
 public class ViewDetailedFinrezController
 {
+
 	@Autowired
 	private ViewDetailedFinrezDao dao;
 	@Autowired
@@ -48,8 +51,9 @@ public class ViewDetailedFinrezController
 		return dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund);
 	}
 
-	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
-	public void export(
+	@RequestMapping(value = "/Export", method = RequestMethod.GET)
+	@ResponseBody
+	public byte[] export(HttpServletResponse response,
 			@RequestParam Long security,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
@@ -59,9 +63,56 @@ public class ViewDetailedFinrezController
 		List<ViewDetailedFinrezItem> list =
 				dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund);
 
+		Export exp = Export.newInstance();
+		exp.setCaption("Текущий финрез");
+		exp.addTitle("Текущий финрез с: " + dateBegin + " по: " + dateEnd);
+		exp.setColumns(
+				"Client",
+				"Portfolio",
+				"Security",
+				"Batch",
+				"Deals_realise",
+				"Deal_id",
+				"TradeNum",
+				"Trade_date",
+				"Operati",
+				"Realised_profi",
+				"Initial_quantit",
+				"Deal_quantity",
+				"Avg_price",
+				"Avg_price_us",
+				"Deal_pric",
+				"Currenc",
+				"Fun",
+				"Date_insert",
+				"Account");
 		for (ViewDetailedFinrezItem item : list) {
-
+			exp.addRow(
+					item.getClient(),
+					item.getPortfolio(),
+					item.getSecurity_code(),
+					item.getBatch(),
+					item.getDeals_realised_profit_id(),
+					item.getDeal_id(),
+					item.getTradeNum(),
+					item.getTrade_date(),
+					item.getOperation(),
+					item.getRealised_profit(),
+					item.getInitial_quantity(),
+					item.getDeal_quantity(),
+					item.getAvg_price(),
+					item.getAvg_price_usd(),
+					item.getDeal_price(),
+					item.getCurrency(),
+					item.getFunding(),
+					item.getDate_insert(),
+					item.getAccount());
 		}
+
+		String name = "Finrez.ods";
+		response.setHeader("Content-disposition", "attachment;filename=" + name);
+		response.setContentType(exp.getContentType());
+		return exp.build();
 	}
 
 	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

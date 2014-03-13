@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.portfolio;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Export;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
@@ -22,12 +25,12 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDealsDao;
  * Список сделок
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewDeals")
 public class ViewDealsController
 {
+
 	@Autowired
 	private ViewDealsDao dao;
 	@Autowired
@@ -47,8 +50,9 @@ public class ViewDealsController
 		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 	}
 
-	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
-	public void export(
+	@RequestMapping(value = "/Export", method = RequestMethod.GET)
+	@ResponseBody
+	public byte[] export(HttpServletResponse response,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker)
@@ -56,9 +60,52 @@ public class ViewDealsController
 		List<ViewDealsItem> list =
 				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 
+		Export exp = Export.newInstance();
+		exp.setCaption("Список сделок");
+		exp.addTitle("Список сделок за период c: " + dateBegin + " по: " + dateEnd);
+		exp.setColumns(
+				"ID",
+				"Batch",
+				"TradeNum",
+				"SecShortName",
+				"Operation",
+				"Quantity",
+				"Price",
+				"PriceNKD",
+				"Currency",
+				"TradeDate",
+				"SettleDate",
+				"TradeSystem",
+				"Broker",
+				"Account",
+				"Client",
+				"Portfolio",
+				"Funding");
 		for (ViewDealsItem item : list) {
-
+			exp.addRow(
+					item.getId(),
+					item.getBatch(),
+					item.getTradeNum(),
+					item.getSecShortName(),
+					item.getOperation(),
+					item.getQuantity(),
+					item.getPrice(),
+					item.getPriceNKD(),
+					item.getCurrency(),
+					item.getTradeDate(),
+					item.getSettleDate(),
+					item.getTradeSystem(),
+					item.getBroker(),
+					item.getAccount(),
+					item.getClient(),
+					item.getPortfolio(),
+					item.getFunding());
 		}
+
+		String name = "Deals.ods";
+		response.setHeader("Content-disposition", "attachment;filename=" + name);
+		response.setContentType(exp.getContentType());
+		return exp.build();
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")

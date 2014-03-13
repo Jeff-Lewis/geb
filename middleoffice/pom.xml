@@ -303,9 +303,14 @@
 			<version>4.3.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.odftoolkit</groupId>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.odftoolkit</groupId>
 			<artifactId>odfdom-java</artifactId>
-			<version>0.8.8-incubating</version>
+			<version>0.8.7</version>
 		</dependency>
     </dependencies>
 

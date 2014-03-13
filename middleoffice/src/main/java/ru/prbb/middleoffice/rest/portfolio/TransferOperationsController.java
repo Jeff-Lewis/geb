@@ -2,7 +2,8 @@ package ru.prbb.middleoffice.rest.portfolio;
 
 import java.util.List;
 
-import org.apache.http.HttpResponse;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Export;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
@@ -24,12 +26,12 @@ import ru.prbb.middleoffice.repo.portfolio.TransferOperationsDao;
  * Список перекидок
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/TransferOperations")
 public class TransferOperationsController
 {
+
 	@Autowired
 	private TransferOperationsDao dao;
 	@Autowired
@@ -55,19 +57,56 @@ public class TransferOperationsController
 		return new ResultData(dao.findById(id));
 	}
 
-	@RequestMapping(value = "/Export", method = RequestMethod.GET, produces = "application/json")
-	public void export(
+	@RequestMapping(value = "/Export", method = RequestMethod.GET)
+	@ResponseBody
+	public byte[] export(HttpServletResponse response,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
-			@RequestParam Long ticker,
-			HttpResponse response)
+			@RequestParam Long ticker)
 	{
 		List<TransferOperationsListItem> list =
 				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 
+		Export exp = Export.newInstance();
+		exp.setCaption("Список перекидок");
+		exp.addTitle("Список перекидок c: " + dateBegin + " по: " + dateEnd);
+		exp.setColumns(
+				"Client",
+				"Security",
+				"Currency",
+				"Funding",
+				"TransferQuantity",
+				"TransferDate",
+				"SourceFund",
+				"SourceBatch",
+				"SourceQuantity",
+				"SourceOperation",
+				"DestinationFund",
+				"DestinationBatch",
+				"DestinationOperation",
+				"Comment");
 		for (TransferOperationsListItem item : list) {
-
+			exp.addRow(
+					item.getClient(),
+					item.getSecurity(),
+					item.getCurrency(),
+					item.getFunding(),
+					item.getTransferQuantity(),
+					item.getTransferDate(),
+					item.getSourceFund(),
+					item.getSourceBatch(),
+					item.getSourceQuantity(),
+					item.getSourceOperation(),
+					item.getDestinationFund(),
+					item.getDestinationBatch(),
+					item.getDestinationOperation(),
+					item.getComment());
 		}
+
+		String name = "TransferOperations.ods";
+		response.setHeader("Content-disposition", "attachment;filename=" + name);
+		response.setContentType(exp.getContentType());
+		return exp.build();
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
