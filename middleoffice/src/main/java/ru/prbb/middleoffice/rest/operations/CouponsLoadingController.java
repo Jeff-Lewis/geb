@@ -24,27 +24,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.LoadInfoRecord;
 import ru.prbb.middleoffice.domain.ResultData;
-import ru.prbb.middleoffice.repo.operations.DividendsLoadingDao;
+import ru.prbb.middleoffice.repo.operations.CouponsLoadingDao;
 
 /**
- * Загрузка дивидендов из файла
+ * Загрузка погашения купонов из файла
  * 
  * @author RBr
- * 
  */
 @Controller
-@RequestMapping("/rest/DividendsLoading")
-public class DividendsLoadingController
+@RequestMapping("/rest/CouponsLoading")
+public class CouponsLoadingController
 {
 
 	@Autowired
-	private DividendsLoadingDao dao;
+	private CouponsLoadingDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	ResultData upload()
 	{
-		List<DividendsLoadingDao.Record> records = new ArrayList<>();
+		List<CouponsLoadingDao.Record> records = new ArrayList<>();
 
 		try {
 			File upload = new File("");
@@ -61,7 +60,7 @@ public class DividendsLoadingController
 
 				while (itRows.hasNext()) {
 					final XSSFRow row = (XSSFRow) itRows.next();
-					final DividendsLoadingDao.Record record = new DividendsLoadingDao.Record(row);
+					final CouponsLoadingDao.Record record = new CouponsLoadingDao.Record(row);
 					if (!record.security_code.isEmpty()) {
 						records.add(record);
 					}
@@ -73,12 +72,12 @@ public class DividendsLoadingController
 			e.printStackTrace();
 		}
 
-		Map<DividendsLoadingDao.Record, SQLException> errors = dao.put(records);
+		Map<CouponsLoadingDao.Record, SQLException> errors = dao.put(records);
 
 		final List<LoadInfoRecord> info = new ArrayList<>();
 
-		for (Entry<DividendsLoadingDao.Record, SQLException> entry : errors.entrySet()) {
-			DividendsLoadingDao.Record key = entry.getKey();
+		for (Entry<CouponsLoadingDao.Record, SQLException> entry : errors.entrySet()) {
+			CouponsLoadingDao.Record key = entry.getKey();
 			SQLException val = entry.getValue();
 			info.add(new LoadInfoRecord(String.valueOf(key.RowNum), val.getMessage()));
 		}
@@ -87,4 +86,5 @@ public class DividendsLoadingController
 
 		return new ResultData(info);
 	}
+
 }
