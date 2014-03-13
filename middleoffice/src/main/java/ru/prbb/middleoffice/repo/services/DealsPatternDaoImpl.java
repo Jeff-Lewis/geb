@@ -36,6 +36,16 @@ public class DealsPatternDaoImpl implements DealsPatternDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public DealsPatternItem getById(Long id) {
+		String sql = "select id, file_name, file_type, date_insert"
+				+ " from dbo.DealsTemplateStorage where id=?";
+		Query q = em.createNativeQuery(sql, DealsPatternItem.class)
+				.setParameter(1, id);
+		return (DealsPatternItem) q.getSingleResult();
+	}
+
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteById(Long id) {
@@ -45,4 +55,12 @@ public class DealsPatternDaoImpl implements DealsPatternDao
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public byte[] getFileById(Long id) {
+		String sql = "select file from dbo.DealsTemplateStorage where id=?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return (byte[]) q.getSingleResult();
+	}
 }

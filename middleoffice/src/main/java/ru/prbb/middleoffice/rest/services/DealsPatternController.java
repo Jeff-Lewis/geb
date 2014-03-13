@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,17 +45,22 @@ public class DealsPatternController
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	Object download(
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public byte[] download(HttpServletResponse response,
 			@PathVariable("id") Long id)
 	{
-		return null;
+		DealsPatternItem item = dao.getById(id);
+
+		response.setHeader("Content-disposition", "attachment;filename=" + item.getFile_name());
+		response.setContentType(item.getFile_type());
+
+		return dao.getFileById(id);
 	}
 
 	@RequestMapping(value = "/Upload", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Object upload(
+	@ResponseBody
+	public Object upload(
 			@RequestParam Long id)
 	{
 		return null;

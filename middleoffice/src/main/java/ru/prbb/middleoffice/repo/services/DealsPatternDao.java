@@ -24,6 +24,18 @@ public interface DealsPatternDao {
 	 * @param id
 	 * @return
 	 */
+	DealsPatternItem getById(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
 	int deleteById(Long id);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	byte[] getFileById(Long id);
 
 }
