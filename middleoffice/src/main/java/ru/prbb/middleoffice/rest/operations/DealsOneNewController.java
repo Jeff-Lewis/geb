@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
@@ -51,7 +52,7 @@ public class DealsOneNewController
 	public @ResponseBody
 	Result save(
 			@RequestParam String tradenum,
-			@RequestParam Integer batch,
+			@RequestParam String batch,
 			@RequestParam String tradeticker,
 			@RequestParam String tradedate,
 			@RequestParam String settleDate,
@@ -64,8 +65,13 @@ public class DealsOneNewController
 			@RequestParam String portfolio,
 			@RequestParam String tickerSelect,
 			@RequestParam String futures,
-			@RequestParam Long kindTicker)
+			@RequestParam Integer kindTicker)
 	{
+		dao.put(Utils.parseString(batch), tradenum, tradeticker,
+				Utils.parseDate(tradedate), Utils.parseDate(settleDate),
+				tradeoper, tradeprice, quantity, currency, tradeSystem, account,
+				Utils.parseString(portfolio), tickerSelect,
+				Utils.parseString(futures), kindTicker);
 		return Result.SUCCESS;
 	}
 
