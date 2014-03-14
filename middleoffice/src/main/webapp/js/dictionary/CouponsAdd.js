@@ -11,7 +11,7 @@
 	var _receive_date = Ext.id();
 	var _quantity = Ext.id();
 	var _coupon_per_share = Ext.id();
-	var _extra_costs_per_share = Ext.id();
+	var _extra_costs = Ext.id();
 	var _operations = Ext.id();
 
 	var container = new Ext.FormPanel({
@@ -127,12 +127,12 @@
 		}, {
 			id : _coupon_per_share,
 			xtype : 'numberfield',
-			decimalPrecision : 6,
+			decimalPrecision : 12,
 			fieldLabel : 'Купон',
 			emptyText : 'Заполните',
 			allowBlank : false
 		}, {
-			id : _extra_costs_per_share,
+			id : _extra_costs,
 			xtype : 'numberfield',
 			decimalPrecision : 6,
 			fieldLabel : 'Доп. затраты'
@@ -187,7 +187,7 @@
 						.getValue()),
 				quantity : Ext.getCmp(_quantity).getValue(),
 				coupon : Ext.getCmp(_coupon_per_share).getValue(),
-				extraCost : Ext.getCmp(_extra_costs_per_share).getValue(),
+				extraCost : Ext.getCmp(_extra_costs).getValue(),
 				operationId : Ext.getCmp(_operations).getValue()
 			},
 			timeout : 10 * 60 * 1000, // 10 min

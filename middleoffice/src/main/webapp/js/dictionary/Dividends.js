@@ -18,8 +18,8 @@
 		fields : [ 'id', 'security_code', 'short_name', 'client', 'fund',
 				'broker', 'account', 'currency', 'record_date', 'quantity',
 				'dividend_per_share', 'receive_date', 'status', 'estimate',
-				'real_dividend_per_share', 'real_dividends',
-				'extra_costs_per_share', 'tax_value', 'country' ],
+				'real_dividend_per_share', 'real_dividends', 'extra_costs',
+				'tax_value', 'country' ],
 		sortInfo : {
 			field : 'security_code'
 		},
@@ -379,8 +379,8 @@
 			align : 'right',
 			renderer : App.util.Renderer.number(),
 		}, {
-			header : 'extra_costs_per_share',
-			dataIndex : 'extra_costs_per_share',
+			header : 'extra_costs',
+			dataIndex : 'extra_costs',
 			align : 'right',
 			renderer : App.util.Renderer.number(),
 			editor : editorDividend

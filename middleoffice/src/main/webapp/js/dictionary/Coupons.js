@@ -19,7 +19,7 @@
 		fields : [ 'id', 'security_code', 'short_name', 'client', 'fund',
 				'broker', 'account', 'currency', 'record_date', 'quantity',
 				'coupon_per_share', 'receive_date', 'real_coupon_per_share',
-				'status', 'estimate', 'real_coupons', 'extra_costs_per_share',
+				'status', 'estimate', 'real_coupons', 'extra_costs',
 				'tax_value', 'country', 'oper' ],
 		sortInfo : {
 			field : 'security_code'
@@ -414,8 +414,8 @@
 			align : 'right',
 			renderer : App.util.Renderer.number(2),
 		}, {
-			header : 'extra_costs_per_share',
-			dataIndex : 'extra_costs_per_share',
+			header : 'extra_costs',
+			dataIndex : 'extra_costs',
 			align : 'right',
 			renderer : App.util.Renderer.number(),
 			editor : editorDividend

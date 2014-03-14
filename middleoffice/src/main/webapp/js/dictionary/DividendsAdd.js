@@ -11,7 +11,7 @@
 	var _receive_date = Ext.id();
 	var _quantity = Ext.id();
 	var _dividend_per_share = Ext.id();
-	var _extra_costs_per_share = Ext.id();
+	var _extra_costs = Ext.id();
 
 	var container = new Ext.FormPanel({
 		border : false,
@@ -126,12 +126,12 @@
 		}, {
 			id : _dividend_per_share,
 			xtype : 'numberfield',
-			decimalPrecision : 6,
+			decimalPrecision : 12,
 			fieldLabel : 'Дивиденды',
 			emptyText : 'Заполните',
 			allowBlank : false
 		}, {
-			id : _extra_costs_per_share,
+			id : _extra_costs,
 			xtype : 'numberfield',
 			decimalPrecision : 6,
 			fieldLabel : 'Доп. затраты'
@@ -165,7 +165,7 @@
 				dateReceive : App.util.Format.dateYMD(rcd),
 				quantity : Ext.getCmp(_quantity).getValue(),
 				dividend : Ext.getCmp(_dividend_per_share).getValue(),
-				extraCost : Ext.getCmp(_extra_costs_per_share).getValue()
+				extraCost : Ext.getCmp(_extra_costs).getValue()
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Сохранение',
