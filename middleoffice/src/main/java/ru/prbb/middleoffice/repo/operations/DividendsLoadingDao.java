@@ -4,9 +4,6 @@
 package ru.prbb.middleoffice.repo.operations;
 
 import java.sql.Date;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
@@ -46,8 +43,8 @@ public interface DividendsLoadingDao {
 	}
 
 	/**
-	 * @param records
+	 * @param record
 	 * @return
 	 */
-	Map<Record, SQLException> put(List<Record> records);
+	int put(Record record);
 }

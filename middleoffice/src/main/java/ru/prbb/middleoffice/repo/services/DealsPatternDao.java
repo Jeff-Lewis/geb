@@ -38,4 +38,12 @@ public interface DealsPatternDao {
 	 */
 	byte[] getFileById(Long id);
 
+	/**
+	 * @param name
+	 * @param ct
+	 * @param bytes
+	 * @return
+	 */
+	int add(String name, String type, byte[] bytes);
+
 }

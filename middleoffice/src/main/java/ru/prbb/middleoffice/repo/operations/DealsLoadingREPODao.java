@@ -4,10 +4,7 @@
 package ru.prbb.middleoffice.repo.operations;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import java.sql.Time;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
@@ -55,9 +52,9 @@ public interface DealsLoadingREPODao {
 	}
 
 	/**
-	 * @param records
+	 * @param record
 	 * @return
 	 */
-	Map<Record, SQLException> put(List<Record> records);
+	int put(Record record);
 
 }

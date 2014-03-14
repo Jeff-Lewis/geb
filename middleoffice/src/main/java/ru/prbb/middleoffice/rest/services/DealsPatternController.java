@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import ru.prbb.middleoffice.domain.DealsPatternItem;
 import ru.prbb.middleoffice.domain.Result;
@@ -20,25 +21,25 @@ import ru.prbb.middleoffice.repo.services.DealsPatternDao;
  * Сохраненные шаблоны
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/DealsPattern")
 public class DealsPatternController
 {
+
 	@Autowired
 	private DealsPatternDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<DealsPatternItem> show()
+	@ResponseBody
+	public List<DealsPatternItem> show()
 	{
 		return dao.show();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result deleteById(
 			@PathVariable("id") Long id)
 	{
 		dao.deleteById(id);
@@ -52,17 +53,36 @@ public class DealsPatternController
 	{
 		DealsPatternItem item = dao.getById(id);
 
-		response.setHeader("Content-disposition", "attachment;filename=" + item.getFile_name());
-		response.setContentType(item.getFile_type());
+		String filename = item.getFile_name();
+		try {
+			//filename = URLEncoder.encode(item.getFile_name(), "UTF-8");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType(item.getFile_type() + "; charset=utf-8");
+		response.setHeader("Content-disposition", "attachment;filename=" + filename);
 
 		return dao.getFileById(id);
 	}
 
-	@RequestMapping(value = "/Upload", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Object upload(
-			@RequestParam Long id)
+	public Result upload(
+			@RequestParam("upload") MultipartFile file)
 	{
-		return null;
+		if (file.isEmpty()) {
+			return Result.FAIL;
+		}
+		try {
+			String name = file.getOriginalFilename();
+			String type = file.getContentType();
+			byte[] data = file.getBytes();
+			dao.add(name, type, data);
+			return Result.SUCCESS;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return Result.FAIL;
 	}
 }

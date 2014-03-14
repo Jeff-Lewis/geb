@@ -51,7 +51,7 @@
 
 		panel.getForm().submit({
 			clientValidation : false,
-			url : 'rest/DealsPattern/Upload.do',
+			url : 'rest/DealsPattern.do',
 			waitMsg : 'Загрузка',
 			timeout : 10 * 60 * 1000,
 			success : submitSuccess,

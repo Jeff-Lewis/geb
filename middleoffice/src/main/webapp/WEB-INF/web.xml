@@ -25,6 +25,10 @@
 	  <param-value>/WEB-INF/jboss-as-spring-mvc-context.xml</param-value>
 	</init-param>
 	<load-on-startup>1</load-on-startup>
+	<multipart-config>
+		<max-file-size>5242880</max-file-size>
+		<file-size-threshold>524288</file-size-threshold>
+	</multipart-config>
   </servlet>
 
   <servlet-mapping>

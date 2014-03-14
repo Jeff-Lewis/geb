@@ -3,12 +3,13 @@
  */
 package ru.prbb.middleoffice.repo.operations;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -16,12 +17,30 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public class DealsLoadingDaoImpl implements DealsLoadingDao {
+public class DealsLoadingDaoImpl implements DealsLoadingDao
+{
 
+	@Autowired
+	private EntityManager em;
+
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public Map<Record, SQLException> put(List<Record> records) {
-		// TODO Auto-generated method stub
-		return new HashMap<>();
+	public int put(Record r) {
+		String sql = "{call dbo.mo_WebSet_putDeals_sp ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		q.setParameter(1, r.Batch);
+		q.setParameter(2, r.TradeNum);
+		q.setParameter(3, r.TradeTicker);
+		q.setParameter(4, r.TradeDate);
+		q.setParameter(5, r.SettleDate);
+		q.setParameter(6, r.TradeOper);
+		q.setParameter(7, r.TradePrice);
+		q.setParameter(8, r.Quantity);
+		q.setParameter(9, r.Currency);
+		q.setParameter(10, r.TradeSystem);
+		q.setParameter(11, r.Account);
+		q.setParameter(12, r.Portfolio);
+		return q.executeUpdate();
 	}
 
 }

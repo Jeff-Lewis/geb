@@ -63,4 +63,16 @@ public class DealsPatternDaoImpl implements DealsPatternDao
 				.setParameter(1, id);
 		return (byte[]) q.getSingleResult();
 	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int add(String name, String type, byte[] bytes) {
+		String sql = "insert into dbo.DealsTemplateStorage" +
+				" (file, file_name, file_type) values(?, ?, ?)";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, bytes)
+				.setParameter(2, name)
+				.setParameter(3, type);
+		return q.executeUpdate();
+	}
 }

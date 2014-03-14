@@ -58,7 +58,6 @@ public class ViewShareController
 	public @ResponseBody
 	List<PortfolioItem> showPortfolio()
 	{
-		// TODO "select id_sec, ticker, deal_name, date_insert from portfolio_equity_v"
 		return daoEquities.findAllPortfolio();
 	}
 
