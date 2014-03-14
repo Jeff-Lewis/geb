@@ -57,7 +57,8 @@ public class BuildEPSDaoImpl implements BuildEPSDao
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	public BuildEPSItem calculateEps(Long id) {
+	@Override
+	public BuildEPSItem calculate(Long id) {
 		String sql = "{call dbo.main_create_eps_proc ?}";
 		Query q = em.createNativeQuery(sql, BuildEPSItem.class)
 				.setParameter(1, id);

@@ -22,6 +22,12 @@ public interface BuildEPSDao {
 	List<BuildEPSItem> calculate(Long[] ids);
 
 	/**
+	 * @param id
+	 * @return
+	 */
+	BuildEPSItem calculate(Long id);
+
+	/**
 	 * @return
 	 */
 	List<BuildEPSItem> calculate();
