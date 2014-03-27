@@ -301,6 +301,8 @@
 			<groupId>blpapi3</groupId>
 			<artifactId>blpapi3</artifactId>
 			<version>3</version>
+			<scope>system</scope>
+			<systemPath>${basedir}\lib\blpapi3-3.jar</systemPath>
 		</dependency>
     </dependencies>
 
