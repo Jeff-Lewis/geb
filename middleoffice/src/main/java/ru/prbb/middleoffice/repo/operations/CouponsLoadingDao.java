@@ -26,6 +26,7 @@ public interface CouponsLoadingDao {
 		public final String extra_costs;
 		public final String currency;
 		public final String oper_name;
+		public final String fund;
 
 		public Record(XSSFRow row) {
 			super(row);
@@ -37,6 +38,7 @@ public interface CouponsLoadingDao {
 			quantity = getStringValue(row, col++);
 			receive_date = getDateValue(row, col++);
 			account = getStringValue(row, col++);
+			fund = getStringValue(row, col++);
 			extra_costs = getStringValue(row, col++);
 			currency = getStringValue(row, col++);
 			oper_name = getStringValue(row, col++);

@@ -27,18 +27,21 @@ public interface DividendsLoadingDao {
 		public final String account;
 		public final String extra_costs;
 		public final String currency;
+		public final String fund;
 
 		public Record(XSSFRow row) {
 			super(row);
 
-			security_code = getStringValue(row, 'A');
-			record_date = getDateValue(row, 'B');
-			div_per_share = getStringValue(row, 'C');
-			quantity = getStringValue(row, 'D');
-			receive_date = getDateValue(row, 'E');
-			account = getStringValue(row, 'F');
-			extra_costs = getStringValue(row, 'G');
-			currency = getStringValue(row, 'H');
+			char col = 'A';
+			security_code = getStringValue(row, col++);
+			record_date = getDateValue(row, col++);
+			div_per_share = getStringValue(row, col++);
+			quantity = getStringValue(row, col++);
+			receive_date = getDateValue(row, col++);
+			account = getStringValue(row, col++);
+			fund = getStringValue(row, col++);
+			extra_costs = getStringValue(row, col++);
+			currency = getStringValue(row, col++);
 		}
 	}
 

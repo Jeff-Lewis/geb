@@ -33,7 +33,7 @@ public class DividendItem implements Serializable {
 	private String status;
 	private String estimate;
 	private String real_dividends;
-	private String extra_costs_per_share;
+	private String extra_costs;
 	private String tax_value;
 	private String country;
 
@@ -165,12 +165,12 @@ public class DividendItem implements Serializable {
 		this.real_dividends = real_dividends;
 	}
 
-	public String getExtra_costs_per_share() {
-		return extra_costs_per_share;
+	public String getExtra_costs() {
+		return extra_costs;
 	}
 
-	public void setExtra_costs_per_share(String extra_costs_per_share) {
-		this.extra_costs_per_share = extra_costs_per_share;
+	public void setExtra_costs(String extra_costs) {
+		this.extra_costs = extra_costs;
 	}
 
 	public String getTax_value() {

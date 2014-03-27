@@ -24,7 +24,7 @@ public class CouponsLoadingDaoImpl implements CouponsLoadingDao
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(Record r) {
-		String sql = "{call dbo.mo_xlsLoadCoupons_sp ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+		String sql = "{call dbo.mo_xlsLoadCoupons_sp ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
 		q.setParameter(1, r.security_code);
 		q.setParameter(2, r.record_date);
@@ -35,6 +35,7 @@ public class CouponsLoadingDaoImpl implements CouponsLoadingDao
 		q.setParameter(7, r.extra_costs);
 		q.setParameter(8, r.currency);
 		q.setParameter(9, r.oper_name);
+		q.setParameter(10, r.fund);
 		return q.executeUpdate();
 	}
 

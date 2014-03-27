@@ -181,7 +181,7 @@ public class SendingDaoImpl implements SendingDao
 		} else {
 			sql += " and lower(name) like ?";
 			q = em.createNativeQuery(sql)
-					.setParameter(1, '%' + query.toLowerCase() + '%');
+					.setParameter(1, "%" + query.toLowerCase() + "%");
 		}
 		return Utils.toSimpleItem(q.getResultList());
 	}
@@ -196,7 +196,7 @@ public class SendingDaoImpl implements SendingDao
 		} else {
 			sql += " and lower(name) like ?";
 			q = em.createNativeQuery(sql)
-					.setParameter(1, '%' + query.toLowerCase() + '%');
+					.setParameter(1, "%" + query.toLowerCase() + "%");
 		}
 		return Utils.toSimpleItem(q.getResultList());
 	}

@@ -45,6 +45,16 @@
 		});
 	}
 
+	function exportExcel() {
+		var params = 'clientId=' + Ext.getCmp(_client).getValue();
+		params += '&brokerId=' + Ext.getCmp(_broker).getValue();
+		params += '&securityId=' + Ext.getCmp(_security).getValue();
+		//params += '&accountId=null';
+		params += '&dateBegin=' + App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue());
+		params += '&dateEnd=' + App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue());
+		window.open('rest/Dividends/ExportXls.do?' + params);
+	}
+
 	function add() {
 		menu.showModal(menu, 'dictionary/DividendsAdd');
 	}
@@ -221,6 +231,9 @@
 		}, {
 			text : 'Изменить статус',
 			handler : change
+		}, ' ', {
+			text : 'Выгрузить в Excel',
+			handler : exportExcel
 		} ]
 	});
 

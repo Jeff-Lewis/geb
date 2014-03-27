@@ -34,7 +34,7 @@ public class CouponItem implements Serializable {
 	private String status;
 	private BigDecimal estimate;
 	private BigDecimal real_coupons;
-	private BigDecimal extra_costs_per_share;
+	private BigDecimal extra_costs;
 	private BigDecimal tax_value;
 	private String country;
 	private String oper;
@@ -167,12 +167,12 @@ public class CouponItem implements Serializable {
 		this.real_coupons = real_coupons;
 	}
 
-	public BigDecimal getExtra_costs_per_share() {
-		return extra_costs_per_share;
+	public BigDecimal getExtra_costs() {
+		return extra_costs;
 	}
 
-	public void setExtra_costs_per_share(BigDecimal extra_costs_per_share) {
-		this.extra_costs_per_share = extra_costs_per_share;
+	public void setExtra_costs(BigDecimal extra_costs) {
+		this.extra_costs = extra_costs;
 	}
 
 	public BigDecimal getTax_value() {

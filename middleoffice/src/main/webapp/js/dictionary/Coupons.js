@@ -36,15 +36,26 @@
 			params : {
 				clientId : Ext.getCmp(_client).getValue(),
 				brokerId : Ext.getCmp(_broker).getValue(),
-				securityId : App.Combo.getValueId(Ext.getCmp(_security)),
+				securityId : Ext.getCmp(_security).getValue(),
 				// accountId : null,
-				operationId : App.Combo.getValueId(Ext.getCmp(_operations)),
+				operationId : Ext.getCmp(_operations).getValue(),
 				dateBegin : App.util.Format.dateYMD(Ext.getCmp(_dateBegin)
 						.getValue()),
 				dateEnd : App.util.Format.dateYMD(Ext.getCmp(_dateBegin)
 						.getValue())
 			}
 		});
+	}
+
+	function exportExcel() {
+		var params = 'clientId=' + Ext.getCmp(_client).getValue();
+		params += '&brokerId=' + Ext.getCmp(_broker).getValue();
+		params += '&securityId=' + Ext.getCmp(_security).getValue();
+		//params += '&accountId=null;
+		params += '&operationId=' + Ext.getCmp(_operations).getValue();
+		params += '&dateBegin=' + App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue());
+		params += '&dateEnd=' + App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue());
+		window.open('rest/Coupons/ExportXls.do?' + params);
 	}
 
 	function add() {
@@ -169,7 +180,7 @@
 			xtype : 'combo',
 			width : 100,
 			displayField : 'name',
-			valueField : 'name',
+			valueField : 'id',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Coupons/Bonds.do',
@@ -200,7 +211,7 @@
 			xtype : 'combo',
 			width : 100,
 			displayField : 'name',
-			valueField : 'name',
+			valueField : 'id',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Coupons/Operations.do',
@@ -254,6 +265,9 @@
 		}, {
 			text : 'Изменить статус',
 			handler : change
+		}, ' ', {
+			text : 'Выгрузить в Excel',
+			handler : exportExcel
 		} ]
 	});
 

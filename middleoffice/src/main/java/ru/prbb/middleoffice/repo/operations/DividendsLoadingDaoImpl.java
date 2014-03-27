@@ -24,7 +24,7 @@ public class DividendsLoadingDaoImpl implements DividendsLoadingDao
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(Record r) {
-		String sql = "{call dbo.mo_xlsLoadDividends_sp ?, ?, ?, ?, ?, ?, ?, ?}";
+		String sql = "{call dbo.mo_xlsLoadDividends_sp ?, ?, ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
 		q.setParameter(1, r.security_code);
 		q.setParameter(2, r.record_date);
@@ -34,6 +34,7 @@ public class DividendsLoadingDaoImpl implements DividendsLoadingDao
 		q.setParameter(6, r.account);
 		q.setParameter(7, r.extra_costs);
 		q.setParameter(8, r.currency);
+		q.setParameter(9, r.fund);
 		return q.executeUpdate();
 	}
 
