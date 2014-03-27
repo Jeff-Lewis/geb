@@ -1,6 +1,9 @@
+/**
+ * Список компаний - info - Ввод исключения BOOK_VAL_PER_SH
+ */
 (function() {
 
-	var ids = 0;
+	var id_sec = 0;
 
 	var _type = Ext.id();
 	var _start = Ext.id();
@@ -21,18 +24,15 @@
 			id : _type,
 			fieldLabel : 'Тип',
 			xtype : 'textfield',
-			allowBlank : false,
-			name : 'type'
+			allowBlank : false
 		}, {
 			id : _start,
 			fieldLabel : 'Начальный год',
-			xtype : 'nubmerfield',
-			name : 'start'
+			xtype : 'numberfield'
 		}, {
 			id : _end,
 			fieldLabel : 'Конечный год',
-			xtype : 'nubmerfield',
-			name : 'end'
+			xtype : 'numberfield'
 		} ],
 
 		buttons : [ {
@@ -44,7 +44,7 @@
 		} ],
 
 		loadData : function(data) {
-			ids = data.id_sec;
+			id_sec = data.item;
 		},
 		setWindow : function(window) {
 			this.window = window;
@@ -54,12 +54,11 @@
 
 	function save(self) {
 		Ext.Ajax.request({
-			url : 'organization/add-bv-growth.html',
+			url : 'rest/Companies/' + id_sec + '/bv.do',
 			params : {
-				id : ids,
 				type : Ext.getCmp(_type).getValue(),
-				start : Ext.getCmp(_start).getValue(),
-				end : Ext.getCmp(_end).getValue()
+				baseYear : Ext.getCmp(_start).getValue(),
+				calcYear : Ext.getCmp(_end).getValue()
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Сохранение нового исключения',
@@ -67,7 +66,7 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					container.window.close();
-					menu.showSecurityInfo(id_sec);
+					Ext.getCmp('CompaniesInfo-component').refreshEx();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {

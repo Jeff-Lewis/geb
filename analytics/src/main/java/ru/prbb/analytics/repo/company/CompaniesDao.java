@@ -18,7 +18,6 @@ import ru.prbb.analytics.domain.SimpleItem;
  * Список компаний
  * 
  * @author RBr
- * 
  */
 public interface CompaniesDao {
 
@@ -55,7 +54,7 @@ public interface CompaniesDao {
 	 * @param id
 	 * @param params
 	 */
-	void updateById(Long id, Map<String, String> params);
+	void updateById(Long id, Map<String, Object> params);
 
 	/**
 	 * @param id
@@ -92,5 +91,89 @@ public interface CompaniesDao {
 	 * @return
 	 */
 	List<SimpleItem> findComboVariables(String query);
+
+	/**
+	 * @param id
+	 * @param id_doc
+	 * @return
+	 */
+	CompaniesFileItem fileGetById(Long id, Long id_doc);
+
+	/**
+	 * @param id
+	 * @param id_doc
+	 * @return
+	 */
+	byte[] fileGetContentById(Long id, Long id_doc);
+
+	/**
+	 * @param id
+	 * @param id_doc
+	 * @return
+	 */
+	int fileDeleteById(Long id, Long id_doc);
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	List<SimpleItem> getEquityVars(Long id);
+
+	/**
+	 * @param id
+	 * @param type
+	 * @param baseYear
+	 * @param calcYear
+	 * @return
+	 */
+	int addEps(Long id, String type, Integer baseYear, Integer calcYear);
+
+	/**
+	 * @param id
+	 * @param type
+	 * @return
+	 */
+	int delEps(Long id, String type);
+
+	/**
+	 * @param id
+	 * @param type
+	 * @param baseYear
+	 * @param calcYear
+	 * @return
+	 */
+	int addBookVal(Long id, String type, Integer baseYear, Integer calcYear);
+
+	/**
+	 * @param id
+	 * @param type
+	 * @return
+	 */
+	int delBookVal(Long id, String type);
+
+	/**
+	 * @param id
+	 * @param variable
+	 * @param expression
+	 * @param comment
+	 * @return
+	 */
+	int addFormula(Long id, String variable, String expression, String comment);
+
+	/**
+	 * @param id
+	 * @param variable
+	 * @return
+	 */
+	int delFormula(Long id, String variable);
+
+	/**
+	 * @param id
+	 * @param name
+	 * @param type
+	 * @param content
+	 * @return
+	 */
+	int fileUpload(Long id, String name, String type, byte[] content);
 
 }

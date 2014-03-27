@@ -29,11 +29,11 @@ import ru.prbb.analytics.domain.SimpleItem;
  * Список компаний
  * 
  * @author RBr
- * 
  */
 @Repository
 public class CompaniesDaoImpl implements CompaniesDao
 {
+
 	@Autowired
 	private EntityManager em;
 
@@ -78,11 +78,11 @@ public class CompaniesDaoImpl implements CompaniesDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void updateById(Long id, Map<String, String> params) {
+	public void updateById(Long id, Map<String, Object> params) {
 		String sql = "{call dbo.anca_WebSet_EquityAttributes_sp ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
 		q.setParameter(1, id);
-		for (Entry<String, String> param : params.entrySet()) {
+		for (Entry<String, Object> param : params.entrySet()) {
 			q.setParameter(2, param.getKey());
 			q.setParameter(3, param.getValue());
 			q.executeUpdate();
@@ -95,11 +95,10 @@ public class CompaniesDaoImpl implements CompaniesDao
 		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 21, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		@SuppressWarnings("unchecked")
+		List<Object[]> list = q.getResultList();
 		List<CompaniesQuarterItem> res = new ArrayList<>(list.size());
-		for (Object object : list) {
-			Object[] arr = (Object[]) object;
+		for (Object[] arr : list) {
 			CompaniesQuarterItem item = new CompaniesQuarterItem();
 			item.setSecurity_code(Utils.toString(arr[0]));
 			item.setPeriod(Utils.toString(arr[1]));
@@ -122,11 +121,10 @@ public class CompaniesDaoImpl implements CompaniesDao
 		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 22, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		@SuppressWarnings("unchecked")
+		List<Object[]> list = q.getResultList();
 		List<CompaniesYearItem> res = new ArrayList<>(list.size());
-		for (Object object : list) {
-			Object[] arr = (Object[]) object;
+		for (Object[] arr : list) {
 			CompaniesYearItem item = new CompaniesYearItem();
 			item.setSecurity_code(Utils.toString(arr[0]));
 			item.setPeriod(Utils.toString(arr[1]));
@@ -161,11 +159,10 @@ public class CompaniesDaoImpl implements CompaniesDao
 		String sql = "{call dbo.anca_WebGet_EquityVarException_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		@SuppressWarnings("unchecked")
+		List<Object[]> list = q.getResultList();
 		List<CompaniesExceptionItem> res = new ArrayList<>(list.size());
-		for (Object object : list) {
-			Object[] arr = (Object[]) object;
+		for (Object[] arr : list) {
 			CompaniesExceptionItem item = new CompaniesExceptionItem();
 			item.setException(Utils.toString(arr[0]));
 			item.setComment(Utils.toString(arr[1]));
@@ -251,4 +248,120 @@ public class CompaniesDaoImpl implements CompaniesDao
 		return Utils.toSimpleItem(q.getResultList());
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int fileUpload(Long id, String name, String type, byte[] content) {
+		String sql = "insert into dbo.sec_docs " +
+				"(id_sec, file, file_type, file_name) " +
+				"values (?, ?, ?, ?)";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, content)
+				.setParameter(3, type)
+				.setParameter(4, name);
+		return q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public CompaniesFileItem fileGetById(Long id, Long id_doc) {
+		String sql = "select id_doc, file_type, file_name, insert_date"
+				+ " from dbo.sec_docs where id_doc=?";
+		Query q = em.createNativeQuery(sql, CompaniesFileItem.class)
+				.setParameter(1, id_doc);
+		return (CompaniesFileItem) q.getSingleResult();
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public byte[] fileGetContentById(Long id, Long id_doc) {
+		String sql = "select file from dbo.sec_docs where id_doc=?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id_doc);
+		return (byte[]) q.getSingleResult();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int fileDeleteById(Long id, Long id_doc) {
+		String sql = "delete from dbo.sec_docs where id_doc=?";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id_doc);
+		return q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<SimpleItem> getEquityVars(Long id) {
+		String sql = "{call dbo.equity_vars_notused ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id);
+		return Utils.toSimpleItem(q.getResultList());
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int addEps(Long id, String type, Integer baseYear, Integer calcYear) {
+		String sql = "{call dbo.add_notst_eps_growth_rate ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, type)
+				.setParameter(3, baseYear)
+				.setParameter(4, calcYear);
+		return q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int delEps(Long id, String type) {
+		String sql = "{call dbo.del_notst_eps_growth_rate ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, type);
+		return q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int addBookVal(Long id, String type, Integer baseYear, Integer calcYear) {
+		String sql = "{call dbo.add_bv_growth_notstandard ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, type)
+				.setParameter(3, baseYear)
+				.setParameter(4, calcYear);
+		return q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int delBookVal(Long id, String type) {
+		String sql = "{call dbo.del_bv_growth_notstandard ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, type);
+		return q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int addFormula(Long id, String variable, String expression, String comment) {
+		String sql = "{call dbo.anca_WebSet_putEquityVarException_sp ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, variable)
+				.setParameter(3, expression)
+				.setParameter(4, comment);
+		return q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int delFormula(Long id, String variable) {
+		String sql = "{call dbo.anca_WebSet_dEquityVarException_sp ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id)
+				.setParameter(2, variable);
+		return q.executeUpdate();
+	}
 }

@@ -44,7 +44,6 @@
 				value="false" />
 		</properties>
 	</persistence-unit>
-
 <!-- 
   	<persistence-unit
 		name="anBloombergTest"

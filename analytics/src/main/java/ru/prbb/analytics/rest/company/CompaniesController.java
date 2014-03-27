@@ -1,8 +1,11 @@
 package ru.prbb.analytics.rest.company;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.CompaniesExceptionItem;
@@ -57,36 +61,110 @@ public class CompaniesController
 		return new ResultData(dao.findById(id));
 	}
 
-	@RequestMapping(value = "/Exceptions", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/{id}/id", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody
+	ResultData getId(
+			@PathVariable("id") Long id)
+	{
+		return new ResultData(id);
+	}
+
+	@RequestMapping(value = "/{id}/eps", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	Result addEps(
+			@PathVariable("id") Long id,
+			@RequestParam String type,
+			@RequestParam Integer baseYear,
+			@RequestParam Integer calcYear)
+	{
+		dao.addEps(id, type, baseYear, calcYear);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/{id}/eps", method = RequestMethod.DELETE, produces = "application/json")
+	public @ResponseBody
+	Result delEps(
+			@PathVariable("id") Long id,
+			@RequestParam String type)
+	{
+		dao.delEps(id, type);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/{id}/bv", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	Result addBV(
+			@PathVariable("id") Long id,
+			@RequestParam String type,
+			@RequestParam Integer baseYear,
+			@RequestParam Integer calcYear)
+	{
+		dao.addBookVal(id, type, baseYear, calcYear);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/{id}/bv", method = RequestMethod.DELETE, produces = "application/json")
+	public @ResponseBody
+	Result delBV(
+			@PathVariable("id") Long id,
+			@RequestParam String type)
+	{
+		dao.delBookVal(id, type);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/{id}/formula", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	Result addFormula(
+			@PathVariable("id") Long id,
+			@RequestParam String variable,
+			@RequestParam String expression,
+			@RequestParam String comment)
+	{
+		dao.addFormula(id, variable, expression, comment);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/{id}/formula", method = RequestMethod.DELETE, produces = "application/json")
+	public @ResponseBody
+	Result delFormula(
+			@PathVariable("id") Long id,
+			@RequestParam String variable)
+	{
+		dao.delFormula(id, variable);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/{id}/Variables", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody
+	List<SimpleItem> getVariables(
+			@PathVariable("id") Long id)
+	{
+		return dao.getEquityVars(id);
+	}
+
+	@RequestMapping(value = "/{id}/Exceptions", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	List<CompaniesExceptionItem> getExceptions(
-			@RequestParam Long id)
+			@PathVariable("id") Long id)
 	{
 		return dao.findVarException(id);
 	}
 
-	@RequestMapping(value = "/Quarters", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/{id}/Quarters", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	List<CompaniesQuarterItem> getQuarters(
-			@RequestParam Long id)
+			@PathVariable("id") Long id)
 	{
 		return dao.findQuarters(id);
 	}
 
-	@RequestMapping(value = "/Years", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/{id}/Years", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	List<CompaniesYearItem> getYears(
-			@RequestParam Long id)
+			@PathVariable("id") Long id)
 	{
 		return dao.findYears(id);
-	}
-
-	@RequestMapping(value = "/Files", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<CompaniesFileItem> getFiles(
-			@RequestParam Long id)
-	{
-		return dao.findFiles(id);
 	}
 
 	@RequestMapping(value = "/{id}/EquityChange", method = RequestMethod.POST, produces = "application/json")
@@ -102,69 +180,85 @@ public class CompaniesController
 			@RequestParam String period,
 			@RequestParam String eps)
 	{
-		Map<String, String> params = new HashMap<>();
-		if (Utils.isNotEmpty(bloomCode))
-			params.put("bloomberg_code", bloomCode);
-		if (Utils.isNotEmpty(adr))
-			params.put("adr", adr);
-		if (Utils.isNotEmpty(currency_calc))
-			params.put("currency", currency_calc);
-		if (Utils.isNotEmpty(group))
-			params.put("pivot_group", group);
-		if (Utils.isNotEmpty(koefZero))
-			params.put("koef", koefZero);
-		if (Utils.isNotEmpty(koefOne))
-			params.put("new_koef", koefOne);
-		if (Utils.isNotEmpty(period))
-			params.put("period", period);
-		if (Utils.isNotEmpty(eps))
-			params.put("eps", eps);
+		Map<String, Object> params = new HashMap<>();
+		params.put("bloomberg_code", Utils.parseString(bloomCode));
+		params.put("adr", Utils.parseString(adr));
+		params.put("currency", Utils.parseString(currency_calc));
+		params.put("pivot_group", Utils.parseString(group));
+		params.put("koef", Utils.isEmpty(koefZero) ? null : new Double(koefZero));
+		params.put("new_koef", Utils.isEmpty(koefOne) ? null : new Double(koefOne));
+		params.put("period", Utils.parseString(period));
+		params.put("eps", Utils.parseString(eps));
+
 		dao.updateById(id, params);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/{id}/CalculateEps", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/{id}/CalculateEps", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	Result execCalculateEps(
 			@PathVariable("id") Long id)
 	{
-		daoBuildEPS.calculate(new Long[] { id });
+		daoBuildEPS.calculate(id);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/{id}/BuildModelCompany", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/{id}/BuildModel", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
 	Result execBuildModelCompany(
 			@PathVariable("id") Long id)
 	{
-		daoBuildModel.calculateModel(new Long[] { id });
+		Long[] ids = { id };
+		daoBuildModel.calculateModel(ids);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/{id}/ScanSave", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/{id}/Files", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	Result getScanSave(
+	List<CompaniesFileItem> getFiles(
 			@PathVariable("id") Long id)
 	{
-		// TODO ScanSave
+		return dao.findFiles(id);
+	}
+
+	@RequestMapping(value = "/{id}/Upload", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	Result upload(
+			@PathVariable("id") Long id,
+			@RequestParam("upload") MultipartFile file)
+	{
+		try {
+			String name = file.getOriginalFilename();
+			String type = file.getContentType();
+			byte[] content = file.getBytes();
+			dao.fileUpload(id, name, type, content);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return Result.FAIL;
+		}
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/{id}/ScanOpen", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	Result getScanOpen(
-			@PathVariable("id") Long id)
+	@RequestMapping(value = "/{id}/Files/{idFile}", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public byte[] download(HttpServletResponse response,
+			@PathVariable("id") Long id,
+			@PathVariable("idFile") Long id_doc)
 	{
-		// TODO ScanOpen
-		return Result.SUCCESS;
+		CompaniesFileItem item = dao.fileGetById(id, id_doc);
+		response.setHeader("Content-disposition", "attachment;filename=" + item.getFile_name());
+		response.setContentType(item.getFile_type());
+
+		return dao.fileGetContentById(id, id_doc);
 	}
 
-	@RequestMapping(value = "/{id}/ScanDelete", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result getScanDelete(
-			@PathVariable("id") Long id)
+	@RequestMapping(value = "/{id}/Files/{idFile}", method = RequestMethod.DELETE, produces = "application/json")
+	@ResponseBody
+	public Result delete(
+			@PathVariable("id") Long id,
+			@PathVariable("idFile") Long id_doc)
 	{
-		// TODO ScanDelete
+		dao.fileDeleteById(id, id_doc);
 		return Result.SUCCESS;
 	}
 

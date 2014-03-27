@@ -32,46 +32,61 @@ public class BuildEPSDaoImpl implements BuildEPSDao
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<BuildEPSItem> calculate(Long[] ids) {
-		final List<BuildEPSItem> list = new ArrayList<>();
+		final List<BuildEPSItem> res = new ArrayList<>();
 		String sql = "{call dbo.main_create_eps_proc ?}";
 		Query q = em.createNativeQuery(sql);
 		for (Long id : ids) {
-			BuildEPSItem item = new BuildEPSItem();
 			try {
 				q.setParameter(1, id);
 				Object[] arr = (Object[]) q.getSingleResult();
-				item.setSecurity_code(Utils.toString(arr[0]));
-				item.setPeriodical_eps_status(Utils.toString(arr[1]));
-				item.setYearly_eps_status(Utils.toString(arr[2]));
-				item.setEps_median_status(Utils.toString(arr[3]));
-				item.setPe_median_status(Utils.toString(arr[4]));
-				item.setEps_growth_status(Utils.toString(arr[5]));
-				item.setBv_growth_rate(Utils.toString(arr[6]));
-				item.setPb_median(Utils.toString(arr[7]));
+				BuildEPSItem item = createItem(arr);
+				res.add(item);
 			} catch (Exception e) {
+				BuildEPSItem item = new BuildEPSItem();
 				item.setSecurity_code(id.toString());
+				res.add(item);
 			}
-			list.add(item);
 		}
-		return list;
+		return res;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public BuildEPSItem calculate(Long id) {
 		String sql = "{call dbo.main_create_eps_proc ?}";
-		Query q = em.createNativeQuery(sql, BuildEPSItem.class)
+		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		return (BuildEPSItem) q.getSingleResult();
+		Object[] arr = (Object[]) q.getSingleResult();
+		BuildEPSItem item = createItem(arr);
+		return item;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<BuildEPSItem> calculate() {
 		String sql = "{call dbo.main_create_eps_proc}";
-		Query q = em.createNativeQuery(sql, BuildEPSItem.class);
-		return q.getResultList();
+		Query q = em.createNativeQuery(sql);
+		@SuppressWarnings("unchecked")
+		List<Object[]> list = q.getResultList();
+		final List<BuildEPSItem> res = new ArrayList<>(list.size());
+		for (Object[] arr : list) {
+			BuildEPSItem item = createItem(arr);
+			res.add(item);
+		}
+		return res;
+	}
+
+	private BuildEPSItem createItem(Object[] arr) {
+		BuildEPSItem item = new BuildEPSItem();
+		item.setSecurity_code(Utils.toString(arr[0]));
+		item.setPeriodical_eps_status(Utils.toString(arr[1]));
+		item.setYearly_eps_status(Utils.toString(arr[2]));
+		item.setEps_median_status(Utils.toString(arr[3]));
+		item.setPe_median_status(Utils.toString(arr[4]));
+		item.setEps_growth_status(Utils.toString(arr[5]));
+		item.setBv_growth_rate(Utils.toString(arr[6]));
+		item.setPb_median(Utils.toString(arr[7]));
+		return item;
 	}
 
 }

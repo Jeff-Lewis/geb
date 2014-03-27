@@ -19,7 +19,7 @@
 	var exStore = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Companies/Exceptions.do',
+		url : 'rest/Companies/0/Exceptions.do',
 		// root : 'infoEx',
 		fields : [ 'exception', 'comment' ]
 	});
@@ -60,7 +60,7 @@
 	var quarters = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Companies/Quarters.do',
+		url : 'rest/Companies/0/Quarters.do',
 		// root : 'info1',
 		fields : [ 'period', 'value', 'crnc', 'date', 'eqy_dps',
 				'eqy_dvd_yld_ind', 'sales_rev_turn', 'prof_margin',
@@ -81,22 +81,34 @@
 			dataIndex : 'period'
 		}, {
 			header : 'EPS',
-			dataIndex : 'value'
+			dataIndex : 'value',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'EQY_DPS',
-			dataIndex : 'eqy_dps'
+			dataIndex : 'eqy_dps',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'EQY_DVD_YLD_IND',
-			dataIndex : 'eqy_dvd_yld_ind'
+			dataIndex : 'eqy_dvd_yld_ind',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'SALES_REV_TURN',
-			dataIndex : 'sales_rev_turn'
+			dataIndex : 'sales_rev_turn',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'PROF_MARGIN',
-			dataIndex : 'prof_margin'
+			dataIndex : 'prof_margin',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'OPER_MARGIN',
-			dataIndex : 'oper_margin'
+			dataIndex : 'oper_margin',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'Валюта',
 			dataIndex : 'crnc'
@@ -111,7 +123,7 @@
 	var years = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Companies/Years.do',
+		url : 'rest/Companies/0/Years.do',
 		// root : 'info2',
 		fields : [ 'period', 'value', 'crnc', 'date', 'eps_recon_flag',
 				'eqy_dps', 'eqy_weighted_avg_px', 'eqy_weighted_avg_px_adr',
@@ -132,28 +144,43 @@
 			dataIndex : 'period'
 		}, {
 			header : 'EPS',
-			dataIndex : 'value'
+			dataIndex : 'value',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'EPS_RECONTR_FLAG',
-			dataIndex : 'eps_recon_flag'
+			dataIndex : 'eps_recon_flag',
+			align : 'right'
 		}, {
 			header : 'EQY_DPS',
-			dataIndex : 'eqy_dps'
+			dataIndex : 'eqy_dps',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'EQY_WEIGHTED_AVG_PX',
-			dataIndex : 'eqy_weighted_avg_px'
+			dataIndex : 'eqy_weighted_avg_px',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'EQY_WEIGHTED_AVG_PX_ADR',
-			dataIndex : 'eqy_weighted_avg_px_adr'
+			dataIndex : 'eqy_weighted_avg_px_adr',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'BOOK_VAL_PER_SH',
-			dataIndex : 'book_val_per_sh'
+			dataIndex : 'book_val_per_sh',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'OPER_ROE',
-			dataIndex : 'oper_roe'
+			dataIndex : 'oper_roe',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'RETENTION_RATIO',
-			dataIndex : 'r_ratio'
+			dataIndex : 'r_ratio',
+			align : 'right',
+			renderer : App.util.Renderer.number(6)
 		}, {
 			header : 'Валюта',
 			dataIndex : 'crnc'
@@ -168,39 +195,43 @@
 	var files = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Companies/Files.do',
+		url : 'rest/Companies/0/Files.do',
 		// root : 'file',
-		fields : [ 'id_doc', 'file_name', 'insert_date' ]
+		fields : [ 'id_doc', 'file_type', 'file_name', 'insert_date' ]
+//id_doc		22
+//file_type	"text/xml"
+//file_name	"EclipseFormatter.xml"
+//insert_date	"2014-03-27 10:09:41.3"
 	});
 
-	var sm = new Ext.grid.RowSelectionModel({
+	var smFiles = new Ext.grid.RowSelectionModel({
 		singleSelect : true
 	});
 
 	var winFiles = null;
 
-	function refresh(id) {
+	function refresh(id_sec) {
 		menu.submitDataRequest(menu, 'company/CompaniesInfo', 'rest/Companies/'
-				+ id + '.do');
+				+ id_sec + '.do');
 	}
 
 	function fileSubmit(self) {
-		if (!Ext.getCmp(_winFiles).items.itemAt(1).getValue()) {
+		if (!Ext.getCmp(_winFiles).items.itemAt(0).getValue()) {
 			App.ui.message('Выберите файл.');
 			return;
 		}
 
 		Ext.getCmp(_winFiles).getForm().submit({
-			url : 'rest/Companies/' + id_sec + '/ScanSave.do',
+			url : 'rest/Companies/' + id_sec + '/Upload.do',
 			waitMsg : 'Загрузка файла.',
 			timeout : 10 * 60 * 1000,
 			success : function(form, action) {
 				winFiles.close();
-				refresh(id_sec);
+				files.reload();
 			},
 			failure : function(form, action) {
 				winFiles.close();
-				refresh(id_sec);
+				files.reload();
 
 				// switch (action.failureType) {
 				// case Ext.form.Action.CONNECT_FAILURE:
@@ -232,9 +263,6 @@
 				fileUpload : true,
 
 				items : [ {
-					xtype : 'hidden',
-					name : 'UNID'
-				}, {
 					hideLabel : true,
 					xtype : 'fileuploadfield',
 					name : 'upload',
@@ -258,36 +286,36 @@
 	}
 
 	function fileOpen(self) {
-		if (sm.getCount() == 0) {
+		if (smFiles.getCount() == 0) {
 			App.ui.message('Выберите файл для сохранения.');
 			return;
 		}
 
-		var id = sm.getSelected().data.id_doc;
-		window.open('rest/Companies/' + id + '/ScanOpen.do');
+		var id = smFiles.getSelected().data.id_doc;
+		window.open('rest/Companies/' + id_sec + '/Files/' + id + '.do');
 	}
 
 	function fileDelete(self) {
-		if (sm.getCount() == 0) {
+		if (smFiles.getCount() == 0) {
 			App.ui.message('Выберите файл для удаления.');
-		} else {
-			var name = sm.getSelected().data.file_name;
-			App.ui.confirm('Удалить файл ' + name + '?', fileDeleteAjax);
+			return;
 		}
-	}
 
+		var name = smFiles.getSelected().data.file_name;
+		App.ui.confirm('Удалить файл ' + name + '?', fileDeleteAjax);
+	}
 	function fileDeleteAjax() {
-		var id = sm.getSelected().data.id_doc;
+		var id = smFiles.getSelected().data.id_doc;
 		Ext.Ajax.request({
 			method : 'DELETE',
-			url : 'rest/Companies/' + id + '/ScanDelete.do',
+			url : 'rest/Companies/' + id_sec + '/Files/' + id + '.do',
 			// timeout : 10 * 60 * 10000, // 10 min
 			timeout : 1000000000,
 			waitMsg : 'Удаление файла.',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					refresh(id_sec);
+					files.reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -320,15 +348,14 @@
 		} ],
 
 		store : files,
-		selModel : sm,
+		selModel : smFiles,
 		columns : [ new Ext.grid.RowNumberer({
 			width : 30
 		}), {
 			header : 'Дата',
 			dataIndex : 'insert_date',
 			width : 50,
-			xtype : 'datecolumn',
-			format : 'd.m.Y H:i'
+			renderer : App.util.Renderer.datetime()
 		}, {
 			header : 'Файл',
 			dataIndex : 'file_name'
@@ -394,7 +421,7 @@
 
 	function buildModel(self) {
 		Ext.Ajax.request({
-			url : 'rest/Companies/' + id_sec + '/BuildModelCompany.do',
+			url : 'rest/Companies/' + id_sec + '/BuildModel.do',
 			timeout : 1000000000,
 			waitMsg : 'Расчёт модели.',
 			success : function(xhr) {
@@ -587,12 +614,23 @@
 	});
 
 	function addEpsGrowth(self) {
-		menu.showModal(menu, 'company/CompaniesEpsAdd',
-				'rest/Companies\organization/open-add-eps.html', {
-					id : id_sec
-				});
+		menu.showModal(menu, 'company/CompaniesEpsAdd', 'rest/Companies/'
+				+ id_sec + '/id.do');
 	}
 
+	function delEpsGrowth() {
+		Ext.Msg.show({
+			title : 'Удаление исключения EPS',
+			msg : 'Тип',
+			prompt : true,
+			minWidth : 300,
+			buttons : {
+				ok : 'Удалить',
+				cancel : true
+			},
+			fn : deleteEpsGrowth
+		});
+	}
 	function deleteEpsGrowth(btn, text) {
 		if (btn != 'ok') {
 			return;
@@ -604,18 +642,15 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'rest/Companies\organization/del-eps-growth.html',
-			params : {
-				id : id_sec,
-				type : text
-			},
+			method : 'DELETE',
+			url : 'rest/Companies/' + id_sec + '/eps.do?type=' + text,
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Удаление исключения.',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Исключение удалено.');
-					refresh(id_sec);
+					exStore.reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -629,12 +664,23 @@
 	}
 
 	function addBvGrowth(self) {
-		menu.showModal(menu, 'company/CompaniesBvAdd',
-				'rest/Companies\organization/open-add-bv.html', {
-					id : id_sec
-				});
+		menu.showModal(menu, 'company/CompaniesBvAdd', 'rest/Companies/'
+				+ id_sec + '/id.do');
 	}
 
+	function delBvGrowth() {
+		Ext.Msg.show({
+			title : 'Удаление исключения BOOK_VAL_PER_SH',
+			msg : 'Тип',
+			prompt : true,
+			minWidth : 300,
+			buttons : {
+				ok : 'Удалить',
+				cancel : true
+			},
+			fn : deleteBvGrowth
+		});
+	}
 	function deleteBvGrowth(btn, text) {
 		if (btn != 'ok') {
 			return;
@@ -646,18 +692,15 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'rest/Companies\organization/del-bv-growth.html',
-			params : {
-				id : id_sec,
-				type : text
-			},
+			method : 'DELETE',
+			url : 'rest/Companies/' + id_sec + '/bv.do?type=' + text,
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Удаление исключения.',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Исключение удалено.');
-					refresh(id_sec);
+					exStore.reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -672,13 +715,11 @@
 
 	function addVariableFormula(self) {
 		menu.showModal(menu, 'company/CompaniesExpressionAdd',
-				'rest/Companies\organization/PrepareFormExpression.html', {
-					id : id_sec
-				});
+				'rest/Companies/' + id_sec + '/id.do');
 	}
 
-	function confirmDeleteVariableFormula(self) {
-		var periodSelect = new Ext.form.ComboBox({
+	function delVariableFormula(self) {
+		var comboVariables = new Ext.form.ComboBox({
 			fieldLabel : 'Переменная',
 			width : 270,
 			hiddenName : 'period',
@@ -697,8 +738,7 @@
 			triggerAction : 'all'
 		});
 
-		var window = null;
-		window = new Ext.Window({
+		var window = new Ext.Window({
 			title : 'Удаление исключения по формулам',
 			plain : true,
 			modal : true,
@@ -710,55 +750,55 @@
 				xtype : 'label',
 				cls : 'ext-mb-text',
 				text : 'Переменная'
-			}, periodSelect ],
+			}, comboVariables ],
 
 			buttonAlign : 'center',
 			buttons : [ {
 				text : 'Удалить',
-				handler : function() {
-					deleteVariableFormula('ok', periodSelect.getValue());
-					window.close();
-				}
+				handler : deleteVariable
 			}, {
 				text : 'Отмена',
-				handler : function() {
-					window.close();
-				}
+				handler : closeVariable
 			} ],
 		});
 		window.doLayout();
 		window.show();
-	}
 
-	function deleteVariableFormula(btn, text) {
-		if (!text) {
-			App.ui.error('Переменная не указан.');
-			return;
+		function deleteVariable() {
+			var text = comboVariables.getValue();
+
+			if (!text) {
+				App.ui.error('Переменная не указан.');
+				return;
+			}
+
+			window.close();
+
+			Ext.Ajax.request({
+				method : 'DELETE',
+				url : 'rest/Companies/' + id_sec + '/formula.do?variable=' + text,
+				timeout : 10 * 60 * 1000, // 10 min
+				waitMsg : 'Удаление исключения',
+				success : function(xhr) {
+					var answer = Ext.decode(xhr.responseText);
+					if (answer.success) {
+						App.ui.message('Исключение удалено.');
+						exStore.reload();
+					} else if (answer.code == 'login') {
+						App.ui.sessionExpired();
+					} else {
+						App.ui.error(answer.message);
+					}
+				},
+				failure : function() {
+					App.ui.error('Сервер недоступен');
+				}
+			});
 		}
 
-		Ext.Ajax.request({
-			url : 'rest/Companies\organization/DelVarFormula.html',
-			params : {
-				id : id_sec,
-				type : text
-			},
-			timeout : 10 * 60 * 1000, // 10 min
-			waitMsg : 'Удаление исключения',
-			success : function(xhr) {
-				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					App.ui.message('Исключение удалено.');
-					refresh(id_sec);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
-				}
-			},
-			failure : function() {
-				App.ui.error('Сервер недоступен');
-			}
-		});
+		function closeVariable() {
+			window.close();
+		}
 	}
 
 	return new Ext.Panel({
@@ -788,37 +828,13 @@
 			text : 'Удалить исключение',
 			menu : [ {
 				text : 'по темпу роста <b>EPS</b>',
-				handler : function() {
-					Ext.Msg.show({
-						title : 'Удаление исключения EPS',
-						msg : 'Тип',
-						prompt : true,
-						minWidth : 300,
-						buttons : {
-							ok : 'Удалить',
-							cancel : true
-						},
-						fn : deleteEpsGrowth
-					});
-				}
+				handler : delEpsGrowth
 			}, {
 				text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
-				handler : function() {
-					Ext.Msg.show({
-						title : 'Удаление исключения BOOK_VAL_PER_SH',
-						msg : 'Тип',
-						prompt : true,
-						minWidth : 300,
-						buttons : {
-							ok : 'Удалить',
-							cancel : true
-						},
-						fn : deleteBvGrowth
-					});
-				}
+				handler : delBvGrowth
 			}, '-', {
-				text : 'параметров по формулам</b>',
-				handler : confirmDeleteVariableFormula
+				text : 'параметров по формулам',
+				handler : delVariableFormula
 			} ]
 		}, {
 			text : 'Посчитать EPS',
@@ -831,7 +847,7 @@
 		items : [ {
 			xtype : 'panel',
 			baseCls : 'x-plain',
-			height : 350,
+			height : 400,
 			layout : 'border',
 
 			items : [ leftInfoForm, {
@@ -859,29 +875,30 @@
 				fileGrid.expand(false);
 			}
 
-			exStore.reload({
-				params : {
-					id : id_sec
-				}
-			});
-			years.reload({
-				params : {
-					id : id_sec
-				}
-			});
-			quarters.reload({
-				params : {
-					id : id_sec
-				}
-			});
-			files.reload({
-				params : {
-					id : id_sec
-				}
-			});
+			var url;
+
+			url = 'rest/Companies/' + id_sec + '/Exceptions.do';
+			exStore.proxy.setUrl(url, true);
+			exStore.reload();
+
+			url = 'rest/Companies/' + id_sec + '/Years.do';
+			years.proxy.setUrl(url, true);
+			years.reload();
+
+			url = 'rest/Companies/' + id_sec + '/Quarters.do';
+			quarters.proxy.setUrl(url, true);
+			quarters.reload();
+
+			url = 'rest/Companies/' + id_sec + '/Files.do';
+			files.proxy.setUrl(url, true);
+			files.reload();
 
 			leftInfoForm.getForm().setValues(data.item);
 			rightInfoForm.getForm().setValues(data.item);
+		},
+
+		refreshEx : function() {
+			exStore.reload();
 		}
 	});
 })();

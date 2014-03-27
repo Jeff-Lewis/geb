@@ -1,33 +1,43 @@
+/**
+ * Список компаний - info - Построитель выражений
+ */
 (function() {
 
-	var ids = 0;
+	var id_sec = 0;
 
 	var _expression = Ext.id();
 	var _comment = Ext.id();
 
 	var variables = new Ext.data.JsonStore({
 		autoDestroy : true,
-		root : 'info',
-		fields : [ 'var_user_name' ]
+		autoLoad : false,
+		url : 'rest/Companies/0/Variables.do',
+		fields : [ 'id', 'name' ]
 	});
 
 	var smr = new Ext.grid.CheckboxSelectionModel({
 		singleSelect : true
 	});
 
-	var sme = new Ext.grid.CheckboxSelectionModel({
+	var sme = new Ext.grid.RowSelectionModel({
 		singleSelect : true,
 		listeners : {
-			rowselect : function(sme, idx, r) {
-				var res = smr.getSelected().data.var_user_name;
-				if (res != r.data.var_user_name) {
-					var tf = Ext.getCmp(_expression);
-					tf.setValue(tf.getValue() + r.data.var_user_name);
-				}
-			}
+			rowselect : addVar
+		}
+	});
+
+	function addVar(sm, idx, r) {
+		if (smr.getCount() == 0) {
+			return;
 		}
 
-	});
+		if (smr.getSelected().data.name == r.data.name) {
+			return;
+		}
+
+		var tf = Ext.getCmp(_expression);
+		tf.setValue(tf.getValue() + r.data.name);
+	}
 
 	function btnHandler(btn) {
 		var tf = Ext.getCmp(_expression);
@@ -62,8 +72,7 @@
 
 				items : {
 					id : _expression,
-					xtype : 'textarea',
-					name : 'text'
+					xtype : 'textarea'
 				},
 
 				minButtonWidth : 30,
@@ -80,6 +89,11 @@
 				}, {
 					text : '/',
 					handler : btnHandler
+				}, {
+					text : 'X',
+					handler : function() {
+						Ext.getCmp(_expression).setValue('');
+					}
 				} ]
 			}, {
 				title : 'Комментарий',
@@ -113,7 +127,7 @@
 				selModel : smr,
 				columns : [ smr, {
 					header : 'Переменная',
-					dataIndex : 'var_user_name'
+					dataIndex : 'name'
 				} ],
 				viewConfig : {
 					forceFit : true,
@@ -125,9 +139,9 @@
 
 				store : variables,
 				selModel : sme,
-				columns : [ sme, {
+				columns : [ {
 					header : 'Переменная',
-					dataIndex : 'var_user_name'
+					dataIndex : 'name'
 				} ],
 				viewConfig : {
 					forceFit : true,
@@ -145,8 +159,10 @@
 		} ],
 
 		loadData : function(data) {
-			variables.loadData(data);
-			ids = data.id_sec;
+			id_sec = data.item;
+			var url = 'rest/Companies/' + id_sec + '/Variables.do';
+			variables.proxy.setUrl(url, true);
+			variables.load();
 		},
 		setWindow : function(window) {
 			this.window = window;
@@ -161,10 +177,10 @@
 		}
 
 		Ext.Ajax.request({
+			url : 'rest/Companies/' + id_sec + '/formula.do',
 			url : 'organization/AddExpression.html',
 			params : {
-				id : ids,
-				variable : smr.getSelected().data.var_user_name,
+				variable : smr.getSelected().data.name,
 				expression : Ext.getCmp(_expression).getValue(),
 				comment : Ext.getCmp(_comment).getValue()
 			},
@@ -174,7 +190,7 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					container.window.close();
-					menu.showSecurityInfo(ids);
+					Ext.getCmp('CompaniesInfo-component').refreshEx();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
