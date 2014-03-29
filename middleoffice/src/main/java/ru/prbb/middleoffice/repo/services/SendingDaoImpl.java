@@ -47,56 +47,32 @@ public class SendingDaoImpl implements SendingDao
 	}
 
 	private SendingItem sendMail(final String text, final String receiver) {
-		String sql = "{=call dbo.make_send_email ?, 'info', ?}";
+		String sql = "{call dbo.make_send_email ?, 'info', ?}";
 		Query q = em.createNativeQuery(sql, String.class)
 				.setParameter(1, text)
 				.setParameter(2, receiver);
-		Object sr = q.getSingleResult();
-		String res = Utils.toString(sr);
-		/*
-		String res = jdbcTemplate.execute(sql,
-				new CallableStatementCallback<String>() {
-
-					@Override
-					public String doInCallableStatement(CallableStatement ps) throws SQLException {
-						ps.registerOutParameter(1, Types.VARCHAR);
-						ps.setString(2, text);
-						ps.setString(3, receiver);
-						ps.execute();
-						return ps.getString(1);
-					}
-				});
-		*/
+		String res = "0";
+		try {
+			q.executeUpdate();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			res = e.getMessage();
+		}
 		SendingItem si = new SendingItem();
 		si.setMail(receiver);
-		si.setStatus("0".equals(res) ? "0" : "-1");
+		si.setStatus(res);
 		return si;
 	}
 
 	private SendingItem sendSms(final String text, final String receiver) {
-		String sql = "{=call dbo.MakeSendSmsJava ?, ?, 2}";
+		String sql = "{call dbo.MakeSendSmsJava ?, ?, 2}";
 		Query q = em.createNativeQuery(sql, String.class)
 				.setParameter(1, text)
 				.setParameter(2, receiver);
-		Object sr = q.getSingleResult();
-		String res = Utils.toString(sr);
-		/*
-		String res = jdbcTemplate.execute(sql,
-				new CallableStatementCallback<String>() {
-
-					@Override
-					public String doInCallableStatement(CallableStatement cs) throws SQLException {
-						cs.registerOutParameter(1, Types.VARCHAR);
-						cs.setString(2, text);
-						cs.setString(3, receiver);
-						cs.execute();
-						return cs.getString(1);
-					}
-				});
-		*/
+		String res = Utils.toString(q.getSingleResult());
 		SendingItem si = new SendingItem();
 		si.setMail(receiver);
-		si.setStatus("0".equals(res) ? "0" : "-1");
+		si.setStatus("0".equals(res) ? "0" : res);
 		return si;
 	}
 
@@ -150,8 +126,8 @@ public class SendingDaoImpl implements SendingDao
 	private void sleep() {
 		try {
 			Thread.sleep(4000);
-		} catch (InterruptedException ie)
-		{
+		} catch (InterruptedException ie) {
+			// TODO Auto-generated catch block
 		}
 	}
 
@@ -181,7 +157,7 @@ public class SendingDaoImpl implements SendingDao
 		} else {
 			sql += " and lower(name) like ?";
 			q = em.createNativeQuery(sql)
-					.setParameter(1, "%" + query.toLowerCase() + "%");
+					.setParameter(1, '%' + query.toLowerCase() + '%');
 		}
 		return Utils.toSimpleItem(q.getResultList());
 	}
@@ -196,7 +172,7 @@ public class SendingDaoImpl implements SendingDao
 		} else {
 			sql += " and lower(name) like ?";
 			q = em.createNativeQuery(sql)
-					.setParameter(1, "%" + query.toLowerCase() + "%");
+					.setParameter(1, '%' + query.toLowerCase() + '%');
 		}
 		return Utils.toSimpleItem(q.getResultList());
 	}

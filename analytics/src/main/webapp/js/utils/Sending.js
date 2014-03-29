@@ -20,7 +20,8 @@
 			fields : [ 'name' ]
 		}),
 		minChars : 2,
-		typeAhead : false,
+		triggerAction : 'all',
+		//typeAhead : false,
 		loadingText : 'Поиск...',
 		hideTrigger : true
 	});
@@ -36,7 +37,8 @@
 			fields : [ 'name' ]
 		}),
 		minChars : 2,
-		typeAhead : false,
+		triggerAction : 'all',
+		//typeAhead : false,
 		loadingText : 'Поиск...',
 		hideTrigger : true
 	});
@@ -58,6 +60,19 @@
 		editable : false,
 		listeners : {
 			select : function(combo, record) {
+				switch (combo.getValue()) {
+				case 0:
+					receiver1.setValue('news');
+					receiver2.setValue('news_digr@prbb.ru');
+					break;
+				case 1:
+					receiver1.setValue('');
+					receiver2.setValue('');
+					break;
+
+				default:
+					break;
+				}
 				Ext.Ajax.request({
 					url : 'rest/Sending/' + combo.getValue() + '.do',
 					timeout : 10 * 60 * 1000, // 10 min
@@ -124,41 +139,44 @@
 			region : 'west',
 			xtype : 'form',
 			padding : 10,
-			width : 280,
+			width : 520,
 			labelAlign : 'top',
 			labelWidth : 160,
 			defaults : {
-				width : 250
+				width : 500
 			},
 
 			items : [ receiver1, receiver2, patternSelect, {
 				xtype : 'button',
 				text : 'Отправить',
 				handler : send
-			}, textarea ]
+			}, textarea, {
+				xtype : 'grid',
+				title : 'Результаты рассылки',
+				frame : true,
+				enableHdMenu : false,
+				height : 250,
+
+				store : storeRes,
+				columns : [ {
+					header : 'Получатель',
+					dataIndex : 'mail'
+				}, {
+					header : 'Статус',
+					dataIndex : 'status',
+					renderer : function(val) {
+						return (val == '0') ? 'отправлено' : val;
+					}
+				} ],
+
+				viewConfig : {
+					forceFit : true,
+					emptyText : 'Записи не найдены'
+				}
+			} ]
 		}, {
 			region : 'center',
-			xtype : 'grid',
-			title : 'Результаты рассылки',
-			frame : true,
-			enableHdMenu : false,
-
-			store : storeRes,
-			columns : [ {
-				header : 'Получатель',
-				dataIndex : 'mail'
-			}, {
-				header : 'Статус',
-				dataIndex : 'status',
-				renderer : function(val) {
-					return (val == '0') ? 'отправлено' : 'ошибка при отправке';
-				}
-			} ],
-
-			viewConfig : {
-				forceFit : true,
-				emptyText : 'Записи не найдены'
-			}
+			xtype : 'container'
 		} ]
 	});
 })();
