@@ -83,18 +83,21 @@
 		store : accounts,
 		selModel : sm,
 		columns : [ new Ext.grid.RowNumberer({
-			width : 30
+			width : 35
 		}), {
 			header : 'Наименование',
 			dataIndex : 'name',
+			sortable : true,
 			width : 50
 		}, {
 			header : 'Брокер',
 			dataIndex : 'broker',
+			sortable : true,
 			width : 50
 		}, {
 			header : 'Клиент',
 			dataIndex : 'client',
+			sortable : true,
 			width : 50
 		}, {
 			header : 'Комментарий',
@@ -102,6 +105,7 @@
 			width : 150
 		} ],
 		viewConfig : {
+			autoFill : true,
 			forceFit : true,
 			emptyText : 'Записи не найдены'
 		},
