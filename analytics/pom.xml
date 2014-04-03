@@ -135,7 +135,17 @@
                 <artifactId>commons-logging</artifactId>
                 <version>${version.commons.logging}</version>
             </dependency>
-        </dependencies>
+            <dependency>
+            	<groupId>org.springframework.security</groupId>
+            	<artifactId>spring-security-web</artifactId>
+            	<version>${version.spring}</version>
+            </dependency>
+            <dependency>
+            	<groupId>org.springframework.security</groupId>
+            	<artifactId>spring-security-config</artifactId>
+            	<version>${version.spring}</version>
+            </dependency>
+		</dependencies>
     </dependencyManagement>
 
     <dependencies>
@@ -324,12 +334,10 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>3.2.2.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>3.2.2.RELEASE</version>
 		</dependency>
     </dependencies>
 

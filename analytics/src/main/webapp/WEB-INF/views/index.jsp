@@ -50,7 +50,7 @@
 					</div>
 					<div style="margin-top: 6px;">
 						<h1>Текущий пользователь: ${username}</h1>
-						[ <a href="signout.html">Выйти</a> ]
+						[ <a href="logout.html">Выйти</a> ]
 					</div>
 				</td>
 				<td align="right" width="500px"><img src="images/summer_bg.png" /></td>
