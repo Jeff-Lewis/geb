@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.middleoffice.domain.ReferenceItem;
+import ru.prbb.Utils;
+import ru.prbb.middleoffice.domain.ClientsItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
+import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
+import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
 
 /**
  * Клиенты
@@ -27,10 +30,12 @@ public class ClientsController
 {
 	@Autowired
 	private ClientsDao dao;
+	@Autowired
+	private CountriesDao daoCountries;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody
-	List<ReferenceItem> list()
+	List<ClientsItem> list()
 	{
 		return dao.findAll();
 	}
@@ -47,9 +52,12 @@ public class ClientsController
 	public @ResponseBody
 	Result add(
 			@RequestParam String name,
-			@RequestParam String comment)
+			@RequestParam String comment,
+			@RequestParam Long country,
+			@RequestParam String dateBegin,
+			@RequestParam(required = false) String dateEnd)
 	{
-		dao.put(name, comment);
+		dao.put(name, comment, country, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 
@@ -58,9 +66,12 @@ public class ClientsController
 	Result update(
 			@PathVariable("id") Long id,
 			@RequestParam String name,
-			@RequestParam String comment)
+			@RequestParam String comment,
+			@RequestParam Long country,
+			@RequestParam String dateBegin,
+			@RequestParam(required = false) String dateEnd)
 	{
-		dao.updateById(id, name, comment);
+		dao.updateById(id, name, comment, country, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 
@@ -72,4 +83,13 @@ public class ClientsController
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
+
+	@RequestMapping(value = "/Countries", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	public @ResponseBody
+	List<SimpleItem> comboCountries(
+			@RequestParam(required = false) String query)
+	{
+		return daoCountries.findCombo(query);
+	}
+
 }

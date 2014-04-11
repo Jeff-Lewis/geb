@@ -5,11 +5,11 @@
 
 	var store = new Ext.data.JsonStore({
 		autoDestroy : true,
-		autoLoad : false,
+		autoLoad : true,
 		autoSave : false,
 		url : 'rest/Clients.do',
 		// root : 'info',
-		fields : [ 'id', 'name', 'comment' ],
+		fields : [ 'id', 'name', 'countryName', 'countryCode', 'dateBegin', 'dateEnd', 'comment' ],
 		sortInfo : {
 			field : 'name'
 		},
@@ -90,23 +90,33 @@
 		}), {
 			header : 'Наименование',
 			dataIndex : 'name',
+			width : 150
+		}, {
+			header : 'Страна',
+			dataIndex : 'countryName',
+			width : 100
+		}, {
+			header : 'Код',
+			dataIndex : 'countryCode',
 			width : 50
+		}, {
+			header : 'Дата начала',
+			dataIndex : 'dateBegin',
+			renderer : App.util.Renderer.date(),
+			width : 70
+		}, {
+			header : 'Дата окончания',
+			dataIndex : 'dateEnd',
+			renderer : App.util.Renderer.date(),
+			width : 70
 		}, {
 			header : 'Комментарий',
 			dataIndex : 'comment',
-			width : 50
+			width : 150
 		} ],
 		viewConfig : {
 			forceFit : true,
 			emptyText : 'Записи не найдены'
-		},
-		listeners : {
-			show : function(grid) {
-				// grid.getView().refresh();
-				setTimeout(function() {
-					grid.getStore().reload();
-				}, 0);
-			}
 		}
 	});
 })();

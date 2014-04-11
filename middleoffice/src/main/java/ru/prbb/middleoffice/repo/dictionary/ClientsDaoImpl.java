@@ -3,6 +3,7 @@
  */
 package ru.prbb.middleoffice.repo.dictionary;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
-import ru.prbb.middleoffice.domain.ReferenceItem;
+import ru.prbb.middleoffice.domain.ClientsItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
@@ -32,39 +33,45 @@ public class ClientsDaoImpl implements ClientsDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<ReferenceItem> findAll() {
+	public List<ClientsItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_SelectClients_sp}";
-		Query q = em.createNativeQuery(sql, ReferenceItem.class);
+		Query q = em.createNativeQuery(sql, ClientsItem.class);
 		return q.getResultList();
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public ReferenceItem findById(Long id) {
+	public ClientsItem findById(Long id) {
 		String sql = "{call dbo.mo_WebGet_SelectClients_sp ?}";
-		Query q = em.createNativeQuery(sql, ReferenceItem.class)
+		Query q = em.createNativeQuery(sql, ClientsItem.class)
 				.setParameter(1, id);
-		return (ReferenceItem) q.getSingleResult();
+		return (ClientsItem) q.getSingleResult();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int put(String name, String comment) {
-		String sql = "{call dbo.mo_WebSet_putClients_sp ?, ?}";
+	public int put(String name, String comment, Long country_id, Date date_begin, Date date_end) {
+		String sql = "{call dbo.mo_WebSet_putClients_sp ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name)
-				.setParameter(2, comment);
+				.setParameter(2, comment)
+				.setParameter(3, country_id)
+				.setParameter(4, date_begin)
+				.setParameter(5, date_end);
 		return q.executeUpdate();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int updateById(Long id, String name, String comment) {
-		String sql = "{call dbo.mo_WebSet_udClients_sp 'u', ?, ?, ?}";
+	public int updateById(Long id, String name, String comment, Long country_id, Date date_begin, Date date_end) {
+		String sql = "{call dbo.mo_WebSet_udClients_sp 'u', ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, name)
-				.setParameter(3, comment);
+				.setParameter(3, comment)
+				.setParameter(4, country_id)
+				.setParameter(5, date_begin)
+				.setParameter(6, date_end);
 		return q.executeUpdate();
 	}
 

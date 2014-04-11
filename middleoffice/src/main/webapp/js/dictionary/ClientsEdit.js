@@ -6,6 +6,9 @@
 	var id = 0;
 
 	var _name = Ext.id();
+	var _country = Ext.id();
+	var _dateBegin = Ext.id();
+	var _dateEnd = Ext.id();
 	var _comment = Ext.id();
 
 	var container = new Ext.FormPanel({
@@ -14,7 +17,7 @@
 		padding : 20,
 		labelWidth : 160,
 		width : 420,
-		height : 160,
+		height : 240,
 
 		items : [ {
 			id : _name,
@@ -22,6 +25,34 @@
 			fieldLabel : 'Наименование фонда',
 			width : 200,
 			allowBlank : false
+		}, {
+			id : _country,
+			xtype : 'combo',
+			fieldLabel : 'Страна',
+			displayField : 'name',
+			valueField : 'id',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'rest/Clients/Countries.do',
+				//root : 'info',
+				fields : [ 'id', 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			minChars : 2,
+			triggerAction : 'all'
+		}, {
+			id : _dateBegin,
+			xtype : 'datefield',
+			format : 'd.m.Y',
+			fieldLabel : 'Дата начала'
+		}, {
+			id : _dateEnd,
+			xtype : 'datefield',
+			format : 'd.m.Y',
+			fieldLabel : 'Дата окончания'
 		}, {
 			id : _comment,
 			xtype : 'textfield',
@@ -41,6 +72,11 @@
 		loadData : function(data) {
 			id = data.item.id;
 			Ext.getCmp(_name).setValue(data.item.name);
+			Ext.getCmp(_country).setValue(data.item.countryName);
+			Ext.getCmp(_dateBegin).setValue(
+					App.util.Renderer.date()(data.item.dateBegin));
+			Ext.getCmp(_dateEnd).setValue(
+					App.util.Renderer.date()(data.item.dateEnd));
 			Ext.getCmp(_comment).setValue(data.item.comment);
 		},
 		setWindow : function(window) {
@@ -54,6 +90,9 @@
 			url : 'rest/Clients/' + id + '.do',
 			params : {
 				name : Ext.getCmp(_name).getValue(),
+				country : Ext.getCmp(_country).getValue(),
+				dateBegin : App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue()),
+				dateEnd : App.util.Format.dateYMD(Ext.getCmp(_dateEnd).getValue()),
 				comment : Ext.getCmp(_comment).getValue()
 			},
 			timeout : 10 * 60 * 1000, // 10 min
