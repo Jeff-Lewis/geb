@@ -1,5 +1,6 @@
 package ru.prbb.analytics.rest.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SendingItem;
 import ru.prbb.analytics.domain.SimpleItem;
@@ -32,10 +34,44 @@ public class SendingController
 	public @ResponseBody
 	List<SendingItem> show(
 			@RequestParam String text,
-			@RequestParam String recp,
-			@RequestParam String recm)
+			@RequestParam(value = "recp", required = false) String recPhones,
+			@RequestParam(value = "recm", required = false) String recMails)
 	{
-		return dao.execute(text, recp, recm);
+		List<SendingItem> res = new ArrayList<>();
+
+		if (Utils.isNotEmpty(recMails)) {
+			String mails[] = recMails.split(",");
+			for (String mail : mails) {
+				if (Utils.isNotEmpty(mail)) {
+					if (mail.contains("@")) {
+						res.add(dao.sendMail(text, mail));
+					} else {
+						List<String> groupMails = dao.getMailByGroup(mail);
+						for (String groupMail : groupMails) {
+							res.add(dao.sendMail(text, groupMail));
+						}
+					}
+				}
+			}
+		}
+
+		if (Utils.isNotEmpty(recPhones)) {
+			String phones[] = recPhones.split(",");
+			for (String phone : phones) {
+				if (Utils.isNotEmpty(phone)) {
+					if (phone.startsWith("+")) {
+						res.add(dao.sendSms(text, phone));
+					} else {
+						List<String> groupPhones = dao.getPhoneByGroup(phone);
+						for (String groupPhone : groupPhones) {
+							res.add(dao.sendSms(text, groupPhone));
+						}
+					}
+				}
+			}
+		}
+
+		return res;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")

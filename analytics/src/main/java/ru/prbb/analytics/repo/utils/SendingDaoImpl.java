@@ -3,7 +3,6 @@
  */
 package ru.prbb.analytics.repo.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -30,7 +29,8 @@ public class SendingDaoImpl implements SendingDao
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
-	private List<String> getMailByGroup(String group) {
+	@Override
+	public List<String> getMailByGroup(String group) {
 		String sql = "select value from dbo.ncontacts_groups_view where gname=? and type='E-mail'";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, group);
@@ -39,18 +39,24 @@ public class SendingDaoImpl implements SendingDao
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
-	private List<String> getPhoneByGroup(String group) {
+	@Override
+	public List<String> getPhoneByGroup(String group) {
 		String sql = "select value from dbo.ncontacts_groups_view where gname=? and type='Мобильный телефон'";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, group);
 		return q.getResultList();
 	}
 
-	private SendingItem sendMail(final String text, final String receiver) {
-		String sql = "{call dbo.make_send_email ?, 'info', ?}";
-		Query q = em.createNativeQuery(sql, String.class)
-				.setParameter(1, text)
-				.setParameter(2, receiver);
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public SendingItem sendMail(String email_text, String email) {
+		String subject = "info";
+
+		String sql = "{call dbo.make_send_email ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, email_text)
+				.setParameter(2, subject)
+				.setParameter(3, email);
 		String res = "0";
 		try {
 			q.executeUpdate();
@@ -59,76 +65,33 @@ public class SendingDaoImpl implements SendingDao
 			res = e.getMessage();
 		}
 		SendingItem si = new SendingItem();
-		si.setMail(receiver);
+		si.setMail(email);
 		si.setStatus(res);
 		return si;
 	}
 
-	private SendingItem sendSms(final String text, final String receiver) {
-		String sql = "{call dbo.MakeSendSmsJava ?, ?, 2}";
-		Query q = em.createNativeQuery(sql, String.class)
-				.setParameter(1, text)
-				.setParameter(2, receiver);
-		String res = Utils.toString(q.getSingleResult());
-		SendingItem si = new SendingItem();
-		si.setMail(receiver);
-		si.setStatus("0".equals(res) ? "0" : res);
-		return si;
-	}
-
-	/**
-	 * @param recMails
-	 *            E-mail
-	 * @param recPhones
-	 *            SMS
-	 */
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<SendingItem> execute(String text, String recPhones, String recMails) {
-		List<SendingItem> res = new ArrayList<>();
+	public SendingItem sendSms(String sms_text, String phone) {
+		String sql = "{call dbo.MakeSendSmsJava ?, ?, 2}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, sms_text)
+				.setParameter(2, phone);
+		Object obj = q.getSingleResult();
+		String res = Utils.toString(obj);
+		SendingItem si = new SendingItem();
+		si.setMail(phone);
+		si.setStatus("0".equals(res) ? "0" : res);
 
-		if (Utils.isNotEmpty(recMails)) {
-			String mails[] = recMails.split(",");
-			for (String mail : mails) {
-				if (Utils.isNotEmpty(mail)) {
-					if (mail.contains("@")) {
-						res.add(sendMail(text, mail));
-					} else {
-						List<String> groupMails = getMailByGroup(mail);
-						for (String groupMail : groupMails) {
-							res.add(sendMail(text, groupMail));
-						}
-					}
-				}
-			}
-		}
-
-		if (Utils.isNotEmpty(recPhones)) {
-			String phones[] = recPhones.split(",");
-			for (String phone : phones) {
-				if (Utils.isNotEmpty(phone)) {
-					if (phone.startsWith("+")) {
-						res.add(sendSms(text, phone));
-						sleep();
-					} else {
-						List<String> groupPhones = getPhoneByGroup(phone);
-						for (String groupPhone : groupPhones) {
-							res.add(sendSms(text, groupPhone));
-							sleep();
-						}
-					}
-				}
-			}
-		}
-
-		return res;
-	}
-
-	private void sleep() {
 		try {
-			Thread.sleep(4000);
+			if ("0".equals(res)) {
+				Thread.sleep(4000);
+			}
 		} catch (InterruptedException ie) {
 			// TODO Auto-generated catch block
 		}
+
+		return si;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
