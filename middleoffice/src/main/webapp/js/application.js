@@ -9,10 +9,14 @@ Ext.Ajax.on('beforerequest', function(conn, options) {
 			animate : true
 		});
 	}
+	if (options.progress) {
+		Ext.MessageBox.progress(options.progress, '', '0 %');
+		Ext.MessageBox.updateProgress(0, '');
+	}
 });
 
 Ext.Ajax.on('requestcomplete', function(conn, response, options) {
-	if (options.waitMsg) {
+	if (options.waitMsg || options.progress) {
 		Ext.MessageBox.hide();
 	}
 	if ((response.responseText + '#').charAt(0) == '{') {
@@ -21,9 +25,9 @@ Ext.Ajax.on('requestcomplete', function(conn, response, options) {
 			if (msg.code == 'login') {
 				App.ui.sessionExpired();
 			} else {
-				if (!msg.success) {
-					App.ui.error("Неизвестная ошибка");
-				}
+//				if (!msg.success) {
+//					App.ui.error("Неизвестная ошибка");
+//				}
 			}
 		} else {
 			App.ui.error('requestcomplete<br/>' + response);

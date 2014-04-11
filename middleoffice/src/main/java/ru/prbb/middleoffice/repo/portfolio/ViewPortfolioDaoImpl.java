@@ -93,12 +93,13 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void executeCalc(Date date, Long security) {
-		String sql = "{call dbo.mo_WebSet_PlReport_sp ?, null, ?}";
+	public int executeCalc(Date begin_date, Long id_sec) {
+//		String sql = "{call dbo.mo_WebSet_PlReport_sp ?, null, ?}";
+		String sql = "{call dbo.PlPortfolioOnDate ?, ?}";
 		Query q = em.createNativeQuery(sql)
-				.setParameter(1, date)
-				.setParameter(2, security);
-		q.executeUpdate();
+				.setParameter(1, begin_date)
+				.setParameter(2, id_sec);
+		return q.executeUpdate();
 	}
 
 }

@@ -6,8 +6,6 @@ package ru.prbb;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -117,10 +115,8 @@ public class Utils {
 				if (date.length() > 10) {
 					date = date.substring(0, 10);
 				}
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", LOCALE);
-				long time = sdf.parse(date).getTime();
-				return new Date(time);
-			} catch (ParseException e) {
+				return Date.valueOf(date);
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 			}
 		}

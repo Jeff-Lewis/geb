@@ -68,6 +68,57 @@
 				security : futureSelect.getValue()
 			},
 			timeout : 60 * 60 * 1000, // 60 min
+			progress : 'Выполняется расчет портфеля.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					App.ui.message('Расчёт произведен!');
+				} else if (answer.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+
+		setTimeout(updateCalc, 100);
+	}
+
+	function updateCalc() {
+		Ext.Ajax.request({
+			url : 'rest/ViewPortfolio/Calculate/Progress.do',
+			timeout : 2000,
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					Ext.MessageBox.updateProgress(answer.value, Math.floor(100 * answer.value) + ' %', answer.text);
+					setTimeout(updateCalc, 100);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+    }
+
+	function OLDportfolioCalc() {
+		var fd = Ext.getCmp(_date).getValue();
+
+		if (fd == '') {
+			App.ui.error('Необходимо выбрать дату!');
+			return;
+		}
+
+		Ext.Ajax.request({
+			url : 'rest/ViewPortfolio/Calculate.do',
+			params : {
+				date : App.util.Format.dateYMD(fd),
+				security : futureSelect.getValue()
+			},
+			timeout : 60 * 60 * 1000, // 60 min
 			waitMsg : 'Выполняется расчет портфеля.',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
