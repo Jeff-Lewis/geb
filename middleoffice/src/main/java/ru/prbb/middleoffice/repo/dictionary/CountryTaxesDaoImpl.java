@@ -48,26 +48,28 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int put(Long securityType, Long country, Long broker, Double value, Date dateBegin) {
-		String sql = "{call dbo.mo_WebSet_putCountryTaxes_sp ?, ?, ?, ?, ?}";
+	public int put(Long securityType, Long country, Long broker, Double value, Date dateBegin, Long country_recipient_id) {
+		String sql = "{call dbo.mo_WebSet_putCountryTaxes_sp ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, securityType)
 				.setParameter(2, country)
 				.setParameter(3, broker)
 				.setParameter(4, value)
-				.setParameter(5, dateBegin);
+				.setParameter(5, dateBegin)
+				.setParameter(6, country_recipient_id);
 		return q.executeUpdate();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int updateById(Long id, Double value, Date dateBegin, Date dateEnd) {
-		String sql = "{call dbo.mo_WebSet_udCountryTaxes_sp 'u', ?, ?, ?, ?}";
+	public int updateById(Long id, Double value, Date dateBegin, Date dateEnd, Long country_recipient_id) {
+		String sql = "{call dbo.mo_WebSet_udCountryTaxes_sp 'u', ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, value)
 				.setParameter(3, dateBegin)
-				.setParameter(4, dateEnd);
+				.setParameter(4, dateEnd)
+				.setParameter(5, country_recipient_id);
 		return q.executeUpdate();
 	}
 

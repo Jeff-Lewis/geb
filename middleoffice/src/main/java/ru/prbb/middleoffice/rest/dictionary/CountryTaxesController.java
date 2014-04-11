@@ -61,9 +61,10 @@ public class CountryTaxesController
 			@RequestParam Long country,
 			@RequestParam Long broker,
 			@RequestParam Double value,
-			@RequestParam String dateBegin)
+			@RequestParam String dateBegin,
+			@RequestParam Long countryRecipient)
 	{
-		dao.put(securityType, country, broker, value, Utils.parseDate(dateBegin));
+		dao.put(securityType, country, broker, value, Utils.parseDate(dateBegin), countryRecipient);
 		return Result.SUCCESS;
 	}
 
@@ -72,10 +73,11 @@ public class CountryTaxesController
 	Result update(
 			@PathVariable("id") Long id,
 			@RequestParam Double value,
+			@RequestParam Long countryRecipient,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
-		dao.updateById(id, value, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
+		dao.updateById(id, value, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), countryRecipient);
 		return Result.SUCCESS;
 	}
 
@@ -99,6 +101,14 @@ public class CountryTaxesController
 	@RequestMapping(value = "/Countries", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	public @ResponseBody
 	List<SimpleItem> comboCountries(
+			@RequestParam(required = false) String query)
+	{
+		return daoCountries.findCombo(query);
+	}
+
+	@RequestMapping(value = "/RecipientCountries", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	public @ResponseBody
+	List<SimpleItem> comboRecipientCountries(
 			@RequestParam(required = false) String query)
 	{
 		return daoCountries.findCombo(query);

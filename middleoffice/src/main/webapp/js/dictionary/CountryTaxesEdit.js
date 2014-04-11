@@ -7,6 +7,7 @@
 
 	var _security = Ext.id();
 	var _country = Ext.id();
+	var _countryRecipient = Ext.id();
 	var _broker = Ext.id();
 	var _value = Ext.id();
 	var _dateBegin = Ext.id();
@@ -18,7 +19,7 @@
 		padding : 20,
 		labelWidth : 160,
 		width : 420,
-		height : 240,
+		height : 280,
 		defaults : {
 			width : 200
 		},
@@ -31,8 +32,28 @@
 		}, {
 			id : _country,
 			xtype : 'textfield',
-			fieldLabel : 'Страна',
+			fieldLabel : 'Страна эмитента',
 			readOnly : true
+		}, {
+			id : _countryRecipient,
+			xtype : 'combo',
+			fieldLabel : 'Страна получателя',
+			valueField : 'id',
+			displayField : 'name',
+			allowBlank : false,
+			emptyText : 'Выберите значение',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'rest/CountryTaxes/RecipientCountries.do',
+				// root : 'info',
+				fields : [ 'id', 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			triggerAction : 'all',
+			loadingText : 'Поиск...',
+			minChars : 2
 		}, {
 			id : _broker,
 			xtype : 'textfield',
@@ -65,14 +86,25 @@
 
 		loadData : function(data) {
 			idItem = data.item.id;
-			Ext.getCmp(_security).setValue(data.item.security_type);
+			Ext.getCmp(_security).setValue(data.item.securityType);
 			Ext.getCmp(_country).setValue(data.item.name);
+			Ext.getCmp(_countryRecipient).getStore().reload({
+		        callback : function(records, options, success) {
+			        if (success) {
+			        	var rn = this.find('name', data.item.recipientName);
+			        	if (rn >= 0) {
+			        		var r = this.getAt(rn);
+			        		Ext.getCmp(_countryRecipient).setValue(r.data.id);
+			        	}
+			        }
+		        }
+		    });
 			Ext.getCmp(_broker).setValue(data.item.broker);
 			Ext.getCmp(_value).setValue(data.item.value);
 			Ext.getCmp(_dateBegin).setValue(
-					App.util.Renderer.date()(data.item.date_begin));
+					App.util.Renderer.date()(data.item.dateBegin));
 			Ext.getCmp(_dateEnd).setValue(
-					App.util.Renderer.date()(data.item.date_end));
+					App.util.Renderer.date()(data.item.dateEnd));
 		},
 		setWindow : function(window) {
 			this.window = window;
@@ -85,6 +117,7 @@
 			url : 'rest/CountryTaxes/' + idItem + '.do',
 			params : {
 				value : Ext.getCmp(_value).getValue(),
+				countryRecipient : Ext.getCmp(_countryRecipient).getValue(),
 				dateBegin : App.util.Format.dateYMD(Ext.getCmp(_dateBegin)
 						.getValue()),
 				dateEnd : App.util.Format.dateYMD(Ext.getCmp(_dateEnd)

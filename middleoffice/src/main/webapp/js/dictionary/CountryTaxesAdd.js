@@ -5,6 +5,7 @@
 
 	var _security = Ext.id();
 	var _country = Ext.id();
+	var _countryRecipient = Ext.id();
 	var _broker = Ext.id();
 	var _value = Ext.id();
 	var _dateBegin = Ext.id();
@@ -15,7 +16,7 @@
 		padding : 20,
 		labelWidth : 160,
 		width : 420,
-		height : 220,
+		height : 250,
 		defaults : {
 			width : 200
 		},
@@ -43,7 +44,7 @@
 		}, {
 			id : _country,
 			xtype : 'combo',
-			fieldLabel : 'Страна',
+			fieldLabel : 'Страна эмитента',
 			valueField : 'id',
 			displayField : 'name',
 			allowBlank : false,
@@ -51,6 +52,26 @@
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/CountryTaxes/Countries.do',
+				// root : 'info',
+				fields : [ 'id', 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			triggerAction : 'all',
+			loadingText : 'Поиск...',
+			minChars : 2
+		}, {
+			id : _countryRecipient,
+			xtype : 'combo',
+			fieldLabel : 'Страна получателя',
+			valueField : 'id',
+			displayField : 'name',
+			allowBlank : false,
+			emptyText : 'Выберите значение',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'rest/CountryTaxes/RecipientCountries.do',
 				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {
@@ -114,6 +135,7 @@
 			params : {
 				securityType : Ext.getCmp(_security).getValue(),
 				country : Ext.getCmp(_country).getValue(),
+				countryRecipient : Ext.getCmp(_countryRecipient).getValue(),
 				broker : Ext.getCmp(_broker).getValue(),
 				value : Ext.getCmp(_value).getValue(),
 				dateBegin : App.util.Format.dateYMD(Ext.getCmp(_dateBegin)

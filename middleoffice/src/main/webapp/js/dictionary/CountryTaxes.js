@@ -9,8 +9,8 @@
 		autoSave : false,
 		url : 'rest/CountryTaxes.do',
 		// root : 'info',
-		fields : [ 'id', 'security_type', 'name', 'alpha3', 'broker', 'value',
-				'date_begin', 'date_end' ],
+		fields : [ 'id', 'securityType', 'name', 'alpha3', 'recipientName', 'recipientCode', 'broker', 'value',
+				'dateBegin', 'dateEnd' ],
 		sortInfo : {
 			field : 'name'
 		},
@@ -90,13 +90,19 @@
 		selModel : sm,
 		columns : [ new Ext.grid.RowNumberer(), {
 			header : 'Тип инструмента',
-			dataIndex : 'security_type'
+			dataIndex : 'securityType'
 		}, {
-			header : 'Страна',
+			header : 'Страна эмитента',
 			dataIndex : 'name'
 		}, {
 			header : 'Код',
 			dataIndex : 'alpha3'
+		}, {
+			header : 'Страна получателя',
+			dataIndex : 'recipientName'
+		}, {
+			header : 'Код',
+			dataIndex : 'recipientCode'
 		}, {
 			header : 'Брокер',
 			dataIndex : 'broker'
@@ -107,11 +113,11 @@
 			renderer : App.util.Renderer.number()
 		}, {
 			header : 'Начало периода',
-			dataIndex : 'date_begin',
+			dataIndex : 'dateBegin',
 			renderer : App.util.Renderer.date()
 		}, {
 			header : 'Конец периода',
-			dataIndex : 'date_end',
+			dataIndex : 'dateEnd',
 			renderer : App.util.Renderer.date()
 		} ],
 		viewConfig : {

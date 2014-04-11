@@ -34,9 +34,10 @@ public interface CountryTaxesDao {
 	 * @param broker
 	 * @param value
 	 * @param dateBegin
+	 * @param countryRecipient
 	 * @return
 	 */
-	public int put(Long securityType, Long country, Long broker, Double value, Date dateBegin);
+	public int put(Long securityType, Long country, Long broker, Double value, Date dateBegin, Long countryRecipient);
 
 	/**
 	 * 
@@ -44,9 +45,10 @@ public interface CountryTaxesDao {
 	 * @param value
 	 * @param dateBegin
 	 * @param dateEnd
+	 * @param countryRecipient
 	 * @return
 	 */
-	public int updateById(Long id, Double value, Date dateBegin, Date dateEnd);
+	public int updateById(Long id, Double value, Date dateBegin, Date dateEnd, Long countryRecipient);
 
 	/**
 	 * @param id
