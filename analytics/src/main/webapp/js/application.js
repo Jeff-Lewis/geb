@@ -9,10 +9,14 @@ Ext.Ajax.on('beforerequest', function(conn, options) {
 			animate : true
 		});
 	}
+	if (options.progress) {
+		Ext.MessageBox.progress(options.progress, '', '0 %');
+		Ext.MessageBox.updateProgress(0, '');
+	}
 });
 
 Ext.Ajax.on('requestcomplete', function(conn, response, options) {
-	if (options.waitMsg) {
+	if (options.waitMsg || options.progress) {
 		Ext.MessageBox.hide();
 	}
 	if ((response.responseText + '#').charAt(0) == '{') {
@@ -21,9 +25,9 @@ Ext.Ajax.on('requestcomplete', function(conn, response, options) {
 			if (msg.code == 'login') {
 				App.ui.sessionExpired();
 			} else {
-				if (!msg.success) {
-					App.ui.error("Неизвестная ошибка");
-				}
+//				if (!msg.success) {
+//					App.ui.error("Неизвестная ошибка");
+//				}
 			}
 		} else {
 			App.ui.error('requestcomplete<br/>' + response);
@@ -44,23 +48,9 @@ App.util.Renderer = (function() {
 			if (prec == undefined) {
 				prec = 3;
 			}
-			var format = '0,000.00';
-			switch (prec) {
-			case 6:
-				format = '0,000.000000';
-				break;
-			case 3:
-				format = '0,000.000';
-				break;
-			case 9:
-				format = '0,000.000000000';
-				break;
-			case 12:
-				format = '0,000.000000000000';
-				break;
-			case 0:
-				format = '0,000';
-				break;
+			var format = '0,000';
+			if (prec > 0) {
+				format = '0,000.' + String.leftPad('0', prec, '0');
 			}
 
 			return function(v) {
@@ -202,15 +192,25 @@ App.ui.sessionExpired = function() {
 	});
 };
 
+var countLoadMsg = 0;
+
 App.ui.listenersJsonStore = function() {
+
 	return {
 		beforeload : function(This, options) {
-			Ext.Msg.wait("Загрузка записей...",
-					Ext.form.BasicForm.prototype.waitTitle,
-					Ext.form.BasicForm.prototype.waitTitle);
+			++countLoadMsg;
+			if (countLoadMsg == 1) {
+				Ext.Msg.wait("Загрузка записей...",
+						Ext.form.BasicForm.prototype.waitTitle,
+						Ext.form.BasicForm.prototype.waitTitle);
+			}
 		},
 		load : function(This, records, options) {
-			Ext.Msg.hide();
+			--countLoadMsg;
+			if (countLoadMsg <= 0) {
+				countLoadMsg = 0;
+				Ext.Msg.hide();
+			}
 		}
 	};
 };

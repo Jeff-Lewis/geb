@@ -22,12 +22,12 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class BloombergParamsDaoImpl implements BloombergParamsDao
 {
 	@Autowired
 	private EntityManager em;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findPeriod() {
@@ -36,6 +36,7 @@ public class BloombergParamsDaoImpl implements BloombergParamsDao
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCalendar() {

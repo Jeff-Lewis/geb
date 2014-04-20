@@ -192,15 +192,25 @@ App.ui.sessionExpired = function() {
 	});
 };
 
+var countLoadMsg = 0;
+
 App.ui.listenersJsonStore = function() {
+
 	return {
 		beforeload : function(This, options) {
-			Ext.Msg.wait("Загрузка записей...",
-					Ext.form.BasicForm.prototype.waitTitle,
-					Ext.form.BasicForm.prototype.waitTitle);
+			++countLoadMsg;
+			if (countLoadMsg == 1) {
+				Ext.Msg.wait("Загрузка записей...",
+						Ext.form.BasicForm.prototype.waitTitle,
+						Ext.form.BasicForm.prototype.waitTitle);
+			}
 		},
 		load : function(This, records, options) {
-			Ext.Msg.hide();
+			--countLoadMsg;
+			if (countLoadMsg <= 0) {
+				countLoadMsg = 0;
+				Ext.Msg.hide();
+			}
 		}
 	};
 };
