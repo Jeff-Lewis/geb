@@ -193,6 +193,10 @@
 				<a href="#" onclick="menu.showPane(menu, 'utils/Brokers');">
 					Справочник брокеров </a></li>
 
+			<li><img class="icon-show-all" src="images/user-plus.png">
+				<a href="#" onclick="menu.showPane(menu, 'utils/Users');">
+					Справочник пользователей </a></li>
+
 		</ul>
 
 		<ul id="task-logs" class="x-hidden" title="Журнализация">
