@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,6 +30,8 @@ import ru.prbb.analytics.domain.SimpleItem;
 @Service
 public class RequestBDPovrDaoImpl implements RequestBDPovrDao
 {
+	private static final Log log = LogFactory.getLog(RequestBDPovrDaoImpl.class);
+
 	@Autowired
 	private EntityManager em;
 
@@ -59,6 +63,7 @@ public class RequestBDPovrDaoImpl implements RequestBDPovrDao
 			q.setParameter(3, d.value);
 			q.setParameter(4, d.period);
 			q.setParameter(5, d.blm_data_src_over);
+			log.info(d);
 			q.executeUpdate();
 		}
 	}
@@ -77,6 +82,22 @@ public class RequestBDPovrDaoImpl implements RequestBDPovrDao
 			this.value = value;
 			this.period = period;
 			this.blm_data_src_over = blm_data_src_over;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append(tempOrg);
+			builder.append("(param=");
+			builder.append(param);
+			builder.append(", value=");
+			builder.append(value);
+			builder.append(", period=");
+			builder.append(period);
+			builder.append(", blm_data_src_over=");
+			builder.append(blm_data_src_over);
+			builder.append(")");
+			return builder.toString();
 		}
 	}
 

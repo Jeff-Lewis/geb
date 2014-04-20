@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,6 +29,7 @@ import ru.prbb.analytics.domain.SimpleItem;
 @Service
 public class RequestBDHDaoImpl implements RequestBDHDao
 {
+	private static final Log log = LogFactory.getLog(RequestBDHDaoImpl.class);
 
 	@Autowired
 	private EntityManager em;
@@ -56,14 +59,15 @@ public class RequestBDHDaoImpl implements RequestBDHDao
 
 		String sql = "{call put_hist_data ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
-		for (HistData item : data) {
-			q.setParameter(1, item.security);
-			q.setParameter(2, item.params);
-			q.setParameter(3, item.date);
-			q.setParameter(4, item.value);
-			q.setParameter(5, item.period);
-			q.setParameter(6, item.curncy);
-			q.setParameter(7, item.calendar);
+		for (HistData d : data) {
+			q.setParameter(1, d.security);
+			q.setParameter(2, d.params);
+			q.setParameter(3, d.date);
+			q.setParameter(4, d.value);
+			q.setParameter(5, d.period);
+			q.setParameter(6, d.curncy);
+			q.setParameter(7, d.calendar);
+			log.info(d);
 			q.executeUpdate();
 		}
 	}
@@ -87,6 +91,26 @@ public class RequestBDHDaoImpl implements RequestBDHDao
 			this.period = period;
 			this.curncy = curncy;
 			this.calendar = calendar;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append(security);
+			builder.append("(params=");
+			builder.append(params);
+			builder.append(", date=");
+			builder.append(date);
+			builder.append(", value=");
+			builder.append(value);
+			builder.append(", period=");
+			builder.append(period);
+			builder.append(", curncy=");
+			builder.append(curncy);
+			builder.append(", calendar=");
+			builder.append(calendar);
+			builder.append(")");
+			return builder.toString();
 		}
 	}
 

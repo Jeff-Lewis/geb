@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,6 +29,8 @@ import ru.prbb.analytics.domain.SimpleItem;
 @Service
 public class RequestBDSDaoImpl implements RequestBDSDao
 {
+	private static final Log log = LogFactory.getLog(RequestBDSDaoImpl.class);
+
 	@Autowired
 	private EntityManager em;
 
@@ -174,6 +178,34 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			this.barr = barr;
 			this.year_return = year_return;
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append(tempOrg);
+			builder.append("[firm=");
+			builder.append(firm);
+			builder.append(", analyst=");
+			builder.append(analyst);
+			builder.append(", recom=");
+			builder.append(recom);
+			builder.append(", rating=");
+			builder.append(rating);
+			builder.append(", action_code=");
+			builder.append(action_code);
+			builder.append(", target_price=");
+			builder.append(target_price);
+			builder.append(", period=");
+			builder.append(period);
+			builder.append(", date=");
+			builder.append(date);
+			builder.append(", barr=");
+			builder.append(barr);
+			builder.append(", year_return=");
+			builder.append(year_return);
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 
 	private void putAnalysData(List<AnalysData> data) {
@@ -191,6 +223,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			q.setParameter(9, d.date);
 			q.setParameter(10, d.barr);
 			q.setParameter(11, d.year_return);
+			log.info(d);
 			q.executeUpdate();
 		}
 	}
@@ -216,6 +249,26 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			this.estimate_eps = estimate_eps;
 		}
 
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append(tempOrg);
+			builder.append("[period=");
+			builder.append(period);
+			builder.append(", ann_date=");
+			builder.append(ann_date);
+			builder.append(", ann_time=");
+			builder.append(ann_time);
+			builder.append(", actual_eps=");
+			builder.append(actual_eps);
+			builder.append(", comparable_eps=");
+			builder.append(comparable_eps);
+			builder.append(", estimate_eps=");
+			builder.append(estimate_eps);
+			builder.append("]");
+			return builder.toString();
+		}
+
 	}
 
 	private void putEarnsEps(final List<EarnsEpsData> data) {
@@ -229,6 +282,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			q.setParameter(5, d.actual_eps);
 			q.setParameter(6, d.comparable_eps);
 			q.setParameter(7, d.estimate_eps);
+			log.info(d);
 			q.executeUpdate();
 		}
 	}
@@ -244,6 +298,18 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			this.ead = ead;
 			this.eyap = eyap;
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append(tempOrg);
+			builder.append("[ead=");
+			builder.append(ead);
+			builder.append(", eyap=");
+			builder.append(eyap);
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 
 	private void putEarnsData(final List<EarnsData> data) {
@@ -253,6 +319,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			q.setParameter(1, d.tempOrg);
 			q.setParameter(2, d.ead);
 			q.setParameter(3, d.eyap);
+			log.info(d);
 			q.executeUpdate();
 		}
 	}
@@ -266,6 +333,16 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			this.sec = sec;
 			this.name = name;
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append(sec);
+			builder.append("[name=");
+			builder.append(name);
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 
 	private void putPeersProc(final List<PeersData> data) {
@@ -274,6 +351,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 		for (PeersData d : data) {
 			q.setParameter(1, d.sec);
 			q.setParameter(2, d.name);
+			log.info(d);
 			q.executeUpdate();
 		}
 	}
@@ -300,6 +378,28 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			this.group = group;
 			this.sub = sub;
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append(sec);
+			builder.append("[cur_mkt_cap=");
+			builder.append(cur_mkt_cap);
+			builder.append(", oper_roe=");
+			builder.append(oper_roe);
+			builder.append(", bs_tot_liab2=");
+			builder.append(bs_tot_liab2);
+			builder.append(", pe_ration=");
+			builder.append(pe_ration);
+			builder.append(", ebitda=");
+			builder.append(ebitda);
+			builder.append(", group=");
+			builder.append(group);
+			builder.append(", sub=");
+			builder.append(sub);
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 
 	private void putPeersData(final List<PeersDescData> data) {
@@ -314,6 +414,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			q.setParameter(6, d.ebitda);
 			q.setParameter(7, d.group);
 			q.setParameter(8, d.sub);
+			log.info(d);
 			q.executeUpdate();
 		}
 	}

@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,6 +29,7 @@ import ru.prbb.analytics.domain.SimpleItem;
 @Service
 public class RequestBDPDaoImpl implements RequestBDPDao
 {
+	private static final Log log = LogFactory.getLog(RequestBDPDaoImpl.class);
 
 	@Autowired
 	private EntityManager em;
@@ -52,6 +55,7 @@ public class RequestBDPDaoImpl implements RequestBDPDao
 			q.setParameter(1, d.security);
 			q.setParameter(2, d.param);
 			q.setParameter(3, d.value);
+			log.info(d);
 			q.executeUpdate();
 		}
 	}
@@ -66,6 +70,18 @@ public class RequestBDPDaoImpl implements RequestBDPDao
 			this.security = security;
 			this.param = param;
 			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder(40);
+			builder.append(security);
+			builder.append('(');
+			builder.append(param);
+			builder.append('=');
+			builder.append(value);
+			builder.append(')');
+			return builder.toString();
 		}
 	}
 
