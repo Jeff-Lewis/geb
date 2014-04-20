@@ -3,6 +3,7 @@
  */
 package ru.prbb.analytics.repo;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.LogContactItem;
 import ru.prbb.analytics.domain.LogMessagesItem;
+import ru.prbb.analytics.domain.LogUserActionItem;
 import ru.prbb.analytics.domain.SubscriptionItem;
 
 /**
@@ -77,6 +79,17 @@ public class LogDaoImpl implements LogDao
 			res.add(item);
 		}
 		return res;
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LogUserActionItem> getLogUserActions(Date date_b, Date date_e) {
+		String sql = "{call dbo.WebGet_SelectHist_sp ?, ?}";
+		Query q = em.createNativeQuery(sql, LogUserActionItem.class)
+				.setParameter(1, date_b)
+				.setParameter(2, date_e);
+		return q.getResultList();
 	}
 
 }

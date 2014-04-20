@@ -212,6 +212,10 @@
 				<a href="#" onclick="menu.showPane(menu, 'logs/LogSubscription');">
 					Журнал подписки </a></li>
 
+			<li><img class="icon-show-all" src="images/user-plus.png">
+				<a href="#" onclick="menu.showPane(menu, 'logs/LogUserActions');">
+					Журнал действий пользователя </a></li>
+
 		</ul>
 	</div>
 </body>
