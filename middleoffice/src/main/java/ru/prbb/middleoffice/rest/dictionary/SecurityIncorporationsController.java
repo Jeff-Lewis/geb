@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,12 +25,14 @@ import ru.prbb.middleoffice.repo.dictionary.SecurityIncorporationsDao;
  * Регистрация инструментов
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/SecurityIncorporations")
 public class SecurityIncorporationsController
 {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private SecurityIncorporationsDao dao;
 	@Autowired
@@ -37,64 +41,71 @@ public class SecurityIncorporationsController
 	private CountriesDao daoCountries;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<SecurityIncorporationListItem> list()
+	@ResponseBody
+	public List<SecurityIncorporationListItem> getItems()
 	{
+		log.info("GET SecurityIncorporations");
 		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData get(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET SecurityIncorporations: id={}", id);
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postAddItem(
 			@RequestParam Long security,
 			@RequestParam Long country,
 			@RequestParam String dateBegin)
 	{
+		log.info("POST SecurityIncorporations: security={}, country={}, dateBegin={}", Utils.toArray(security, country, dateBegin));
 		dao.put(security, country, Utils.parseDate(dateBegin));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result update(
+	@ResponseBody
+	public Result postUpdateItem(
 			@PathVariable("id") Long id,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
+		log.info("POST SecurityIncorporations: id={}, dateBegin={}, dateEnd={}", Utils.toArray(id, dateBegin, dateEnd));
 		dao.updateById(id, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL SecurityIncorporations: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO SecurityIncorporations: Securities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Countries", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboCountries(
+	@ResponseBody
+	public List<SimpleItem> comboCountries(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO SecurityIncorporations: Countries='{}'", query);
 		return daoCountries.findCombo(query);
 	}
 }

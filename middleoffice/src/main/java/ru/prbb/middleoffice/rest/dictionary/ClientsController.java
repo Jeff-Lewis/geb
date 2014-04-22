@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,48 +24,54 @@ import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
  * Клиенты
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/Clients")
 public class ClientsController
 {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private ClientsDao dao;
 	@Autowired
 	private CountriesDao daoCountries;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<ClientsItem> list()
+	@ResponseBody
+	public List<ClientsItem> getItems()
 	{
+		log.info("GET Clients");
 		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData get(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET Clients: id={}", id);
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postAddItem(
 			@RequestParam String name,
 			@RequestParam String comment,
 			@RequestParam Long country,
 			@RequestParam String dateBegin,
 			@RequestParam(required = false) String dateEnd)
 	{
+		log.info("POST Clients add: name={}, comment={}, country={}, dateBegin={}, dateEnd={}",
+				Utils.toArray(name, comment, country, dateBegin, dateEnd));
 		dao.put(name, comment, country, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result update(
+	@ResponseBody
+	public Result postUpdateItem(
 			@PathVariable("id") Long id,
 			@RequestParam String name,
 			@RequestParam String comment,
@@ -71,24 +79,28 @@ public class ClientsController
 			@RequestParam String dateBegin,
 			@RequestParam(required = false) String dateEnd)
 	{
+		log.info("POST Clients update: id={}, name={}, comment={}, country={}, dateBegin={}, dateEnd={}",
+				Utils.toArray(id, name, comment, country, dateBegin, dateEnd));
 		dao.updateById(id, name, comment, country, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result delete(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL Clients: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Countries", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboCountries(
+	@ResponseBody
+	public List<SimpleItem> comboCountries(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Clients: Countries='{}'", query);
 		return daoCountries.findCombo(query);
 	}
 

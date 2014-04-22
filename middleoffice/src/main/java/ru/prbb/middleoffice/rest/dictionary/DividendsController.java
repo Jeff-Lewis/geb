@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,12 +31,14 @@ import ru.prbb.middleoffice.repo.dictionary.FundsDao;
  * Дивиденды
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/Dividends")
 public class DividendsController
 {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private DividendsDao dao;
 	@Autowired
@@ -51,27 +55,31 @@ public class DividendsController
 	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<DividendItem> list(
+	@ResponseBody
+	public List<DividendItem> postItems(
 			@RequestParam Long clientId,
 			@RequestParam Long brokerId,
 			@RequestParam Long securityId,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
+		log.info("POST Dividends: clientId={}, brokerId={}, securityId={}, dateBegin={}, dateEnd={}",
+				Utils.toArray(clientId, brokerId, securityId, dateBegin, dateEnd));
 		return dao.findAll(securityId, clientId, brokerId, null,
 				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 	}
 
 	@RequestMapping(value = "/ExportXls", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] export(HttpServletResponse response,
+	public byte[] postExport(HttpServletResponse response,
 			@RequestParam Long clientId,
 			@RequestParam Long brokerId,
 			@RequestParam Long securityId,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
+		log.info("POST Dividends/ExportXls: clientId={}, brokerId={}, securityId={}, dateBegin={}, dateEnd={}",
+				Utils.toArray(clientId, brokerId, securityId, dateBegin, dateEnd));
 		List<DividendItem> list = dao.findAll(securityId, clientId, brokerId, null,
 				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 
@@ -126,8 +134,8 @@ public class DividendsController
 	}
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postAddItem(
 			@RequestParam Long securityId,
 			@RequestParam Long accountId,
 			@RequestParam Long fundId,
@@ -138,6 +146,8 @@ public class DividendsController
 			@RequestParam Double dividend,
 			@RequestParam Double extraCost)
 	{
+		log.info("POST Dividends/Add: securityId={}, accountId={}, fundId={}, currencyId={}, dateRecord={}, dateReceive={}, quantity={}, dividend={}, extraCost={}",
+				Utils.toArray(securityId, accountId, fundId, currencyId, dateRecord, dateReceive, quantity, dividend, extraCost));
 		dao.put(securityId, accountId, fundId, currencyId,
 				Utils.parseDate(dateRecord), Utils.parseDate(dateReceive),
 				quantity, dividend, extraCost);
@@ -145,62 +155,69 @@ public class DividendsController
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	DividendItem lookupById(
+	@ResponseBody
+	public DividendItem getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET Dividends: id={}", id);
 		return dao.findById(id);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result changeById(
 			@PathVariable("id") Long id,
 			@RequestParam String type,
 			@RequestParam String value)
 	{
+		log.info("POST Dividends: id={}, type={}, value={}", Utils.toArray(id, type, value));
 		dao.updateAttrById(id, type, value);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL Dividends: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboClients(
+	@ResponseBody
+	public List<SimpleItem> comboClients(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Dividends: Clients='{}'", query);
 		return daoClients.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Brokers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboBrokers(
+	@ResponseBody
+	public List<SimpleItem> comboBrokers(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Dividends: Brokers='{}'", query);
 		return daoBrokers.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Accounts", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboBrokerAccounts(
+	@ResponseBody
+	public List<SimpleItem> comboBrokerAccounts(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Dividends: Accounts='{}'", query);
 		return daoAccounts.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFunds(
+	@ResponseBody
+	public List<SimpleItem> comboFunds(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Dividends: Funds='{}'", query);
 		return daoFunds.findCombo(query);
 	}
 
@@ -209,6 +226,7 @@ public class DividendsController
 	List<SimpleItem> comboCurrency(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Dividends: Currencies='{}'", query);
 		return daoCurrencies.findCombo(query);
 	}
 
@@ -217,6 +235,7 @@ public class DividendsController
 	List<SimpleItem> comboEquities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Dividends: Equities='{}'", query);
 		return daoEquities.findCombo(query);
 	}
 

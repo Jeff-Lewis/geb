@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +32,14 @@ import ru.prbb.middleoffice.repo.dictionary.FundsDao;
  * Купоны (погашение)
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/Coupons")
 public class CouponsController
 {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private CouponsDao dao;
 	@Autowired
@@ -52,8 +56,8 @@ public class CouponsController
 	private CurrenciesDao daoCurrencies;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<CouponItem> list(
+	@ResponseBody
+	public List<CouponItem> list(
 			@RequestParam Long clientId,
 			@RequestParam Long brokerId,
 			@RequestParam Long securityId,
@@ -61,6 +65,8 @@ public class CouponsController
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
+		log.info("POST Coupons: clientId={}, brokerId={}, securityId={}, operationId={}, dateBegin={}, dateEnd={}",
+				Utils.toArray(clientId, brokerId, securityId, operationId, dateBegin, dateEnd));
 		return dao.findAll(securityId, clientId, brokerId, operationId,
 				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 	}
@@ -75,6 +81,9 @@ public class CouponsController
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
+		log.info("POST Coupons/ExportXls: clientId={}, brokerId={}, securityId={}, operationId={}, dateBegin={}, dateEnd={}",
+				Utils.toArray(clientId, brokerId, securityId, operationId, dateBegin, dateEnd));
+
 		List<CouponItem> list = dao.findAll(securityId, clientId, brokerId, operationId,
 				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 
@@ -131,8 +140,8 @@ public class CouponsController
 	}
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result add(
 			@RequestParam Long securityId,
 			@RequestParam Long accountId,
 			@RequestParam Long fundId,
@@ -144,6 +153,10 @@ public class CouponsController
 			@RequestParam Double extraCost,
 			@RequestParam Long operationId)
 	{
+		log.info("POST Coupons/Add: securityId={}, accountId={}, fundId={}, currencyId={}, dateRecord={}, dateReceive={},"
+				+ " quantity={}, coupon={}, extraCost={}, operationId={}",
+				Utils.toArray(securityId, accountId, fundId, currencyId, dateRecord, dateReceive,
+						quantity, coupon, extraCost, operationId));
 		dao.put(securityId, accountId, fundId, currencyId,
 				Utils.parseDate(dateRecord), Utils.parseDate(dateReceive),
 				quantity, coupon, extraCost, operationId);
@@ -151,20 +164,22 @@ public class CouponsController
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData lookupById(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET Coupons: id={}", id);
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result changeById(
+	@ResponseBody
+	public Result changeById(
 			@PathVariable("id") Long id,
 			@RequestParam String field,
 			@RequestParam String value)
 	{
+		log.info("POST Coupons: id={}, field={}, value={}", Utils.toArray(id, field, value));
 		if ("ACTUAL".equals(field)) {
 			dao.updateById(id, Utils.parseDate(value));
 		} else {
@@ -174,67 +189,75 @@ public class CouponsController
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL Coupons: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboClients(
+	@ResponseBody
+	public List<SimpleItem> comboClients(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Coupons: Clients='{}'", query);
 		return daoClients.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Brokers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboBrokers(
+	@ResponseBody
+	public List<SimpleItem> comboBrokers(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Coupons: Brokers='{}'", query);
 		return daoBrokers.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Bonds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboBonds(
+	@ResponseBody
+	public List<SimpleItem> comboBonds(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Coupons: Bonds='{}'", query);
 		return daoBonds.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Operations", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboOperations(
+	@ResponseBody
+	public List<SimpleItem> comboOperations(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Coupons: Operations='{}'", query);
 		return dao.findComboOperations(query);
 	}
 
 	@RequestMapping(value = "/Accounts", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboBrokerAccounts(
+	@ResponseBody
+	public List<SimpleItem> comboBrokerAccounts(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Coupons: Accounts='{}'", query);
 		return daoAccounts.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFunds(
+	@ResponseBody
+	public List<SimpleItem> comboFunds(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Coupons: Funds='{}'", query);
 		return daoFunds.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Currencies", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboCurrency(
+	@ResponseBody
+	public List<SimpleItem> comboCurrency(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Coupons: Currencies='{}'", query);
 		return daoCurrencies.findCombo(query);
 	}
 

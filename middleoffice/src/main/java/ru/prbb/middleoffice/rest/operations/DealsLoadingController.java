@@ -14,6 +14,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,7 @@ import ru.prbb.middleoffice.repo.operations.DealsLoadingDao.Record;
 @RequestMapping("/rest/DealsLoading")
 public class DealsLoadingController
 {
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private DealsLoadingDao dao;

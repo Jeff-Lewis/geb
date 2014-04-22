@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +41,8 @@ import ru.prbb.analytics.repo.model.BuildModelDao;
 @RequestMapping("/rest/Companies")
 public class CompaniesController
 {
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private CompaniesDao dao;
 	@Autowired
