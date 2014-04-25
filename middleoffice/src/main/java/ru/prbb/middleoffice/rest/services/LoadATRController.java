@@ -24,12 +24,12 @@ import ru.prbb.middleoffice.repo.services.LoadATRDao;
  * Загрузка ATR
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/LoadATR")
 public class LoadATRController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -40,8 +40,8 @@ public class LoadATRController
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData show(
+	@ResponseBody
+	public ResultData postShow(
 			@RequestParam String[] securities,
 			@RequestParam String typeMA,
 			@RequestParam Integer periodTA,
@@ -50,6 +50,9 @@ public class LoadATRController
 			@RequestParam String dateStart,
 			@RequestParam String dateEnd)
 	{
+		log.info("POST LoadATR: {}", securities);
+		log.info("POST LoadATR: typeMA={}, periodTA={}, period={}, calendar={}, dateStart={}, dateEnd={}",
+				Utils.toArray(typeMA, periodTA, period, calendar, dateStart, dateEnd));
 		List<Map<String, Object>> answer =
 				bs.executeAtrLoad(Utils.parseDate(dateStart), Utils.parseDate(dateEnd),
 						securities, typeMA, periodTA, period, calendar);
@@ -58,51 +61,57 @@ public class LoadATRController
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecurityItem> listSecurities(
+	@ResponseBody
+	public List<SecurityItem> listSecurities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long security)
 	{
+		log.info("POST LoadATR/Securities: filter={}, security={}", filter, security);
 		return daoSecurities.findAll(filter, security);
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilter(
+	@ResponseBody
+	public List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO LoadATR: Filter='{}'", query);
 		return daoSecurities.findComboFilter(query);
 	}
 
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilterSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO LoadATR: FilterSecurities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 
 	@RequestMapping(value = "/MAType", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboTypeMA(
+	@ResponseBody
+	public List<SimpleItem> comboTypeMA(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO LoadATR: MAType='{}'", query);
 		return dao.getTypeMA(query);
 	}
 
 	@RequestMapping(value = "/Period", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboPeriod(
+	@ResponseBody
+	public List<SimpleItem> comboPeriod(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO LoadATR: Period='{}'", query);
 		return dao.getPeriod(query);
 	}
 
 	@RequestMapping(value = "/Calendar", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboCalendar(
+	@ResponseBody
+	public List<SimpleItem> comboCalendar(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO LoadATR: Calendar='{}'", query);
 		return dao.getCalendar(query);
 	}
 }

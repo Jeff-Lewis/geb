@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ContactStaffItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.services.contacts.ContactsDao;
 @RequestMapping("/rest/Contacts")
 public class ContactsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -38,10 +40,26 @@ public class ContactsController
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> listAllMembers()
+	@ResponseBody
+	public List<SimpleItem> getItems()
 	{
+		log.info("GET Contacts");
 		return dao.findAll();
+	}
+
+	/**
+	 * Контакт
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public ResultData getItem(
+			@PathVariable("id") Long id)
+	{
+		log.info("GET Contacts: id={}", id);
+		return new ResultData(dao.findById(id));
 	}
 
 	/**
@@ -51,10 +69,11 @@ public class ContactsController
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postAddItem(
 			@RequestParam String name)
 	{
+		log.info("POST Contacts add: name={}", name);
 		dao.put(name);
 		return Result.SUCCESS;
 	}
@@ -67,27 +86,14 @@ public class ContactsController
 	 * @return
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result update(
+	@ResponseBody
+	public Result postUpdateItem(
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
+		log.info("POST Contacts: id={}, name={}", id, name);
 		dao.updateById(id, name);
 		return Result.SUCCESS;
-	}
-
-	/**
-	 * Контакт
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData lookupById(
-			@PathVariable("id") Long id)
-	{
-		return new ResultData(dao.findById(id));
 	}
 
 	/**
@@ -97,50 +103,55 @@ public class ContactsController
 	 * @return
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL Contacts: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Staff", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<ContactStaffItem> getStaff(
-			@RequestParam Long id)
+	@RequestMapping(value = "/{id}/Staff", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<ContactStaffItem> getStaff(
+			@PathVariable("id") Long id)
 	{
+		log.info("GET Contacts/Staff: id={}", id);
 		return dao.findAllStaff(id);
 	}
 
-	@RequestMapping(value = "/Staff/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result addStaff(
+	@RequestMapping(value = "/{id}/Staff", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	public Result postAddStaff(
 			@PathVariable("id") Long id,
 			@RequestParam String name,
 			@RequestParam Integer type)
 	{
+		log.info("POST Contacts/Staff: id={}, name={}, type={}", Utils.toArray(id, name, type));
 		dao.putStaff(id, name, type);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Staff/{id}/{cid}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result renStaff(
+	@RequestMapping(value = "/{id}/Staff/{cid}", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	public Result postUpdateStaff(
 			@PathVariable("id") Long id,
 			@PathVariable("cid") Long cid,
 			@RequestParam String name)
 	{
+		log.info("POST Contacts/Staff: id={}, cid={}, name={}", Utils.toArray(id, cid, name));
 		dao.updateByIdStaff(id, cid, name);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Staff/{id}/{cid}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result delStaff(
+	@RequestMapping(value = "/{id}/Staff/{cid}", method = RequestMethod.DELETE, produces = "application/json")
+	@ResponseBody
+	public Result deleteStaff(
 			@PathVariable("id") Long id,
 			@PathVariable("cid") Long cid)
 	{
+		log.info("POST Contacts/Staff: id={}, cid={}", id, cid);
 		dao.deleteByIdStaff(id, cid);
 		return Result.SUCCESS;
 	}

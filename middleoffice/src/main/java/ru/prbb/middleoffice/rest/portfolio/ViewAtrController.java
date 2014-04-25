@@ -22,12 +22,12 @@ import ru.prbb.middleoffice.repo.portfolio.ViewAtrDao;
  * Отображение ATR
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewAtr")
 public class ViewAtrController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -36,37 +36,41 @@ public class ViewAtrController
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData show(
+	@ResponseBody
+	public ResultData postShow(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long[] securities)
 	{
+		log.info("POST ViewAtr: dateBegin={}, dateEnd={}, securities={}", Utils.toArray(dateBegin, dateEnd, securities));
 		return new ResultData(dao.execute(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), securities));
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecurityItem> getSecurities(
+	@ResponseBody
+	public List<SecurityItem> getSecurities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long security)
 	{
+		log.info("POST ViewAtr: filter={}, security={}", filter, security);
 		return daoSecurities.findAll(filter, security);
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilter(
+	@ResponseBody
+	public List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewAtr: Filter={}", query);
 		return daoSecurities.findComboFilter(query);
 	}
 
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilterSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewAtr: FilterSecurities={}", query);
 		return daoSecurities.findCombo(query);
 	}
 }

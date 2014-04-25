@@ -23,24 +23,26 @@ import ru.prbb.middleoffice.repo.services.SendingDao;
  * Рассылка E-mail и SMS
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/Sending")
 public class SendingController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private SendingDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<SendingItem> show(
+	@ResponseBody
+	public List<SendingItem> postSend(
 			@RequestParam String text,
 			@RequestParam(value = "recp", required = false) String recPhones,
 			@RequestParam(value = "recm", required = false) String recMails)
 	{
+		log.info("POST Sending: recp=({}), recm=({})", recPhones, recMails);
+		log.info("POST Sending: text=" + text);
 		List<SendingItem> res = new ArrayList<>();
 
 		if (Utils.isNotEmpty(recMails)) {
@@ -79,10 +81,11 @@ public class SendingController
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData getText(
+	@ResponseBody
+	public ResultData getText(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET Sending: id={}", id);
 		String text;
 		switch (id.intValue()) {
 		case 0:
@@ -100,18 +103,20 @@ public class SendingController
 	}
 
 	@RequestMapping(value = "/Phone", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboPhone(
+	@ResponseBody
+	public List<SimpleItem> comboPhone(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Sending: Phone='{}'", query);
 		return dao.findComboPhone(query);
 	}
 
 	@RequestMapping(value = "/Mail", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboMail(
+	@ResponseBody
+	public List<SimpleItem> comboMail(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO Sending: Mail='{}'", query);
 		return dao.findComboMail(query);
 	}
 }

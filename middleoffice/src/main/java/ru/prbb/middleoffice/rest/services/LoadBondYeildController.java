@@ -27,12 +27,12 @@ import ru.prbb.middleoffice.repo.services.LoadBondYeildDao;
  * Загрузка доходности облигаций
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/LoadBondYeild")
 public class LoadBondYeildController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -43,12 +43,13 @@ public class LoadBondYeildController
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData show(
+	@ResponseBody
+	public ResultData show(
 			@RequestParam String dateStart,
 			@RequestParam(required = false) String dateEnd,
 			@RequestParam String[] securities)
 	{
+		log.info("POST LoadBondYeild: dateStart={}, dateEnd={}, securities={}", Utils.toArray(dateStart, dateEnd, securities));
 		if (null == dateEnd) {
 			final Calendar c = Calendar.getInstance(new Locale("RU", "ru"));
 			c.add(Calendar.DAY_OF_MONTH, -1);
@@ -64,27 +65,30 @@ public class LoadBondYeildController
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecurityItem> listSecurities(
+	@ResponseBody
+	public List<SecurityItem> listSecurities(
 			@RequestParam(defaultValue = "Bond") String filter,
 			@RequestParam(required = false) Long security)
 	{
+		log.info("GET LoadBondYeild/Securities: filter={}, security={}", filter, security);
 		return daoSecurities.findAll(filter, security);
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilter(
+	@ResponseBody
+	public List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO LoadBondYeild: Filter='{}'", query);
 		return daoSecurities.findComboFilter(query);
 	}
 
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilterSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO LoadBondYeild: FilterSecurities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 }

@@ -31,6 +31,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDetailedFinrezDao;
 @RequestMapping("/rest/ViewDetailedFinrez")
 public class ViewDetailedFinrezController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -43,26 +44,30 @@ public class ViewDetailedFinrezController
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<ViewDetailedFinrezItem> show(
+	@ResponseBody
+	public List<ViewDetailedFinrezItem> postShow(
 			@RequestParam Long security,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long client,
 			@RequestParam Long fund)
 	{
+		log.info("POST ViewDetailedFinrez: security={}, dateBegin={}, dateEnd={}, client={}, fund={}",
+				Utils.toArray(security, dateBegin, dateEnd, client, fund));
 		return dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] export(HttpServletResponse response,
+	public byte[] getExport(HttpServletResponse response,
 			@RequestParam Long security,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long client,
 			@RequestParam Long fund)
 	{
+		log.info("POST ViewDetailedFinrez/Export: security={}, dateBegin={}, dateEnd={}, client={}, fund={}",
+				Utils.toArray(security, dateBegin, dateEnd, client, fund));
 		List<ViewDetailedFinrezItem> list =
 				dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund);
 
@@ -119,26 +124,29 @@ public class ViewDetailedFinrezController
 	}
 
 	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboClients(
+	@ResponseBody
+	public List<SimpleItem> comboClients(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewDetailedFinrez: Clients='{}'", query);
 		return daoClients.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFunds(
+	@ResponseBody
+	public List<SimpleItem> comboFunds(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewDetailedFinrez: Funds='{}'", query);
 		return daoFunds.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewDetailedFinrez: Securities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 }

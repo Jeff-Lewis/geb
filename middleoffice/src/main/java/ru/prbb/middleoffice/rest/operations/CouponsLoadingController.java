@@ -38,16 +38,18 @@ import ru.prbb.middleoffice.repo.operations.CouponsLoadingDao.Record;
 @RequestMapping("/rest/CouponsLoading")
 public class CouponsLoadingController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private CouponsLoadingDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData upload(
+	@ResponseBody
+	public ResultData postUpload(
 			@RequestParam("upload") MultipartFile file)
 	{
+		log.info("POST CouponsLoading: " + file.getOriginalFilename());
 		List<Record> records = new ArrayList<>();
 
 		try (InputStream is = file.getInputStream()) {

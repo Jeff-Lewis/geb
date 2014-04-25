@@ -23,12 +23,12 @@ import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
  * Перекидка ЦБ между фондами
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/DealsTransfer")
 public class DealsTransferController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -39,8 +39,8 @@ public class DealsTransferController
 	private FundsDao daoFunds;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result save(
+	@ResponseBody
+	public Result postSave(
 			@RequestParam Long portfolioId,
 			@RequestParam Integer quantity,
 			@RequestParam Double price,
@@ -48,23 +48,27 @@ public class DealsTransferController
 			@RequestParam Integer batch,
 			@RequestParam String comment)
 	{
+		log.info("POST DealsTransfer: portfolioId={}, quantity={}, price={}, fundId={}, batch={}, comment={}",
+				Utils.toArray(portfolioId, quantity, price, fundId, batch, comment));
 		dao.execute(portfolioId, quantity, price, fundId, batch, comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<ViewPortfolioTransferItem> getPortfolio(
+	@ResponseBody
+	public List<ViewPortfolioTransferItem> postGetPortfolio(
 			@RequestParam String date)
 	{
+		log.info("POST DealsTransfer/Portfolio: date={}", date);
 		return daoPortfolio.executeSelect(Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFunds(
+	@ResponseBody
+	public List<SimpleItem> comboFunds(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO DealsTransfer: Funds='{}'", query);
 		return daoFunds.findCombo(query);
 	}
 }

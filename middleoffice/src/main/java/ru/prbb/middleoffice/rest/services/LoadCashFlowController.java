@@ -22,12 +22,12 @@ import ru.prbb.middleoffice.repo.services.LoadCashFlowDao;
  * Загрузка дат погашений
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/LoadCashFlow")
 public class LoadCashFlowController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -36,14 +36,15 @@ public class LoadCashFlowController
 	private LoadCashFlowDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData show(
+	@ResponseBody
+	public ResultData show(
 			@RequestParam String[] securities)
 	{
 		final Map<String, Long> ids = new HashMap<>();
 		final Map<String, String> dates = new HashMap<>();
 
 		for (String s : securities) {
+			log.info("POST LoadCashFlow: " + s);
 			final int p = s.indexOf(';');
 			final int p1 = s.indexOf(';', p + 1);
 			final Long id = new Long(s.substring(0, p));
@@ -60,9 +61,10 @@ public class LoadCashFlowController
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecurityCashFlowItem> getSecurities()
+	@ResponseBody
+	public List<SecurityCashFlowItem> getSecurities()
 	{
+		log.info("GET LoadCashFlow/Securities");
 		return dao.findAllSecurities();
 	}
 }

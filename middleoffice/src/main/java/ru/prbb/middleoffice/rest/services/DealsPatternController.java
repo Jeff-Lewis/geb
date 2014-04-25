@@ -28,6 +28,7 @@ import ru.prbb.middleoffice.repo.services.DealsPatternDao;
 @RequestMapping("/rest/DealsPattern")
 public class DealsPatternController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -35,32 +36,35 @@ public class DealsPatternController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<DealsPatternItem> show()
+	public List<DealsPatternItem> getShow()
 	{
+		log.info("GET DealsPattern");
 		return dao.show();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteById(
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL DealsPattern: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] download(HttpServletResponse response,
+	public byte[] getDownload(HttpServletResponse response,
 			@PathVariable("id") Long id)
 	{
+		log.info("GET DealsPattern/Download: id={}", id);
 		DealsPatternItem item = dao.getById(id);
 
 		String filename = item.getFile_name();
 		try {
 			//filename = URLEncoder.encode(item.getFile_name(), "UTF-8");
 		} catch (Exception e) {
-			// TODO: handle exception
+			log.error("Download DealsPattern", e);
 		}
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType(item.getFile_type() + "; charset=utf-8");
@@ -71,21 +75,23 @@ public class DealsPatternController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result upload(
+	public Result postUpload(
 			@RequestParam("upload") MultipartFile file)
 	{
 		if (file.isEmpty()) {
+			log.warn("POST DealsPattern/Upload: file is empty");
 			return Result.FAIL;
 		}
+		log.info("POST DealsPattern/Upload: " + file.getOriginalFilename());
 		try {
 			String name = file.getOriginalFilename();
 			String type = file.getContentType();
 			byte[] data = file.getBytes();
 			dao.add(name, type, data);
-			return Result.SUCCESS;
 		} catch (Exception e) {
-			// TODO: handle exception
+			log.error("Upload DealsPattern", e);
+			return Result.FAIL;
 		}
-		return Result.FAIL;
+		return Result.SUCCESS;
 	}
 }

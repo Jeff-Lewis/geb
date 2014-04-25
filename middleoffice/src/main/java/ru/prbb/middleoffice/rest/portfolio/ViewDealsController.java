@@ -32,6 +32,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDealsDao;
 @RequestMapping("/rest/ViewDeals")
 public class ViewDealsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -44,22 +45,24 @@ public class ViewDealsController
 	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<ViewDealsItem> show(
+	@ResponseBody
+	public List<ViewDealsItem> postShow(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker)
 	{
+		log.info("POST ViewDeals: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
 		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] export(HttpServletResponse response,
+	public byte[] getExport(HttpServletResponse response,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker)
 	{
+		log.info("POST ViewDeals/Export: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
 		List<ViewDealsItem> list =
 				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 
@@ -112,54 +115,60 @@ public class ViewDealsController
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result del(
+	@ResponseBody
+	public Result postDel(
 			@RequestParam Long[] deals)
 	{
+		log.info("DEL ViewDeals: ids={}", deals);
 		dao.deleteById(deals);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Set", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result set(
+	@ResponseBody
+	public Result postSet(
 			@RequestParam Long[] deals,
 			@RequestParam String field,
 			@RequestParam String value)
 	{
+		log.info("POST ViewDeals/Set: field={}, value={}, deals={}", Utils.toArray(field, value, deals));
 		dao.updateById(deals, field, value);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/TradeSystems", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboTradeSystems(
+	@ResponseBody
+	public List<SimpleItem> comboTradeSystems(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewDeals: TradeSystems='{}'", query);
 		return daoTradesystems.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Accounts", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboAccounts(
+	@ResponseBody
+	public List<SimpleItem> comboAccounts(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewDeals: Accounts='{}'", query);
 		return daoAccounts.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Portfolio", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboPortfolio(
+	@ResponseBody
+	public List<SimpleItem> comboPortfolio(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewDeals: Portfolio='{}'", query);
 		return daoEquities.findComboInvestmentPortfolio(query);
 	}
 
 	@RequestMapping(value = "/Tickers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboTickers(
+	@ResponseBody
+	public List<SimpleItem> comboTickers(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewDeals: Tickers='{}'", query);
 		return daoEquities.findComboPortfolio(query);
 	}
 }

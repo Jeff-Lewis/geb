@@ -27,12 +27,12 @@ import ru.prbb.middleoffice.repo.operations.DealsOneNewDao;
  * Загрузка единичной сделки
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/DealsOneNew")
 public class DealsOneNewController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -53,8 +53,8 @@ public class DealsOneNewController
 	private FuturesDao daoFutures;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result save(
+	@ResponseBody
+	public Result postSave(
 			@RequestParam String tradenum,
 			@RequestParam String batch,
 			@RequestParam String tradeticker,
@@ -71,6 +71,12 @@ public class DealsOneNewController
 			@RequestParam String futures,
 			@RequestParam Integer kindTicker)
 	{
+		log.info("POST DealsOneNew: tradenum={}, batch={}, tradeticker={}, tradedate={}, settleDate={}, tradeoper={},"
+				+ " tradeprice={}, quantity={}, currency={}, tradeSystem={}, account={}, portfolio={}, tickerSelect={},"
+				+ " futures={}, kindTicker={}",
+				Utils.toArray(tradenum, batch, tradeticker, tradedate, settleDate, tradeoper,
+						tradeprice, quantity, currency, tradeSystem, account, portfolio, tickerSelect,
+						futures, kindTicker));
 		dao.put(Utils.parseString(batch), tradenum, tradeticker,
 				Utils.parseDate(tradedate), Utils.parseDate(settleDate),
 				tradeoper, tradeprice, quantity, currency, tradeSystem, account,
@@ -80,58 +86,65 @@ public class DealsOneNewController
 	}
 
 	@RequestMapping(value = "/SecurityType", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboSecurityType(
+	@ResponseBody
+	public List<SimpleItem> comboSecurityType(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO DealsOneNew: SecurityType='{}'", query);
 		return daoSecurityType.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Currencies", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboCurrencies(
+	@ResponseBody
+	public List<SimpleItem> comboCurrencies(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO DealsOneNew: Currencies='{}'", query);
 		return daoCurrencies.findCombo(query);
 	}
 
 	@RequestMapping(value = "/TradeSystems", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboTradesystems(
+	@ResponseBody
+	public List<SimpleItem> comboTradesystems(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO DealsOneNew: TradeSystems='{}'", query);
 		return daoTradesystems.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Accounts", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboAccounts(
+	@ResponseBody
+	public List<SimpleItem> comboAccounts(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO DealsOneNew: Accounts='{}'", query);
 		return daoBrokerAccounts.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Portfolio", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboPortfolio(
+	@ResponseBody
+	public List<SimpleItem> comboPortfolio(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO DealsOneNew: Portfolio='{}'", query);
 		return daoEquities.findComboInvestmentPortfolio(query);
 	}
 
 	@RequestMapping(value = "/Tickers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO DealsOneNew: Tickers='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Futures", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFutures(
+	@ResponseBody
+	public List<SimpleItem> comboFutures(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO DealsOneNew: Futures='{}'", query);
 		return daoFutures.findCombo(query);
 	}
 }

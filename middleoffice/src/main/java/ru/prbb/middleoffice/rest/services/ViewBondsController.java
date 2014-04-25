@@ -23,12 +23,12 @@ import ru.prbb.middleoffice.repo.services.ViewBondsDao;
  * Редактирование облигаций
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewBonds")
 public class ViewBondsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -39,54 +39,60 @@ public class ViewBondsController
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postAdd(
 			@RequestParam Long code,
 			@RequestParam String ticker)
 	{
+		log.info("POST ViewBonds/Add: code={}, ticker={}", code, ticker);
 		dao.put(code, ticker);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result del(
+	@ResponseBody
+	public Result postDel(
 			@RequestParam Long code,
 			@RequestParam String ticker)
 	{
+		log.info("POST ViewBonds/Del: code={}, ticker={}", code, ticker);
 		dao.del(code, ticker);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<PortfolioItem> showPortfolio()
+	@ResponseBody
+	public List<PortfolioItem> getPortfolio()
 	{
+		log.info("GET ViewBonds/Portfolio");
 		return daoEquities.findAllBonds();
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecurityItem> listSecurities(
+	@ResponseBody
+	public List<SecurityItem> listSecurities(
 			@RequestParam(defaultValue = "Bond") String filter,
 			@RequestParam(required = false) Long security)
 	{
+		log.info("POST ViewBonds/Securities: filter={}, security={}", filter, security);
 		return daoSecurities.findAll("Bond", security);
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilter(
+	@ResponseBody
+	public List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewBonds: Filter='{}'", query);
 		return daoSecurities.findComboFilter(query);
 	}
 
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilterSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewBonds: FilterSecurities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 }

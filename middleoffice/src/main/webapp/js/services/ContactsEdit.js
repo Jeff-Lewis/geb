@@ -4,22 +4,15 @@
 (function() {
 
 	var idContact = 0;
+	var baseUrl = '';
 
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Contacts/Staff.do',
+		url : 'rest/Contacts/0/Staff.do',
 		// root : 'info',
 		fields : [ 'cid', 'value' ]
 	});
-
-	function reload() {
-		info.reload({
-			params : {
-				id : idContact
-			}
-		});
-	}
 
 	var sm = new Ext.grid.RowSelectionModel({
 		singleSelect : true
@@ -68,7 +61,7 @@
 				text : 'Добавить',
 				handler : function() {
 					Ext.Ajax.request({
-						url : 'rest/Contacts/Staff/' + idContact + '.do',
+						url : baseUrl + '/Staff.do',
 						params : {
 							name : Ext.getCmp(_name).getValue(),
 							type : Ext.getCmp(_sms).getValue() ? 1 : 2
@@ -78,7 +71,7 @@
 						success : function(xhr) {
 							var answer = Ext.decode(xhr.responseText);
 							if (answer.success) {
-								reload();
+								info.reload();
 							} else if (answer.code == 'login') {
 								App.ui.sessionExpired();
 							} else {
@@ -118,8 +111,7 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'rest/Contacts/Staff/' + idContact + '/'
-					+ sm.getSelected().data.cid + '.do',
+			url : baseUrl + '/Staff/' + sm.getSelected().data.cid + '.do',
 			params : {
 				name : text
 			},
@@ -128,7 +120,7 @@
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
-					reload();
+					info.reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -151,15 +143,14 @@
 	function delContactAjax() {
 		Ext.Ajax.request({
 			method : 'DELETE',
-			url : 'rest/Contacts/Staff/' + idContact + '/'
-					+ sm.getSelected().data.cid + '.do',
+			url : baseUrl + '/Staff/' + sm.getSelected().data.cid + '.do',
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Удаление',
 			success : function(xhr) {
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Контакт удален!');
-					reload();
+					info.reload();
 				} else if (answer.code == 'login') {
 					App.ui.sessionExpired();
 				} else {
@@ -209,8 +200,12 @@
 
 		loadData : function(data) {
 			idContact = data.item.id;
+			baseUrl = 'rest/Contacts/' + idContact;
+
 			this.setTitle('Редактирование контакта: ' + data.item.name);
-			reload();
+
+			info.proxy.setUrl(baseUrl + '/Staff.do', true);
+			info.reload();
 		}
 	});
 })();

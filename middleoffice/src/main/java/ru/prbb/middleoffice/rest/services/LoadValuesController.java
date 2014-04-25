@@ -22,12 +22,12 @@ import ru.prbb.middleoffice.repo.services.LoadValuesDao;
  * Загрузка номинала
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/LoadValues")
 public class LoadValuesController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -36,13 +36,14 @@ public class LoadValuesController
 	private LoadValuesDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData show(
+	@ResponseBody
+	public ResultData show(
 			@RequestParam String[] securities)
 	{
 		final Map<String, Long> ids = new HashMap<>();
 
 		for (String s : securities) {
+			log.info("POST LoadValues: " + s);
 			final int p = s.indexOf(':');
 			final Long id = new Long(s.substring(0, p));
 			final String name = s.substring(p + 1);
@@ -56,9 +57,10 @@ public class LoadValuesController
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecurityValuesItem> listSecurities()
+	@ResponseBody
+	public List<SecurityValuesItem> listSecurities()
 	{
+		log.info("GET LoadValues/Securities");
 		return dao.findAllSecurities();
 	}
 }

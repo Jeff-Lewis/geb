@@ -25,12 +25,12 @@ import ru.prbb.middleoffice.repo.services.RiskRewardSetupParamsDao;
  * Задание параметров отчета RR
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/RiskRewardSetupParams")
 public class RiskRewardSetupParamsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -39,25 +39,27 @@ public class RiskRewardSetupParamsController
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<RiskRewardSetupParamsItem> list(
+	@ResponseBody
+	public List<RiskRewardSetupParamsItem> getItems(
 			@RequestParam Long security,
 			@RequestParam String date)
 	{
+		log.info("POST RiskRewardSetupParams: security={}, date={}", security, date);
 		return dao.findAll(security, Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData get(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET RiskRewardSetupParams: id={}", id);
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postAddItem(
 			@RequestParam Long[] securities,
 			@RequestParam Double slip,
 			@RequestParam Double riskTheor,
@@ -65,12 +67,14 @@ public class RiskRewardSetupParamsController
 			@RequestParam Double discount,
 			@RequestParam String dateBegin)
 	{
+		log.warn("POST RiskRewardSetupParams: securities={}, slip={}, riskTheor={}, riskPract={}, discount={}, dateBegin={}",
+				Utils.toArray(securities, slip, riskTheor, riskPract, discount, dateBegin));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Adds", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result adds(
+	@ResponseBody
+	public Result postAddItems(
 			@RequestParam Long[] securities,
 			@RequestParam Double slip,
 			@RequestParam Double riskTheor,
@@ -78,12 +82,14 @@ public class RiskRewardSetupParamsController
 			@RequestParam Double discount,
 			@RequestParam String dateBegin)
 	{
+		log.warn("POST RiskRewardSetupParams: securities={}, slip={}, riskTheor={}, riskPract={}, discount={}, dateBegin={}",
+				Utils.toArray(securities, slip, riskTheor, riskPract, discount, dateBegin));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result update(
+	@ResponseBody
+	public Result postUpdateItem(
 			@PathVariable("id") Long id,
 			@RequestParam Double slip,
 			@RequestParam Double riskTheor,
@@ -92,47 +98,54 @@ public class RiskRewardSetupParamsController
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd)
 	{
+		log.warn("POST RiskRewardSetupParams: id={}, slip={}, riskTheor={}, riskPract={}, discount={}, dateBegin={}, dateEnd={}",
+				Utils.toArray(id, slip, riskTheor, riskPract, discount, dateBegin, dateEnd));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL RiskRewardSetupParams: id={}", id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> showSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO RiskRewardSetupParams: Securities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Add/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecurityItem> listSecurities(
+	@ResponseBody
+	public List<SecurityItem> postSecurities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long security)
 	{
+		log.info("COMBO RiskRewardSetupParams/Add: filter={}, security={}", filter, security);
 		return daoSecurities.findAll(filter, security);
 	}
 
 	@RequestMapping(value = "/Add/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilter(
+	@ResponseBody
+	public List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO RiskRewardSetupParams/Add: Filter='{}'", query);
 		return daoSecurities.findComboFilter(query);
 	}
 
 	@RequestMapping(value = "/Add/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilterSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO RiskRewardSetupParams/Add: FilterSecurities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 }

@@ -24,12 +24,12 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDealsREPODao;
  * Сделки РЕПО
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewDealsREPO")
 public class ViewDealsREPOController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -38,50 +38,56 @@ public class ViewDealsREPOController
 	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<ViewDealsREPOItem> show(
+	@ResponseBody
+	public List<ViewDealsREPOItem> postShow(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long security)
 	{
+		log.info("POST ViewDealsREPO: dateBegin={}, dateEnd={}, security={}", Utils.toArray(dateBegin, dateEnd, security));
 		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), security);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData get(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET ViewDealsREPO: id={}", id);
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result set(
+	@ResponseBody
+	public Result postUpdateItem(
 			@PathVariable("id") Long id,
 			@RequestParam Double rate,
 			@RequestParam Integer quantity,
 			@RequestParam Double price,
 			@RequestParam Integer days)
 	{
+		log.info("POST ViewDealsREPO: id={}, rate={}, quantity={}, price={}, days={}",
+				Utils.toArray(id, rate, quantity, price, days));
 		dao.updateById(id, rate, quantity, price, days);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL ViewDealsREPO: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboEquities(
+	@ResponseBody
+	public List<SimpleItem> comboEquities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewDealsREPO: Equities='{}'", query);
 		return daoEquities.findCombo(query);
 	}
 }

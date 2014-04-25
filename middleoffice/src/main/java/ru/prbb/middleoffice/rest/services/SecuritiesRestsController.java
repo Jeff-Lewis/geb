@@ -25,12 +25,12 @@ import ru.prbb.middleoffice.repo.services.SecuritiesRestsDao;
  * Верификация остатков
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/SecuritiesRests")
 public class SecuritiesRestsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -43,48 +43,54 @@ public class SecuritiesRestsController
 	private FundsDao daoFunds;
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecuritiesRestsItem> list(
+	@ResponseBody
+	public List<SecuritiesRestsItem> postItems(
 			@RequestParam Long security,
 			@RequestParam Long client,
 			@RequestParam Long fund,
 			@RequestParam Integer batch,
 			@RequestParam String date)
 	{
+		log.info("POST SecuritiesRests: security={}, fund={}, client={}, batch={}, date={}",
+				Utils.toArray(security, fund, client, batch, date));
 		return dao.execute(security, fund, client, batch, Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result get(
+	@ResponseBody
+	public Result postCheckFlag(
 			@PathVariable("id") Long id,
 			@RequestParam Byte checkFlag)
 	{
+		log.info("POST SecuritiesRests: id={}, checkFlag={}", id, checkFlag);
 		dao.updateById(id, checkFlag);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> showEquities(
+	@ResponseBody
+	public List<SimpleItem> comboEquities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO SecuritiesRests: Equities='{}'", query);
 		return daoEquities.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> showClients(
+	@ResponseBody
+	public List<SimpleItem> comboClients(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO SecuritiesRests: Clients='{}'", query);
 		return daoClients.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> showFunds(
+	@ResponseBody
+	public List<SimpleItem> comboFunds(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO SecuritiesRests: Funds='{}'", query);
 		return daoFunds.findCombo(query);
 	}
 

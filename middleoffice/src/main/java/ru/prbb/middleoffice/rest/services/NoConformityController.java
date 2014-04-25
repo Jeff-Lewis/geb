@@ -27,23 +27,26 @@ import ru.prbb.middleoffice.repo.services.NoConformityDao;
 @RequestMapping("/rest/NoConformity")
 public class NoConformityController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private NoConformityDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<NoConformityItem> show()
+	@ResponseBody
+	public List<NoConformityItem> getShow()
 	{
+		log.info("GET NoConformity");
 		return dao.show();
 	}
 
 	@RequestMapping(value = "/Delete", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result delete(
+	@ResponseBody
+	public Result postDelete(
 			@RequestParam Long[] ids)
 	{
+		log.info("POST NoConformity: ids={}", ids);
 		dao.delete(ids);
 		return Result.SUCCESS;
 	}
@@ -52,6 +55,7 @@ public class NoConformityController
 	@ResponseBody
 	public byte[] export(HttpServletResponse response)
 	{
+		log.info("GET NoConformity/ExportXls");
 		List<NoConformityItem> list = dao.show();
 
 		Export exp = Export.newInstance();

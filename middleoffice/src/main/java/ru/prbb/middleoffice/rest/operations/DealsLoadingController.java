@@ -38,16 +38,18 @@ import ru.prbb.middleoffice.repo.operations.DealsLoadingDao.Record;
 @RequestMapping("/rest/DealsLoading")
 public class DealsLoadingController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private DealsLoadingDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData upload(
+	@ResponseBody
+	public ResultData postUpload(
 			@RequestParam("upload") MultipartFile file)
 	{
+		log.info("POST DealsLoading: " + file.getOriginalFilename());
 		List<Record> records = new ArrayList<>();
 
 		try (InputStream is = file.getInputStream()) {

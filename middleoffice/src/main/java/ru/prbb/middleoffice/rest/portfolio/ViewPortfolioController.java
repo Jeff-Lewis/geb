@@ -36,30 +36,33 @@ import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 @RequestMapping("/rest/ViewPortfolio")
 public class ViewPortfolioController
 {
+
 	private static final String PROGRESS = "Progress";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	
+
 	@Autowired
 	private ViewPortfolioDao dao;
 	@Autowired
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<ViewPortfolioItem> show(
+	@ResponseBody
+	public List<ViewPortfolioItem> postShow(
 			@RequestParam String date,
 			@RequestParam Long security)
 	{
+		log.info("POST ViewPortfolio: date={}, security={}", date, security);
 		return dao.executeSelect(Utils.parseDate(date), security);
 	}
 
 	@RequestMapping(value = "/Calculate", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result calculate(HttpServletRequest request,
+	@ResponseBody
+	public Result postCalculate(HttpServletRequest request,
 			@RequestParam String date,
 			@RequestParam Long security)
 	{
+		log.info("POST ViewPortfolio/Calculate: date={}, security={}", date, security);
 		HttpSession session = request.getSession(false);
 		if (null == session) {
 			return Result.FAIL;
@@ -104,8 +107,8 @@ public class ViewPortfolioController
 	}
 
 	@RequestMapping(value = "/Calculate/Progress", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultProgress progress(HttpServletRequest request)
+	@ResponseBody
+	public ResultProgress getProgress(HttpServletRequest request)
 	{
 		HttpSession session = request.getSession(false);
 		if (null == session) {
@@ -120,10 +123,11 @@ public class ViewPortfolioController
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] export(HttpServletResponse response,
+	public byte[] getExport(HttpServletResponse response,
 			@RequestParam String date,
 			@RequestParam Long security)
 	{
+		log.info("GET ViewPortfolio/Export: date={}, security={}", date, security);
 		List<ViewPortfolioItem> list =
 				dao.executeSelect(Utils.parseDate(date), security);
 
@@ -172,10 +176,11 @@ public class ViewPortfolioController
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewPortfolio: Securities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 }

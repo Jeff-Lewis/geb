@@ -33,6 +33,7 @@ import ru.prbb.middleoffice.repo.portfolio.TransferOperationsDao;
 @RequestMapping("/rest/TransferOperations")
 public class TransferOperationsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -43,30 +44,33 @@ public class TransferOperationsController
 	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<TransferOperationsListItem> show(
+	@ResponseBody
+	public List<TransferOperationsListItem> postShow(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker)
 	{
+		log.info("POST TransferOperations: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
 		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData get(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET TransferOperations: id={}", id);
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] export(HttpServletResponse response,
+	public byte[] getExport(HttpServletResponse response,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker)
 	{
+		log.info("GET TransferOperations/Export: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
 		List<TransferOperationsListItem> list =
 				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 
@@ -113,21 +117,23 @@ public class TransferOperationsController
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result del(
+	@ResponseBody
+	public Result deleteItem(
 			@RequestParam Long[] ids)
 	{
+		log.info("DEL TransferOperations: ids={}", ids);
 		dao.deleteById(ids);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Set", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result set(
+	@ResponseBody
+	public Result postSet(
 			@RequestParam Long[] ids,
 			@RequestParam String field,
 			@RequestParam String value)
 	{
+		log.info("POST TransferOperations/Set: field={}, value={}, ids={}", Utils.toArray(field, value, ids));
 		char ch = Character.toUpperCase(field.charAt(0));
 		StringBuilder sb = new StringBuilder(field);
 		sb.setCharAt(0, ch);
@@ -138,18 +144,20 @@ public class TransferOperationsController
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFunds(
+	@ResponseBody
+	public List<SimpleItem> comboFunds(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO TransferOperations: Funds='{}'", query);
 		return daoFunds.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Tickers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboTickers(
+	@ResponseBody
+	public List<SimpleItem> comboTickers(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO TransferOperations: Tickers='{}'", query);
 		return daoEquities.findComboPortfolio(query);
 	}
 }

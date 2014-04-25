@@ -23,12 +23,12 @@ import ru.prbb.middleoffice.repo.services.ViewShareDao;
  * Редактирование акций
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewShare")
 public class ViewShareController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -39,54 +39,60 @@ public class ViewShareController
 	private SecuritiesDao daoSecurities;
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postAdd(
 			@RequestParam Long code,
 			@RequestParam String deal)
 	{
+		log.info("POST ViewShare/Add: code={}, deal={}", code, deal);
 		dao.put(code, deal);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result del(
+	@ResponseBody
+	public Result postDel(
 			@RequestParam Long code,
 			@RequestParam String deal)
 	{
+		log.info("POST ViewShare/Del: code={}, deal={}", code, deal);
 		dao.del(code, deal);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<PortfolioItem> showPortfolio()
+	@ResponseBody
+	public List<PortfolioItem> getPortfolio()
 	{
+		log.info("GET ViewShare/Portfolio");
 		return daoEquities.findAllPortfolio();
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SecurityItem> listSecurities(
+	@ResponseBody
+	public List<SecurityItem> listSecurities(
 			@RequestParam(defaultValue = "Equity") String filter,
 			@RequestParam(required = false) Long security)
 	{
+		log.info("POST ViewShare/Securities: filter={}, security={}", filter, security);
 		return daoSecurities.findAll(filter, security);
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilter(
+	@ResponseBody
+	public List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewShare: Filter='{}'", query);
 		return daoSecurities.findComboFilter(query);
 	}
 
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilterSecurities(
+	@ResponseBody
+	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO ViewShare: FilterSecurities='{}'", query);
 		return daoSecurities.findCombo(query);
 	}
 }

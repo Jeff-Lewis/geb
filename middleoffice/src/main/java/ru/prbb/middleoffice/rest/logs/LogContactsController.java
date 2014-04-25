@@ -18,20 +18,20 @@ import ru.prbb.middleoffice.repo.LogDao;
  * Журнал изменений справочника контактов
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/LogContacts")
 public class LogContactsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private LogDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<LogContactItem> postItems(
+	@ResponseBody
+	public List<LogContactItem> postItems(
 			@RequestParam String start,
 			@RequestParam String stop)
 	{

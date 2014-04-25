@@ -27,12 +27,12 @@ import ru.prbb.middleoffice.repo.portfolio.SecurityRiscsDao;
  * Заданные параметры риска
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/SecurityRiscs")
 public class SecurityRiscsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -45,28 +45,31 @@ public class SecurityRiscsController
 	private FundsDao daoFunds;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<SecurityRiscsItem> show(
+	@ResponseBody
+	public List<SecurityRiscsItem> postShow(
 			@RequestParam Long security,
 			@RequestParam Long client,
 			@RequestParam Long fund,
 			@RequestParam Integer batch,
 			@RequestParam String date)
 	{
+		log.info("POST SecurityRiscs: security={}, fund={}, batch={}, client={}, date={}",
+				Utils.toArray(security, fund, batch, client, date));
 		return dao.findAll(security, fund, batch, client, Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData get(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET SecurityRiscs: id={}", id);
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result set(
+	@ResponseBody
+	public Result postUpdateItem(
 			@PathVariable("id") Long id,
 			@RequestParam Long client,
 			@RequestParam Long fund,
@@ -78,41 +81,49 @@ public class SecurityRiscsController
 			@RequestParam String dateEnd,
 			@RequestParam String comment)
 	{
+		log.info("POST SecurityRiscs: id={}, client={}, fund={}, batch={}, riskATH={}, riskAVG={}, stopLoss={},"
+				+ " dateBegin={}, dateEnd={}, comment={}",
+				Utils.toArray(id, client, fund, batch, riskATH, riskAVG, stopLoss,
+						dateBegin, dateEnd, comment));
 		dao.updateById(id, client, fund, batch, riskATH, riskAVG, stopLoss,
 				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result deleteById(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL SecurityRiscs: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboEquities(
+	@ResponseBody
+	public List<SimpleItem> comboEquities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO SecurityRiscs: Equities='{}'", query);
 		return daoEquities.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboClients(
+	@ResponseBody
+	public List<SimpleItem> comboClients(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO SecurityRiscs: Clients='{}'", query);
 		return daoClients.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFunds(
+	@ResponseBody
+	public List<SimpleItem> comboFunds(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO SecurityRiscs: Funds='{}'", query);
 		return daoFunds.findCombo(query);
 	}
 }

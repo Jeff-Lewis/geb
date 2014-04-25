@@ -33,41 +33,42 @@ import ru.prbb.middleoffice.repo.operations.DealsLoadingREPODao.Record;
  * Загрузка сделок РЕПО из файла
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/DealsLoadingREPO")
 public class DealsLoadingREPOController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private DealsLoadingREPODao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData upload(
+	@ResponseBody
+	public ResultData postUpload(
 			@RequestParam("upload") MultipartFile file)
 	{
+		log.info("POST DealsLoadingREPO: " + file.getOriginalFilename());
 		List<Record> records = new ArrayList<>();
 
 		try (InputStream is = file.getInputStream()) {
-				final XSSFWorkbook wb2007 = new XSSFWorkbook(is);
-				final Sheet sheet = wb2007.getSheetAt(0);
-				final Iterator<Row> itRows = sheet.rowIterator();
+			final XSSFWorkbook wb2007 = new XSSFWorkbook(is);
+			final Sheet sheet = wb2007.getSheetAt(0);
+			final Iterator<Row> itRows = sheet.rowIterator();
 
-				// Пропустим строку с заголовками
-				if (itRows.hasNext()) {
-					itRows.next();
-				}
+			// Пропустим строку с заголовками
+			if (itRows.hasNext()) {
+				itRows.next();
+			}
 
-				while (itRows.hasNext()) {
-					final XSSFRow row = (XSSFRow) itRows.next();
+			while (itRows.hasNext()) {
+				final XSSFRow row = (XSSFRow) itRows.next();
 				final Record record = new Record(row);
-					if (!record.deal_num.isEmpty()) {
-						records.add(record);
-					}
+				if (!record.deal_num.isEmpty()) {
+					records.add(record);
 				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

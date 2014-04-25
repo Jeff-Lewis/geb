@@ -146,8 +146,10 @@ public class DividendsController
 			@RequestParam Double dividend,
 			@RequestParam Double extraCost)
 	{
-		log.info("POST Dividends/Add: securityId={}, accountId={}, fundId={}, currencyId={}, dateRecord={}, dateReceive={}, quantity={}, dividend={}, extraCost={}",
-				Utils.toArray(securityId, accountId, fundId, currencyId, dateRecord, dateReceive, quantity, dividend, extraCost));
+		log.info("POST Dividends/Add: securityId={}, accountId={}, fundId={}, currencyId={},"
+				+ " dateRecord={}, dateReceive={}, quantity={}, dividend={}, extraCost={}",
+				Utils.toArray(securityId, accountId, fundId, currencyId,
+						dateRecord, dateReceive, quantity, dividend, extraCost));
 		dao.put(securityId, accountId, fundId, currencyId,
 				Utils.parseDate(dateRecord), Utils.parseDate(dateReceive),
 				quantity, dividend, extraCost);
@@ -222,8 +224,8 @@ public class DividendsController
 	}
 
 	@RequestMapping(value = "/Currencies", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboCurrency(
+	@ResponseBody
+	public List<SimpleItem> comboCurrency(
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO Dividends: Currencies='{}'", query);
@@ -231,8 +233,8 @@ public class DividendsController
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboEquities(
+	@ResponseBody
+	public List<SimpleItem> comboEquities(
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO Dividends: Equities='{}'", query);
