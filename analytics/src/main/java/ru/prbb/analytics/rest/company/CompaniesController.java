@@ -184,13 +184,13 @@ public class CompaniesController
 			@RequestParam String period,
 			@RequestParam String eps)
 	{
-		Map<String, Object> params = new HashMap<>();
+		Map<String, String> params = new HashMap<>();
 		params.put("bloomberg_code", Utils.parseString(bloomCode));
 		params.put("adr", Utils.parseString(adr));
 		params.put("currency", Utils.parseString(currency_calc));
 		params.put("pivot_group", Utils.parseString(group));
-		params.put("koef", Utils.isEmpty(koefZero) ? null : new Double(koefZero));
-		params.put("new_koef", Utils.isEmpty(koefOne) ? null : new Double(koefOne));
+		params.put("koef", Utils.parseString(koefZero));
+		params.put("new_koef", Utils.parseString(koefOne));
 		params.put("period", Utils.parseString(period));
 		params.put("eps", Utils.parseString(eps));
 

@@ -54,7 +54,7 @@ public interface CompaniesDao {
 	 * @param id
 	 * @param params
 	 */
-	void updateById(Long id, Map<String, Object> params);
+	void updateById(Long id, Map<String, String> params);
 
 	/**
 	 * @param id
