@@ -1,5 +1,5 @@
 /**
- * Праздники
+ * Праздники - добавление
  */
 (function() {
 
@@ -18,12 +18,16 @@
 			autoDestroy : true,
 			url : 'rest/Holidays/Countries.do',
 			// root : 'info',
-			fields : [ 'id', 'name' ]
+			fields : [ 'id', 'name' ],
+			sortInfo : {
+				field : 'name'
+			}
 		}),
 		emptyText : 'Выберите страну',
 		loadingText : 'Поиск...',
 		triggerAction : 'all',
-		editable : false
+		minChars : 2,
+		allowBlank : false
 	});
 
 	var container = new Ext.FormPanel({
