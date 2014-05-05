@@ -3,10 +3,8 @@
  */
 package ru.prbb.agent.web;
 
-import java.util.Arrays;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +20,7 @@ import ru.prbb.agent.service.BloombergServices;
 @RequestMapping("/HistoricalDataRequest")
 public class HistoricalDataRequestController {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
@@ -32,7 +30,7 @@ public class HistoricalDataRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
-	public String get() {
+	public String getHelp() {
 		log.trace("GET");
 
 		return "Выполнить запрос HistoricalDataRequest"
@@ -50,23 +48,22 @@ public class HistoricalDataRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public Object execute(
+	public Object postExecute(
 			@RequestParam(required = false, defaultValue = "HistoricalDataRequest") String name,
 			@RequestParam String dateStart,
 			@RequestParam String dateEnd,
 			@RequestParam String[] securities,
-			@RequestParam String[] fields) {
-
-		if (log.isInfoEnabled()) {
-			log.info("POST execute " + dateStart + ", " + dateEnd);
-			log.info("POST execute " + Arrays.asList(securities));
-			log.info("POST execute " + Arrays.asList(fields));
-		}
+			@RequestParam String[] fields)
+	{
+		log.info("POST HistoricalDataRequest: name={}", name);
+		log.info("POST HistoricalDataRequest: dateStart={}, dateEnd={}", dateStart, dateEnd);
+		log.info("POST HistoricalDataRequest: securities={}", (Object) securities);
+		log.info("POST HistoricalDataRequest: fields={}", (Object) fields);
 
 		try {
 			return bs.executeHistoricalDataRequest(name, dateStart, dateEnd, securities, fields);
 		} catch (Exception e) {
-			log.error("POST execute " + e.getMessage(), e);
+			log.error("POST HistoricalDataRequest " + e.getMessage(), e);
 			return e;
 		}
 	}

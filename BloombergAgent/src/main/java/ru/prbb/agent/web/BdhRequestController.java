@@ -3,10 +3,8 @@
  */
 package ru.prbb.agent.web;
 
-import java.util.Arrays;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +20,7 @@ import ru.prbb.agent.service.BloombergServices;
 @RequestMapping("/BdhRequest")
 public class BdhRequestController {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
@@ -32,8 +30,8 @@ public class BdhRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
-	public String get() {
-		log.trace("GET");
+	public String getHelp() {
+		log.trace("GET help");
 
 		return "Выполнить запрос //blp/refdata, HistoricalDataRequest"
 				+ "\n"
@@ -53,7 +51,7 @@ public class BdhRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public Object execute(
+	public Object getExecute(
 			@RequestParam(required = false, defaultValue = "BdhRequest") String name,
 			@RequestParam String dateStart,
 			@RequestParam String dateEnd,
@@ -61,20 +59,19 @@ public class BdhRequestController {
 			@RequestParam String calendar,
 			@RequestParam String[] currencies,
 			@RequestParam String[] securities,
-			@RequestParam String[] fields) {
-
-		if (log.isInfoEnabled()) {
-			log.info("POST execute " + dateStart + ", " + dateEnd + ", " + period + ", " + calendar);
-			log.info("POST execute " + Arrays.asList(currencies));
-			log.info("POST execute " + Arrays.asList(securities));
-			log.info("POST execute " + Arrays.asList(fields));
-		}
+			@RequestParam String[] fields)
+	{
+		log.info("POST BdhRequest: name={}", name);
+		log.info("POST BdhRequest: dateStart={}, dateEnd={}, period={}, calendar={}", dateStart, dateEnd, period, calendar);
+		log.info("POST BdhRequest: currencies={}", (Object) currencies);
+		log.info("POST BdhRequest: securities={}", (Object) securities);
+		log.info("POST BdhRequest: fields={}", (Object) fields);
 
 		try {
 			return bs.executeBdhRequest(name, dateStart, dateEnd, period, calendar,
 					currencies, securities, fields);
 		} catch (Exception e) {
-			log.error("POST execute " + e.getMessage(), e);
+			log.error("POST BdhRequest " + e.getMessage(), e);
 			return e;
 		}
 	}

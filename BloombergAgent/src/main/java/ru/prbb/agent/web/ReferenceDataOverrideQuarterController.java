@@ -3,10 +3,8 @@
  */
 package ru.prbb.agent.web;
 
-import java.util.Arrays;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +20,7 @@ import ru.prbb.agent.service.BloombergServices;
 @RequestMapping("/ReferenceDataOverrideQuarter")
 public class ReferenceDataOverrideQuarterController {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
@@ -32,7 +30,7 @@ public class ReferenceDataOverrideQuarterController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
-	public String get() {
+	public String getHelp() {
 		log.trace("GET");
 
 		return "Выполнить запрос //blp/refdata"
@@ -50,24 +48,23 @@ public class ReferenceDataOverrideQuarterController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public Object execute(
+	public Object postExecute(
 			@RequestParam(required = false, defaultValue = "BdpRequestOverrideQuarter") String name,
 			@RequestParam String[] securities,
 			@RequestParam String[] fields,
 			@RequestParam String[] currencies,
-			@RequestParam String over) {
-
-		if (log.isInfoEnabled()) {
-			log.info("POST execute " + Arrays.asList(securities));
-			log.info("POST execute " + Arrays.asList(fields));
-			log.info("POST execute " + Arrays.asList(currencies));
-			log.info("POST execute " + over);
-		}
+			@RequestParam String over)
+	{
+		log.info("POST ReferenceDataOverrideQuarter: name={}", name);
+		log.info("POST ReferenceDataOverrideQuarter: securities={}", (Object) securities);
+		log.info("POST ReferenceDataOverrideQuarter: fields={}", (Object) fields);
+		log.info("POST ReferenceDataOverrideQuarter: currencies={}", (Object) currencies);
+		log.info("POST ReferenceDataOverrideQuarter: over={}", over);
 
 		try {
 			return bs.executeBdpRequestOverrideQuarter(name, securities, fields, currencies, over);
 		} catch (Exception e) {
-			log.error("POST execute " + e.getMessage(), e);
+			log.error("POST ReferenceDataOverrideQuarter " + e.getMessage(), e);
 			return e;
 		}
 	}

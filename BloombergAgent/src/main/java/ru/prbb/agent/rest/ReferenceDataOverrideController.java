@@ -9,15 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import ru.prbb.agent.service.BloombergServices;
 
 /**
  * @author RBr
  */
-@RestController
-@RequestMapping("/ReferenceDataOverride")
+//@RestController
+//@RequestMapping("/ReferenceDataOverride")
 public class ReferenceDataOverrideController {
 
 	private final Log log = LogFactory.getLog(getClass());

@@ -3,12 +3,11 @@
  */
 package ru.prbb.agent.web;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +23,7 @@ import ru.prbb.agent.service.BloombergServices;
 @RequestMapping("/LoadRateCouponRequest")
 public class LoadRateCouponRequestController {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
@@ -34,7 +33,7 @@ public class LoadRateCouponRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
-	public String get() {
+	public String getHelp() {
 		log.trace("GET");
 
 		return "Выполнить запрос LoadRateCouponRequest"
@@ -49,13 +48,12 @@ public class LoadRateCouponRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public Object execute(
+	public Object postExecute(
 			@RequestParam(required = false, defaultValue = "Загрузка ставки по купонам") String name,
-			@RequestParam String[] ids) {
-
-		if (log.isInfoEnabled()) {
-			log.info("POST execute " + Arrays.asList(ids));
-		}
+			@RequestParam String[] ids)
+	{
+		log.info("POST LoadRateCouponRequest: name={}", name);
+		log.info("POST LoadRateCouponRequest: ids={}", (Object) ids);
 
 		try {
 			Map<String, Long> _ids = new HashMap<>(ids.length, 1);
@@ -67,7 +65,7 @@ public class LoadRateCouponRequestController {
 			}
 			return bs.executeLoadRateCouponRequest(name, _ids);
 		} catch (Exception e) {
-			log.error("POST execute " + e.getMessage(), e);
+			log.error("POST LoadRateCouponRequest " + e.getMessage(), e);
 			return e;
 		}
 	}

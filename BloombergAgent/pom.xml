@@ -20,10 +20,7 @@
 		<dependency>
 			<groupId>com.bloomberg</groupId>
 			<artifactId>blpapi</artifactId>
-			<version>3.4.5</version>
-			<systemPath>${basedir}\lib\blpapi\blpapi-3.4.5-5.jar</systemPath>
-			<scope>system</scope>
-			<optional>true</optional>
+			<version>3.4.5-5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

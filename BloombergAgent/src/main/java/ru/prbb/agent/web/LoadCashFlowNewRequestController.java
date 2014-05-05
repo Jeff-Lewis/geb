@@ -20,15 +20,15 @@ import ru.prbb.agent.service.BloombergServices;
  * @author RBr
  */
 @RestController
-@RequestMapping("/LoadCashFlowRequest")
-public class LoadCashFlowRequestController {
+@RequestMapping("/LoadCashFlowRequestNew")
+public class LoadCashFlowNewRequestController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public LoadCashFlowRequestController(BloombergServices bs) {
+	public LoadCashFlowNewRequestController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -54,9 +54,9 @@ public class LoadCashFlowRequestController {
 			@RequestParam String[] ids,
 			@RequestParam String[] dates)
 	{
-		log.info("POST LoadCashFlowRequest: name={}", (Object) name);
-		log.info("POST LoadCashFlowRequest: ids={}", (Object) ids);
-		log.info("POST LoadCashFlowRequest: dates={}", (Object) dates);
+		log.info("POST LoadCashFlowRequestNew: name={}", name);
+		log.info("POST LoadCashFlowRequestNew: ids={}", (Object) ids);
+		log.info("POST LoadCashFlowRequestNew: dates={}", (Object) dates);
 
 		try {
 			Map<String, Long> _ids = new HashMap<>(ids.length, 1);
@@ -73,9 +73,9 @@ public class LoadCashFlowRequestController {
 				String security = s.substring(p + 1);
 				_dates.put(security, date);
 			}
-			return bs.executeLoadCashFlowRequest(name, _ids, _dates);
+			return bs.executeLoadCashFlowRequestNew(name, _ids, _dates);
 		} catch (Exception e) {
-			log.error("POST LoadCashFlowRequest " + e.getMessage(), e);
+			log.error("POST LoadCashFlowRequestNew " + e.getMessage(), e);
 			return e;
 		}
 	}

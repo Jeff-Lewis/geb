@@ -3,8 +3,8 @@
  */
 package ru.prbb.agent.web;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +20,7 @@ import ru.prbb.agent.service.BloombergServices;
 @RequestMapping("/FieldInfoRequest")
 public class FieldInfoRequestController {
 
-	private final Log log = LogFactory.getLog(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
@@ -30,7 +30,7 @@ public class FieldInfoRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
-	public String get() {
+	public String getHelp() {
 		log.trace("GET");
 
 		return "FieldInfoRequest //blp/apiflds, FieldInfoRequest"
@@ -45,18 +45,17 @@ public class FieldInfoRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public Object execute(
+	public Object postExecute(
 			@RequestParam(required = false, defaultValue = "FieldInfoRequest") String name,
-			@RequestParam String code) {
-
-		if (log.isInfoEnabled()) {
-			log.info("POST execute " + code);
-		}
+			@RequestParam String code)
+	{
+		log.info("POST FieldInfoRequest: name={}", name);
+		log.info("POST FieldInfoRequest: code={}", code);
 
 		try {
 			return bs.executeFieldInfoRequest(name, code);
 		} catch (Exception e) {
-			log.error("POST execute " + e.getMessage(), e);
+			log.error("POST FieldInfoRequest " + e.getMessage(), e);
 			return e;
 		}
 	}
