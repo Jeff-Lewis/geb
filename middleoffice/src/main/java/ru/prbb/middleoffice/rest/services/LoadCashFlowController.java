@@ -60,6 +60,30 @@ public class LoadCashFlowController
 		return new ResultData(dao.execute(answer));
 	}
 
+	@RequestMapping(value = "/New", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	ResultData showNew(
+			@RequestParam String[] securities)
+	{
+		final Map<String, Long> ids = new HashMap<>();
+		final Map<String, String> dates = new HashMap<>();
+
+		for (String s : securities) {
+			final int p = s.indexOf(';');
+			final int p1 = s.indexOf(';', p + 1);
+			final Long id = new Long(s.substring(0, p));
+			final String date = s.substring(p + 1, p1);
+			final String name = s.substring(p1 + 1);
+
+			ids.put(name, id);
+			dates.put(name, date);
+		}
+
+		List<Map<String, Object>> answer = bs.executeCashFlowLoadNew(ids, dates);
+
+		return new ResultData(dao.execute(answer));
+	}
+
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
 	public List<SecurityCashFlowItem> getSecurities()

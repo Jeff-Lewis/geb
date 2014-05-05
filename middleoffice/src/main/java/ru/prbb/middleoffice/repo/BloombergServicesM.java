@@ -217,6 +217,30 @@ public final class BloombergServicesM {
 	}
 
 	/**
+	 * Загрузка дат погашений
+	 * 
+	 * @param ids
+	 *            [ security -> id ]
+	 * @param dates
+	 *            [ security -> date ]
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> executeCashFlowLoadNew(Map<String, Long> ids, Map<String, String> dates) {
+		List<NameValuePair> nvps = new ArrayList<>();
+		nvps.addAll(createList("ids", ids));
+		for (Entry<String, String> entry : dates.entrySet()) {
+			String date = entry.getValue();
+			String security = entry.getKey();
+			nvps.add(new BasicNameValuePair("dates", date + ";" + security));
+		}
+
+		String response = executeHttpRequest("/LoadCashFlowRequestNew", nvps);
+		return (List<Map<String, Object>>) deserialize(response);
+	}
+
+	/**
 	 * Загрузка номинала
 	 * 
 	 * @param ids
