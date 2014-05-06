@@ -4,6 +4,7 @@
 package ru.prbb.bloomberg.request;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ru.prbb.Utils;
 import ru.prbb.bloomberg.core.BloombergRequest;
 import ru.prbb.bloomberg.core.BloombergSession;
 import ru.prbb.bloomberg.core.MessageHandler;
@@ -49,27 +51,33 @@ public class CashFlowLoadRequestNew implements BloombergRequest, MessageHandler 
 
 	@Override
 	public void execute(String name) {
+		Calendar cYear10 = Calendar.getInstance(Utils.LOCALE);
+		cYear10.add(Calendar.YEAR, -10);
+		cYear10.set(Calendar.MONTH, Calendar.JANUARY);
+		cYear10.set(Calendar.DAY_OF_MONTH, 1);
+		String dateStartYear = Utils.toStringYMD2(cYear10.getTime());
+		
 		final BloombergSession bs = new BloombergSession(name);
 		bs.start();
 		try {
 			final Service service = bs.getService("//blp/refdata");
 
+			final Request request = service.createRequest("ReferenceDataRequest");
+			
+			final Element _securities = request.getElement("securities");
 			for (String security : ids.keySet()) {
-				final Request request = service.createRequest("ReferenceDataRequest");
-
-				final Element _securities = request.getElement("securities");
 				_securities.appendValue(security);
-
-				final Element _fields = request.getElement("fields");
-				_fields.appendValue(FIELD);
-
-				final Element _overrides = request.getElement("overrides");
-				final Element overrid = _overrides.appendElement();
-				overrid.setElement("fieldId", "USER_LOCAL_TRADE_DATE");
-				overrid.setElement("value", dates.get(security));
-
-				bs.sendRequest(request, this);
 			}
+			
+			final Element _fields = request.getElement("fields");
+			_fields.appendValue(FIELD);
+			
+			final Element _overrides = request.getElement("overrides");
+			final Element overrid = _overrides.appendElement();
+			overrid.setElement("fieldId", "USER_LOCAL_TRADE_DATE");
+			overrid.setElement("value", dateStartYear);
+			
+			bs.sendRequest(request, this);
 		} finally {
 			bs.stop();
 		}

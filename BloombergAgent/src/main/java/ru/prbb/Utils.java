@@ -232,7 +232,7 @@ public class Utils {
 	 * @param date
 	 * @return yyyyMMdd
 	 */
-	public static String toStringYMD2(Date date) {
+	public static String toStringYMD2(java.util.Date date) {
 		return (date == null) ? "" : new SimpleDateFormat("yyyyMMdd", LOCALE).format(date);
 	}
 
