@@ -3,8 +3,7 @@
  */
 (function() {
 
-	var _totalRecords = Ext.id();
-	var _totalErrors = Ext.id();
+	var _resultText = Ext.id();
 	var _winFiles = Ext.id();
 
 	var errors = new Ext.data.ArrayStore({
@@ -16,23 +15,28 @@
 	function updateGrid(form, action) {
 		var s = action.response.responseText;
 		var p1 = s.indexOf('>');
-		var answer = Ext.decode((p1 > 0) ? s.substr(p1 + 1, s.length - p1 - 7)
-				: s);
-		if (answer.success) {
-			Ext.getCmp(_totalRecords).setText(answer.totalRecords);
-			Ext.getCmp(_totalErrors).setText(answer.totalErrors);
-			errors.removeAll();
-			Ext.each(answer.info, function(r) {
-				errors.add(new Ext.data.Record({
-					row : r.row,
-					error : r.error
-				}));
-			});
-			App.ui.message('Операция выполнена успешно.');
-		} else if (answer.code == 'login') {
-			App.ui.sessionExpired();
-		} else {
-			App.ui.error(answer.message);
+		if (p1 > 0) {
+			s = s.substr(p1 + 1, s.length - p1 - 7);
+		}
+		var answer = Ext.decode(s);
+		if (answer) {
+			if (answer.success) {
+				Ext.getCmp(_resultText).setText(
+						'Всего записей в файле: '+answer.item.totalRecords+
+						'  Записей с ошибками: ' + answer.item.totalErrors						);
+				errors.removeAll();
+				Ext.each(answer.item.errors, function(r) {
+					errors.add(new Ext.data.Record({
+						row : r.row,
+						error : r.error
+					}));
+				});
+				App.ui.message('Операция выполнена успешно');
+			} else if (answer.code == 'login') {
+				App.ui.sessionExpired();
+			} else {
+				App.ui.error(answer.message);
+			}
 		}
 	}
 
@@ -79,14 +83,10 @@
 			frame : true,
 			enableHdMenu : false,
 
-			tbar : [ 'Всего записей в файле:', {
-				id : _totalRecords,
+			tbar : [ {
+				id : _resultText,
 				xtype : 'tbtext',
-				text : '-'
-			}, ' Записей с ошибками:', {
-				id : _totalErrors,
-				xtype : 'tbtext',
-				text : '-'
+				text : 'Всего записей в файле: -  Записей с ошибками: -'
 			} ],
 
 			store : errors,

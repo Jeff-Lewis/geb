@@ -3,7 +3,6 @@ package ru.prbb.middleoffice.rest.operations;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import ru.prbb.middleoffice.domain.LoadInfoRecord;
+import ru.prbb.middleoffice.domain.LoadInfoResult;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.operations.DealsLoadingDao;
 import ru.prbb.middleoffice.repo.operations.DealsLoadingDao.Record;
@@ -82,13 +81,12 @@ public class DealsLoadingController
 			}
 		}
 
-		final List<LoadInfoRecord> info = new ArrayList<>(errors.size());
+		final LoadInfoResult info = new LoadInfoResult(records.size(), errors.size());
 		for (Entry<Record, Exception> entry : errors.entrySet()) {
 			Record key = entry.getKey();
 			Exception val = entry.getValue();
-			info.add(new LoadInfoRecord(String.valueOf(key.RowNum), val.getMessage()));
+			info.addError(key.RowNum, val.getMessage());
 		}
-		Collections.sort(info);
 
 		return new ResultData(info);
 	}

@@ -3,8 +3,7 @@
  */
 (function() {
 
-	var _totalRecords = Ext.id();
-	var _totalErrors = Ext.id();
+	var _resultText = Ext.id();
 	var _winFiles = Ext.id();
 
 	var errors = new Ext.data.ArrayStore({
@@ -22,10 +21,11 @@
 		var answer = Ext.decode(s);
 		if (answer) {
 			if (answer.success) {
-				Ext.getCmp(_totalRecords).setText(answer.totalRecords);
-				Ext.getCmp(_totalErrors).setText(answer.totalErrors);
+				Ext.getCmp(_resultText).setText(
+						'Всего записей в файле: '+answer.item.totalRecords+
+						'  Записей с ошибками: ' + answer.item.totalErrors						);
 				errors.removeAll();
-				Ext.each(answer.info, function(r) {
+				Ext.each(answer.item.errors, function(r) {
 					errors.add(new Ext.data.Record({
 						row : r.row,
 						error : r.error
@@ -83,14 +83,10 @@
 			frame : true,
 			enableHdMenu : false,
 
-			tbar : [ 'Всего записей в файле:', {
-				id : _totalRecords,
+			tbar : [ {
+				id : _resultText,
 				xtype : 'tbtext',
-				text : '-'
-			}, ' Записей с ошибками:', {
-				id : _totalErrors,
-				xtype : 'tbtext',
-				text : '-'
+				text : 'Всего записей в файле: -  Записей с ошибками: -'
 			} ],
 
 			store : errors,
