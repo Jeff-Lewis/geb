@@ -30,7 +30,7 @@ public class BloombergParamsDaoImpl implements BloombergParamsDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SimpleItem> findPeriod() {
+	public List<SimpleItem> findPeriod(String query) {
 		String sql = "select period_id as id, name from dbo.period_type";
 		Query q = em.createNativeQuery(sql, SimpleItem.class);
 		return q.getResultList();
@@ -39,7 +39,7 @@ public class BloombergParamsDaoImpl implements BloombergParamsDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SimpleItem> findCalendar() {
+	public List<SimpleItem> findCalendar(String query) {
 		String sql = "select calendar_id as id, name from dbo.calendar_type";
 		Query q = em.createNativeQuery(sql, SimpleItem.class);
 		return q.getResultList();

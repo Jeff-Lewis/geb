@@ -23,8 +23,9 @@ public interface RequestBDHDao {
 	void execute(String[] securities, Map<String, Map<String, Map<String, String>>> answer);
 
 	/**
+	 * @param query 
 	 * @return
 	 */
-	List<SimpleItem> findParams();
+	List<SimpleItem> findParams(String query);
 
 }

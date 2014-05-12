@@ -23,9 +23,10 @@ public interface RequestBDPovrDao {
 	void execute(String[] securities, String over, Map<String, Map<String, Map<String, String>>> answer);
 
 	/**
+	 * @param query 
 	 * @return
 	 */
-	List<SimpleItem> findParams();
+	List<SimpleItem> findParams(String query);
 
 	/**
 	 * @param query

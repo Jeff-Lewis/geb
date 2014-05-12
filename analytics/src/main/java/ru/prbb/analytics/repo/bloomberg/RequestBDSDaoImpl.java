@@ -421,7 +421,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<SimpleItem> findParams() {
+	public List<SimpleItem> findParams(String query) {
 		String sql = "select code from bulk_request_params_v";
 		Query q = em.createNativeQuery(sql);
 		return Utils.toSimpleItem(q.getResultList());

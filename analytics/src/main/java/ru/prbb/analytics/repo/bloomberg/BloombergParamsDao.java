@@ -16,13 +16,15 @@ import ru.prbb.analytics.domain.SimpleItem;
 public interface BloombergParamsDao {
 
 	/**
+	 * @param query 
 	 * @return
 	 */
-	List<SimpleItem> findPeriod();
+	List<SimpleItem> findPeriod(String query);
 
 	/**
+	 * @param query 
 	 * @return
 	 */
-	List<SimpleItem> findCalendar();
+	List<SimpleItem> findCalendar(String query);
 
 }

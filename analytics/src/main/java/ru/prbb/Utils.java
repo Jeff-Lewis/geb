@@ -269,4 +269,8 @@ public class Utils {
 		return res;
 	}
 
+	public static Object[] asArray(Object... args) {
+		return args;
+	}
+
 }
