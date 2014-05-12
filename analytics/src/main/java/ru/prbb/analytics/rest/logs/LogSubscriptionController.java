@@ -17,21 +17,22 @@ import ru.prbb.analytics.repo.LogDao;
  * Журнал подписки
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/LogSubscription")
 public class LogSubscriptionController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private LogDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<SubscriptionItem> show()
+	@ResponseBody
+	public List<SubscriptionItem> getShow()
 	{
+		log.info("GET LogSubscription");
 		return dao.getLogSubscription();
 	}
 }

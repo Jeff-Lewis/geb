@@ -4,11 +4,12 @@
 (function() {
 
 	var groupId = 0;
+	var baseUrl = 'rest/CompanyGroup/';
 
 	var storeA = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/CompanyGroup/Staff/All.do',
+		url : baseUrl + '/All.do',
 		// root : 'infoCompany',
 		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
@@ -23,7 +24,7 @@
 	var storeP = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/CompanyGroup/Staff/Group.do',
+		url : baseUrl + '/Group.do',
 		// root : 'infoCompany',
 		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
@@ -36,16 +37,8 @@
 	});
 
 	function reload() {
-		storeA.reload({
-			params : {
-				id : groupId
-			}
-		});
-		storeP.reload({
-			params : {
-				id : groupId
-			}
-		});
+		storeA.reload();
+		storeP.reload();
 	}
 
 	function add(self) {
@@ -61,7 +54,7 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'rest/CompanyGroup/Staff/' + groupId + '.do',
+			url : baseUrl + '/Staff.do',
 			params : {
 				action : 'ADD',
 				ids : ids
@@ -97,7 +90,7 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'rest/CompanyGroup/Staff/' + groupId + '.do',
+			url : baseUrl + '/Staff.do',
 			params : {
 				action : 'DEL',
 				ids : ids
@@ -195,11 +188,15 @@
 
 		loadData : function(data) {
 			groupId = data.item.id;
+			baseUrl = baseUrl + groupId;
 
 			this.setTitle('Редактируем группу: ' + data.item.name);
 
 			smA.clearSelections(true);
 			smP.clearSelections(true);
+
+			storeA.proxy.setUrl(baseUrl + '/All.do', true);
+			storeS.proxy.setUrl(baseUrl + '/Group.do', true);
 
 			reload();
 		}

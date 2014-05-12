@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.analytics.domain.EquitiesItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.SimpleItem;
@@ -23,12 +24,12 @@ import ru.prbb.analytics.repo.bloomberg.RequestBDPDao;
  * BDP запрос
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/RequestBDP")
 public class RequestBDPController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -39,11 +40,13 @@ public class RequestBDPController
 	private EquitiesDao daoEquities;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result execute(
+	@ResponseBody
+	public Result postExecute(
 			@RequestParam String[] security,
 			@RequestParam(required = false) String[] params)
 	{
+		log.info("POST RequestBDP: security={}", (Object) security);
+		log.info("POST RequestBDP: params={}", (Object) params);
 		if (null == params) {
 			params = new String[] {
 					"ANNOUNCEMENT_DT", "EQY_DVD_YLD_IND", "EQY_WEIGHTED_AVG_PX",
@@ -59,37 +62,42 @@ public class RequestBDPController
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Params", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboParams(
-			@RequestParam(required = false) String query)
-	{
-		return dao.findParams();
-	}
-
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<EquitiesItem> getEquities(
+	@ResponseBody
+	public List<EquitiesItem> getSecurities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equities,
 			@RequestParam(required = false) Integer fundamentals)
 	{
+		log.info("POST RequestBDP/Securities: filter={}, equities={}, fundamentals={}",
+				Utils.asArray(filter, equities, fundamentals));
 		return daoEquities.findAllEquities(filter, equities, fundamentals);
 	}
 
-	@RequestMapping(value = "/EquitiesFilter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboEquitiesFilter(
+	@RequestMapping(value = "/Params", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboParams(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO RequestBDP: Params='{}'", query);
+		return dao.findParams(query);
+	}
+
+	@RequestMapping(value = "/EquitiesFilter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboEquitiesFilter(
+			@RequestParam(required = false) String query)
+	{
+		log.info("COMBO RequestBDP: EquitiesFilter='{}'", query);
 		return daoEquities.comboFilter(query);
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboEquities(
+	@ResponseBody
+	public List<SimpleItem> comboEquities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO RequestBDP: Equities='{}'", query);
 		return daoEquities.comboEquities(query);
 	}
 }

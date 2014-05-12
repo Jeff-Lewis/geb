@@ -19,37 +19,40 @@ import ru.prbb.analytics.repo.model.ViewModelDao;
  * Просмотр текущей модели
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewModel")
 public class ViewModelController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ViewModelDao dao;
 
-	@RequestMapping(value = "/Current", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<ViewModelItem> list()
+	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<ViewModelItem> getItems()
 	{
+		log.info("GET ViewModel");
 		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}/Info", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData getInfo(
+	@ResponseBody
+	public ResultData getItemInfo(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET ViewModel/Info: id={}", id);
 		return new ResultData(dao.getInfoById(id));
 	}
 
 	@RequestMapping(value = "/{id}/Price", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData getPrice(
+	@ResponseBody
+	public ResultData getItemPrice(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET ViewModel/Price: id={}", id);
 		return new ResultData(dao.findPriceById(id));
 	}
 }

@@ -4,13 +4,14 @@
 (function() {
 
 	var idGroup = 0;
+	var baseUrl = 'rest/Groups/0';
 
 	var _rbEMail = Ext.id();
 
 	var addresses = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Groups/Addresses.do',
+		url : 'rest/Groups/0/Addresses.do',
 		// root : 'addresses',
 		fields : [ 'name', 'cid', 'value', 'type_id' ],
 		sortInfo : {
@@ -24,7 +25,7 @@
 	var contacts = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Groups/Contacts.do',
+		url : 'rest/Groups/0/Contacts.do',
 		// root : 'contacts',
 		fields : [ 'name', 'cid', 'value' ],
 		sortInfo : {
@@ -37,19 +38,12 @@
 
 	function reload() {
 		addresses.reload({
-			params : {
-				id : idGroup
-			},
 			callback : function() {
 				var b = Ext.getCmp(_rbEMail).getValue();
 				addresses.filter('type_id', b ? 2 : 1);
 			}
 		});
-		contacts.reload({
-			params : {
-				id : idGroup
-			}
-		});
+		contacts.reload();
 	}
 
 	function add(self) {
@@ -65,8 +59,9 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'rest/Groups/Staff/' + idGroup + '/Add.do',
+			url : baseUrl + '/Staff.do',
 			params : {
+				action : 'ADD',
 				cids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -101,8 +96,9 @@
 		});
 
 		Ext.Ajax.request({
-			url : 'rest/Groups/Staff/' + idGroup + '/Del.do',
+			url : baseUrl + '/Staff.do',
 			params : {
+				action : 'DEL',
 				cids : ids
 			},
 			timeout : 10 * 60 * 1000, // 10 min
@@ -223,7 +219,12 @@
 
 		loadData : function(data) {
 			idGroup = data.item.id;
+			baseUrl = 'rest/Groups/' + idGroup;
+
 			this.setTitle('Редактирование группы: ' + data.item.name);
+
+			addresses.proxy.setUrl(baseUrl + '/Addresses.do', true);
+			contacts.proxy.setUrl(baseUrl + '/Contacts.do', true);
 
 			reload();
 		}

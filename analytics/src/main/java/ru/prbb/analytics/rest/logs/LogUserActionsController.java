@@ -19,23 +19,24 @@ import ru.prbb.analytics.repo.LogDao;
  * Журнал отправки сообщений
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/LogUserActions")
 public class LogUserActionsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private LogDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<LogUserActionItem> show(
+	@ResponseBody
+	public List<LogUserActionItem> postShow(
 			@RequestParam String begin,
 			@RequestParam String end)
 	{
+		log.info("POST LogUserActions: begin={}, end={}", begin, end);
 		return dao.getLogUserActions(Utils.parseDate(begin), Utils.parseDate(end));
 	}
 }

@@ -39,6 +39,7 @@ import ru.prbb.analytics.repo.company.CompanyAddDao;
 @RequestMapping("/rest/CompanyAdd")
 public class CompanyAddController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -47,18 +48,20 @@ public class CompanyAddController
 	private CompanyAddDao dao;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData add(
+	@ResponseBody
+	public ResultData add(
 			@RequestParam String[] codes)
 	{
-		return new ResultData(dao.execute(codes,
-				bs.executeReferenceDataRequest("CompanyAdd", codes, new String[] {
-						"ID_BB_GLOBAL", "ID_BB", "ID_BB_UNIQUE", "ID_BB_SEC_NUM_DES", "ID_BB_SEC_NUM_SRC",
-						"ID_ISIN", "ID_CUSIP", "PARSEKYABLE_DES", "PARSEKYABLE_DES_SOURCE", "SECURITY_TYP",
-						"MARKET_SECTOR_DES", "FEED_SOURCE", "TICKER", "SECURITY_NAME", "NAME", "SHORT_NAME",
-						"EQY_PRIM_EXCH", "EXCH_CODE", "EQY_FUND_IND", "INDUSTRY_GROUP", "INDUSTRY_SUBGROUP",
-						"ADR_SH_PER_ADR", "CRNCY", "EQY_FUND_CRNCY", "EQY_PRIM_SECURITY_CRNCY", "ADR_CRNCY",
-						"BEST_CRNCY_ISO", "DVD_CRNCY", "EARN_EST_CRNCY", "EQY_FUND_TICKER", "EQY_FISCAL_YR_END" })));
+		log.info("POST CompanyAdd: codes={}", (Object) codes);
+		String[] fields = new String[] {
+				"ID_BB_GLOBAL", "ID_BB", "ID_BB_UNIQUE", "ID_BB_SEC_NUM_DES", "ID_BB_SEC_NUM_SRC",
+				"ID_ISIN", "ID_CUSIP", "PARSEKYABLE_DES", "PARSEKYABLE_DES_SOURCE", "SECURITY_TYP",
+				"MARKET_SECTOR_DES", "FEED_SOURCE", "TICKER", "SECURITY_NAME", "NAME", "SHORT_NAME",
+				"EQY_PRIM_EXCH", "EXCH_CODE", "EQY_FUND_IND", "INDUSTRY_GROUP", "INDUSTRY_SUBGROUP",
+				"ADR_SH_PER_ADR", "CRNCY", "EQY_FUND_CRNCY", "EQY_PRIM_SECURITY_CRNCY", "ADR_CRNCY",
+				"BEST_CRNCY_ISO", "DVD_CRNCY", "EARN_EST_CRNCY", "EQY_FUND_TICKER", "EQY_FISCAL_YR_END" };
+		Map<String, Map<String, String>> answer = bs.executeReferenceDataRequest("CompanyAdd", codes, fields);
+		return new ResultData(dao.execute(codes, answer));
 	}
 
 	@Autowired
@@ -73,10 +76,11 @@ public class CompanyAddController
 	private RequestBDSDao reqBDSdao;
 
 	@RequestMapping(value = "/Bloom", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData addBloom(
+	@ResponseBody
+	public ResultData addBloom(
 			@RequestParam String[] codes)
 	{
+		log.info("POST CompanyAdd/Bloom: codes={}", (Object) codes);
 		final Map<String, StringBuilder> info = new HashMap<>();
 		for (String code : codes) {
 			info.put(code, new StringBuilder("Загрузка: "));

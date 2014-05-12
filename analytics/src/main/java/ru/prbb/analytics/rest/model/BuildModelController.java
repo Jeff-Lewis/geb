@@ -2,6 +2,8 @@ package ru.prbb.analytics.rest.model;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,54 +21,61 @@ import ru.prbb.analytics.repo.model.BuildModelDao;
  * Расчёт модели по компании
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/BuildModel")
 public class BuildModelController
 {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private BuildModelDao dao;
 	@Autowired
 	private EquitiesDao daoEquities;
 
 	@RequestMapping(value = "/CalculateModel", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	ResultData calculateModel(
+	@ResponseBody
+	public ResultData calculateModel(
 			@RequestParam Long[] ids)
 	{
+		log.info("POST BuildModel/CalculateModel");
 		return new ResultData(dao.calculateModel(ids));
 	}
 
 	@RequestMapping(value = "/CalculateSvod", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData calculateSvod()
+	@ResponseBody
+	public ResultData calculateSvod()
 	{
+		log.info("POST BuildModel/CalculateSvod");
 		return new ResultData(dao.calculateSvod());
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilter(
+	@ResponseBody
+	public List<SimpleItem> comboFilter(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO BuildModel: Filter='{}'", query);
 		return daoEquities.comboFilter(query);
 	}
 
 	@RequestMapping(value = "/FilterEquities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> comboFilterEquities(
+	@ResponseBody
+	public List<SimpleItem> comboFilterEquities(
 			@RequestParam(required = false) String query)
 	{
+		log.info("COMBO BuildModel: FilterEquities='{}'", query);
 		return daoEquities.comboEquities(query);
 	}
 
 	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	public @ResponseBody
-	List<EquitiesItem> listEquities(
+	@ResponseBody
+	public List<EquitiesItem> listEquities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equity)
 	{
+		log.info("POST BuildModel: filter={}, equity={}", filter, equity);
 		return daoEquities.findAllEquities(filter, equity, 2);
 	}
 }

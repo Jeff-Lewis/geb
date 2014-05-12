@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.analytics.domain.CompanyAllItem;
 import ru.prbb.analytics.domain.CompanyStaffItem;
 import ru.prbb.analytics.domain.Result;
@@ -23,83 +24,93 @@ import ru.prbb.analytics.repo.model.CompanyReportsDao;
  * Компании и отчёты
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/CompanyReports")
 public class CompanyReportsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private CompanyReportsDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<SimpleItem> list()
+	@ResponseBody
+	public List<SimpleItem> getItems()
 	{
+		log.info("GET CompanyReports");
 		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData get(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET CompanyReports: id={}", id);
 		return new ResultData(dao.findById(id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postItemAdd(
 			@RequestParam String name)
 	{
+		log.info("POST CompanyReports: name={}", name);
 		dao.put(name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result ren(
+	@ResponseBody
+	public Result postItemRename(
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
+		log.info("POST CompanyReports: id={}, name={}", id, name);
 		dao.renameById(id, name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result del(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL CompanyReports: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "Staff/All", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<CompanyAllItem> listAll(
-			@RequestParam Long id)
+	@RequestMapping(value = "/{id}/All", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<CompanyAllItem> getAll(
+			@PathVariable("id") Long id)
 	{
+		log.info("GET CompanyReports/All: id={}", id);
 		return dao.findStaff(id);
 	}
 
-	@RequestMapping(value = "Staff/Report", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<CompanyStaffItem> listStaff(
-			@RequestParam Long id)
+	@RequestMapping(value = "/{id}/Report", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<CompanyStaffItem> getReport(
+			@PathVariable("id") Long id)
 	{
+		log.info("GET CompanyReports/Report: id={}", id);
 		return dao.findStaffReport(id);
 	}
 
-	@RequestMapping(value = "Staff/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@RequestMapping(value = "/{id}/Staff", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	public Result postStaff(
 			@PathVariable("id") Long id,
 			@RequestParam String action,
 			@RequestParam Long[] ids)
 	{
+		log.info("GET CompanyReports/Staff: id={}, action={}, ids={}", Utils.asArray(id, action, ids));
+		action = action.toUpperCase();
+
 		if ("ADD".equals(action)) {
 			dao.putStaff(id, ids);
 			return Result.SUCCESS;

@@ -21,7 +21,7 @@ public interface BuildModelDao {
 	 * @param ids
 	 * @return
 	 */
-	List<BuildModelItem> calculateModel(Long[] ids);
+	List<BuildModelItem> calculateModel(Long... ids);
 
 	/**
 	 * dbo.build_model_proc

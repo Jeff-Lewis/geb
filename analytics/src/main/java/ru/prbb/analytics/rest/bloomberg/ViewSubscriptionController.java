@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SecuritySubscrItem;
@@ -22,58 +23,64 @@ import ru.prbb.analytics.repo.bloomberg.ViewSubscriptionDao;
  * Subscription
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewSubscription")
 public class ViewSubscriptionController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ViewSubscriptionDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<ViewSubscriptionItem> show()
+	@ResponseBody
+	public List<ViewSubscriptionItem> getItems()
 	{
+		log.info("GET ViewSubscription");
 		return dao.findAll();
 	}
 
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public ResultData getItem(
+			@PathVariable("id") Long id)
+	{
+		log.info("GET ViewSubscription: id={}", id);
+		return new ResultData(dao.findById(id));
+	}
+
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result add(
+	@ResponseBody
+	public Result postItem(
 			@RequestParam String name,
 			@RequestParam(required = false) String comment)
 	{
+		log.info("POST ViewSubscription: name={}, comment={}", name, comment);
 		dao.put(name, comment);
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData get(
-			@PathVariable("id") Long id)
-	{
-		return new ResultData(dao.findById(id));
-	}
-
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
-	public @ResponseBody
-	Result del(
+	@ResponseBody
+	public Result deleteItem(
 			@PathVariable("id") Long id)
 	{
+		log.info("DEL ViewSubscription: id={}", id);
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	Result del(
+	@ResponseBody
+	public Result post(
 			@PathVariable("id") Long id,
 			@RequestParam String action,
 			@RequestParam Long[] ids)
 	{
+		log.info("POST ViewSubscription: id={}, action={}, ids={}", Utils.asArray(id, action, (Object) ids));
+		action = action.toUpperCase();
 		switch (action) {
 		case "ADD":
 			dao.staffAdd(id, ids);
@@ -87,34 +94,38 @@ public class ViewSubscriptionController
 	}
 
 	@RequestMapping(value = "/Securities", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<SecuritySubscrItem> getSecurities()
+	@ResponseBody
+	public List<SecuritySubscrItem> getSecurities()
 	{
+		log.info("GET ViewSubscription/Securities");
 		return dao.findAllSecurities();
 	}
 
 	@RequestMapping(value = "/Securities", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	List<SecuritySubscrItem> getSecurities(
+	@ResponseBody
+	public List<SecuritySubscrItem> postSecurities(
 			@RequestParam Long id)
 	{
+		log.info("POST ViewSubscription/Securities: id={}", id);
 		return dao.findAllSecurities(id);
 	}
 
 	@RequestMapping(value = "/{id}/start", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	Result start(
+	@ResponseBody
+	public Result start(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET ViewSubscription/start: id={}", id);
 		dao.start(id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/stop", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	Result stop(
+	@ResponseBody
+	public Result stop(
 			@PathVariable("id") Long id)
 	{
+		log.info("GET ViewSubscription/stop: id={}", id);
 		dao.stop(id);
 		return Result.SUCCESS;
 	}

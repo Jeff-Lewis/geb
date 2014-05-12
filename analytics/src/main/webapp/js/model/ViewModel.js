@@ -6,7 +6,7 @@
 	var store = new Ext.data.GroupingStore({
 		autoDestroy : true,
 		autoLoad : true,
-		url : 'rest/ViewModel/Current.do',
+		url : 'rest/ViewModel.do',
 		reader : new Ext.data.JsonReader({
 			// root : 'info',
 			fields : [ 'id_sec', 'company_short_name', 'industry_group',

@@ -5,6 +5,8 @@ package ru.prbb.analytics.rest.params;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,27 +22,31 @@ import ru.prbb.analytics.repo.params.ViewParamsDao;
  * Справочник параметров
  * 
  * @author RBr
- * 
  */
 @Controller
 @RequestMapping("/rest/ViewParams")
 public class ViewParamsController
 {
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private ViewParamsDao dao;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	List<ViewParamsItem> list()
+	@ResponseBody
+	public List<ViewParamsItem> getItems()
 	{
+		log.info("GET ViewParams");
 		return dao.findAll();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody
-	ResultData info(
+	@ResponseBody
+	public ResultData getItem(
 			@PathVariable("id") String blm_id)
 	{
+		log.info("GET ViewParams: blm_id={}", blm_id);
 		return new ResultData(dao.findById(blm_id));
 	}
 }

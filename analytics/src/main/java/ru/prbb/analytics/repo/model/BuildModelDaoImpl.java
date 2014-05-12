@@ -31,7 +31,7 @@ public class BuildModelDaoImpl implements BuildModelDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public List<BuildModelItem> calculateModel(Long[] ids) {
+	public List<BuildModelItem> calculateModel(Long... ids) {
 		final List<BuildModelItem> list = new ArrayList<>();
 		String sql = "{call dbo.build_model_proc_p ?}";
 		Query q = em.createNativeQuery(sql);
