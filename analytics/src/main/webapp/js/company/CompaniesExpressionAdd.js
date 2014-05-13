@@ -4,6 +4,7 @@
 (function() {
 
 	var id_sec = 0;
+	var urlBase = 'rest/Companies/';
 
 	var _expression = Ext.id();
 	var _comment = Ext.id();
@@ -11,7 +12,7 @@
 	var variables = new Ext.data.JsonStore({
 		autoDestroy : true,
 		autoLoad : false,
-		url : 'rest/Companies/0/Variables.do',
+		url : urlBase + '/Variables.do',
 		fields : [ 'id', 'name' ]
 	});
 
@@ -160,8 +161,9 @@
 
 		loadData : function(data) {
 			id_sec = data.item;
-			var url = 'rest/Companies/' + id_sec + '/Variables.do';
-			variables.proxy.setUrl(url, true);
+			urlBase = urlBase + id_sec;
+
+			variables.proxy.setUrl(urlBase + '/Variables.do', true);
 			variables.load();
 		},
 		setWindow : function(window) {
@@ -177,8 +179,7 @@
 		}
 
 		Ext.Ajax.request({
-			url : 'rest/Companies/' + id_sec + '/formula.do',
-			url : 'organization/AddExpression.html',
+			url : urlBase + '/formula.do',
 			params : {
 				variable : smr.getSelected().data.name,
 				expression : Ext.getCmp(_expression).getValue(),

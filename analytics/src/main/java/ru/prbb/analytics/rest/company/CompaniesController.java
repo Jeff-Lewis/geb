@@ -96,6 +96,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String type)
 	{
+		type = Utils.encode(type);
 		log.info("DEL Companies/eps: id={}, type={}", id, type);
 		dao.delEps(id, type);
 		return Result.SUCCESS;
@@ -121,6 +122,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String type)
 	{
+		type = Utils.encode(type);
 		log.info("DEL Companies/bv: id={}, type={}", id, type);
 		dao.delBookVal(id, type);
 		return Result.SUCCESS;
@@ -146,6 +148,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String variable)
 	{
+		variable = Utils.encode(variable);
 		log.info("DEL Companies/formula: id={}, variable={}", id, variable);
 		dao.delFormula(id, variable);
 		return Result.SUCCESS;
