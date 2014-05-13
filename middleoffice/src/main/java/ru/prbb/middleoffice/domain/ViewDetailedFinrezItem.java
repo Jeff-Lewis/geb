@@ -34,7 +34,7 @@ public class ViewDetailedFinrezItem implements Serializable {
 	@Column(name = "Deal_id")
 	private Long deal_id;
 	@Column(name = "TradeNum")
-	private Integer tradeNum;
+	private String tradeNum;
 	@Column(name = "Trade_date")
 	private String trade_date;
 	@Column(name = "Operation")
@@ -54,7 +54,7 @@ public class ViewDetailedFinrezItem implements Serializable {
 	@Column(name = "Currency")
 	private String currency;
 	@Column(name = "Funding")
-	private String funding;
+	private Integer funding;
 	@Column(name = "Date_insert")
 	private String date_insert;
 	@Column(name = "Account")
@@ -168,7 +168,7 @@ public class ViewDetailedFinrezItem implements Serializable {
 	/**
 	 * @return the tradeNum
 	 */
-	public Integer getTradeNum() {
+	public String getTradeNum() {
 		return tradeNum;
 	}
 
@@ -176,7 +176,7 @@ public class ViewDetailedFinrezItem implements Serializable {
 	 * @param tradeNum
 	 *            the tradeNum to set
 	 */
-	public void setTradeNum(Integer tradeNum) {
+	public void setTradeNum(String tradeNum) {
 		this.tradeNum = tradeNum;
 	}
 
@@ -318,7 +318,7 @@ public class ViewDetailedFinrezItem implements Serializable {
 	/**
 	 * @return the funding
 	 */
-	public String getFunding() {
+	public Integer getFunding() {
 		return funding;
 	}
 
@@ -326,7 +326,7 @@ public class ViewDetailedFinrezItem implements Serializable {
 	 * @param funding
 	 *            the funding to set
 	 */
-	public void setFunding(String funding) {
+	public void setFunding(Integer funding) {
 		this.funding = funding;
 	}
 

@@ -254,7 +254,10 @@
 			dataIndex : 'currency'
 		}, {
 			header : 'Funding',
-			dataIndex : 'funding'
+			dataIndex : 'funding',
+			width : 30,
+			align : 'center',
+			renderer : App.util.Renderer.bool()
 		}, {
 			header : 'Date_insert',
 			dataIndex : 'date_insert',
