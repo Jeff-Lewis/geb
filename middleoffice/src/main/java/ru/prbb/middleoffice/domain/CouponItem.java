@@ -6,6 +6,7 @@ package ru.prbb.middleoffice.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,7 +19,8 @@ public class CouponItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Long id;
+	@Column(name = "id")
+	private Long id_sec;
 	private String security_code;
 	private String short_name;
 	private String client;
@@ -39,12 +41,12 @@ public class CouponItem implements Serializable {
 	private String country;
 	private String oper;
 
-	public Long getId() {
-		return id;
+	public Long getId_sec() {
+		return id_sec;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setId_sec(Long id_sec) {
+		this.id_sec = id_sec;
 	}
 
 	public String getSecurity_code() {

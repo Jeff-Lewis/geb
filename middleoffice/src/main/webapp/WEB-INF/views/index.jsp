@@ -138,6 +138,16 @@
 				onclick="menu.showPane(menu, 'services/NotEnoughQuotations');">
 					Не хватает котировок</a></li>
 
+			<li><img class="icon-show-all" src="images/excel.png"><a
+				href="#"
+				onclick="menu.showPane(menu, 'services/NotVisibleDividends');">
+					Нет настроек для дивидендов</a></li>
+
+			<li><img class="icon-show-all" src="images/excel.png"><a
+				href="#"
+				onclick="menu.showPane(menu, 'services/NotVisibleCoupons');">
+					Нет настроек для купонов</a></li>
+
 			<li><img class="icon-show-all" src="images/30.png"><a
 				href="#" onclick="menu.showPane(menu, 'services/ViewShare');">
 					Редактирование акций </a></li>
