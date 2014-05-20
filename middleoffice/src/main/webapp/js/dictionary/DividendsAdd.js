@@ -30,6 +30,7 @@
 			fieldLabel : 'Инструмент',
 			valueField : 'id',
 			displayField : 'name',
+			forceSelection : true,
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Dividends/Equities.do',
@@ -50,6 +51,7 @@
 			fieldLabel : 'Счёт',
 			valueField : 'id',
 			displayField : 'name',
+			forceSelection : true,
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Dividends/Accounts.do',
@@ -70,6 +72,7 @@
 			fieldLabel : 'Фонд',
 			valueField : 'id',
 			displayField : 'name',
+			forceSelection : true,
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Dividends/Funds.do',
@@ -90,6 +93,7 @@
 			fieldLabel : 'Валюта',
 			valueField : 'id',
 			displayField : 'name',
+			forceSelection : true,
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/Dividends/Currencies.do',
@@ -127,7 +131,7 @@
 			id : _dividend_per_share,
 			xtype : 'numberfield',
 			decimalPrecision : 12,
-			fieldLabel : 'Дивиденды',
+			fieldLabel : 'Дивиденды (на 1 акц.)',
 			emptyText : 'Заполните',
 			allowBlank : false
 		}, {
@@ -152,6 +156,17 @@
 	});
 
 	function save(b, e) {
+		var isStopSave = false;
+		container.items.each(function(item) {
+	        if (item.isValid())
+	        	return  true;
+	        item.focus();
+	        isStopSave = true;
+	        return false;
+        });
+		if (isStopSave)
+			return;
+
 		var rrd = Ext.getCmp(_record_date).getValue();
 		var rcd = Ext.getCmp(_receive_date).getValue();
 		Ext.Ajax.request({
