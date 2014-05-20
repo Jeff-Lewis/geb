@@ -10,21 +10,28 @@
 	var _dateBegin = Ext.id();
 	var _dateEnd = Ext.id();
 
+	function convertDate(v, rec) {
+		v = Ext.util.Format.substr(v, 0, 10);
+		v = Date.parseDate(v, 'Y-m-d');
+	    return v;
+    }
+
 	var info = new Ext.data.JsonStore({
-		autoDestroy : true,
-		autoLoad : false,
-		autoSave : false,
-		url : 'rest/Coupons.do',
-		//root : 'info',
-		fields : [ 'id', 'security_code', 'short_name', 'client', 'fund',
-				'broker', 'account', 'currency', 'record_date', 'quantity',
-				'coupon_per_share', 'receive_date', 'real_coupon_per_share',
-				'status', 'estimate', 'real_coupons', 'extra_costs',
-				'tax_value', 'country', 'oper' ],
-		sortInfo : {
-			field : 'security_code'
-		},
-		listeners : App.ui.listenersJsonStore()
+	    autoDestroy : true,
+	    autoLoad : false,
+	    autoSave : false,
+	    url : 'rest/Coupons.do',
+	    // root : 'info',
+	    fields : [ 'id_sec', 'security_code', 'short_name', 'client', 'fund', 'broker', 'account',
+	            'currency', {
+	                name : 'record_date',
+	                convert : convertDate
+	            }, 'quantity', 'coupon_per_share', 'receive_date', 'real_coupon_per_share', 'status',
+	            'estimate', 'real_coupons', 'extra_costs', 'tax_value', 'country', 'oper' ],
+	    sortInfo : {
+		    field : 'security_code'
+	    },
+	    listeners : App.ui.listenersJsonStore()
 	});
 
 	var sm = new Ext.grid.RowSelectionModel({
@@ -32,30 +39,34 @@
 	});
 
 	function reload() {
+		var db = Ext.getCmp(_dateBegin).getValue();
+		var de = Ext.getCmp(_dateEnd).getValue();
 		info.reload({
 			params : {
-				clientId : Ext.getCmp(_client).getValue(),
-				brokerId : Ext.getCmp(_broker).getValue(),
-				securityId : Ext.getCmp(_security).getValue(),
-				// accountId : null,
-				operationId : Ext.getCmp(_operations).getValue(),
-				dateBegin : App.util.Format.dateYMD(Ext.getCmp(_dateBegin)
-						.getValue()),
-				dateEnd : App.util.Format.dateYMD(Ext.getCmp(_dateBegin)
-						.getValue())
+			    clientId : Ext.getCmp(_client).getValue(),
+			    brokerId : Ext.getCmp(_broker).getValue(),
+			    securityId : Ext.getCmp(_security).getValue(),
+			    // accountId : null,
+			    operationId : Ext.getCmp(_operations).getValue(),
+			    dateBegin : App.util.Format.dateYMD(db),
+			    dateEnd : App.util.Format.dateYMD(de)
 			}
 		});
 	}
 
 	function exportExcel() {
-		var params = 'clientId=' + Ext.getCmp(_client).getValue();
-		params += '&brokerId=' + Ext.getCmp(_broker).getValue();
-		params += '&securityId=' + Ext.getCmp(_security).getValue();
-		//params += '&accountId=null;
-		params += '&operationId=' + Ext.getCmp(_operations).getValue();
-		params += '&dateBegin=' + App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue());
-		params += '&dateEnd=' + App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue());
-		window.open('rest/Coupons/ExportXls.do?' + params);
+		var db = Ext.getCmp(_dateBegin).getValue();
+		var de = Ext.getCmp(_dateEnd).getValue();
+		var p = Ext.urlEncode({
+		    clientId : Ext.getCmp(_client).getValue(),
+		    brokerId : Ext.getCmp(_broker).getValue(),
+		    securityId : Ext.getCmp(_security).getValue(),
+		    // accountId : null,
+		    operationId : Ext.getCmp(_operations).getValue(),
+		    dateBegin : App.util.Format.dateYMD(db),
+		    dateEnd : App.util.Format.dateYMD(de)
+		});
+		window.open('rest/Coupons/ExportXls.do?' + p);
 	}
 
 	function add() {
@@ -72,7 +83,7 @@
 				+ sm.getSelected().data.short_name + '"?', cbDel);
 	}
 	function cbDel() {
-		var id = sm.getSelected().data.id;
+		var id = sm.getSelected().data.id_sec;
 		Ext.Ajax.request({
 			method : 'DELETE',
 			url : 'rest/Coupons/' + id + '.do',
@@ -100,7 +111,7 @@
 			return;
 		}
 
-		var id = sm.getSelected().data.id;
+		var id = sm.getSelected().data.id_sec;
 		menu.showModal(menu, 'dictionary/CouponsEdit', 'rest/Coupons/' + id
 				+ '.do');
 	}
@@ -390,6 +401,7 @@
 		}, {
 			header : 'record_date',
 			dataIndex : 'record_date',
+			align : 'center',
 			xtype : 'datecolumn',
 			format : 'd.m.Y',
 			editor : editorRecordDate
@@ -408,6 +420,7 @@
 		}, {
 			header : 'receive_date',
 			dataIndex : 'receive_date',
+			align : 'center',
 			renderer : App.util.Renderer.date()
 		}, {
 			header : 'real_coupon_per_share',
@@ -452,7 +465,7 @@
 
 		listeners : {
 			afteredit : function(e) {
-				updateField(e.record.data.id, e.field, e.value);
+				updateField(e.record.data.id_sec, e.field, e.value);
 			}
 		},
 
