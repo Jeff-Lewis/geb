@@ -36,9 +36,9 @@ public class SecurityRiscsDaoImpl implements SecurityRiscsDao
 		String sql = "{call dbo.mo_WebGet_SecurityRiscs_sp null, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql, SecurityRiscsItem.class)
 				.setParameter(1, security_id)
-				.setParameter(2, fund_id)
+				.setParameter(4, fund_id)
 				.setParameter(3, batch)
-				.setParameter(4, p_id)
+				.setParameter(2, p_id)
 				.setParameter(5, date);
 		return q.getResultList();
 	}
