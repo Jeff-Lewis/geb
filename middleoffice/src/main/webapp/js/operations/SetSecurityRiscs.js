@@ -111,19 +111,24 @@
 				renderer : App.util.Renderer.date()
 			}, {
 				header : 'client',
-				dataIndex : 'client'
+				dataIndex : 'client',
+				sortable : true
 			}, {
 				header : 'fund',
-				dataIndex : 'fund'
+				dataIndex : 'fund',
+				sortable : true
 			}, {
 				header : 'security_code',
-				dataIndex : 'security_code'
+				dataIndex : 'security_code',
+				sortable : true
 			}, {
 				header : 'batch',
-				dataIndex : 'batch'
+				dataIndex : 'batch',
+				sortable : true
 			}, {
 				header : 'quantity',
 				dataIndex : 'quantity',
+				sortable : true,
 				align : 'right',
 				renderer : App.util.Renderer.number(0)
 			}, {
@@ -138,7 +143,8 @@
 				renderer : App.util.Renderer.number()
 			}, {
 				header : 'currency',
-				dataIndex : 'currency'
+				dataIndex : 'currency',
+				sortable : true
 			} ],
 			viewConfig : {
 				forceFit : true,
