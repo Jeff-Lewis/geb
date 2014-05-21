@@ -96,7 +96,7 @@
 			xtype : 'combo',
 			width : 150,
 			displayField : 'name',
-			valueField : 'name',
+			valueField : 'id',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
 				url : 'rest/SecurityRiscs/Equities.do',
