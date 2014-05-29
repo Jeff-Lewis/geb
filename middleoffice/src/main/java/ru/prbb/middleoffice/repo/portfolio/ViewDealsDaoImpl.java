@@ -55,11 +55,11 @@ public class ViewDealsDaoImpl implements ViewDealsDao
 	@Override
 	public void updateById(Long[] deals, String field, String value) {
 		String sql = "{call dbo.mo_WebSet_setDealsAttr_sp ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(2, field)
+				.setParameter(3, value);
 		for (Long deal : deals) {
-			Query q = em.createNativeQuery(sql)
-					.setParameter(1, deal)
-					.setParameter(2, field)
-					.setParameter(3, value);
+			q.setParameter(1, deal);
 			q.executeUpdate();
 		}
 	}
