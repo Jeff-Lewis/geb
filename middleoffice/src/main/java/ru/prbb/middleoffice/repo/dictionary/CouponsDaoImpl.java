@@ -4,6 +4,7 @@
 package ru.prbb.middleoffice.repo.dictionary;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -31,18 +32,45 @@ public class CouponsDaoImpl implements CouponsDao
 	private EntityManager em;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<CouponItem> findAll(Long security, Long client, Long broker, Long operation, Date begin, Date end) {
 		String sql = "{call dbo.mo_WebGet_Coupons_sp null, ?, ?, ?, null, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql, CouponItem.class)
+		Query q = em.createNativeQuery(sql)
 				.setParameter(1, security)
 				.setParameter(2, client)
 				.setParameter(3, broker)
 				.setParameter(4, operation)
 				.setParameter(5, begin)
 				.setParameter(6, end);
-		return q.getResultList();
+		@SuppressWarnings("unchecked")
+		List<Object[]> list = q.getResultList();
+		List<CouponItem> res = new ArrayList<>(list.size());
+		for (Object[] arr : list) {
+			int i = 0;
+			CouponItem item = new CouponItem();
+			item.setId_sec(Utils.toLong(arr[i++]));
+			item.setSecurity_code(Utils.toString(arr[i++]));
+			item.setShort_name(Utils.toString(arr[i++]));
+			item.setClient(Utils.toString(arr[i++]));
+			item.setFund(Utils.toString(arr[i++]));
+			item.setBroker(Utils.toString(arr[i++]));
+			item.setAccount(Utils.toString(arr[i++]));
+			item.setCurrency(Utils.toString(arr[i++]));
+			item.setRecord_date(Utils.toSqlDate(arr[i++]));
+			item.setQuantity(Utils.toInteger(arr[i++]));
+			item.setCoupon_per_share(Utils.toDouble(arr[i++]));
+			item.setReceive_date(Utils.toSqlDate(arr[i++]));
+			item.setReal_coupon_per_share(Utils.toDouble(arr[i++]));
+			item.setStatus(Utils.toString(arr[i++]));
+			item.setEstimate(Utils.toDouble(arr[i++]));
+			item.setReal_coupons(Utils.toDouble(arr[i++]));
+			item.setExtra_costs(Utils.toDouble(arr[i++]));
+			item.setTax_value(Utils.toDouble(arr[i++]));
+			item.setCountry(Utils.toString(arr[i++]));
+			item.setOper(Utils.toString(arr[i++]));
+			res.add(item);
+		}
+		return res;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

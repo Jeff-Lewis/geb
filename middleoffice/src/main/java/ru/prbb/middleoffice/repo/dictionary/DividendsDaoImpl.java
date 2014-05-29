@@ -4,6 +4,7 @@
 package ru.prbb.middleoffice.repo.dictionary;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.DividendItem;
 
 /**
@@ -29,18 +31,44 @@ public class DividendsDaoImpl implements DividendsDao
 	private EntityManager em;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<DividendItem> findAll(Long security, Long client, Long broker, Long account, Date begin, Date end) {
 		String sql = "{call dbo.mo_WebGet_Dividends_sp null, ?, ?, ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql, DividendItem.class)
+		Query q = em.createNativeQuery(sql)
 				.setParameter(1, security)
 				.setParameter(2, client)
 				.setParameter(3, broker)
 				.setParameter(4, account)
 				.setParameter(5, begin)
 				.setParameter(6, end);
-		return q.getResultList();
+		@SuppressWarnings("unchecked")
+		List<Object[]> list = q.getResultList();
+		List<DividendItem> res = new ArrayList<>(list.size());
+		for (Object[] arr : list) {
+			int i = 0;
+			DividendItem item = new DividendItem();
+			item.setId_sec(Utils.toLong(arr[i++]));
+			item.setSecurity_code(Utils.toString(arr[i++]));
+			item.setShort_name(Utils.toString(arr[i++]));
+			item.setClient(Utils.toString(arr[i++]));
+			item.setFund(Utils.toString(arr[i++]));
+			item.setBroker(Utils.toString(arr[i++]));
+			item.setAccount(Utils.toString(arr[i++]));
+			item.setCurrency(Utils.toString(arr[i++]));
+			item.setRecord_date(Utils.toSqlDate(arr[i++]));
+			item.setQuantity(Utils.toInteger(arr[i++]));
+			item.setDividend_per_share(Utils.toDouble(arr[i++]));
+			item.setReceive_date(Utils.toSqlDate(arr[i++]));
+			item.setReal_dividend_per_share(Utils.toDouble(arr[i++]));
+			item.setStatus(Utils.toString(arr[i++]));
+			item.setEstimate(Utils.toDouble(arr[i++]));
+			item.setReal_dividends(Utils.toDouble(arr[i++]));
+			item.setExtra_costs(Utils.toDouble(arr[i++]));
+			item.setTax_value(Utils.toDouble(arr[i++]));
+			item.setCountry(Utils.toString(arr[i++]));
+			res.add(item);
+		}
+		return res;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

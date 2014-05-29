@@ -12,8 +12,9 @@ import java.util.List;
 public abstract class Export {
 
 	public static Export newInstance() {
-		boolean isUseHtml = true;
-		return isUseHtml ? new ExportHTML() : new ExportODS();
+//		return new ExportHTML();
+		return new ExportODS();
+//		return new ExportXLS();
 	}
 
 	protected String caption;

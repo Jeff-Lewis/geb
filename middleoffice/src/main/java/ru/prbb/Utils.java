@@ -118,6 +118,7 @@ public class Utils {
 				return Date.valueOf(date);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace(System.err);
 			}
 		}
 		return null;
@@ -208,9 +209,40 @@ public class Utils {
 	 * @param object
 	 * @return
 	 */
+	public static String toDatetime(Object object) {
+		if (null != object) {
+			String s = object.toString();
+			return s;
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
 	public static String toDate(Object object) {
 		if (null != object) {
-			return object.toString();
+			String s = object.toString();
+			if (s.length() > 10)
+				s = s.substring(0, 10);
+			return s;
+		}
+		return null;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public static Date toSqlDate(Object object) {
+		if (null != object) {
+			try {
+				return new Date(((java.util.Date) object).getTime());
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace(System.err);
+			}
 		}
 		return null;
 	}
@@ -221,7 +253,8 @@ public class Utils {
 	 */
 	public static String toTime(Object object) {
 		if (null != object) {
-			return object.toString();
+			String s = object.toString();
+			return s;
 		}
 		return null;
 	}
@@ -242,6 +275,7 @@ public class Utils {
 			return column.name();
 		} catch (NoSuchFieldException | SecurityException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace(System.err);
 		}
 		return field;
 	}

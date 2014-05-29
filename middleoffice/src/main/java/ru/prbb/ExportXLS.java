@@ -15,19 +15,23 @@ import org.odftoolkit.odfdom.doc.table.OdfTableRow;
 /**
  * @author RBr
  */
-public class ExportODS extends Export {
+public class ExportXLS extends Export {
 
-	ExportODS() {
+	ExportXLS() {
 	}
 
 	@Override
 	public String getContentType() {
-		return "application/vnd.oasis.opendocument.spreadsheet";
-//		return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+		return "application/vnd.ms-excel";
 	}
 
 	@Override
 	public byte[] build() {
+//		XSSFWorkbook wb2007 = new XSSFWorkbook();
+//		XSSFSheet sheet = wb2007.getSheetAt(0);
+//		wb2007.
+//
+//		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try (OdfSpreadsheetDocument ods = OdfSpreadsheetDocument.newSpreadsheetDocument()) {
 			OdfTable table = ods.getTableList().get(0);

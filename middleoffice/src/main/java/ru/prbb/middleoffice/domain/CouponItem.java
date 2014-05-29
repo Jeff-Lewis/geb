@@ -4,22 +4,15 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.sql.Date;
 
 /**
  * @author RBr
  */
-@Entity
 public class CouponItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "id")
 	private Long id_sec;
 	private String security_code;
 	private String short_name;
@@ -28,16 +21,16 @@ public class CouponItem implements Serializable {
 	private String broker;
 	private String account;
 	private String currency;
-	private String record_date;
+	private Date record_date;
 	private Integer quantity;
-	private BigDecimal coupon_per_share;
-	private String receive_date;
-	private BigDecimal real_coupon_per_share;
+	private Number coupon_per_share;
+	private Date receive_date;
+	private Number real_coupon_per_share;
 	private String status;
-	private BigDecimal estimate;
-	private BigDecimal real_coupons;
-	private BigDecimal extra_costs;
-	private BigDecimal tax_value;
+	private Number estimate;
+	private Number real_coupons;
+	private Number extra_costs;
+	private Number tax_value;
 	private String country;
 	private String oper;
 
@@ -105,11 +98,11 @@ public class CouponItem implements Serializable {
 		this.currency = currency;
 	}
 
-	public String getRecord_date() {
+	public Date getRecord_date() {
 		return record_date;
 	}
 
-	public void setRecord_date(String record_date) {
+	public void setRecord_date(Date record_date) {
 		this.record_date = record_date;
 	}
 
@@ -121,27 +114,27 @@ public class CouponItem implements Serializable {
 		this.quantity = quantity;
 	}
 
-	public BigDecimal getCoupon_per_share() {
+	public Number getCoupon_per_share() {
 		return coupon_per_share;
 	}
 
-	public void setCoupon_per_share(BigDecimal coupon_per_share) {
+	public void setCoupon_per_share(Number coupon_per_share) {
 		this.coupon_per_share = coupon_per_share;
 	}
 
-	public String getReceive_date() {
+	public Date getReceive_date() {
 		return receive_date;
 	}
 
-	public void setReceive_date(String receive_date) {
+	public void setReceive_date(Date receive_date) {
 		this.receive_date = receive_date;
 	}
 
-	public BigDecimal getReal_coupon_per_share() {
+	public Number getReal_coupon_per_share() {
 		return real_coupon_per_share;
 	}
 
-	public void setReal_coupon_per_share(BigDecimal real_coupon_per_share) {
+	public void setReal_coupon_per_share(Number real_coupon_per_share) {
 		this.real_coupon_per_share = real_coupon_per_share;
 	}
 
@@ -153,35 +146,35 @@ public class CouponItem implements Serializable {
 		this.status = status;
 	}
 
-	public BigDecimal getEstimate() {
+	public Number getEstimate() {
 		return estimate;
 	}
 
-	public void setEstimate(BigDecimal estimate) {
+	public void setEstimate(Number estimate) {
 		this.estimate = estimate;
 	}
 
-	public BigDecimal getReal_coupons() {
+	public Number getReal_coupons() {
 		return real_coupons;
 	}
 
-	public void setReal_coupons(BigDecimal real_coupons) {
+	public void setReal_coupons(Number real_coupons) {
 		this.real_coupons = real_coupons;
 	}
 
-	public BigDecimal getExtra_costs() {
+	public Number getExtra_costs() {
 		return extra_costs;
 	}
 
-	public void setExtra_costs(BigDecimal extra_costs) {
+	public void setExtra_costs(Number extra_costs) {
 		this.extra_costs = extra_costs;
 	}
 
-	public BigDecimal getTax_value() {
+	public Number getTax_value() {
 		return tax_value;
 	}
 
-	public void setTax_value(BigDecimal tax_value) {
+	public void setTax_value(Number tax_value) {
 		this.tax_value = tax_value;
 	}
 

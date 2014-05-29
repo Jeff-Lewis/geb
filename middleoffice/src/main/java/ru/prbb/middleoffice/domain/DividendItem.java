@@ -4,21 +4,15 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.sql.Date;
 
 /**
  * @author RBr
  */
-@Entity
 public class DividendItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "id")
 	private Long id_sec;
 	private String security_code;
 	private String short_name;
@@ -27,16 +21,16 @@ public class DividendItem implements Serializable {
 	private String broker;
 	private String account;
 	private String currency;
-	private String record_date;
-	private String quantity;
-	private String dividend_per_share;
-	private String receive_date;
-	private String real_dividend_per_share;
+	private Date record_date;
+	private Number quantity;
+	private Number dividend_per_share;
+	private Date receive_date;
+	private Number real_dividend_per_share;
 	private String status;
-	private String estimate;
-	private String real_dividends;
-	private String extra_costs;
-	private String tax_value;
+	private Number estimate;
+	private Number real_dividends;
+	private Number extra_costs;
+	private Number tax_value;
 	private String country;
 
 	public Long getId_sec() {
@@ -103,43 +97,43 @@ public class DividendItem implements Serializable {
 		this.currency = currency;
 	}
 
-	public String getRecord_date() {
+	public Date getRecord_date() {
 		return record_date;
 	}
 
-	public void setRecord_date(String record_date) {
+	public void setRecord_date(Date record_date) {
 		this.record_date = record_date;
 	}
 
-	public String getQuantity() {
+	public Number getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(String quantity) {
+	public void setQuantity(Number quantity) {
 		this.quantity = quantity;
 	}
 
-	public String getDividend_per_share() {
+	public Number getDividend_per_share() {
 		return dividend_per_share;
 	}
 
-	public void setDividend_per_share(String dividend_per_share) {
+	public void setDividend_per_share(Number dividend_per_share) {
 		this.dividend_per_share = dividend_per_share;
 	}
 
-	public String getReceive_date() {
+	public Date getReceive_date() {
 		return receive_date;
 	}
 
-	public void setReceive_date(String receive_date) {
+	public void setReceive_date(Date receive_date) {
 		this.receive_date = receive_date;
 	}
 
-	public String getReal_dividend_per_share() {
+	public Number getReal_dividend_per_share() {
 		return real_dividend_per_share;
 	}
 
-	public void setReal_dividend_per_share(String real_dividend_per_share) {
+	public void setReal_dividend_per_share(Number real_dividend_per_share) {
 		this.real_dividend_per_share = real_dividend_per_share;
 	}
 
@@ -151,35 +145,35 @@ public class DividendItem implements Serializable {
 		this.status = status;
 	}
 
-	public String getEstimate() {
+	public Number getEstimate() {
 		return estimate;
 	}
 
-	public void setEstimate(String estimate) {
+	public void setEstimate(Number estimate) {
 		this.estimate = estimate;
 	}
 
-	public String getReal_dividends() {
+	public Number getReal_dividends() {
 		return real_dividends;
 	}
 
-	public void setReal_dividends(String real_dividends) {
+	public void setReal_dividends(Number real_dividends) {
 		this.real_dividends = real_dividends;
 	}
 
-	public String getExtra_costs() {
+	public Number getExtra_costs() {
 		return extra_costs;
 	}
 
-	public void setExtra_costs(String extra_costs) {
+	public void setExtra_costs(Number extra_costs) {
 		this.extra_costs = extra_costs;
 	}
 
-	public String getTax_value() {
+	public Number getTax_value() {
 		return tax_value;
 	}
 
-	public void setTax_value(String tax_value) {
+	public void setTax_value(Number tax_value) {
 		this.tax_value = tax_value;
 	}
 
