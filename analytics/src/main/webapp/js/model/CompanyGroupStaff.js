@@ -14,7 +14,8 @@
 		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
-		}
+		},
+		listeners : App.ui.listenersJsonStore()
 	});
 
 	var smA = new Ext.grid.CheckboxSelectionModel({
@@ -29,7 +30,8 @@
 		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
-		}
+		},
+		listeners : App.ui.listenersJsonStore()
 	});
 
 	var smP = new Ext.grid.CheckboxSelectionModel({
@@ -196,7 +198,7 @@
 			smP.clearSelections(true);
 
 			storeA.proxy.setUrl(baseUrl + '/All.do', true);
-			storeS.proxy.setUrl(baseUrl + '/Group.do', true);
+			storeP.proxy.setUrl(baseUrl + '/Group.do', true);
 
 			reload();
 		}

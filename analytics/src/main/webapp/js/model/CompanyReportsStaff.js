@@ -30,7 +30,8 @@
 		fields : [ 'id', 'security_code', 'short_name' ],
 		sortInfo : {
 			field : 'security_code'
-		}
+		},
+		listeners : App.ui.listenersJsonStore()
 	});
 
 	var smS = new Ext.grid.CheckboxSelectionModel({

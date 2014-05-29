@@ -377,30 +377,44 @@
 		selModel : sm,
 		columns : [ new Ext.grid.RowNumberer(), {
 			header : 'security_code',
-			dataIndex : 'security_code'
+			dataIndex : 'security_code',
+			sortable : true
 		}, {
 			header : 'short_name',
-			dataIndex : 'short_name'
+			dataIndex : 'short_name',
+			sortable : true
 		}, {
+			width : 60,
 			header : 'client',
-			dataIndex : 'client'
+			dataIndex : 'client',
+			sortable : true
 		}, {
+			width : 60,
 			header : 'fund',
-			dataIndex : 'fund'
+			dataIndex : 'fund',
+			sortable : true
 		}, {
+			width : 60,
 			header : 'broker',
-			dataIndex : 'broker'
+			dataIndex : 'broker',
+			sortable : true
 		}, {
+			width : 60,
 			header : 'account',
 			dataIndex : 'account',
+			sortable : true,
 			editor : editorAccount
 		}, {
+			width : 60,
 			header : 'currency',
 			dataIndex : 'currency',
+			sortable : true,
 			editor : editorCurrency
 		}, {
+			width : 70,
 			header : 'record_date',
 			dataIndex : 'record_date',
+			sortable : true,
 			align : 'center',
 			xtype : 'datecolumn',
 			format : 'd.m.Y',
@@ -408,58 +422,75 @@
 		}, {
 			header : 'quantity',
 			dataIndex : 'quantity',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(0),
 			editor : editorQuantity
 		}, {
 			header : 'coupon_per_share',
 			dataIndex : 'coupon_per_share',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(7),
 			editor : editorDividend
 		}, {
+			width : 70,
 			header : 'receive_date',
 			dataIndex : 'receive_date',
+			sortable : true,
 			align : 'center',
 			renderer : App.util.Renderer.date()
 		}, {
 			header : 'real_coupon_per_share',
 			dataIndex : 'real_coupon_per_share',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(7)
 		}, {
+			width : 60,
 			header : 'status',
-			dataIndex : 'status'
+			dataIndex : 'status',
+			sortable : true
 		}, {
 			header : 'estimate',
 			dataIndex : 'estimate',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(2)
 		}, {
 			header : 'real_coupons',
 			dataIndex : 'real_coupons',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(2),
 		}, {
+			width : 50,
 			header : 'extra_costs',
 			dataIndex : 'extra_costs',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(),
 			editor : editorDividend
 		}, {
+			width : 50,
 			header : 'tax_value',
 			dataIndex : 'tax_value',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number()
 		}, {
+			width : 120,
 			header : 'country',
-			dataIndex : 'country'
+			dataIndex : 'country',
+			sortable : true
 		}, {
+			width : 120,
 			header : 'oper',
-			dataIndex : 'oper'
+			dataIndex : 'oper',
+			sortable : true
 		} ],
 		viewConfig : {
-			forceFit : true,
+			//forceFit : true,
 			emptyText : 'Записи не найдены'
 		},
 

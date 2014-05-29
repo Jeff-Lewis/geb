@@ -209,14 +209,10 @@
 				+ Ext.getCmp(_ticker).getValue());
 	}
 
-	var _checked;
-
 	function selectCheck(This, checked) {
 		Ext.Msg.wait(checked ? 'Установка меток' : 'Снятие меток',
 				Ext.form.BasicForm.prototype.waitTitle);
-		_checked = checked;
 		setTimeout(function() {
-			var checked = _checked;
 			deals.each(function(item) {
 				item.data.selected = checked;
 				// Ext.Msg.updateProgress();
@@ -346,31 +342,37 @@
 		}), {
 			header : 'Id',
 			dataIndex : 'id',
+			sortable : true,
 			width : 35,
 			editable : false
 		}, {
 			header : 'Batch',
 			dataIndex : 'batch',
+			sortable : true,
 			width : 35,
 			editor : editorBatch
 		}, {
 			header : 'TradeNum',
 			dataIndex : 'tradeNum',
+			sortable : true,
 			width : 35,
 			editor : editorTradeNum
 		}, {
 			header : 'SecShortName',
 			dataIndex : 'secShortName',
+			sortable : true,
 			width : 30,
 			editable : false
 		}, {
 			header : 'Operation',
 			dataIndex : 'operation',
+			sortable : true,
 			width : 30,
 			editor : editorOperation
 		}, {
 			header : 'Quantity',
 			dataIndex : 'quantity',
+			sortable : true,
 			width : 50,
 			align : 'right',
 			renderer : App.util.Renderer.number(0),
@@ -378,6 +380,7 @@
 		}, {
 			header : 'Price',
 			dataIndex : 'price',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
 			width : 60,
@@ -385,6 +388,7 @@
 		}, {
 			header : 'PriceNKD',
 			dataIndex : 'priceNKD',
+			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
 			width : 60,
@@ -392,11 +396,13 @@
 		}, {
 			header : 'Currency',
 			dataIndex : 'currency',
+			sortable : true,
 			width : 30,
 			editable : false
 		}, {
 			header : 'TradeDate',
 			dataIndex : 'tradeDate',
+			sortable : true,
 			// align : 'center',
 			renderer : App.util.Renderer.date(),
 			width : 50,
@@ -404,6 +410,7 @@
 		}, {
 			header : 'SettleDate',
 			dataIndex : 'settleDate',
+			sortable : true,
 			// align : 'center',
 			renderer : App.util.Renderer.date(),
 			width : 50,
@@ -411,30 +418,36 @@
 		}, {
 			header : 'TradeSystem',
 			dataIndex : 'tradeSystem',
+			sortable : true,
 			width : 50,
 			editor : editorTradeSystem
 		}, {
 			header : 'Broker',
 			dataIndex : 'broker',
+			sortable : true,
 			width : 30,
 			editable : false
 		}, {
 			header : 'Account',
 			dataIndex : 'account',
+			sortable : true,
 			width : 30,
 			editor : editorAccount
 		}, {
 			header : 'Client',
 			dataIndex : 'client',
+			sortable : true,
 			width : 30
 		}, {
 			header : 'Portfolio',
 			dataIndex : 'portfolio',
+			sortable : true,
 			width : 30,
 			editor : editorPortfolio
 		}, {
 			header : 'Funding',
 			dataIndex : 'funding',
+			sortable : true,
 			width : 30,
 			align : 'center',
 			renderer : App.util.Renderer.bool(),
