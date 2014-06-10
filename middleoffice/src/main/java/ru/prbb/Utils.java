@@ -55,6 +55,20 @@ public class Utils {
 	}
 
 	/**
+	 * Проверить число на содержимое
+	 * 
+	 * @param n
+	 *            проверяемое число
+	 * @return <code>true</code>, если не равно <code>0</code>
+	 */
+	public static boolean isNotEmpty(Number n) {
+		if (null == n) {
+			return false;
+		}
+		return (n.doubleValue() != 0);
+	}
+
+	/**
 	 * Проверить строку на содержимое
 	 * 
 	 * @param s

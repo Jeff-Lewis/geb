@@ -44,11 +44,22 @@ public class UtilsTest extends Assert {
 	 * Test method for {@link ru.prbb.Utils#isNotEmpty(java.lang.String)}.
 	 */
 	@Test
-	public void testIsNotEmpty() {
-		assertEquals(false, Utils.isNotEmpty(null));
+	public void testIsNotEmptyString() {
+		assertEquals(false, Utils.isNotEmpty((String) null));
 		assertEquals(false, Utils.isNotEmpty(""));
 		assertEquals(false, Utils.isNotEmpty("   "));
 		assertEquals(true, Utils.isNotEmpty(" x "));
+	}
+
+	/**
+	 * Test method for {@link ru.prbb.Utils#isNotEmpty(java.lang.String)}.
+	 */
+	@Test
+	public void testIsNotEmpty() {
+		assertEquals(false, Utils.isNotEmpty((Number) null));
+		assertEquals(false, Utils.isNotEmpty(0));
+		assertEquals(true, Utils.isNotEmpty(Long.MIN_VALUE));
+		assertEquals(true, Utils.isNotEmpty(Math.E));
 	}
 
 	/**
