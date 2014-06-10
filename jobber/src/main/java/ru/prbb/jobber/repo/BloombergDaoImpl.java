@@ -298,7 +298,7 @@ public class BloombergDaoImpl implements BloombergDao
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void putUpdatesFutures(List<UpdateFutureData> items) {
-		String sql = "{call dbo.put_updated_securities_info ?, ?, ?, ?, ?}";
+		String sql = "{call dbo.put_updated_securities_info ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
 		for (UpdateFutureData item : items) {
 			try {
@@ -307,6 +307,8 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(3, item.name);
 				q.setParameter(4, item.short_name);
 				q.setParameter(5, item.type_id);
+				q.setParameter(6, item.first_tradeable_date);
+				q.setParameter(7, item.last_tradeable_date);
 				// TODO q.executeUpdate();
 				showSql(sql, q);
 			} catch (Exception e) {
