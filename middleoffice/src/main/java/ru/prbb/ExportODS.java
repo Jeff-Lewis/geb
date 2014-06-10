@@ -4,6 +4,7 @@
 package ru.prbb;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -63,8 +64,10 @@ public class ExportODS extends Export {
 						OdfTableCell cell = row.getCellByIndex(c);
 						if (cellData instanceof Number) {
 							Number number = (Number) cellData;
+							if (cellData instanceof BigDecimal || cellData instanceof Double || cellData instanceof Float) {
+								cell.setFormatString("0.000");
+							}
 							Double value = number.doubleValue();
-							cell.setFormatString("0.000");
 							cell.setDoubleValue(value);
 							continue;
 						}
