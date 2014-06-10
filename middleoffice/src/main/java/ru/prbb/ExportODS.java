@@ -54,12 +54,13 @@ public class ExportODS extends Export {
 			} else {
 				for (Object[] rowData : data) {
 					row = table.appendRow();
-					int c = 0;
+					int idx = 0;
 					for (Object cellData : rowData) {
+						final int c = idx++;
 						if (null == cellData) {
 							continue;
 						}
-						OdfTableCell cell = row.getCellByIndex(c++);
+						OdfTableCell cell = row.getCellByIndex(c);
 						if (cellData instanceof Number) {
 							Number number = (Number) cellData;
 							Double value = number.doubleValue();
