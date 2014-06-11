@@ -6,35 +6,54 @@ package ru.prbb.middleoffice.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
  * @author RBr
- * 
  */
 @Entity
 public class ViewDealsItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private Long id;
+	@Column(name = "Batch")
 	private Integer batch;
+	@Column(name = "TradeNum")
 	private String tradeNum;
+	@Column(name = "SecShortName")
 	private String secShortName;
+	@Column(name = "Operation")
 	private String operation;
+	@Column(name = "Quantity")
 	private Integer quantity;
+	@Column(name = "Price")
 	private BigDecimal price;
+	@Column(name = "PriceNKD")
 	private BigDecimal priceNKD;
+	@Column(name = "Currency")
 	private String currency;
+	@Column(name = "TradeDate")
 	private String tradeDate;
+	@Column(name = "SettleDate")
 	private String settleDate;
+	@Column(name = "TradeSystem")
 	private String tradeSystem;
+	@Column(name = "Broker")
 	private String broker;
+	@Column(name = "Account")
 	private String account;
+	@Column(name = "Client")
 	private String client;
+	@Column(name = "Portfolio")
 	private String portfolio;
+	@Column(name = "Funding")
 	private Byte funding;
+	@Column(name = "Initiator")
+	private String initiator;
 
 	/**
 	 * @return the id
@@ -289,5 +308,15 @@ public class ViewDealsItem implements Serializable {
 	 */
 	public void setFunding(Byte funding) {
 		this.funding = funding;
+	}
+
+	
+	public String getInitiator() {
+		return initiator;
+	}
+
+	
+	public void setInitiator(String initiator) {
+		this.initiator = initiator;
 	}
 }

@@ -15,7 +15,7 @@
 		fields : [ 'selected', 'id', 'batch', 'tradeNum', 'secShortName',
 				'operation', 'quantity', 'price', 'priceNKD', 'currency',
 				'tradeDate', 'settleDate', 'tradeSystem', 'broker', 'account',
-				'client', 'portfolio', 'funding' ],
+				'client', 'portfolio', 'funding', 'initiator' ],
 		listeners : App.ui.listenersJsonStore()
 	});
 
@@ -141,6 +141,23 @@
 		allowBlank : false,
 		allowNegative : false,
 		decimalPrecision : 6
+	});
+
+	var editorInitiator = new Ext.form.ComboBox({
+		store : new Ext.data.JsonStore({
+			autoDestroy : true,
+			url : 'rest/ViewDeals/Initiator.do',
+			// root : 'info',
+			fields : [ 'name' ],
+			sortInfo : {
+				field : 'name'
+			}
+		}),
+		emptyText : 'Выберите',
+		displayField : 'name',
+		loadingText : 'Поиск...',
+		triggerAction : 'all',
+		editable : false
 	});
 
 	var editorTradeSystem = new Ext.form.ComboBox({
@@ -334,46 +351,47 @@
 		columns : [ { /* header : 'X', */
 			xtype : 'checkcolumn',
 			dataIndex : 'selected',
-			width : 16,
+			width : 20,
 			sortable : false
 		}, new Ext.grid.RowNumberer({
 			header : '#',
-			width : 35
+			width : 30
 		}), {
 			header : 'Id',
 			dataIndex : 'id',
 			sortable : true,
-			width : 35,
+			width : 50,
 			editable : false
 		}, {
 			header : 'Batch',
 			dataIndex : 'batch',
 			sortable : true,
-			width : 35,
+			width : 50,
 			editor : editorBatch
 		}, {
 			header : 'TradeNum',
 			dataIndex : 'tradeNum',
 			sortable : true,
-			width : 35,
+			width : 60,
 			editor : editorTradeNum
 		}, {
 			header : 'SecShortName',
 			dataIndex : 'secShortName',
 			sortable : true,
-			width : 30,
+			width : 150,
 			editable : false
 		}, {
 			header : 'Operation',
 			dataIndex : 'operation',
 			sortable : true,
-			width : 30,
+			width : 60,
+			align : 'center',
 			editor : editorOperation
 		}, {
 			header : 'Quantity',
 			dataIndex : 'quantity',
 			sortable : true,
-			width : 50,
+			width : 65,
 			align : 'right',
 			renderer : App.util.Renderer.number(0),
 			editor : editorQuantity
@@ -383,7 +401,7 @@
 			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
-			width : 60,
+			width : 100,
 			editor : editorPrice
 		}, {
 			header : 'PriceNKD',
@@ -391,58 +409,59 @@
 			sortable : true,
 			align : 'right',
 			renderer : App.util.Renderer.number(6),
-			width : 60,
+			width : 100,
 			editable : false
 		}, {
 			header : 'Currency',
 			dataIndex : 'currency',
 			sortable : true,
-			width : 30,
+			width : 60,
+			align : 'center',
 			editable : false
 		}, {
 			header : 'TradeDate',
 			dataIndex : 'tradeDate',
 			sortable : true,
-			// align : 'center',
+			align : 'center',
 			renderer : App.util.Renderer.date(),
-			width : 50,
+			width : 70,
 			editable : false
 		}, {
 			header : 'SettleDate',
 			dataIndex : 'settleDate',
 			sortable : true,
-			// align : 'center',
+			align : 'center',
 			renderer : App.util.Renderer.date(),
-			width : 50,
+			width : 70,
 			editable : false
 		}, {
 			header : 'TradeSystem',
 			dataIndex : 'tradeSystem',
 			sortable : true,
-			width : 50,
+			width : 75,
 			editor : editorTradeSystem
 		}, {
 			header : 'Broker',
 			dataIndex : 'broker',
 			sortable : true,
-			width : 30,
+			width : 70,
 			editable : false
 		}, {
 			header : 'Account',
 			dataIndex : 'account',
 			sortable : true,
-			width : 30,
+			width : 80,
 			editor : editorAccount
 		}, {
 			header : 'Client',
 			dataIndex : 'client',
 			sortable : true,
-			width : 30
+			width : 50
 		}, {
 			header : 'Portfolio',
 			dataIndex : 'portfolio',
 			sortable : true,
-			width : 30,
+			width : 60,
 			editor : editorPortfolio
 		}, {
 			header : 'Funding',
@@ -454,9 +473,15 @@
 			listeners : {
 				click : clickFunding
 			}
+		}, {
+			header : 'Initiator',
+			dataIndex : 'initiator',
+			sortable : true,
+			width : 70,
+			editor : editorInitiator
 		} ],
 		viewConfig : {
-			forceFit : true,
+			//forceFit : true,
 			emptyText : 'Записи не найдены'
 		},
 

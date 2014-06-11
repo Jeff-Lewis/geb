@@ -20,6 +20,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewDealsItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
+import ru.prbb.middleoffice.repo.dictionary.InitiatorsDao;
 import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewDealsDao;
 
@@ -37,6 +38,8 @@ public class ViewDealsController
 
 	@Autowired
 	private ViewDealsDao dao;
+	@Autowired
+	private InitiatorsDao daoInitiators;
 	@Autowired
 	private TradesystemsDao daoTradesystems;
 	@Autowired
@@ -86,7 +89,8 @@ public class ViewDealsController
 				"Account",
 				"Client",
 				"Portfolio",
-				"Funding");
+				"Funding",
+				"Initiator");
 		for (ViewDealsItem item : list) {
 			exp.addRow(
 					item.getId(),
@@ -98,14 +102,15 @@ public class ViewDealsController
 					item.getPrice(),
 					item.getPriceNKD(),
 					item.getCurrency(),
-					item.getTradeDate(),
-					item.getSettleDate(),
+					Utils.parseDate(item.getTradeDate()),
+					Utils.parseDate(item.getSettleDate()),
 					item.getTradeSystem(),
 					item.getBroker(),
 					item.getAccount(),
 					item.getClient(),
 					item.getPortfolio(),
-					item.getFunding());
+					item.getFunding(),
+					item.getInitiator());
 		}
 
 		String name = "Deals.ods";
@@ -134,6 +139,15 @@ public class ViewDealsController
 		log.info("POST ViewDeals/Set: field={}, value={}, deals={}", Utils.toArray(field, value, deals));
 		dao.updateById(deals, field, value);
 		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/Initiator", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboInitiator(
+			@RequestParam(required = false) String query)
+	{
+		log.info("COMBO ViewDeals: Initiator='{}'", query);
+		return daoInitiators.findCombo(query);
 	}
 
 	@RequestMapping(value = "/TradeSystems", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
