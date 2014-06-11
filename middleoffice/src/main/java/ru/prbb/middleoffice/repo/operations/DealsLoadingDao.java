@@ -32,6 +32,7 @@ public interface DealsLoadingDao {
 		public final String TradeSystem; // varchar(255) J
 		public final String Account; // varchar(255) K
 		public final String Portfolio; // varchar(255)L
+		public final String Initiator; //varchar(255) = null M
 
 		public Record(XSSFRow row) {
 			super(row);
@@ -48,6 +49,7 @@ public interface DealsLoadingDao {
 			TradeSystem = getStringValue(row, 'J');
 			Account = getStringValue(row, 'K');
 			Portfolio = getStringValue(row, 'L');
+			Initiator = getStringValue(row, 'M');
 		}
 	}
 

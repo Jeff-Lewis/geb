@@ -26,7 +26,7 @@ public class DealsLoadingDaoImpl implements DealsLoadingDao
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int put(Record r) {
-		String sql = "{call dbo.mo_WebSet_putDeals_sp ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+		String sql = "{call dbo.mo_WebSet_putDeals_sp ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
 		q.setParameter(1, r.Batch);
 		q.setParameter(2, r.TradeNum);
@@ -40,6 +40,7 @@ public class DealsLoadingDaoImpl implements DealsLoadingDao
 		q.setParameter(10, r.TradeSystem);
 		q.setParameter(11, r.Account);
 		q.setParameter(12, r.Portfolio);
+		q.setParameter(13, r.Initiator);
 		return q.executeUpdate();
 	}
 
