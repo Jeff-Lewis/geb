@@ -5,9 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +35,6 @@ import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 public class ViewPortfolioController
 {
 
-	private static final String PROGRESS = "Progress";
-
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -56,43 +52,55 @@ public class ViewPortfolioController
 		return dao.executeSelect(Utils.parseDate(date), security);
 	}
 
+	private ResultProgress p = new ResultProgress();
+
+	private Boolean isBusyCalc = Boolean.FALSE;
+
 	@RequestMapping(value = "/Calculate", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postCalculate(HttpServletRequest request,
+	public Result postCalculate(
 			@RequestParam String date,
 			@RequestParam Long security)
 	{
-		log.info("POST ViewPortfolio/Calculate: date={}, security={}", date, security);
-		HttpSession session = request.getSession(false);
-		if (null == session) {
+		if (isBusyCalc == Boolean.TRUE) {
+			log.info("POST ViewPortfolio/Calculate: busy date={}, security={}", date, security);
 			return Result.FAIL;
 		}
-		ResultProgress p;
-		try {
-			p = new ResultProgress(0, "");
-			session.setAttribute(PROGRESS, p);
+		isBusyCalc = Boolean.TRUE;
 
-			Calendar dateCalc = createCalendar();
-			dateCalc.setTime(Utils.parseDate(date));
+		log.info("POST ViewPortfolio/Calculate: date={}, security={}", date, security);
+		try {
+			p = new ResultProgress(0, "Расчёт запущен.");
+
+			Calendar beg = createCalendar();
+			beg.setTime(Utils.parseDate(date));
 
 			Calendar end = createCalendar();
 			end.add(Calendar.DAY_OF_MONTH, -1);
 
-			final long begin = dateCalc.getTimeInMillis();
-			final double total = end.getTimeInMillis() - begin;
+			final double total = end.getTimeInMillis() - beg.getTimeInMillis();
 
 			final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			while (dateCalc.before(end)) {
-				final double v = (dateCalc.getTimeInMillis() - begin) / total;
-				p = new ResultProgress(v, sdf.format(dateCalc.getTime()));
-				session.setAttribute(PROGRESS, p);
+
+			String time = "";
+			String info = " Расчёт с: " + sdf.format(beg.getTime());
+			if (Utils.isNotEmpty(security))
+				info += " для Тикер: " + security;
+
+			final long stTime = System.currentTimeMillis();
+			for (Calendar dateCalc = (Calendar) beg.clone(); dateCalc.before(end); dateCalc.add(Calendar.DAY_OF_MONTH, 1)) {
+				final double v = (dateCalc.getTimeInMillis() - beg.getTimeInMillis()) / total;
+				String text = time + sdf.format(dateCalc.getTime()) + info;
+				p = new ResultProgress(v, text);
 
 				dao.executeCalc(new Date(dateCalc.getTimeInMillis()), security);
 
-				dateCalc.add(Calendar.DAY_OF_MONTH, 1);
+				long runTime = System.currentTimeMillis() - stTime;
+				time = "Прошло, сек: " + Long.valueOf(runTime / 1000) + " ";
 			}
 		} finally {
-			session.removeAttribute(PROGRESS);
+			p = new ResultProgress();
+			isBusyCalc = Boolean.FALSE;
 		}
 		return Result.SUCCESS;
 	}
@@ -108,16 +116,8 @@ public class ViewPortfolioController
 
 	@RequestMapping(value = "/Calculate/Progress", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultProgress getProgress(HttpServletRequest request)
+	public ResultProgress getCalculateProgress()
 	{
-		HttpSession session = request.getSession(false);
-		if (null == session) {
-			return ResultProgress.FAIL;
-		}
-		ResultProgress p = (ResultProgress) session.getAttribute(PROGRESS);
-		if (null == p) {
-			return ResultProgress.FAIL;
-		}
 		return p;
 	}
 

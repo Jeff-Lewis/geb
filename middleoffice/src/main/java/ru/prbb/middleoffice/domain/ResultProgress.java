@@ -7,16 +7,14 @@ import java.io.Serializable;
 
 /**
  * @author RBr
- * 
  */
 public class ResultProgress implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
-	public static final ResultProgress FAIL = new ResultProgress();
-
-	private final boolean success;
-	private final Double value;
-	private final String text;
+	private boolean success;
+	private Double value;
+	private String text;
 
 	public ResultProgress() {
 		this.success = false;
@@ -34,11 +32,34 @@ public class ResultProgress implements Serializable {
 		return success;
 	}
 
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
 	public Double getValue() {
 		return value;
 	}
 
+	public void setValue(Double value) {
+		this.value = value;
+	}
+
 	public String getText() {
 		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ResultProgress [value=");
+		builder.append(value);
+		builder.append(", text=");
+		builder.append(text);
+		builder.append("]");
+		return builder.toString();
 	}
 }
