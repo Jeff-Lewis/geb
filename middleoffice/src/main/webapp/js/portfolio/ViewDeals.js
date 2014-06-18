@@ -477,7 +477,7 @@
 			header : 'Initiator',
 			dataIndex : 'initiator',
 			sortable : true,
-			width : 70,
+			width : 130,
 			editor : editorInitiator
 		} ],
 		viewConfig : {
