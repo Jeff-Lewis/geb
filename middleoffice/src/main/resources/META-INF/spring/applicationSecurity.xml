@@ -16,10 +16,13 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
 	<http auto-config='true'>
-		<intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<intercept-url pattern="/**" access="ROLE_USER" />
-		<!-- <form-login login-page='/login.jsp' /> -->
+		<!-- <intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
+		<form-login always-use-default-target="true" login-page="/login" authentication-failure-url="/login_error" default-target-url="/"/>
 		<logout logout-url="/logout"/>
+
+		<intercept-url pattern="/rest/**" access="ROLE_USER" />
+		<intercept-url pattern="/js/**" access="ROLE_USER" />
+		<intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 	</http>
 
 	<authentication-manager>

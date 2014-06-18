@@ -3,6 +3,7 @@
 	<name>analytics</name>
 	<comment></comment>
 	<projects>
+		<project>ExtJS</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
