@@ -21,17 +21,17 @@
 	});
 
 	function addItem(self) {
-		menu.showModal(menu, 'dictionary/FundsAdd');
+		showModal('dictionary/FundsAdd');
 	}
 
 	function edtItem(self) {
-		if (sm.getCount() > 0) {
-			var id = sm.getSelected().data.id;
-			menu.showModal(menu, 'dictionary/FundsEdit', 'rest/Funds/' + id
-					+ '.do');
-		} else {
-			App.ui.message('Необходимо выбрать запись для редактирования!');
+		if (sm.getCount() == 0) {
+			App.ui.message('Необходимо выбрать запись для изменения!');
+			return;
 		}
+
+		var id = sm.getSelected().data.id;
+		showModal('dictionary/FundsEdit', 'rest/Funds/' + id + '.do');
 	}
 
 	function delItem(self) {

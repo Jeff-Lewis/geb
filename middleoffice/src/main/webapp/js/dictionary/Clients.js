@@ -21,17 +21,17 @@
 	});
 
 	function addItem(self) {
-		menu.showModal(menu, 'dictionary/ClientsAdd');
+		showModal('dictionary/ClientsAdd');
 	}
 
 	function edtItem(self) {
-		if (sm.getCount() > 0) {
-			var id = sm.getSelected().data.id;
-			menu.showModal(menu, 'dictionary/ClientsEdit', 'rest/Clients/' + id
-					+ '.do');
-		} else {
-			App.ui.message('Необходимо выбрать запись для редактирования!');
+		if (sm.getCount() == 0) {
+			App.ui.message('Необходимо выбрать запись для изменения!');
+			return;
 		}
+
+		var id = sm.getSelected().data.id;
+		showModal('dictionary/ClientsEdit', 'rest/Clients/' + id + '.do');
 	}
 
 	function delItem(self) {

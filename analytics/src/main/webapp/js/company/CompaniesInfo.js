@@ -211,8 +211,7 @@
 	var winFiles = null;
 
 	function refresh(id_sec) {
-		menu.submitDataRequest(menu, 'company/CompaniesInfo', 'rest/Companies/'
-				+ id_sec + '.do');
+		showPanel('company/CompaniesInfo', 'rest/Companies/' + id_sec + '.do');
 	}
 
 	function fileSubmit(self) {
@@ -614,8 +613,7 @@
 	});
 
 	function addEpsGrowth(self) {
-		menu.showModal(menu, 'company/CompaniesEpsAdd', 'rest/Companies/'
-				+ id_sec + '/id.do');
+		showModal('company/CompaniesEpsAdd', 'rest/Companies/' + id_sec + '/id.do');
 	}
 
 	function delEpsGrowth() {
@@ -664,8 +662,7 @@
 	}
 
 	function addBvGrowth(self) {
-		menu.showModal(menu, 'company/CompaniesBvAdd', 'rest/Companies/'
-				+ id_sec + '/id.do');
+		showModal('company/CompaniesBvAdd', 'rest/Companies/' + id_sec + '/id.do');
 	}
 
 	function delBvGrowth() {
@@ -714,8 +711,7 @@
 	}
 
 	function addVariableFormula(self) {
-		menu.showModal(menu, 'company/CompaniesExpressionAdd',
-				'rest/Companies/' + id_sec + '/id.do');
+		showModal('company/CompaniesExpressionAdd', 'rest/Companies/' + id_sec + '/id.do');
 	}
 
 	function delVariableFormula(self) {

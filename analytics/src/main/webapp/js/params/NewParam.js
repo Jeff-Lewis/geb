@@ -7,7 +7,63 @@
 	var _code = Ext.id();
 	var _name = Ext.id();
 
-	var container = new Ext.FormPanel({
+	function close(b, e) {
+		b.ownerCt.ownerCt.ownerCt.close();
+	}
+
+	function setup() {
+		Ext.Ajax.request({
+			url : 'rest/NewParam/Setup.do',
+			params : {
+				code : Ext.getCmp(_code).getValue()
+			},
+			waitMsg : 'Запрос параметра',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					Ext.getCmp(_name).setValue(answer.item.name);
+					Ext.getCmp(_blm_id).setValue(answer.item.blmId);
+				} else if (ret.code == 'login') {
+					App.ui.sessionExpired();
+				} else {
+					App.ui.error(ret.message);
+				}
+
+			},
+			failure : function(xhr) {
+				App.ui.error('Ошибка при обращении к серверу.', xhr.statusText);
+			}
+		});
+	}
+
+	function save(b, e) {
+		Ext.Ajax.request({
+			url : 'rest/NewParam/Save.do',
+			params : {
+				blm_id : Ext.getCmp(_blm_id).getValue(),
+				code : Ext.getCmp(_code).getValue(),
+				name : Ext.getCmp(_name).getValue()
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Сохранение нового параметра',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					App.ui.message('Параметр успешно добавлен!');
+					close(b, null);
+				} else {
+					App.ui.error(answer.message);
+				}
+			},
+			failure : function(xhr) {
+				App.ui.error('Ошибка при обращении к серверу.', xhr.statusText);
+			}
+		});
+	}
+
+	return {
+		xtype: 'form',
+		caption : 'Ввод нового пареметра',
 		width : 300,
 		height : 200,
 		padding : 10,
@@ -46,68 +102,6 @@
 		}, {
 			text : 'Отмена',
 			handler : close
-		} ],
-		setWindow : function(window) {
-			this.window = window;
-			this.window.setTitle('Ввод нового пареметра');
-		}
-	});
-
-	function setup() {
-		Ext.Ajax.request({
-			url : 'rest/NewParam/Setup.do',
-			params : {
-				code : Ext.getCmp(_code).getValue()
-			},
-			waitMsg : 'Запрос параметра',
-			success : function(xhr) {
-				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					Ext.getCmp(_name).setValue(answer.item.name);
-					Ext.getCmp(_blm_id).setValue(answer.item.blmId);
-				} else if (ret.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(ret.message);
-				}
-
-			},
-			failure : function(xhr) {
-				App.ui.error(xhr.statusText, xhr.status);
-			}
-		});
-	}
-
-	function save(b, e) {
-		Ext.Ajax.request({
-			url : 'rest/NewParam/Save.do',
-			params : {
-				blm_id : Ext.getCmp(_blm_id).getValue(),
-				code : Ext.getCmp(_code).getValue(),
-				name : Ext.getCmp(_name).getValue()
-			},
-			timeout : 10 * 60 * 1000, // 10 min
-			waitMsg : 'Сохранение нового параметра',
-			success : function(xhr) {
-				var answer = Ext.decode(xhr.responseText);
-				if (answer.success) {
-					App.ui.message('Параметр успешно добавлен!');
-					container.window.close();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
-				}
-			},
-			failure : function() {
-				App.ui.error('Сервер недоступен');
-			}
-		});
-	}
-
-	function close(b, e) {
-		container.window.close();
-	}
-
-	return container;
+		} ]
+	};
 })();

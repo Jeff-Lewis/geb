@@ -23,7 +23,7 @@
 	});
 
 	function add() {
-		menu.showModal(menu, 'dictionary/SecurityIncorporationsAdd');
+		showModal('dictionary/SecurityIncorporationsAdd');
 	}
 
 	function edit() {
@@ -33,7 +33,7 @@
 		}
 
 		var id = sm.getSelected().data.sip;
-		menu.showModal(menu, 'dictionary/SecurityIncorporationsEdit',
+		showModal('dictionary/SecurityIncorporationsEdit',
 				'rest/SecurityIncorporations/' + id + '.do');
 	}
 

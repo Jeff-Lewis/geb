@@ -20,7 +20,7 @@
 	});
 
 	function addUser() {
-		menu.showModal(menu, 'utils/UsersAddUsers');
+		showModal('utils/UsersAddUsers');
 	}
 
 	function renUser() {
@@ -30,7 +30,7 @@
 		}
 
 		var id = smU.getSelected().data.id;
-		menu.showModal(menu, 'utils/UsersEditUsers', 'rest/DictUsers/' + id + '.do');
+		showModal('utils/UsersEditUsers', 'rest/DictUsers/' + id + '.do');
 	}
 
 	function infoUser() {
@@ -40,7 +40,7 @@
 		}
 
 		var id = smU.getSelected().data.id;
-		menu.submitDataRequest(menu, 'utils/UsersInfoUsers', 'rest/DictUsers/' + id + '.do');
+		showPanel('utils/UsersInfoUsers', 'rest/DictUsers/' + id + '.do');
 	}
 
 	function delUser() {
@@ -92,7 +92,7 @@
 	});
 
 	function addGroup() {
-		menu.showModal(menu, 'utils/UsersAddGroups');
+		showModal('utils/UsersAddGroups');
 	}
 
 	function renGroup() {
@@ -102,7 +102,7 @@
 		}
 
 		var id = smG.getSelected().data.id;
-		menu.showModal(menu, 'utils/UsersEditGroups', 'rest/DictGroups/' + id + '.do');
+		showModal('utils/UsersEditGroups', 'rest/DictGroups/' + id + '.do');
 	}
 
 	function staffGroup() {
@@ -112,7 +112,7 @@
 		}
 
 		var id = smG.getSelected().data.id;
-		menu.submitDataRequest(menu, 'utils/UsersStaffGroup', 'rest/DictGroups/' + id + '.do');
+		showPanel('utils/UsersStaffGroup', 'rest/DictGroups/' + id + '.do');
 	}
 
 	function infoGroup() {
@@ -122,7 +122,7 @@
 		}
 
 		var id = smG.getSelected().data.id;
-		menu.submitDataRequest(menu, 'utils/UsersInfoGroup', 'rest/DictGroups/' + id + '.do');
+		showPanel('utils/UsersInfoGroup', 'rest/DictGroups/' + id + '.do');
     }
 
 	function delGroup() {
@@ -174,7 +174,7 @@
 	});
 
 	function addObject() {
-		menu.showModal(menu, 'utils/UsersAddObjects');
+		showModal('utils/UsersAddObjects');
     }
 
 	function edtObject() {
@@ -184,7 +184,7 @@
 		}
 
 		var id = smO.getSelected().data.id;
-		menu.showModal(menu, 'utils/UsersEditObjects', 'rest/DictObjects/' + id + '.do');
+		showModal('utils/UsersEditObjects', 'rest/DictObjects/' + id + '.do');
     }
 
 	function delObject() {

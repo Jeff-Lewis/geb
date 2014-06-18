@@ -21,7 +21,7 @@
 	});
 
 	function patternUpload() {
-		menu.showModal(menu, 'services/DealsPatternUpload');
+		showModal('services/DealsPatternUpload');
 	}
 
 	function patternDownload() {

@@ -21,13 +21,13 @@
 	});
 
 	function addItem(self) {
-		menu.showModal(menu, 'dictionary/TradesystemsAdd');
+		showModal('dictionary/TradesystemsAdd');
 	}
 
 	function edtItem(self) {
 		if (sm.getCount() > 0) {
 			var id = sm.getSelected().data.id;
-			menu.showModal(menu, 'dictionary/TradesystemsEdit',
+			showModal('dictionary/TradesystemsEdit',
 					'rest/Tradesystems/' + id + '.do');
 		} else {
 			App.ui.message('Необходимо выбрать запись для редактирования!');

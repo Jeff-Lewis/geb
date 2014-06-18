@@ -12,7 +12,7 @@
 	var sm = new Ext.grid.CheckboxSelectionModel();
 
 	function add() {
-		menu.showModal(menu, 'services/NewInstrumentAdd');
+		showModal('services/NewInstrumentAdd');
 	}
 
 	function del() {

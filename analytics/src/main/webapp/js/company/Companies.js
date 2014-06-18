@@ -30,8 +30,8 @@
 
 	function rSC(value, p, r) {
 		var id = r.data.id_sec;
-		var onclick = "menu.submitDataRequest(menu, 'company/CompaniesInfo',"
-				+ " 'rest/Companies/" + id + ".do');";
+		// TODO заменить компонент
+		var onclick = "showPanel('company/CompaniesInfo', 'rest/Companies/" + id + ".do');";
 		return '<b><a onclick="' + onclick + '" href="#">' + value + '</a></b>';
 	}
 

@@ -44,7 +44,7 @@
 		}
 
 		var id = sm.getSelected().data.id;
-		menu.showModal(menu, 'portfolio/ViewDealsREPOEdit',
+		showModal('portfolio/ViewDealsREPOEdit',
 				'rest/ViewDealsREPO/' + id + '.do');
 	}
 

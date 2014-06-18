@@ -27,9 +27,9 @@ Ext.Ajax.on('requestcomplete', function(conn, response, options) {
 		var res = Ext.decode(response.responseText);
 		if (res && !res.success) {
 			if (res.code == 'login') {
-				App.ui.error("Зарегистрируйтесь в системе.");
+				App.ui.error('Зарегистрируйтесь в системе.');
 			} else {
-				App.ui.error("Неизвестный код: " + res.code);
+				App.ui.error('Неизвестный код ответа', res.code);
 			}
 			response.responseText = '';
 		}
@@ -40,7 +40,7 @@ Ext.Ajax.on('requestexception', function(conn, response, options) {
 	if (options.waitMsg || options.progress) {
 		Ext.MessageBox.hide();
 	}
-	App.ui.error(response.statusText);
+	App.ui.error('Ошибка при обращении к серверу.', response.statusText);
 });
 
 Ext.namespace('App.util.Renderer');
@@ -190,7 +190,7 @@ App.ui.listenersJsonStore = function() {
 		beforeload : function(This, options) {
 			++countLoadMsg;
 			if (countLoadMsg == 1) {
-				Ext.Msg.wait("Загрузка записей...",
+				Ext.Msg.wait('Загрузка записей...',
 						Ext.form.BasicForm.prototype.waitTitle,
 						Ext.form.BasicForm.prototype.waitTitle);
 			}

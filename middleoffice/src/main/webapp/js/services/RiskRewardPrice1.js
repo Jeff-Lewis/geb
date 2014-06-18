@@ -18,7 +18,7 @@
 	});
 
 	function add() {
-		menu.showPane(menu, 'services/RiskRewardPrice1Add');
+		showPanel('services/RiskRewardPrice1Add');
 	}
 
 	function edt() {
@@ -28,7 +28,7 @@
 		}
 
 		var id = sm.getSelected().data.id;
-		menu.showModal(menu, 'services/RiskRewardPrice1Edit',
+		showModal('services/RiskRewardPrice1Edit',
 				'rest/RiskRewardPrice1/' + id + '.do');
 	}
 

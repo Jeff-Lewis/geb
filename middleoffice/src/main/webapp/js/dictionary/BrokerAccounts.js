@@ -18,7 +18,7 @@
 	});
 
 	function addItem(self) {
-		menu.showModal(menu, 'dictionary/BrokerAccountsAdd');
+		showModal('dictionary/BrokerAccountsAdd');
 	}
 
 	function edtItem(self) {
@@ -27,7 +27,7 @@
 			return;
 		}
 		var id = sm.getSelected().data.id;
-		menu.showModal(menu, 'dictionary/BrokerAccountsEdit',
+		showModal('dictionary/BrokerAccountsEdit',
 				'rest/BrokerAccounts/' + id + '.do');
 	}
 

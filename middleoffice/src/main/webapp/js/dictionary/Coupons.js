@@ -70,7 +70,7 @@
 	}
 
 	function add() {
-		menu.showModal(menu, 'dictionary/CouponsAdd');
+		showModal('dictionary/CouponsAdd');
 	}
 
 	function del() {
@@ -112,7 +112,7 @@
 		}
 
 		var id = sm.getSelected().data.id_sec;
-		menu.showModal(menu, 'dictionary/CouponsEdit', 'rest/Coupons/' + id
+		showModal('dictionary/CouponsEdit', 'rest/Coupons/' + id
 				+ '.do');
 	}
 

@@ -21,7 +21,7 @@
 	});
 
 	function addItem(self) {
-		menu.showModal(menu, 'dictionary/BrokersAdd');
+		showModal('dictionary/BrokersAdd');
 	}
 
 	function edtItem(self) {
@@ -31,8 +31,7 @@
 		}
 
 		var id = sm.getSelected().data.id;
-		menu.showModal(menu, 'dictionary/BrokersEdit', 'rest/Brokers/' + id
-				+ '.do');
+		showModal('dictionary/BrokersEdit', 'rest/Brokers/' + id + '.do');
 	}
 
 	function delItem(self) {

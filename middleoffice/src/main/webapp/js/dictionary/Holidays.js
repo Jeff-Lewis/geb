@@ -80,7 +80,7 @@
 	});
 
 	function addHoliday() {
-		menu.showModal(menu, 'dictionary/HolidaysAdd');
+		showModal('dictionary/HolidaysAdd');
 	}
 
 	function delHoliday() {

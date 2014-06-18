@@ -21,7 +21,7 @@
 	});
 
 	function addItem(self) {
-		menu.showModal(menu, 'dictionary/FuturesAdd');
+		showModal('dictionary/FuturesAdd');
 	}
 
 	function delItem(self) {

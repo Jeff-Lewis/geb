@@ -20,7 +20,7 @@
 	});
 
 	function addItem(self) {
-		menu.showModal(menu, 'utils/BrokersAdd');
+		showModal('utils/BrokersAdd');
 	}
 
 	function edtItem(self) {
@@ -30,7 +30,7 @@
 		}
 
 		var id = sm.getSelected().data.id;
-		menu.showModal(menu, 'utils/BrokersEdit', 'rest/Brokers/' + id + '.do');
+		showModal('utils/BrokersEdit', 'rest/Brokers/' + id + '.do');
 	}
 
 	function delItem(self) {

@@ -23,8 +23,8 @@
 
 	function rendererDetailPortfolioInfo(value, p, r) {
 		var id = r.data.id_sec;
-		var onclick = "menu.submitDataRequest(menu, 'model/ViewModelInfo',"
-				+ " 'rest/ViewModel/" + id + "/Info.do');";
+		// TODO заменить компонент
+		var onclick = "showPanel('model/ViewModelInfo', 'rest/ViewModel/" + id + "/Info.do');";
 		return '<b><a onclick="' + onclick + '" href="#">' + value + '</a></b>';
 	}
 

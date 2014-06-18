@@ -96,8 +96,7 @@
 		}
 
 		var id = sm.getSelected().data.id;
-		menu.submitDataRequest(menu, 'model/CompanyGroupStaff',
-				'rest/CompanyGroup/' + id + '.do');
+		showPanel('model/CompanyGroupStaff', 'rest/CompanyGroup/' + id + '.do');
 	}
 
 	function del(self) {

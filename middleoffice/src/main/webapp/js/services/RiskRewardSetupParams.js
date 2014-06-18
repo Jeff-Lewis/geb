@@ -31,7 +31,7 @@
 	}
 
 	function add() {
-		menu.showPane(menu, 'services/RiskRewardSetupParamsAdd');
+		showPanel('services/RiskRewardSetupParamsAdd');
 	}
 
 	function edt() {
@@ -41,12 +41,12 @@
 		}
 
 		var id = sm.getSelected().data.id;
-		menu.showModal(menu, 'services/RiskRewardSetupParamsEdit',
+		showModal('services/RiskRewardSetupParamsEdit',
 				'rest/RiskRewardSetupParams/' + id + '.do');
 	}
 
 	function edtGroup() {
-		menu.showPane(menu, 'services/RiskRewardSetupParamsEditGroup');
+		showPanel('services/RiskRewardSetupParamsEditGroup');
 	}
 
 	function del() {

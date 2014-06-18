@@ -376,7 +376,7 @@
 				}
 
 				var id = grid.getStore().getAt(rowIndex).data.id;
-				menu.submitDataRequest(menu, 'portfolio/TransferOperation',
+				showPanel('portfolio/TransferOperation',
 						'rest/TransferOperations/' + id + '.do');
 			},
 			afteredit : function(e) {

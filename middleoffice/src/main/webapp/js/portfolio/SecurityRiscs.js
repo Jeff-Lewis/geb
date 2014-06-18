@@ -46,7 +46,7 @@
 		}
 
 		var id = sm.getSelected().data.id;
-		menu.showModal(menu, 'portfolio/SecurityRiscsEdit',
+		showModal('portfolio/SecurityRiscsEdit',
 				'rest/SecurityRiscs/' + id + '.do');
 	}
 

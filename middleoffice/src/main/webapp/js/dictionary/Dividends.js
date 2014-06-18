@@ -67,7 +67,7 @@
 	}
 
 	function add() {
-		menu.showModal(menu, 'dictionary/DividendsAdd');
+		showModal('dictionary/DividendsAdd');
 	}
 
 	function del() {
@@ -109,7 +109,7 @@
 		}
 
 		var id = sm.getSelected().data.id_sec;
-		menu.showModal(menu, 'dictionary/DividendsEdit', 'rest/Dividends/' + id
+		showModal('dictionary/DividendsEdit', 'rest/Dividends/' + id
 				+ '.do');
 	}
 

@@ -17,7 +17,8 @@
 
 	function rendererCode(value, p, r) {
 		var id = r.data.blm_id;
-		var onclick = "menu.submitDataRequest(menu, 'params/ViewParamsInfo',"
+		// TODO заменить компонент
+		var onclick = "showPanel('params/ViewParamsInfo',"
 				+ " 'rest/ViewParams/" + id + ".do');";
 		return '<b><a onclick="' + onclick + '" href="#">' + value + '</a></b>';
 	}

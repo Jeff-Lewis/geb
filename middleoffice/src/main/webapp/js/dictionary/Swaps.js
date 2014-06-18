@@ -21,7 +21,7 @@
 	});
 
 	function add() {
-		menu.showModal(menu, 'dictionary/SwapsAdd');
+		showModal('dictionary/SwapsAdd');
 	}
 
 	function edit() {

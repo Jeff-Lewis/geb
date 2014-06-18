@@ -17,7 +17,7 @@
 	});
 
 	function add(b, e) {
-		menu.showModal(menu, 'subscription/ViewSubscriptionAdd');
+		showModal('subscription/ViewSubscriptionAdd');
 	}
 
 	function edit(b, e) {
@@ -27,8 +27,7 @@
 		}
 
 		var id = smInfo.getSelected().data.id;
-		menu.submitDataRequest(menu, 'subscription/ViewSubscriptionEdit',
-				'rest/ViewSubscription/' + id + '.do');
+		showPanel('subscription/ViewSubscriptionEdit', 'rest/ViewSubscription/' + id + '.do');
 	}
 
 	function del(b, e) {

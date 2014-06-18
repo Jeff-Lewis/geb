@@ -23,10 +23,12 @@ var panelView = new Ext.TabPanel({
 	}
 });
 
-function showPanel(url) {
-	var viewName = url;
+function _fnFailure(xhr, opts) {
+	App.ui.error('Ошибка при загрузке формы', xhr.status);
+}
 
-	var id = viewName + '-component';
+function showPanel(urlForm, urlData) {
+	var id = urlForm + '-component';
 	var cmp = Ext.getCmp(id);
 
 	if (cmp) {
@@ -36,23 +38,25 @@ function showPanel(url) {
 	}
 
 	Ext.Ajax.request({
-		method : 'GET',
-		url : 'js/' + viewName + '.js',
+		url : 'js/' + urlForm + '.js',
 		success : fnSuccess,
-		failure : fnFailure
+		failure : _fnFailure
 	});
-
-	function fnFailure(xhr, opts) {
-		App.ui.error('Ошибка при загрузке формы', xhr.status);
-	}
 
 	function fnSuccess(xhr, opts) {
 		try {
-			cmp = eval(xhr.responseText);
-			if (!cmp)
+			config = eval(xhr.responseText);
+			if (!config)
 				return;
 
-			cmp.id = id;
+			config.id = id;
+
+			var cmp = config;
+			if (config instanceof Ext.Component) {
+				cmp = config;
+			} else {
+				cmp = Ext.ComponentMgr.create(config);
+			}
 
 			panelView.add(cmp);
 			panelView.doLayout();
@@ -64,27 +68,27 @@ function showPanel(url) {
 	}
 }
 
-function showModal(url) {
-	var viewName = url;
-
+function showModal(urlForm, urlData) {
 	Ext.Ajax.request({
-		method : 'GET',
-		url : 'js/' + viewName + '.js',
+		url : 'js/' + urlForm + '.js',
 		success : fnSuccess,
-		failure : fnFailure
+		failure : _fnFailure
 	});
-
-	function fnFailure(xhr, opts) {
-		App.ui.error('Ошибка при загрузке формы', xhr.status);
-	}
 
 	function fnSuccess(xhr, opts) {
 		try {
-			var cmp = eval(xhr.responseText);
-			if (!cmp)
+			var config = eval(xhr.responseText);
+			if (!config)
 				return;
 
-			cmp.id = viewName + '-component';
+			var cmp = config;
+			if (config instanceof Ext.Component) {
+				cmp = config;
+			} else {
+				cmp = Ext.ComponentMgr.create(config);
+			}
+
+			cmp.id = urlForm + '-component';
 
 			var win = new Ext.Window({
 				layout : 'fit',
@@ -97,13 +101,36 @@ function showModal(url) {
 			});
 			win.doLayout();
 
+			win.setTitle(cmp.caption);
+			cmp.window = win;
+
 			if (cmp.setWindow)
 				cmp.setWindow(win);
 
-			if (cmp.loadData)
-				cmp.loadData(data, callback);
+			if (!urlData) {
+				win.show();
+				return;
+			}
 
-			win.show();
+			function fnSetData(xhr, opts) {
+				try {
+					var answer = Ext.decode(xhr.responseText);
+					if (answer.success) {
+						if (cmp.loadData)
+							cmp.loadData(answer);
+						win.show();
+					}
+				} catch (error) {
+					App.ui.error('Ошибка при заполнении формы', error);
+				}
+			}
+
+			Ext.Ajax.request({
+				method : 'GET',
+				url : 'js/' + urlForm + '.js',
+				success : fnSetData,
+				failure : _fnFailure
+			});
 		} catch (error) {
 			App.ui.error('Ошибка при создании формы', error);
 		}

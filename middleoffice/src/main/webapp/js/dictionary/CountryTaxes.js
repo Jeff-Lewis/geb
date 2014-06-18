@@ -22,7 +22,7 @@
 	});
 
 	function add() {
-		menu.showModal(menu, 'dictionary/CountryTaxesAdd');
+		showModal('dictionary/CountryTaxesAdd');
 	}
 
 	function edit() {
@@ -32,7 +32,7 @@
 		}
 
 		var id = sm.getSelected().data.id;
-		menu.showModal(menu, 'dictionary/CountryTaxesEdit',
+		showModal('dictionary/CountryTaxesEdit',
 				'rest/CountryTaxes/' + id + '.do');
 	}
 

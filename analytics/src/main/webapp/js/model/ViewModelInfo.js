@@ -154,9 +154,9 @@
 		loadData : function(data) {
 			this.setTitle("Детальная информация");
 
-			var onclick = "menu.submitDataRequest(menu,"
-					+ " 'model/ViewModelPrice', 'rest/ViewModel/"
-					+ data.item.id_sec + "/Price.do');";
+			// TODO заменить компонент
+			var onclick = "showPanel('model/ViewModelPrice'," +
+					" 'rest/ViewModel/" + data.item.id_sec + "/Price.do');";
 			data.item['targetPriceCons12M'] = '<b><a onclick="' + onclick
 					+ '" href="#">' + data.item['targetPriceCons12M']
 					+ '</a></b>';
