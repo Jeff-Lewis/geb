@@ -19,19 +19,18 @@ Ext.Ajax.on('beforerequest', function(conn, options) {
 	}
 });
 
-Ext.Ajax.on('requestcomplete', function(conn, response, options) {
+Ext.Ajax.on('requestcomplete', function(conn, xhr, options) {
 	if (options.waitMsg || options.progress) {
 		Ext.MessageBox.hide();
 	}
-	if (response.responseText && response.responseText.charAt(0) == '{') {
-		var res = Ext.decode(response.responseText);
+	var text = xhr.responseText;
+	if (text && text.charAt(0) == '{') {
+		var res = Ext.decode(text);
 		if (res && !res.success) {
 			if (res.code == 'login') {
 				App.ui.error('Зарегистрируйтесь в системе.');
-			} else {
-				App.ui.error('Неизвестный код ответа', res.code);
+				xhr.responseText = '';
 			}
-			response.responseText = '';
 		}
 	}
 });
