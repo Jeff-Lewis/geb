@@ -3,13 +3,17 @@
  */
 (function() {
 
-	return new Ext.form.FormPanel({
+	return {
+		xtype : 'form',
 		id : 'ViewParamsInfo-component',
+		title : 'Information about field',
 		frame : true,
 		closable : true,
-		autoScroll : true,
+		layout : 'border',
 
 		items : [ {
+			region : 'north',
+			height : 70,
 			padding : 10,
 			frame : false,
 			border : false,
@@ -30,10 +34,12 @@
 				name : 'field_mnemonic'
 			} ]
 		}, {
+			region : 'center',
 			title : 'MAIN INFORMATION',
 			frame : true,
-			collapsible : true,
-			collapsed : false,
+			//collapsible : true,
+			//collapsed : false,
+			autoScroll : true,
 			padding : 10,
 			layout : 'form',
 			labelWidth : 250,
@@ -137,5 +143,5 @@
 					+ data.item['field_mnemonic']);
 			this.getForm().setValues(data.item);
 		}
-	});
+	};
 })();

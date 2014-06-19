@@ -146,11 +146,11 @@
 				width : 500
 			},
 
-			items : [ receiver1, receiver2, patternSelect, {
+			items : [ receiver1, receiver2, patternSelect, textarea, {
 				xtype : 'button',
 				text : 'Отправить',
 				handler : send
-			}, textarea, {
+			}, {
 				xtype : 'grid',
 				title : 'Результаты рассылки',
 				frame : true,
