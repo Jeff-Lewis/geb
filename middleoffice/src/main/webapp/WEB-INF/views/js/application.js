@@ -28,6 +28,7 @@ Ext.Ajax.on('requestcomplete', function(conn, xhr, options) {
 		var res = Ext.decode(text);
 		if (res && !res.success) {
 			if (res.code == 'login') {
+				loginVisible(true);
 				App.ui.error('Зарегистрируйтесь в системе.');
 				xhr.responseText = '';
 			}

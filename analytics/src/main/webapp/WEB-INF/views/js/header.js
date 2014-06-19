@@ -26,16 +26,37 @@ var panelHeader = {
 		contentEl : 'intro-panel',
 		buttonAlign : 'center',
 		buttons : [ {
-			width : 100,
-			text : 'Регистрация',
-			handler : function() {
-				login();
-			}
+			id : 'username',
+			xtype : 'textfield',
+			inputType : 'text',
+			emptyText : 'Логин',
+			allowBlank : false
 		}, {
-			width : 100,
+			id : 'password',
+			xtype : 'textfield',
+			inputType : 'password',
+			//emptyText : 'Пароль',
+			allowBlank : false
+		}, {
+			id : 'login',
+			text : 'Регистрация',
+			handler : loginSubmit
+		}, {
+			id : 'login_restore',
+			text : 'Восстановить пароль',
+			disabled : true,
+			handler : Ext.emptyFn
+		}, {
+			id : 'username_label',
+			xtype : 'label',
+			hidden : true,
+			text : 'Имя пользователя'
+		}, {
+			id : 'logout',
 			text : 'Выход',
+			hidden : true,
 			handler : function() {
-				logout();
+				window.location = 'logout';
 			}
 		} ]
 	}, {
@@ -46,3 +67,59 @@ var panelHeader = {
 		}
 	} ]
 };
+
+function loginVisible(visible) {
+	Ext.getCmp('username').setVisible(visible);
+	Ext.getCmp('password').setVisible(visible);
+	Ext.getCmp('login').setVisible(visible);
+	Ext.getCmp('login_restore').setVisible(visible);
+	Ext.getCmp('username_label').setVisible(!visible);
+	Ext.getCmp('logout').setVisible(!visible);
+}
+
+function loginSubmit() {
+	var un = Ext.getCmp('username');
+	if (!un.isValid())
+		return;
+	un = un.getValue();
+
+	var pw = Ext.getCmp('password');
+	if (!pw.isValid())
+		return;
+	pw = pw.getValue();
+
+	Ext.Ajax.request({
+		url : 'j_spring_security_check',
+		params : {
+			j_username : un,
+			j_password : pw,
+			submit : 'Login'
+		},
+		success : fnSuccess,
+		failure : fnFailure
+	});
+
+	function fnFailure(xhr, opts) {
+		App.ui.error('Ошибка при регистрации.', xhr.statusText);
+	}
+
+	function fnSuccess(xhr, opts) {
+		try {
+			var res = Ext.decode(xhr.responseText);
+			if (res && res.success) {
+				switch (res.code) {
+				case 'login_error':
+					App.ui.error('Ошибка регистрации.',
+							'Логин и пароль недоступны.');
+					return;
+				case 'login_success':
+					loginVisible(false);
+					App.ui.message('Доступ разрешен.');
+					return;
+				}
+			}
+		} catch (error) {
+		}
+		App.ui.error('Ошибка при регистрации.', error);
+	}
+}
