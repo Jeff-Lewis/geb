@@ -14,6 +14,7 @@ public class ResultCode implements Serializable {
 
 	public static final ResultCode LOGIN = new ResultCode(false, "login");
 	public static final ResultCode LOGIN_ERROR = new ResultCode(true, "login_error");
+	public static final ResultCode LOGIN_SUCCESS = new ResultCode(true, "login_success");
 
 	private final boolean success;
 	private final String code;

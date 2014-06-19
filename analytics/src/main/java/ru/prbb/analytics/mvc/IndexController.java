@@ -42,4 +42,13 @@ public class IndexController
 		return ResultCode.LOGIN_ERROR;
 	}
 
+	@RequestMapping(value = { "/login_success" }, method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public ResultCode displayLoginSuccess()
+	{
+		log.info("GET /login_success");
+
+		return ResultCode.LOGIN_SUCCESS;
+	}
+
 }

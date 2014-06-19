@@ -6,25 +6,47 @@
  * View panel
  */
 var panelView = new Ext.TabPanel({
-	id : 'view-panel',
-	region : 'center',
-	autoScroll : true,
-	enableTabScroll : true,
-	activeTab : 0,
-	resizeTab : true,
-	layoutOnTabChange : true,
-	baseCls : 'x-plain',
-	items : {
-		title : 'О программе',
-		closable : true,
-		frame : true,
-		autoScroll : true,
-	// contentEl : 'intro-panel'
-	}
+    id : 'view-panel',
+    region : 'center',
+    autoScroll : true,
+    enableTabScroll : true,
+    activeTab : 0,
+    resizeTab : true,
+    layoutOnTabChange : true,
+    baseCls : 'x-plain',
+    items : {
+        title : 'О программе',
+        closable : true,
+        frame : true,
+        autoScroll : true,
+    // contentEl : 'intro-panel'
+    }
 });
 
 function _fnFailure(xhr, opts) {
-	App.ui.error('Ошибка при загрузке формы', xhr.status);
+	App.ui.error('Ошибка при обращении к серверу.', xhr.statusText);
+}
+
+function _loadData(cmp, urlData) {
+	if (urlData && cmp.loadData) {
+		Ext.Ajax.request({
+		    url : urlData,
+			waitMsg : 'Загрузка данных.',
+		    success : _fnSetData,
+		    failure : _fnFailure
+		});
+	}
+	
+	function _fnSetData(xhr, opts) {
+		try {
+			var answer = Ext.decode(xhr.responseText);
+			if (answer.success) {
+				cmp.loadData(answer);
+			}
+		} catch (error) {
+			App.ui.error('Ошибка при заполнении формы', error);
+		}
+	}
 }
 
 function showPanel(urlForm, urlData) {
@@ -34,18 +56,19 @@ function showPanel(urlForm, urlData) {
 	if (cmp) {
 		panelView.scrollToTab(cmp, true);
 		panelView.activate(cmp);
+		_loadData(cmp, urlData);
 		return;
 	}
 
 	Ext.Ajax.request({
-		url : 'js/' + urlForm + '.js',
-		success : fnSuccess,
-		failure : _fnFailure
+	    url : 'js/' + urlForm + '.js',
+	    success : fnSuccess,
+	    failure : _fnFailure
 	});
 
 	function fnSuccess(xhr, opts) {
 		try {
-			config = eval(xhr.responseText);
+			var config = eval(xhr.responseText);
 			if (!config)
 				return;
 
@@ -57,11 +80,14 @@ function showPanel(urlForm, urlData) {
 			} else {
 				cmp = Ext.ComponentMgr.create(config);
 			}
+			Ext.ComponentMgr.register(cmp);
 
 			panelView.add(cmp);
 			panelView.doLayout();
 			panelView.scrollToTab(cmp, true);
 			panelView.activate(cmp);
+
+			_loadData(cmp, urlData);
 		} catch (error) {
 			App.ui.error('Ошибка при создании формы', error);
 		}
@@ -70,9 +96,9 @@ function showPanel(urlForm, urlData) {
 
 function showModal(urlForm, urlData) {
 	Ext.Ajax.request({
-		url : 'js/' + urlForm + '.js',
-		success : fnSuccess,
-		failure : _fnFailure
+	    url : 'js/' + urlForm + '.js',
+	    success : fnSuccess,
+	    failure : _fnFailure
 	});
 
 	function fnSuccess(xhr, opts) {
@@ -91,13 +117,13 @@ function showModal(urlForm, urlData) {
 			cmp.id = urlForm + '-component';
 
 			var win = new Ext.Window({
-				layout : 'fit',
-				width : cmp.width || 850,
-				height : cmp.height || 600,
-				plain : true,
-				modal : true,
-				border : false,
-				items : cmp
+			    layout : 'fit',
+			    width : cmp.width || 850,
+			    height : cmp.height || 600,
+			    plain : true,
+			    modal : true,
+			    border : false,
+			    items : cmp
 			});
 			win.doLayout();
 
@@ -107,30 +133,9 @@ function showModal(urlForm, urlData) {
 			if (cmp.setWindow)
 				cmp.setWindow(win);
 
-			if (!urlData) {
-				win.show();
-				return;
-			}
+			_loadData(cmp, urlData);
 
-			function fnSetData(xhr, opts) {
-				try {
-					var answer = Ext.decode(xhr.responseText);
-					if (answer.success) {
-						if (cmp.loadData)
-							cmp.loadData(answer);
-						win.show();
-					}
-				} catch (error) {
-					App.ui.error('Ошибка при заполнении формы', error);
-				}
-			}
-
-			Ext.Ajax.request({
-				method : 'GET',
-				url : 'js/' + urlForm + '.js',
-				success : fnSetData,
-				failure : _fnFailure
-			});
+			win.show();
 		} catch (error) {
 			App.ui.error('Ошибка при создании формы', error);
 		}

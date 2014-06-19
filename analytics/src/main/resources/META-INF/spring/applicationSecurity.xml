@@ -17,7 +17,10 @@
 
 	<http auto-config='true'>
 		<!-- <intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
-		<form-login always-use-default-target="true" login-page="/login" authentication-failure-url="/login_error" default-target-url="/"/>
+		<form-login login-page="/login"
+			default-target-url="/login_success"
+			authentication-failure-url="/login_error"
+			always-use-default-target="true" />
 		<logout logout-url="/logout"/>
 
 		<intercept-url pattern="/rest/**" access="ROLE_USER" />

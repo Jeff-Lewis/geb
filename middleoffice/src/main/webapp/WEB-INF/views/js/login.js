@@ -79,14 +79,18 @@ function login() {
 			try {
 				var res = Ext.decode(xhr.responseText);
 				if (res && res.success) {
-					if (res.code == 'login_error') {
-						App.ui.error('Ошибка регистрации.',
-								'Логин и пароль недоступны.');
+					switch (res.code) {
+					case 'login_error':
+						App.ui.error('Ошибка регистрации.', 'Логин и пароль недоступны.');
+						return;
+					case 'login_success':
+						App.ui.message('Доступ разрешен.');
+						return;
 					}
 				}
 			} catch (error) {
-				//App.ui.error('Ошибка при регистрации.', error);
 			}
+			App.ui.error('Ошибка при регистрации.', error);
 		}
 	}
 }

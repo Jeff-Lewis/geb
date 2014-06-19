@@ -7,42 +7,42 @@
  */
 function login() {
 	var win = new Ext.Window({
-		title : 'Проверка пользователя',
-		layout : 'form',
-		plain : true,
-		modal : true,
-		width : 340,
-		height : 180,
-		padding : 10,
-		// border : false,
-		labelAlign : 'top',
-		defaults : {
-			width : 300
-		},
-		items : [ {
-			id : 'username',
-			xtype : 'textfield',
-			name : 'j_username',
-			inputType : 'text',
-			fieldLabel : 'Логин',
-			allowBlank : false
-		}, {
-			id : 'password',
-			xtype : 'textfield',
-			name : 'j_password',
-			inputType : 'password',
-			fieldLabel : 'Пароль',
-			allowBlank : false
-		} ],
-		buttons : [ {
-			text : 'Логин',
-			type : 'submit',
-			handler : fnLogin
-		}, {
-			text : 'Восстановить пароль',
-			disabled : true,
-			handler : Ext.emptyFn
-		} ]
+	    title : 'Проверка пользователя',
+	    layout : 'form',
+	    plain : true,
+	    modal : true,
+	    width : 340,
+	    height : 180,
+	    padding : 10,
+	    // border : false,
+	    labelAlign : 'top',
+	    defaults : {
+		    width : 300
+	    },
+	    items : [ {
+	        id : 'username',
+	        xtype : 'textfield',
+	        name : 'j_username',
+	        inputType : 'text',
+	        fieldLabel : 'Логин',
+	        allowBlank : false
+	    }, {
+	        id : 'password',
+	        xtype : 'textfield',
+	        name : 'j_password',
+	        inputType : 'password',
+	        fieldLabel : 'Пароль',
+	        allowBlank : false
+	    } ],
+	    buttons : [ {
+	        text : 'Логин',
+	        type : 'submit',
+	        handler : fnLogin
+	    }, {
+	        text : 'Восстановить пароль',
+	        disabled : true,
+	        handler : Ext.emptyFn
+	    } ]
 	});
 	win.doLayout();
 	win.show();
@@ -61,14 +61,14 @@ function login() {
 		win.close();
 
 		Ext.Ajax.request({
-			url : 'j_spring_security_check',
-			params : {
-				j_username : un,
-				j_password : pw,
-				submit : 'Login'
-			},
-			success : fnSuccess,
-			failure : fnFailure
+		    url : 'j_spring_security_check',
+		    params : {
+		        j_username : un,
+		        j_password : pw,
+		        submit : 'Login'
+		    },
+		    success : fnSuccess,
+		    failure : fnFailure
 		});
 
 		function fnFailure(xhr, opts) {
@@ -79,14 +79,18 @@ function login() {
 			try {
 				var res = Ext.decode(xhr.responseText);
 				if (res && res.success) {
-					if (res.code == 'login_error') {
-						App.ui.error('Ошибка регистрации.',
-								'Логин и пароль недоступны.');
+					switch (res.code) {
+					case 'login_error':
+						App.ui.error('Ошибка регистрации.', 'Логин и пароль недоступны.');
+						return;
+					case 'login_success':
+						App.ui.message('Доступ разрешен.');
+						return;
 					}
 				}
 			} catch (error) {
-				//App.ui.error('Ошибка при регистрации.', error);
 			}
+			App.ui.error('Ошибка при регистрации.', error);
 		}
 	}
 }
