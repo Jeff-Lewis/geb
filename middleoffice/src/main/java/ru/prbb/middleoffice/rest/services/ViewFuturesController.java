@@ -20,6 +20,7 @@ import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.FuturesDao;
 import ru.prbb.middleoffice.repo.services.ViewFuturesDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Редактирование фьючерсов
@@ -29,6 +30,7 @@ import ru.prbb.middleoffice.repo.services.ViewFuturesDao;
 @Controller
 @RequestMapping("/rest/ViewFutures")
 public class ViewFuturesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

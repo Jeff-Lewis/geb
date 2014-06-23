@@ -22,6 +22,7 @@ import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.portfolio.SecurityRiscsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Заданные параметры риска
@@ -31,6 +32,7 @@ import ru.prbb.middleoffice.repo.portfolio.SecurityRiscsDao;
 @Controller
 @RequestMapping("/rest/SecurityRiscs")
 public class SecurityRiscsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

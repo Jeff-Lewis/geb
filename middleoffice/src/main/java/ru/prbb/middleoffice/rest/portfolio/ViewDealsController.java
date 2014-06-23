@@ -23,6 +23,7 @@ import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.InitiatorsDao;
 import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewDealsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Список сделок
@@ -32,6 +33,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDealsDao;
 @Controller
 @RequestMapping("/rest/ViewDeals")
 public class ViewDealsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

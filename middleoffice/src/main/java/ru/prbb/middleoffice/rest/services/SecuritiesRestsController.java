@@ -20,6 +20,7 @@ import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.services.SecuritiesRestsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Верификация остатков
@@ -29,6 +30,7 @@ import ru.prbb.middleoffice.repo.services.SecuritiesRestsDao;
 @Controller
 @RequestMapping("/rest/SecuritiesRests")
 public class SecuritiesRestsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

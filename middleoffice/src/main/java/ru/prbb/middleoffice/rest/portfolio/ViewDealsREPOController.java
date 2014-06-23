@@ -19,6 +19,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewDealsREPOItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewDealsREPODao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Сделки РЕПО
@@ -28,6 +29,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDealsREPODao;
 @Controller
 @RequestMapping("/rest/ViewDealsREPO")
 public class ViewDealsREPOController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -17,6 +17,7 @@ import ru.prbb.Export;
 import ru.prbb.middleoffice.domain.NoConformityItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.repo.services.NoConformityDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Нет соответствия
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.services.NoConformityDao;
 @Controller
 @RequestMapping("/rest/NoConformity")
 public class NoConformityController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

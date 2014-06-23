@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.CurrenciesItem;
 import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Валюты
@@ -21,6 +22,7 @@ import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
 @Controller
 @RequestMapping("/rest/Currencies")
 public class CurrenciesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

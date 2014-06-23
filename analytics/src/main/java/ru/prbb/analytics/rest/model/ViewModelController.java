@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.ViewModelItem;
 import ru.prbb.analytics.repo.model.ViewModelDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Просмотр текущей модели
@@ -23,6 +24,7 @@ import ru.prbb.analytics.repo.model.ViewModelDao;
 @Controller
 @RequestMapping("/rest/ViewModel")
 public class ViewModelController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

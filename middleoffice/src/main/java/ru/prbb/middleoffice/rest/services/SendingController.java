@@ -18,6 +18,7 @@ import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SendingItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.services.SendingDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Рассылка E-mail и SMS
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.services.SendingDao;
 @Controller
 @RequestMapping("/rest/Sending")
 public class SendingController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

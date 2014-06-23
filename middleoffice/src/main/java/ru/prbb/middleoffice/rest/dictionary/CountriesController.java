@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.CountryItem;
 import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Страны
@@ -21,6 +22,7 @@ import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
 @Controller
 @RequestMapping("/rest/Countries")
 public class CountriesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

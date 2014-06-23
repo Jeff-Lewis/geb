@@ -26,6 +26,7 @@ import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
 import ru.prbb.middleoffice.repo.dictionary.DividendsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Дивиденды
@@ -35,6 +36,7 @@ import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 @Controller
 @RequestMapping("/rest/Dividends")
 public class DividendsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

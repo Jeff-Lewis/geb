@@ -20,6 +20,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
 import ru.prbb.middleoffice.repo.dictionary.SecurityIncorporationsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Регистрация инструментов
@@ -29,6 +30,7 @@ import ru.prbb.middleoffice.repo.dictionary.SecurityIncorporationsDao;
 @Controller
 @RequestMapping("/rest/SecurityIncorporations")
 public class SecurityIncorporationsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

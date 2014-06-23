@@ -29,6 +29,7 @@ import ru.prbb.analytics.repo.bloomberg.RequestBDPDao;
 import ru.prbb.analytics.repo.bloomberg.RequestBDPovrDao;
 import ru.prbb.analytics.repo.bloomberg.RequestBDSDao;
 import ru.prbb.analytics.repo.company.CompanyAddDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Добавление компаний
@@ -38,6 +39,7 @@ import ru.prbb.analytics.repo.company.CompanyAddDao;
 @Controller
 @RequestMapping("/rest/CompanyAdd")
 public class CompanyAddController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

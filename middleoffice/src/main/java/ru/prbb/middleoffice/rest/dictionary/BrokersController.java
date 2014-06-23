@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Брокеры
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 @Controller
 @RequestMapping("/rest/Brokers")
 public class BrokersController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

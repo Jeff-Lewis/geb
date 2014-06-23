@@ -18,6 +18,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.services.ViewShareDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Редактирование акций
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.services.ViewShareDao;
 @Controller
 @RequestMapping("/rest/ViewShare")
 public class ViewShareController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.NotEnoughQuotationsItem;
 import ru.prbb.middleoffice.repo.services.NotEnoughQuotationsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Не хватает котировок
@@ -21,6 +22,7 @@ import ru.prbb.middleoffice.repo.services.NotEnoughQuotationsDao;
 @Controller
 @RequestMapping("/rest/NotEnoughQuotations")
 public class NotEnoughQuotationsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -18,6 +18,7 @@ import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.utils.ContactsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Справочник контактов
@@ -27,6 +28,7 @@ import ru.prbb.analytics.repo.utils.ContactsDao;
 @Controller
 @RequestMapping("/rest/Contacts")
 public class ContactsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

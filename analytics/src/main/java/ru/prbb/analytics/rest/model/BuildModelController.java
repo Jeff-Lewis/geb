@@ -16,6 +16,7 @@ import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.model.BuildModelDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Расчёт модели по компании
@@ -25,6 +26,7 @@ import ru.prbb.analytics.repo.model.BuildModelDao;
 @Controller
 @RequestMapping("/rest/BuildModel")
 public class BuildModelController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -24,6 +24,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewPortfolioItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Текущий портфель
@@ -33,6 +34,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 @Controller
 @RequestMapping("/rest/ViewPortfolio")
 public class ViewPortfolioController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

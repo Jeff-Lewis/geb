@@ -17,6 +17,7 @@ import ru.prbb.analytics.domain.DictObjectItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.repo.users.DictObjectsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Справочник пользователей - Пользователи
@@ -26,6 +27,7 @@ import ru.prbb.analytics.repo.users.DictObjectsDao;
 @Controller
 @RequestMapping("/rest/DictObjects")
 public class DictObjectsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

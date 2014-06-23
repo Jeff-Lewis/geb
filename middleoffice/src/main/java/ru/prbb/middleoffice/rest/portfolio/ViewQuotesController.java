@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewQuotesDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Котировки
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewQuotesDao;
 @Controller
 @RequestMapping("/rest/ViewQuotes")
 public class ViewQuotesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

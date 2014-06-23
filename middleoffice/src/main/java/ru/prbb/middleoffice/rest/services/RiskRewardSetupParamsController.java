@@ -20,6 +20,7 @@ import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.services.RiskRewardSetupParamsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Задание параметров отчета RR
@@ -29,6 +30,7 @@ import ru.prbb.middleoffice.repo.services.RiskRewardSetupParamsDao;
 @Controller
 @RequestMapping("/rest/RiskRewardSetupParams")
 public class RiskRewardSetupParamsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

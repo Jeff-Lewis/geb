@@ -21,6 +21,7 @@ import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewDetailedFinrezDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Текущий финрез
@@ -30,6 +31,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewDetailedFinrezDao;
 @Controller
 @RequestMapping("/rest/ViewDetailedFinrez")
 public class ViewDetailedFinrezController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

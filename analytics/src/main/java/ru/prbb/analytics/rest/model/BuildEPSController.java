@@ -16,6 +16,7 @@ import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.model.BuildEPSDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Расчёт EPS по компании
@@ -25,6 +26,7 @@ import ru.prbb.analytics.repo.model.BuildEPSDao;
 @Controller
 @RequestMapping("/rest/BuildEPS")
 public class BuildEPSController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

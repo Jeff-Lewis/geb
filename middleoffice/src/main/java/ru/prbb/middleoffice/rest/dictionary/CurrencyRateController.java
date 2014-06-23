@@ -16,6 +16,7 @@ import ru.prbb.middleoffice.domain.CurrencyRateItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
 import ru.prbb.middleoffice.repo.dictionary.CurrencyRateDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Курсы валют
@@ -25,6 +26,7 @@ import ru.prbb.middleoffice.repo.dictionary.CurrencyRateDao;
 @Controller
 @RequestMapping("/rest/CurrencyRate")
 public class CurrencyRateController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

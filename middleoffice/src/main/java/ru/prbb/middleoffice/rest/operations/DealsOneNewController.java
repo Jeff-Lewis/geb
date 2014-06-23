@@ -22,6 +22,7 @@ import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
 import ru.prbb.middleoffice.repo.dictionary.FuturesDao;
 import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
 import ru.prbb.middleoffice.repo.operations.DealsOneNewDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка единичной сделки
@@ -31,6 +32,7 @@ import ru.prbb.middleoffice.repo.operations.DealsOneNewDao;
 @Controller
 @RequestMapping("/rest/DealsOneNew")
 public class DealsOneNewController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

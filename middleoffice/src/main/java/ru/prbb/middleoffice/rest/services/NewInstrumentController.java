@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.services.NewInstrumentDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Ввод нового инструмента
@@ -25,6 +26,7 @@ import ru.prbb.middleoffice.repo.services.NewInstrumentDao;
 @Controller
 @RequestMapping("/rest/NewInstrument")
 public class NewInstrumentController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

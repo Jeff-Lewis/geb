@@ -17,6 +17,7 @@ import ru.prbb.analytics.domain.BrokerItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.repo.utils.BrokersDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Справочник брокеров
@@ -26,6 +27,7 @@ import ru.prbb.analytics.repo.utils.BrokersDao;
 @Controller
 @RequestMapping("/rest/Brokers")
 public class BrokersController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

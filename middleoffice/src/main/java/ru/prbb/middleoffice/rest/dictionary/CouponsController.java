@@ -27,6 +27,7 @@ import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.CouponsDao;
 import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Купоны (погашение)
@@ -36,6 +37,7 @@ import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 @Controller
 @RequestMapping("/rest/Coupons")
 public class CouponsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

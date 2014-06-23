@@ -19,6 +19,7 @@ import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.services.contacts.GroupsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Справочник контактов
@@ -28,6 +29,7 @@ import ru.prbb.middleoffice.repo.services.contacts.GroupsDao;
 @Controller
 @RequestMapping("/rest/Groups")
 public class GroupsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

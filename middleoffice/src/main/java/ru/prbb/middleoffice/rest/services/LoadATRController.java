@@ -19,6 +19,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.services.LoadATRDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка ATR
@@ -28,6 +29,7 @@ import ru.prbb.middleoffice.repo.services.LoadATRDao;
 @Controller
 @RequestMapping("/rest/LoadATR")
 public class LoadATRController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

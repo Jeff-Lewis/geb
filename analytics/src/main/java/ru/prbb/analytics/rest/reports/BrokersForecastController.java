@@ -18,6 +18,7 @@ import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.reports.BrokersForecastDao;
 import ru.prbb.analytics.repo.utils.BrokersDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Прогнозы по брокерам
@@ -27,6 +28,7 @@ import ru.prbb.analytics.repo.utils.BrokersDao;
 @Controller
 @RequestMapping("/rest/BrokersForecast")
 public class BrokersForecastController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

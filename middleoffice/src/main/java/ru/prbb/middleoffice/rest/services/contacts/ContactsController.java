@@ -18,6 +18,7 @@ import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.services.contacts.ContactsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Справочник контактов
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.services.contacts.ContactsDao;
 @Controller
 @RequestMapping("/rest/Contacts")
 public class ContactsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -18,6 +18,7 @@ import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.operations.DealsTransferDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Перекидка ЦБ между фондами
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 @Controller
 @RequestMapping("/rest/DealsTransfer")
 public class DealsTransferController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

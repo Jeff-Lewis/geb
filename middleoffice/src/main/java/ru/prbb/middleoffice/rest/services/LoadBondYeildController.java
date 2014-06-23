@@ -22,6 +22,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.services.LoadBondYeildDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка доходности облигаций
@@ -31,6 +32,7 @@ import ru.prbb.middleoffice.repo.services.LoadBondYeildDao;
 @Controller
 @RequestMapping("/rest/LoadBondYeild")
 public class LoadBondYeildController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

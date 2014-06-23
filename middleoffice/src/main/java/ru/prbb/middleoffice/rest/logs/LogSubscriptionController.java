@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.SubscriptionItem;
 import ru.prbb.middleoffice.repo.LogDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Журнал подписки
@@ -21,6 +22,7 @@ import ru.prbb.middleoffice.repo.LogDao;
 @Controller
 @RequestMapping("/rest/LogSubscription")
 public class LogSubscriptionController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

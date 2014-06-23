@@ -19,6 +19,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.services.LoadRateCouponDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка ставки по купонам
@@ -28,6 +29,7 @@ import ru.prbb.middleoffice.repo.services.LoadRateCouponDao;
 @Controller
 @RequestMapping("/rest/LoadRateCoupon")
 public class LoadRateCouponController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

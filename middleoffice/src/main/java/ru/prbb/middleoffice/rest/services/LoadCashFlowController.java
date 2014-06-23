@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SecurityCashFlowItem;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.services.LoadCashFlowDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка дат погашений
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.services.LoadCashFlowDao;
 @Controller
 @RequestMapping("/rest/LoadCashFlow")
 public class LoadCashFlowController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

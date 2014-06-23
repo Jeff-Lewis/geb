@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.FuturesItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.dictionary.FuturesDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Фьючерсы
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.dictionary.FuturesDao;
 @Controller
 @RequestMapping("/rest/Futures")
 public class FuturesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

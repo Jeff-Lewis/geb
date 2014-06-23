@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.NotEnoughDividendsItem;
 import ru.prbb.middleoffice.repo.services.NotVisibleDividendsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Нет настроек для дивидендов
@@ -21,6 +22,7 @@ import ru.prbb.middleoffice.repo.services.NotVisibleDividendsDao;
 @Controller
 @RequestMapping("/rest/NotVisibleDividends")
 public class NotVisibleDividendsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

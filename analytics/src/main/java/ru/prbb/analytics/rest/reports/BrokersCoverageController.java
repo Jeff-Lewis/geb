@@ -15,6 +15,7 @@ import ru.prbb.Utils;
 import ru.prbb.analytics.domain.BrokersCoverageItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.repo.reports.BrokersCoverageDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Покрытие брокеров
@@ -24,6 +25,7 @@ import ru.prbb.analytics.repo.reports.BrokersCoverageDao;
 @Controller
 @RequestMapping("/rest/BrokersCoverage")
 public class BrokersCoverageController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

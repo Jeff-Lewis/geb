@@ -27,6 +27,7 @@ import ru.prbb.middleoffice.domain.LoadInfoResult;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.operations.DividendsLoadingDao;
 import ru.prbb.middleoffice.repo.operations.DividendsLoadingDao.Record;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка дивидендов из файла
@@ -36,6 +37,7 @@ import ru.prbb.middleoffice.repo.operations.DividendsLoadingDao.Record;
 @Controller
 @RequestMapping("/rest/DividendsLoading")
 public class DividendsLoadingController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

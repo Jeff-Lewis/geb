@@ -18,6 +18,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.services.ViewSwapsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Редактирование свопов
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.services.ViewSwapsDao;
 @Controller
 @RequestMapping("/rest/ViewSwaps")
 public class ViewSwapsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

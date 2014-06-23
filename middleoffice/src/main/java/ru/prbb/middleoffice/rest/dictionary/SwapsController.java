@@ -18,6 +18,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.SwapItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.SwapsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Свопы
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.dictionary.SwapsDao;
 @Controller
 @RequestMapping("/rest/Swaps")
 public class SwapsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

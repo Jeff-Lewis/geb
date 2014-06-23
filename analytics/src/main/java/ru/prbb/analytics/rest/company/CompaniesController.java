@@ -30,6 +30,7 @@ import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.company.CompaniesDao;
 import ru.prbb.analytics.repo.model.BuildEPSDao;
 import ru.prbb.analytics.repo.model.BuildModelDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Список компаний
@@ -39,6 +40,7 @@ import ru.prbb.analytics.repo.model.BuildModelDao;
 @Controller
 @RequestMapping("/rest/Companies")
 public class CompaniesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

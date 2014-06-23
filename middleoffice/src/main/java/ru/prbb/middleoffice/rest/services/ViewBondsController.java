@@ -18,6 +18,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.services.ViewBondsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Редактирование облигаций
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.services.ViewBondsDao;
 @Controller
 @RequestMapping("/rest/ViewBonds")
 public class ViewBondsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -22,6 +22,7 @@ import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 import ru.prbb.middleoffice.repo.services.RiskRewardPrice1Dao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Цена1 для RR
@@ -31,6 +32,7 @@ import ru.prbb.middleoffice.repo.services.RiskRewardPrice1Dao;
 @Controller
 @RequestMapping("/rest/RiskRewardPrice1")
 public class RiskRewardPrice1Controller
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

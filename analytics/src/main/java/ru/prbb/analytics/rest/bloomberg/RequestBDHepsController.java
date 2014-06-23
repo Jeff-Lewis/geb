@@ -23,6 +23,7 @@ import ru.prbb.analytics.repo.BloombergServicesA;
 import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.bloomberg.BloombergParamsDao;
 import ru.prbb.analytics.repo.bloomberg.RequestBDHepsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * BDH запрос с EPS
@@ -32,6 +33,7 @@ import ru.prbb.analytics.repo.bloomberg.RequestBDHepsDao;
 @Controller
 @RequestMapping("/rest/RequestBDHeps")
 public class RequestBDHepsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.dictionary.InitiatorsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Инициаторы
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.dictionary.InitiatorsDao;
 @Controller
 @RequestMapping("/rest/Initiators")
 public class InitiatorsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

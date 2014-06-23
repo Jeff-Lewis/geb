@@ -19,6 +19,7 @@ import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.model.CompanyReportsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Компании и отчёты
@@ -28,6 +29,7 @@ import ru.prbb.analytics.repo.model.CompanyReportsDao;
 @Controller
 @RequestMapping("/rest/CompanyReports")
 public class CompanyReportsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

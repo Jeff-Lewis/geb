@@ -27,6 +27,7 @@ import ru.prbb.middleoffice.domain.LoadInfoResult;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.operations.DealsLoadingDao;
 import ru.prbb.middleoffice.repo.operations.DealsLoadingDao.Record;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка сделок
@@ -36,6 +37,7 @@ import ru.prbb.middleoffice.repo.operations.DealsLoadingDao.Record;
 @Controller
 @RequestMapping("/rest/DealsLoading")
 public class DealsLoadingController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

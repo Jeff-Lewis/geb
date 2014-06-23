@@ -1,19 +1,20 @@
 package ru.prbb.analytics.rest;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.analytics.domain.Result;
+import ru.prbb.analytics.domain.ResultError;
+
 public abstract class BaseController {
 
 	@ExceptionHandler
 	@ResponseBody
-	private Map<String, Object> handleException(Exception ex) {
+	private Result handleException(Exception ex) {
 		String message = ex.getMessage();
 
 		if (ex instanceof PersistenceException) {
@@ -26,10 +27,7 @@ public abstract class BaseController {
 			}
 		}
 
-		Map<String, Object> res = new HashMap<String, Object>(4);
-		res.put("success", Boolean.FALSE);
-		res.put("error", message);
-		return res;
+		return new ResultError(message);
 	}
 
 }

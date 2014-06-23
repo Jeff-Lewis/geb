@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.ViewParamsItem;
 import ru.prbb.analytics.repo.params.ViewParamsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Справочник параметров
@@ -26,6 +27,7 @@ import ru.prbb.analytics.repo.params.ViewParamsDao;
 @Controller
 @RequestMapping("/rest/ViewParams")
 public class ViewParamsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

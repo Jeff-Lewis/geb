@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewAtrDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Отображение ATR
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewAtrDao;
 @Controller
 @RequestMapping("/rest/ViewAtr")
 public class ViewAtrController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

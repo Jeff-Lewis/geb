@@ -18,6 +18,7 @@ import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SendingItem;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.utils.SendingDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Рассылка E-mail и SMS
@@ -27,6 +28,7 @@ import ru.prbb.analytics.repo.utils.SendingDao;
 @Controller
 @RequestMapping("/rest/Sending")
 public class SendingController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -21,6 +21,7 @@ import ru.prbb.middleoffice.repo.SecurityTypeDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
 import ru.prbb.middleoffice.repo.dictionary.CountryTaxesDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Налоги по странам
@@ -30,6 +31,7 @@ import ru.prbb.middleoffice.repo.dictionary.CountryTaxesDao;
 @Controller
 @RequestMapping("/rest/CountryTaxes")
 public class CountryTaxesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

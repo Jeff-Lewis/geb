@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Фонды
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 @Controller
 @RequestMapping("/rest/Funds")
 public class FundsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

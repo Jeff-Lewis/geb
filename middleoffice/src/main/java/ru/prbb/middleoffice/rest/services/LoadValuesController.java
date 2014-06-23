@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SecurityValuesItem;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.services.LoadValuesDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка номинала
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.services.LoadValuesDao;
 @Controller
 @RequestMapping("/rest/LoadValues")
 public class LoadValuesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

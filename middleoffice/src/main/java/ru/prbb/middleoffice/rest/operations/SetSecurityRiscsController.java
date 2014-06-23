@@ -16,6 +16,7 @@ import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
 import ru.prbb.middleoffice.repo.operations.SetSecurityRiscsDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Задать параметры риска
@@ -25,6 +26,7 @@ import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 @Controller
 @RequestMapping("/rest/SetSecurityRiscs")
 public class SetSecurityRiscsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

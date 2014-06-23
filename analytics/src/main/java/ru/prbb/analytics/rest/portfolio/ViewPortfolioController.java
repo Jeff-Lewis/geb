@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ViewPortfolioItem;
 import ru.prbb.analytics.repo.portfolio.ViewPortfolioDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Добавление организаций в Portfolio
@@ -23,6 +24,7 @@ import ru.prbb.analytics.repo.portfolio.ViewPortfolioDao;
 @Controller
 @RequestMapping("/rest/ViewPortfolio")
 public class ViewPortfolioController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

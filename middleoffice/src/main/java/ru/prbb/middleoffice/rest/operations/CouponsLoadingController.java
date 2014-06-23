@@ -27,6 +27,7 @@ import ru.prbb.middleoffice.domain.LoadInfoResult;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.operations.CouponsLoadingDao;
 import ru.prbb.middleoffice.repo.operations.CouponsLoadingDao.Record;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Загрузка погашения купонов из файла
@@ -36,6 +37,7 @@ import ru.prbb.middleoffice.repo.operations.CouponsLoadingDao.Record;
 @Controller
 @RequestMapping("/rest/CouponsLoading")
 public class CouponsLoadingController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -20,6 +20,7 @@ import ru.prbb.analytics.domain.DictGroupsUserItem;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.repo.users.DictGroupsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Справочник пользователей - Группы
@@ -29,6 +30,7 @@ import ru.prbb.analytics.repo.users.DictGroupsDao;
 @Controller
 @RequestMapping("/rest/DictGroups")
 public class DictGroupsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

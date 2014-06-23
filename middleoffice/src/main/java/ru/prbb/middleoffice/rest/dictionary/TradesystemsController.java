@@ -17,6 +17,7 @@ import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Торговые системы
@@ -26,6 +27,7 @@ import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
 @Controller
 @RequestMapping("/rest/Tradesystems")
 public class TradesystemsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

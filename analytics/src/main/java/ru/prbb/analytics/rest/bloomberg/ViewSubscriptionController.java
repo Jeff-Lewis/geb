@@ -18,6 +18,7 @@ import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SecuritySubscrItem;
 import ru.prbb.analytics.domain.ViewSubscriptionItem;
 import ru.prbb.analytics.repo.bloomberg.ViewSubscriptionDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Subscription
@@ -27,6 +28,7 @@ import ru.prbb.analytics.repo.bloomberg.ViewSubscriptionDao;
 @Controller
 @RequestMapping("/rest/ViewSubscription")
 public class ViewSubscriptionController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

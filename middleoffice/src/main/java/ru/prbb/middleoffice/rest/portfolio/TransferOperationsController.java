@@ -23,6 +23,7 @@ import ru.prbb.middleoffice.domain.TransferOperationsListItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.portfolio.TransferOperationsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Список перекидок
@@ -32,6 +33,7 @@ import ru.prbb.middleoffice.repo.portfolio.TransferOperationsDao;
 @Controller
 @RequestMapping("/rest/TransferOperations")
 public class TransferOperationsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

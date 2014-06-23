@@ -19,6 +19,7 @@ import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Клиенты
@@ -28,6 +29,7 @@ import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
 @Controller
 @RequestMapping("/rest/Clients")
 public class ClientsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

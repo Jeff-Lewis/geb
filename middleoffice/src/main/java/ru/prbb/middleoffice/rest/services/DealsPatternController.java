@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.prbb.middleoffice.domain.DealsPatternItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.repo.services.DealsPatternDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Сохраненные шаблоны
@@ -27,6 +28,7 @@ import ru.prbb.middleoffice.repo.services.DealsPatternDao;
 @Controller
 @RequestMapping("/rest/DealsPattern")
 public class DealsPatternController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

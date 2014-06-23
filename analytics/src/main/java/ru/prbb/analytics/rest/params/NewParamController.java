@@ -16,6 +16,7 @@ import ru.prbb.Utils;
 import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.repo.params.NewParamDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Ввод нового параметра<br>
@@ -26,6 +27,7 @@ import ru.prbb.analytics.repo.params.NewParamDao;
 @Controller
 @RequestMapping("/rest/NewParam")
 public class NewParamController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

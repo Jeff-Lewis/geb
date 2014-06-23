@@ -20,6 +20,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Брокерские счета
@@ -29,6 +30,7 @@ import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 @Controller
 @RequestMapping("/rest/BrokerAccounts")
 public class BrokerAccountsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

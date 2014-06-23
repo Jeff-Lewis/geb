@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.analytics.domain.ViewCompaniesEpsItem;
 import ru.prbb.analytics.repo.reports.ViewCompaniesEpsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * EPS по компаниям
@@ -21,6 +22,7 @@ import ru.prbb.analytics.repo.reports.ViewCompaniesEpsDao;
 @Controller
 @RequestMapping("/rest/ViewCompaniesEps")
 public class ViewCompaniesEpsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.analytics.domain.ViewExceptionsItem;
 import ru.prbb.analytics.repo.reports.ViewExceptionsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Отчёт по исключениям
@@ -21,6 +22,7 @@ import ru.prbb.analytics.repo.reports.ViewExceptionsDao;
 @Controller
 @RequestMapping("/rest/ViewExceptions")
 public class ViewExceptionsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

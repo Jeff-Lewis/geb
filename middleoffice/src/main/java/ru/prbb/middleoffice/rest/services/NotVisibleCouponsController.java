@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.NotEnoughCouponsItem;
 import ru.prbb.middleoffice.repo.services.NotVisibleCouponsDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Нет настроек для купонов
@@ -21,6 +22,7 @@ import ru.prbb.middleoffice.repo.services.NotVisibleCouponsDao;
 @Controller
 @RequestMapping("/rest/NotVisibleCoupons")
 public class NotVisibleCouponsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

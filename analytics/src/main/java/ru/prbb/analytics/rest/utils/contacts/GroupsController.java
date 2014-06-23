@@ -19,6 +19,7 @@ import ru.prbb.analytics.domain.Result;
 import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.utils.GroupsDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Справочник контактов
@@ -28,6 +29,7 @@ import ru.prbb.analytics.repo.utils.GroupsDao;
 @Controller
 @RequestMapping("/rest/Groups")
 public class GroupsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

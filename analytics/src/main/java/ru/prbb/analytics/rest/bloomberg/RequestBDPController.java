@@ -19,6 +19,7 @@ import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.BloombergServicesA;
 import ru.prbb.analytics.repo.EquitiesDao;
 import ru.prbb.analytics.repo.bloomberg.RequestBDPDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * BDP запрос
@@ -28,6 +29,7 @@ import ru.prbb.analytics.repo.bloomberg.RequestBDPDao;
 @Controller
 @RequestMapping("/rest/RequestBDP")
 public class RequestBDPController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

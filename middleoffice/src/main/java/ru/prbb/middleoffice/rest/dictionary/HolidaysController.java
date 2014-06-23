@@ -24,6 +24,7 @@ import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.dictionary.CountriesDao;
 import ru.prbb.middleoffice.repo.dictionary.HolidaysDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * @author RBr
@@ -31,6 +32,7 @@ import ru.prbb.middleoffice.repo.dictionary.HolidaysDao;
 @Controller
 @RequestMapping("/rest/Holidays")
 public class HolidaysController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

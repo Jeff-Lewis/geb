@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.analytics.domain.LogContactItem;
 import ru.prbb.analytics.repo.LogDao;
+import ru.prbb.analytics.rest.BaseController;
 
 /**
  * Журнал изменений справочника контактов
@@ -22,6 +23,7 @@ import ru.prbb.analytics.repo.LogDao;
 @Controller
 @RequestMapping("/rest/LogContacts")
 public class LogContactsController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());

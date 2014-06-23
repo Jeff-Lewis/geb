@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.LogMessagesItem;
 import ru.prbb.middleoffice.repo.LogDao;
+import ru.prbb.middleoffice.rest.BaseController;
 
 /**
  * Журнал отправки сообщений
@@ -23,6 +24,7 @@ import ru.prbb.middleoffice.repo.LogDao;
 @Controller
 @RequestMapping("/rest/LogMessages")
 public class LogMessagesController
+		extends BaseController
 {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
