@@ -38,8 +38,9 @@
 		groupTextTpl : '{text} ({[values.rs.length]})'
 	});
 
-	return new Ext.grid.GridPanel({
+	return {
 		id : 'ViewModel-component',
+		xtype : 'grid',
 		title : 'Текущая модель',
 		frame : true,
 		closable : true,
@@ -129,5 +130,5 @@
 			header : 'Currency',
 			dataIndex : 'currency'
 		} ]
-	});
+	};
 })();
