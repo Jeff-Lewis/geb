@@ -12,17 +12,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 <link rel="icon" type="image/png" href="images/favicon.png" />
-<link rel="shortcut icon" type="image/vnd.microsoft.icon"
-	href="images/favicon.ico" />
+<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="images/favicon.ico" />
 
-<link rel="stylesheet" type="text/css"
-	href="/ExtJS/resources/css/ext-all.css">
-<link rel="stylesheet" type="text/css"
-	href="/ExtJS/resources/css/xtheme-gray.css">
-<link rel="stylesheet" type="text/css"
-	href="/ExtJS/ux/statusbar/css/statusbar.css">
-<link rel="stylesheet" type="text/css"
-	href="/ExtJS/ux/css/fileuploadfield.css">
+<link rel="stylesheet" type="text/css" href="/ExtJS/resources/css/ext-all.css">
+<link rel="stylesheet" type="text/css" href="/ExtJS/resources/css/xtheme-gray.css">
+<link rel="stylesheet" type="text/css" href="/ExtJS/ux/statusbar/css/statusbar.css">
+<link rel="stylesheet" type="text/css" href="/ExtJS/ux/css/fileuploadfield.css">
 
 <link rel="stylesheet" type="text/css" href="css/overrides.css">
 <link rel="stylesheet" type="text/css" href="css/app-theme.css">
@@ -39,11 +34,8 @@
 	<script type="text/javascript" src="/ExtJS/ext-all.js"></script>
 	<script type="text/javascript" src="/ExtJS/ux-all.js"></script>
 	<script type="text/javascript" src="/ExtJS/ext-lang-ru.js"></script>
-	<script type="text/javascript">
-		Ext.BLANK_IMAGE_URL = "/ExtJS/resources/images/default/s.gif";
-	</script>
 
-	<script type="text/javascript"><%@ include file="js/application.js" %></script>
+ 	<script type="text/javascript"><%@ include file="js/application.js" %></script>
 	<!-- Header -->
 	<script type="text/javascript"><%@ include file="js/header.js" %></script>
 	<!-- Menu -->
@@ -52,25 +44,30 @@
 	<script type="text/javascript"><%@ include file="js/view.js" %></script>
 
 	<script type="text/javascript">
-		Ext.QuickTips.init();
+		Ext.BLANK_IMAGE_URL = "/ExtJS/resources/images/default/s.gif";
 
-		new Ext.Viewport({
-			layout : "border",
-			forceLayout : true,
-			items : [ panelHeader, panelMenu, panelView, {
-				region : 'south',
-				xtype : 'container',
-				height : 25
-			} ],
-			listeners : {
-				afterrender : function() {
-					Ext.get("loading-mask").fadeOut({
-						//useDisplay : true,
-						remove : true
-					});
-				}
-			}
-		});
+        Ext.QuickTips.init();
+
+        new Ext.Viewport({
+            layout : "border",
+            forceLayout : true,
+            items : [ panelHeader, panelMenu, panelView, {
+                region : 'south',
+                xtype : 'container',
+                height : 25
+            } ],
+            listeners : {
+	            afterrender : function() {
+					var isAnonymous = <%= (null == request.getUserPrincipal()) %>;
+					loginVisible(isAnonymous);
+
+		            Ext.get("loading-mask").fadeOut({
+			            //useDisplay : true,
+			            remove : true
+		            });
+	            }
+            }
+        });
 	</script>
 </body>
 </html>

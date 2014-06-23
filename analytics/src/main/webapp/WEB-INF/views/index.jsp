@@ -39,11 +39,8 @@
 	<script type="text/javascript" src="/ExtJS/ext-all.js"></script>
 	<script type="text/javascript" src="/ExtJS/ux-all.js"></script>
 	<script type="text/javascript" src="/ExtJS/ext-lang-ru.js"></script>
-	<script type="text/javascript">
-		Ext.BLANK_IMAGE_URL = "/ExtJS/resources/images/default/s.gif";
-	</script>
 
-	<script type="text/javascript"><%@ include file="js/application.js" %></script>
+ 	<script type="text/javascript"><%@ include file="js/application.js" %></script>
 	<!-- Header -->
 	<script type="text/javascript"><%@ include file="js/header.js" %></script>
 	<!-- Menu -->
@@ -52,6 +49,8 @@
 	<script type="text/javascript"><%@ include file="js/view.js" %></script>
 
 	<script type="text/javascript">
+		Ext.BLANK_IMAGE_URL = "/ExtJS/resources/images/default/s.gif";
+
 		Ext.QuickTips.init();
 
 		new Ext.Viewport({
@@ -64,6 +63,9 @@
 			} ],
 			listeners : {
 				afterrender : function() {
+					var isAnonymous = <%= (null == request.getUserPrincipal()) %>;
+					loginVisible(isAnonymous);
+
 					Ext.get("loading-mask").fadeOut({
 						//useDisplay : true,
 						remove : true

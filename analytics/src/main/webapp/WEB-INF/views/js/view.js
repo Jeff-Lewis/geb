@@ -31,12 +31,12 @@ function _loadData(cmp, urlData) {
 	if (urlData && cmp.loadData) {
 		Ext.Ajax.request({
 		    url : urlData,
-			waitMsg : 'Загрузка данных.',
+		    waitMsg : 'Загрузка данных.',
 		    success : _fnSetData,
 		    failure : _fnFailure
 		});
 	}
-	
+
 	function _fnSetData(xhr, opts) {
 		try {
 			var answer = Ext.decode(xhr.responseText);
@@ -56,6 +56,7 @@ function showPanel(urlForm, urlData) {
 	if (cmp) {
 		panelView.scrollToTab(cmp, true);
 		panelView.activate(cmp);
+		panelView.doLayout();
 		_loadData(cmp, urlData);
 		return;
 	}
@@ -78,8 +79,14 @@ function showPanel(urlForm, urlData) {
 			if (config instanceof Ext.Component) {
 				cmp = config;
 			} else {
+				cmp.closable = true;
+				cmp.frame = true;
 				cmp = Ext.ComponentMgr.create(config);
 			}
+
+			cmp.on('close', function(cmp) {
+				Ext.ComponentMgr.unregister(cmp);
+			});
 			Ext.ComponentMgr.register(cmp);
 
 			panelView.add(cmp);

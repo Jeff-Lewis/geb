@@ -32,6 +32,10 @@ Ext.Ajax.on('requestcomplete', function(conn, xhr, options) {
 				App.ui.error('Зарегистрируйтесь в системе.');
 				xhr.responseText = '';
 			}
+			if (res.error) {
+				App.ui.error('Ошибка на сервере.', res.error);
+				xhr.responseText = '';
+			}
 		}
 	}
 });
@@ -138,6 +142,7 @@ App.ui.error = function(text, additional) {
 	if (additional) {
 		text += '<br/><br/><span class="z-tooltip">' + additional + '</span>';
 	}
+	console.error(text);
 	Ext.MessageBox.show({
 		title : 'Ошибка',
 		msg : text,

@@ -50,7 +50,11 @@ var panelHeader = {
 			id : 'username_label',
 			xtype : 'label',
 			hidden : true,
-			text : 'Имя пользователя'
+			//<% if (null == request.getUserPrincipal()) { %>
+			text : 'Пользователь: Anonymous',
+			//<% } else { %>
+			text : 'Пользователь: <%= request.getUserPrincipal().getName() %>',
+			//<% } %>
 		}, {
 			id : 'logout',
 			text : 'Выход',
@@ -69,8 +73,8 @@ var panelHeader = {
 };
 
 function loginVisible(visible) {
-	Ext.getCmp('username').setVisible(visible);
-	Ext.getCmp('password').setVisible(visible);
+	Ext.getCmp('username').setVisible(visible).reset();
+	Ext.getCmp('password').setVisible(visible).reset();
 	Ext.getCmp('login').setVisible(visible);
 	Ext.getCmp('login_restore').setVisible(visible);
 	Ext.getCmp('username_label').setVisible(!visible);
@@ -113,13 +117,14 @@ function loginSubmit() {
 							'Логин и пароль недоступны.');
 					return;
 				case 'login_success':
+					Ext.getCmp('username_label').setText('Пользователь: ' + res.user);
 					loginVisible(false);
 					App.ui.message('Доступ разрешен.');
 					return;
 				}
 			}
 		} catch (error) {
+			App.ui.error('Ошибка при регистрации.', error);
 		}
-		App.ui.error('Ошибка при регистрации.', error);
 	}
 }
