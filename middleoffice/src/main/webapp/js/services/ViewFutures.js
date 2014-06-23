@@ -152,10 +152,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Соотвествие задано!', false, reload);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -184,10 +180,6 @@
 				if (answer.success) {
 					App.ui.message('Отмеченные компании удалены!', false,
 							reload);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

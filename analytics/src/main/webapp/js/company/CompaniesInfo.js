@@ -315,10 +315,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					files.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -385,10 +381,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					refresh(id_sec);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -406,10 +398,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					refresh(id_sec);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -427,10 +415,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					refresh(id_sec);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -649,10 +633,6 @@
 				if (answer.success) {
 					App.ui.message('Исключение удалено.');
 					exStore.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -698,10 +678,6 @@
 				if (answer.success) {
 					App.ui.message('Исключение удалено.');
 					exStore.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -780,10 +756,6 @@
 					if (answer.success) {
 						App.ui.message('Исключение удалено.');
 						exStore.reload();
-					} else if (answer.code == 'login') {
-						App.ui.sessionExpired();
-					} else {
-						App.ui.error(answer.message);
 					}
 				},
 				failure : function() {

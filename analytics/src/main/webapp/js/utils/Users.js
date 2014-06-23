@@ -63,10 +63,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					users.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -145,10 +141,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					groups.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -207,10 +199,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					objects.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

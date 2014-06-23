@@ -123,10 +123,6 @@
 				if (answer.success) {
 					result.loadData(answer.item);
 					App.ui.message('Расчёт произведен');
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -145,10 +141,6 @@
 				if (answer.success) {
 					result.loadData(answer.item);
 					App.ui.message('Расчёт произведен');
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

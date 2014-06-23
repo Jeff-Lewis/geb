@@ -71,10 +71,6 @@
 				if (answer.success) {
 					reload();
 					App.ui.message('Контакты успешно добавлены!');
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -108,10 +104,6 @@
 				if (answer.success) {
 					reload();
 					App.ui.message('Контакты удалены из группы!');
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

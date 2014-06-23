@@ -72,10 +72,6 @@
 							var answer = Ext.decode(xhr.responseText);
 							if (answer.success) {
 								info.reload();
-							} else if (answer.code == 'login') {
-								App.ui.sessionExpired();
-							} else {
-								App.ui.error(answer.message);
 							}
 							dlg.close();
 						},
@@ -121,10 +117,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					info.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -151,10 +143,6 @@
 				if (answer.success) {
 					App.ui.message('Контакт удален!');
 					info.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

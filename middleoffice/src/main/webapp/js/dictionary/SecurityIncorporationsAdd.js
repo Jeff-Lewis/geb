@@ -95,10 +95,6 @@
 					container.window.close();
 					Ext.getCmp('SecurityIncorporations-component').getStore()
 							.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

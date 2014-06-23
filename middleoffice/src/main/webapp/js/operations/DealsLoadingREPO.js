@@ -32,10 +32,6 @@
 					}));
 				});
 				App.ui.message('Операция выполнена успешно');
-			} else if (answer.code == 'login') {
-				App.ui.sessionExpired();
-			} else {
-				App.ui.error(answer.message);
 			}
 		}
 	}

@@ -65,10 +65,6 @@
 					container.window.close();
 					var g = Ext.getCmp('ViewSubscription-component');
 					g.getStore().reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

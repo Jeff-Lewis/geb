@@ -51,8 +51,6 @@
 				if (answer.success) {
 					App.ui.message('Параметр успешно добавлен!');
 					close(b, null);
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function(xhr) {

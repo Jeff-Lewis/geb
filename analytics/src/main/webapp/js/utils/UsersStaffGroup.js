@@ -56,10 +56,6 @@
 			    if (answer.success) {
 				    staff.reload();
 			    	users.reload();
-			    } else if (answer.code == 'login') {
-				    App.ui.sessionExpired();
-			    } else {
-				    App.ui.error(answer.message);
 			    }
 		    },
 		    failure : function() {
@@ -94,10 +90,6 @@
 			    if (answer.success) {
 				    staff.reload();
 			    	users.reload();
-			    } else if (answer.code == 'login') {
-				    App.ui.sessionExpired();
-			    } else {
-				    App.ui.error(answer.message);
 			    }
 		    },
 		    failure : function() {

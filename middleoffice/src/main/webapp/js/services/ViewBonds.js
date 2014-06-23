@@ -69,10 +69,6 @@
 				if (answer.success) {
 					App.ui.message('Организации успешно добавлены в портфель!',
 							false, reload);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -100,10 +96,6 @@
 				if (answer.success) {
 					App.ui.message('Отмеченные компании удалены из портфеля!',
 							false, reload);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

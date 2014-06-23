@@ -62,10 +62,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					dealsLoad();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function(response, opts) {
@@ -102,10 +98,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					dealsLoad();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function(response, opts) {

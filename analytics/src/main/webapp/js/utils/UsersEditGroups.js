@@ -61,10 +61,6 @@
 				if (answer.success) {
 					container.window.close();
 					Ext.getCmp('Users-component').reloadGroups();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

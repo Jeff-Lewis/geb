@@ -63,10 +63,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					Ext.getCmp('RiskRewardPrice1-component').refresh();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

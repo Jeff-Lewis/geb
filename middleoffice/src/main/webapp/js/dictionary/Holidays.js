@@ -106,10 +106,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					info.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -145,10 +141,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					_store.reload();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
@@ -184,15 +176,10 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					infoCO.reload();
-					return;
+				} else {
+					e.record.data.offset = e.originalValue;
+					e.grid.getView().refresh();
 				}
-				if (answer.code == 'login') {
-					App.ui.sessionExpired();
-					return;
-				}
-				e.record.data.offset = e.originalValue;
-				e.grid.getView().refresh();
-				App.ui.error(answer.message);
 			},
 			failure : function() {
 				App.ui.error('Сервер недоступен');

@@ -58,10 +58,6 @@
 				if (answer.success) {
 					App.ui.message('Параметр успешно добавлен!');
 					container.window.close();
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

@@ -221,10 +221,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.success) {
 					App.ui.message('Данные загружены.');
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {

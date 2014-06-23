@@ -81,10 +81,6 @@
 						var answer = Ext.decode(xhr.responseText);
 						if (answer.success) {
 							textarea.setValue(answer.item);
-						} else if (answer.code == 'login') {
-							App.ui.sessionExpired();
-						} else {
-							App.ui.error(answer.message);
 						}
 					},
 					failure : function() {
@@ -116,10 +112,6 @@
 				var answer = Ext.decode(xhr.responseText);
 				if (answer.length) {
 					storeRes.loadData(answer);
-				} else if (answer.code == 'login') {
-					App.ui.sessionExpired();
-				} else {
-					App.ui.error(answer.message);
 				}
 			},
 			failure : function() {
