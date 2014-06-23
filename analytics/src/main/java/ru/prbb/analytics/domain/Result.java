@@ -4,24 +4,20 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * @author RBr
  * 
  */
-public class Result implements Serializable {
+public class Result extends HashMap<String, Object> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	public static final Result SUCCESS = new Result(true);
-	public static final Result FAIL = new Result(false);
+	public static final Result SUCCESS = new Result(Boolean.TRUE);
+	public static final Result FAIL = new Result(Boolean.FALSE);
 
-	private final boolean success;
-
-	private Result(boolean success) {
-		this.success = success;
+	protected Result(Boolean success) {
+		put("success", success);
 	}
 
-	public boolean isSuccess() {
-		return success;
-	}
 }

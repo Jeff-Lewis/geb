@@ -52,7 +52,7 @@ public class ViewPortfolioController
 		return dao.executeSelect(Utils.parseDate(date), security);
 	}
 
-	private ResultProgress p = new ResultProgress();
+	private Result p = Result.FAIL;
 
 	private Boolean isBusyCalc = Boolean.FALSE;
 
@@ -99,7 +99,7 @@ public class ViewPortfolioController
 				time = "Прошло, сек: " + Long.valueOf(runTime / 1000) + " ";
 			}
 		} finally {
-			p = new ResultProgress();
+			p = Result.FAIL;
 			isBusyCalc = Boolean.FALSE;
 		}
 		return Result.SUCCESS;
@@ -116,7 +116,7 @@ public class ViewPortfolioController
 
 	@RequestMapping(value = "/Calculate/Progress", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultProgress getCalculateProgress()
+	public Result getCalculateProgress()
 	{
 		return p;
 	}

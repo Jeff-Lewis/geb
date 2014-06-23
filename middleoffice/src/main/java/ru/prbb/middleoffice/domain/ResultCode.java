@@ -8,28 +8,13 @@ import java.io.Serializable;
 /**
  * @author RBr
  */
-public class ResultCode implements Serializable {
+public class ResultCode extends Result implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final ResultCode LOGIN = new ResultCode(false, "login");
-	public static final ResultCode LOGIN_ERROR = new ResultCode(true, "login_error");
-	public static final ResultCode LOGIN_SUCCESS = new ResultCode(true, "login_success");
-
-	private final boolean success;
-	private final String code;
-
-	private ResultCode(boolean success, String code) {
-		this.success = success;
-		this.code = code;
-	}
-
-	public boolean isSuccess() {
-		return success;
-	}
-
-	public String getCode() {
-		return code;
+	public ResultCode(Boolean success, String code) {
+		super(success);
+		put("code", code);
 	}
 
 }
