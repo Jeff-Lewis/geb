@@ -10,8 +10,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * BDS запрос
@@ -27,9 +26,8 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Service
-public class RequestBDSDaoImpl implements RequestBDSDao
+public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 {
-	private static final Log log = LogFactory.getLog(RequestBDSDaoImpl.class);
 
 	@Autowired
 	private EntityManager em;
@@ -223,7 +221,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			q.setParameter(9, d.date);
 			q.setParameter(10, d.barr);
 			q.setParameter(11, d.year_return);
-			log.info(d);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -282,7 +280,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			q.setParameter(5, d.actual_eps);
 			q.setParameter(6, d.comparable_eps);
 			q.setParameter(7, d.estimate_eps);
-			log.info(d);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -319,7 +317,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			q.setParameter(1, d.tempOrg);
 			q.setParameter(2, d.ead);
 			q.setParameter(3, d.eyap);
-			log.info(d);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -351,7 +349,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 		for (PeersData d : data) {
 			q.setParameter(1, d.sec);
 			q.setParameter(2, d.name);
-			log.info(d);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -414,7 +412,7 @@ public class RequestBDSDaoImpl implements RequestBDSDao
 			q.setParameter(6, d.ebitda);
 			q.setParameter(7, d.group);
 			q.setParameter(8, d.sub);
-			log.info(d);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

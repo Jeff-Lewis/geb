@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * Редактирование свопов
  * 
@@ -18,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @Repository
-public class ViewSwapsDaoImpl implements ViewSwapsDao
+public class ViewSwapsDaoImpl extends  BaseDaoImpl implements ViewSwapsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -30,6 +32,7 @@ public class ViewSwapsDaoImpl implements ViewSwapsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id_sec)
 				.setParameter(2, deal);
+		storeSql(sql, q);
 		q.executeUpdate();
 	}
 
@@ -40,6 +43,7 @@ public class ViewSwapsDaoImpl implements ViewSwapsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id_sec)
 				.setParameter(2, deal);
+		storeSql(sql, q);
 		q.executeUpdate();
 	}
 

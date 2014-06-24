@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.SecuritySubscrItem;
 import ru.prbb.analytics.domain.ViewSubscriptionItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Subscription
@@ -23,7 +24,7 @@ import ru.prbb.analytics.domain.ViewSubscriptionItem;
  * 
  */
 @Service
-public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
+public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscriptionDao
 {
 	@Autowired
 	private EntityManager em;
@@ -61,6 +62,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name)
 				.setParameter(2, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -70,6 +72,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		String sql = "{call dbo.remove_subscription_proc ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -102,6 +105,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		int[] res = new int[ids.length];
 		for (Long id_sec : ids) {
 			q.setParameter(1, id_sec);
+			storeSql(sql, q);
 			res[i++] = q.executeUpdate();
 		}
 		return res;
@@ -117,6 +121,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		int[] res = new int[ids.length];
 		for (Long id_sec : ids) {
 			q.setParameter(1, id_sec);
+			storeSql(sql, q);
 			res[i++] = q.executeUpdate();
 		}
 		return res;
@@ -128,6 +133,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		String sql = "{call dbo.run_subscription_proc ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -137,6 +143,7 @@ public class ViewSubscriptionDaoImpl implements ViewSubscriptionDao
 		String sql = "{call dbo.stop_subscription_proc ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.NoConformityItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Нет соответствия
@@ -22,7 +23,7 @@ import ru.prbb.middleoffice.domain.NoConformityItem;
  * 
  */
 @Repository
-public class NoConformityDaoImpl implements NoConformityDao
+public class NoConformityDaoImpl extends BaseDaoImpl implements NoConformityDao
 {
 	@Autowired
 	private EntityManager em;
@@ -45,6 +46,7 @@ public class NoConformityDaoImpl implements NoConformityDao
 		int i = 0;
 		for (Long id : ids) {
 			q.setParameter(1, id);
+			storeSql(sql, q);
 			res[i++] = q.executeUpdate();
 		}
 	}

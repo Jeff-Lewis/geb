@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SecurityRiscsItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Заданные параметры риска
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.SecurityRiscsItem;
  * 
  */
 @Repository
-public class SecurityRiscsDaoImpl implements SecurityRiscsDao
+public class SecurityRiscsDaoImpl extends BaseDaoImpl implements SecurityRiscsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -58,6 +59,7 @@ public class SecurityRiscsDaoImpl implements SecurityRiscsDao
 		String sql = "{call dbo.mo_WebSet_dSecurityRiscs_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -78,6 +80,7 @@ public class SecurityRiscsDaoImpl implements SecurityRiscsDao
 				.setParameter(8, date_begin)
 				.setParameter(9, date_end)
 				.setParameter(10, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 }

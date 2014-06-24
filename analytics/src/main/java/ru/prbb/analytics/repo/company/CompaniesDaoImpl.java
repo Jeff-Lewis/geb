@@ -24,6 +24,7 @@ import ru.prbb.analytics.domain.CompaniesListItem;
 import ru.prbb.analytics.domain.CompaniesQuarterItem;
 import ru.prbb.analytics.domain.CompaniesYearItem;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Список компаний
@@ -31,7 +32,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * @author RBr
  */
 @Repository
-public class CompaniesDaoImpl implements CompaniesDao
+public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 {
 
 	@Autowired
@@ -85,6 +86,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		for (Entry<String, String> param : params.entrySet()) {
 			q.setParameter(2, param.getKey());
 			q.setParameter(3, param.getValue());
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -259,6 +261,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 				.setParameter(2, content)
 				.setParameter(3, type)
 				.setParameter(4, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -287,6 +290,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		String sql = "delete from dbo.sec_docs where id_doc=?";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id_doc);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -308,6 +312,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 				.setParameter(2, type)
 				.setParameter(3, baseYear)
 				.setParameter(4, calcYear);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -318,6 +323,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, type);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -330,6 +336,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 				.setParameter(2, type)
 				.setParameter(3, baseYear)
 				.setParameter(4, calcYear);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -340,6 +347,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, type);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -352,6 +360,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 				.setParameter(2, variable)
 				.setParameter(3, expression)
 				.setParameter(4, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -362,6 +371,7 @@ public class CompaniesDaoImpl implements CompaniesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, variable);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 }

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.middleoffice.domain.GroupAddressItem;
 import ru.prbb.middleoffice.domain.GroupContactsItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Справочник контактов
@@ -23,7 +24,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * @author RBr
  */
 @Repository
-public class GroupsDaoImpl implements GroupsDao
+public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 {
 
 	@Autowired
@@ -56,6 +57,7 @@ public class GroupsDaoImpl implements GroupsDao
 		String sql = "{call dbo.WebSet_putGroup_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -66,6 +68,7 @@ public class GroupsDaoImpl implements GroupsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -75,6 +78,7 @@ public class GroupsDaoImpl implements GroupsDao
 		String sql = "{call dbo.WebSet_udGroup_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -107,6 +111,7 @@ public class GroupsDaoImpl implements GroupsDao
 			Query q = em.createNativeQuery(sql)
 					.setParameter(1, id)
 					.setParameter(2, cids[i]);
+			storeSql(sql, q);
 			res[i] = q.executeUpdate();
 		}
 		return res;
@@ -121,6 +126,7 @@ public class GroupsDaoImpl implements GroupsDao
 			Query q = em.createNativeQuery(sql)
 					.setParameter(1, id)
 					.setParameter(2, cids[i]);
+			storeSql(sql, q);
 			res[i] = q.executeUpdate();
 		}
 		return res;

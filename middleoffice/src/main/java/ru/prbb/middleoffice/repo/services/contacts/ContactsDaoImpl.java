@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.ContactStaffItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Справочник контактов
@@ -23,7 +24,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class ContactsDaoImpl implements ContactsDao
+public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -55,6 +56,7 @@ public class ContactsDaoImpl implements ContactsDao
 		String sql = "{call dbo.WebSet_putСontact_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -65,6 +67,7 @@ public class ContactsDaoImpl implements ContactsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -74,6 +77,7 @@ public class ContactsDaoImpl implements ContactsDao
 		String sql = "{call dbo.WebSet_udContact_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -95,6 +99,7 @@ public class ContactsDaoImpl implements ContactsDao
 				.setParameter(1, id)
 				.setParameter(2, name)
 				.setParameter(3, type);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -105,6 +110,7 @@ public class ContactsDaoImpl implements ContactsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, cid)
 				.setParameter(2, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -114,6 +120,7 @@ public class ContactsDaoImpl implements ContactsDao
 		String sql = "{call dbo.WebSet_udContactInfo_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, cid);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

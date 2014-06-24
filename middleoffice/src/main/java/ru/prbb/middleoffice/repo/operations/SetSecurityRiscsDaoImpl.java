@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * Задать параметры риска
  * 
@@ -18,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @Service
-public class SetSecurityRiscsDaoImpl implements SetSecurityRiscsDao
+public class SetSecurityRiscsDaoImpl extends BaseDaoImpl implements SetSecurityRiscsDao
 {
 
 	@Autowired
@@ -34,6 +36,7 @@ public class SetSecurityRiscsDaoImpl implements SetSecurityRiscsDao
 				.setParameter(3, riskAVG)
 				.setParameter(4, stopLoss)
 				.setParameter(5, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

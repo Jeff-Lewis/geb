@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Торговые системы
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class TradesystemsDaoImpl implements TradesystemsDao
+public class TradesystemsDaoImpl extends BaseDaoImpl implements TradesystemsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -54,6 +55,7 @@ public class TradesystemsDaoImpl implements TradesystemsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name)
 				.setParameter(2, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -65,6 +67,7 @@ public class TradesystemsDaoImpl implements TradesystemsDao
 				.setParameter(1, id)
 				.setParameter(2, name)
 				.setParameter(3, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -74,6 +77,7 @@ public class TradesystemsDaoImpl implements TradesystemsDao
 		String sql = "{call dbo.mo_WebSet_udTradeSystem_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

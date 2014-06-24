@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.ViewDealsREPOItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Сделки РЕПО
@@ -23,7 +24,7 @@ import ru.prbb.middleoffice.domain.ViewDealsREPOItem;
  * 
  */
 @Repository
-public class ViewDealsREPODaoImpl implements ViewDealsREPODao
+public class ViewDealsREPODaoImpl extends BaseDaoImpl implements ViewDealsREPODao
 {
 	@Autowired
 	private EntityManager em;
@@ -59,6 +60,7 @@ public class ViewDealsREPODaoImpl implements ViewDealsREPODao
 				.setParameter(3, quantity)
 				.setParameter(4, price)
 				.setParameter(5, days);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -68,6 +70,7 @@ public class ViewDealsREPODaoImpl implements ViewDealsREPODao
 		String sql = "{call dbo.mo_WebSet_dRepoDeals_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

@@ -11,11 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * @author RBr
  */
 @Repository
-public class CouponsLoadingDaoImpl implements CouponsLoadingDao
+public class CouponsLoadingDaoImpl extends BaseDaoImpl implements CouponsLoadingDao
 {
 
 	@Autowired
@@ -36,6 +38,7 @@ public class CouponsLoadingDaoImpl implements CouponsLoadingDao
 		q.setParameter(8, r.currency);
 		q.setParameter(9, r.oper_name);
 		q.setParameter(10, r.fund);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

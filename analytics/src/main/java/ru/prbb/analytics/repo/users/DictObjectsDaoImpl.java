@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.DictObjectItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * 
@@ -18,7 +19,7 @@ import ru.prbb.analytics.domain.DictObjectItem;
  *
  */
 @Service
-public class DictObjectsDaoImpl implements DictObjectsDao
+public class DictObjectsDaoImpl extends BaseDaoImpl implements DictObjectsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -48,6 +49,7 @@ public class DictObjectsDaoImpl implements DictObjectsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name)
 				.setParameter(2, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -59,6 +61,7 @@ public class DictObjectsDaoImpl implements DictObjectsDao
 				.setParameter(1, id)
 				.setParameter(2, name)
 				.setParameter(3, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -68,6 +71,7 @@ public class DictObjectsDaoImpl implements DictObjectsDao
 		String sql = "{call dbo.WebSet_iudObjects_sp  'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 }

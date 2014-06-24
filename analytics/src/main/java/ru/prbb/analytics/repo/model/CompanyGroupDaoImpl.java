@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.CompanyStaffItem;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Компании и группы
@@ -24,7 +25,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-public class CompanyGroupDaoImpl implements CompanyGroupDao
+public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 {
 	@Autowired
 	private EntityManager em;
@@ -53,6 +54,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		String sql = "{call dbo.anca_WebSet_putPivotGroup_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -63,6 +65,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -72,6 +75,7 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		String sql = "{call dbo.anca_WebSet_udPivotGroup_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -105,9 +109,10 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		for (Long id_sec : cids) {
 			try {
 				q.setParameter(1, id_sec);
+				storeSql(sql, q);
 				res[i++] = q.executeUpdate();
 			} catch (DataAccessException e) {
-				// TODO: handle exception
+				log.error("putStaff", e);
 			}
 		}
 		return res;
@@ -123,9 +128,10 @@ public class CompanyGroupDaoImpl implements CompanyGroupDao
 		for (Long id_sec : cids) {
 			try {
 				q.setParameter(1, id_sec);
+				storeSql(sql, q);
 				res[i++] = q.executeUpdate();
 			} catch (DataAccessException e) {
-				// TODO: handle exception
+				log.error("deleteStaff", e);
 			}
 		}
 		return res;

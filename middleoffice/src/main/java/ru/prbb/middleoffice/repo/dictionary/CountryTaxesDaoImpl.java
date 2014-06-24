@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.CountryTaxItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Налоги по странам
@@ -23,7 +24,7 @@ import ru.prbb.middleoffice.domain.CountryTaxItem;
  * 
  */
 @Repository
-public class CountryTaxesDaoImpl implements CountryTaxesDao
+public class CountryTaxesDaoImpl extends BaseDaoImpl implements CountryTaxesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -57,6 +58,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 				.setParameter(4, value)
 				.setParameter(5, dateBegin)
 				.setParameter(6, country_recipient_id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -70,6 +72,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 				.setParameter(3, dateBegin)
 				.setParameter(4, dateEnd)
 				.setParameter(5, country_recipient_id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -79,6 +82,7 @@ public class CountryTaxesDaoImpl implements CountryTaxesDao
 		String sql = "{call dbo.mo_WebSet_udCountryTaxes_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

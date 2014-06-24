@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.SecurityValuesItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Загрузка номинала
@@ -25,7 +26,7 @@ import ru.prbb.middleoffice.domain.SecurityValuesItem;
  * @author RBr
  */
 @Service
-public class LoadValuesDaoImpl implements LoadValuesDao
+public class LoadValuesDaoImpl extends BaseDaoImpl implements LoadValuesDao
 {
 
 	@Autowired
@@ -67,6 +68,7 @@ public class LoadValuesDaoImpl implements LoadValuesDao
 			q.setParameter(1, item.security_id);
 			q.setParameter(2, item.date_time);
 			q.setParameter(3, item.value);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

@@ -30,7 +30,7 @@ import ru.prbb.analytics.domain.SubscriptionItem;
  * 
  */
 @Service
-public class LogDaoImpl implements LogDao
+public class LogDaoImpl extends BaseDaoImpl implements LogDao
 {
 	@Autowired
 	private EntityManager em;
@@ -43,6 +43,7 @@ public class LogDaoImpl implements LogDao
 		Query q = em.createNativeQuery(sql, LogContactItem.class)
 				.setParameter(1, start)
 				.setParameter(2, stop);
+		storeSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -55,6 +56,7 @@ public class LogDaoImpl implements LogDao
 				.setParameter(1, type)
 				.setParameter(2, start)
 				.setParameter(3, stop);
+		storeSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -63,6 +65,7 @@ public class LogDaoImpl implements LogDao
 	public List<SubscriptionItem> getLogSubscription() {
 		String sql = "{call dbo.subscription_data_v_proc}";
 		Query q = em.createNativeQuery(sql);
+		storeSql(sql, q);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
 		List<SubscriptionItem> res = new ArrayList<>(list.size());
@@ -89,6 +92,7 @@ public class LogDaoImpl implements LogDao
 		Query q = em.createNativeQuery(sql, LogUserActionItem.class)
 				.setParameter(1, date_b)
 				.setParameter(2, date_e);
+		storeSql(sql, q);
 		return q.getResultList();
 	}
 

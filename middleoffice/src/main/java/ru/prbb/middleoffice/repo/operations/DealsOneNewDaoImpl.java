@@ -13,11 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * @author RBr
  */
 @Service
-public class DealsOneNewDaoImpl implements DealsOneNewDao
+public class DealsOneNewDaoImpl extends BaseDaoImpl implements DealsOneNewDao
 {
 
 	@Autowired
@@ -50,6 +52,7 @@ public class DealsOneNewDaoImpl implements DealsOneNewDao
 		q.setParameter(++i, securityCode);
 		q.setParameter(++i, futuresAlias);
 		q.setParameter(++i, kindTicker);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 }

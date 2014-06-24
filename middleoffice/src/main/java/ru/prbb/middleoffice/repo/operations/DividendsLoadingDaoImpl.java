@@ -11,11 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * @author RBr
  */
 @Repository
-public class DividendsLoadingDaoImpl implements DividendsLoadingDao
+public class DividendsLoadingDaoImpl extends BaseDaoImpl implements DividendsLoadingDao
 {
 
 	@Autowired
@@ -35,6 +37,7 @@ public class DividendsLoadingDaoImpl implements DividendsLoadingDao
 		q.setParameter(7, r.extra_costs);
 		q.setParameter(8, r.currency);
 		q.setParameter(9, r.fund);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

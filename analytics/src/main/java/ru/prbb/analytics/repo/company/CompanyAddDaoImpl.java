@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Добавление компаний
@@ -26,7 +27,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * @author RBr
  */
 @Service
-public class CompanyAddDaoImpl implements CompanyAddDao
+public class CompanyAddDaoImpl extends BaseDaoImpl implements CompanyAddDao
 {
 
 	@Autowired
@@ -102,6 +103,7 @@ public class CompanyAddDaoImpl implements CompanyAddDao
 		q.setParameter(++pos, values.get("EARN_EST_CRNCY"));
 		q.setParameter(++pos, values.get("EQY_FUND_TICKER"));
 		q.setParameter(++pos, values.get("EQY_FISCAL_YR_END"));
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

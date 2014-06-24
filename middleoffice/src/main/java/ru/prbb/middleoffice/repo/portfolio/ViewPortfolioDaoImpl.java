@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ViewPortfolioItem;
 import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Текущий портфель
@@ -26,7 +27,7 @@ import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
  * 
  */
 @Repository
-public class ViewPortfolioDaoImpl implements ViewPortfolioDao
+public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDao
 {
 	@Autowired
 	private EntityManager em;
@@ -99,6 +100,7 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, begin_date)
 				.setParameter(2, id_sec);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Загрузка ATR
@@ -26,7 +27,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class LoadATRDaoImpl implements LoadATRDao
+public class LoadATRDaoImpl extends BaseDaoImpl implements LoadATRDao
 {
 	@Autowired
 	private EntityManager em;
@@ -76,6 +77,7 @@ public class LoadATRDaoImpl implements LoadATRDao
 			q.setParameter(1, item.security);
 			q.setParameter(2, item.date_time);
 			q.setParameter(3, item.atr_value);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

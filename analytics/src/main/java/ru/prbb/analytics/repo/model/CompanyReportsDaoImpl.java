@@ -19,6 +19,7 @@ import ru.prbb.Utils;
 import ru.prbb.analytics.domain.CompanyAllItem;
 import ru.prbb.analytics.domain.CompanyStaffItem;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Компании и отчёты
@@ -27,7 +28,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-public class CompanyReportsDaoImpl implements CompanyReportsDao
+public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReportsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -56,6 +57,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		String sql = "{call dbo.anca_WebSet_putReports_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -66,6 +68,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -75,6 +78,7 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		String sql = "{call dbo.anca_WebSet_udReports_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -119,9 +123,10 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 		for (Long security_id : cids) {
 			try {
 				q.setParameter(2, security_id);
+				storeSql(sql, q);
 				res[i++] = q.executeUpdate();
 			} catch (DataAccessException e) {
-				// TODO: handle exception
+				log.error("putStaff", e);
 			}
 		}
 		return res;
@@ -138,9 +143,10 @@ public class CompanyReportsDaoImpl implements CompanyReportsDao
 			try {
 				q.setParameter(1, cid);
 				//q.setParameter(2, report_id);
+				storeSql(sql, q);
 				res[i++] = q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("deleteStaff", e);
 			}
 		}
 		return res;

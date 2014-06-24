@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ClientsItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Клиенты
@@ -25,7 +26,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class ClientsDaoImpl implements ClientsDao
+public class ClientsDaoImpl extends BaseDaoImpl implements ClientsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -58,6 +59,7 @@ public class ClientsDaoImpl implements ClientsDao
 				.setParameter(3, country_id)
 				.setParameter(4, date_begin)
 				.setParameter(5, date_end);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -72,6 +74,7 @@ public class ClientsDaoImpl implements ClientsDao
 				.setParameter(4, country_id)
 				.setParameter(5, date_begin)
 				.setParameter(6, date_end);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -81,6 +84,7 @@ public class ClientsDaoImpl implements ClientsDao
 		String sql = "{call dbo.mo_WebSet_udClients_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

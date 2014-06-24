@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.BrokersCoverageItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Покрытие брокеров
@@ -24,7 +25,7 @@ import ru.prbb.analytics.domain.BrokersCoverageItem;
  * 
  */
 @Service
-public class BrokersCoverageDaoImpl implements BrokersCoverageDao
+public class BrokersCoverageDaoImpl extends BaseDaoImpl implements BrokersCoverageDao
 {
 	@Autowired
 	private EntityManager em;
@@ -64,6 +65,7 @@ public class BrokersCoverageDaoImpl implements BrokersCoverageDao
 				.setParameter(1, id)
 				.setParameter(2, broker)
 				.setParameter(3, value);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 }

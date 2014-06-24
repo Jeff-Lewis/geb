@@ -14,13 +14,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.RiskRewardPrice1Item;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * @author RBr
  * 
  */
 @Repository
-public class RiskRewardPrice1DaoImpl implements RiskRewardPrice1Dao
+public class RiskRewardPrice1DaoImpl extends BaseDaoImpl implements RiskRewardPrice1Dao
 {
 	@Autowired
 	private EntityManager em;
@@ -49,6 +50,7 @@ public class RiskRewardPrice1DaoImpl implements RiskRewardPrice1Dao
 		String sql = "{call dbo.mo_WebSet_dSecuritiesAttributes_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

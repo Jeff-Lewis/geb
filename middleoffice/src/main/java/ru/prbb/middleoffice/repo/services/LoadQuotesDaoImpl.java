@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * Загрузка котировок
  * 
@@ -23,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @Service
-public class LoadQuotesDaoImpl implements LoadQuotesDao
+public class LoadQuotesDaoImpl extends BaseDaoImpl implements LoadQuotesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -93,6 +95,7 @@ public class LoadQuotesDaoImpl implements LoadQuotesDao
 			q.setParameter(1, item.security);
 			q.setParameter(2, item.value);
 			q.setParameter(3, item.date);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

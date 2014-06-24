@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ReferenceItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Фонды
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class FundsDaoImpl implements FundsDao
+public class FundsDaoImpl extends BaseDaoImpl implements FundsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -54,6 +55,7 @@ public class FundsDaoImpl implements FundsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name)
 				.setParameter(2, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -65,6 +67,7 @@ public class FundsDaoImpl implements FundsDao
 				.setParameter(1, id)
 				.setParameter(2, name)
 				.setParameter(3, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -74,6 +77,7 @@ public class FundsDaoImpl implements FundsDao
 		String sql = "{call dbo.mo_WebSet_udInvestPortfolio_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * Загрузка доходности облигаций
  * 
@@ -23,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */
 @Service
-public class LoadBondYeildDaoImpl implements LoadBondYeildDao
+public class LoadBondYeildDaoImpl extends BaseDaoImpl implements LoadBondYeildDao
 {
 	@Autowired
 	private EntityManager em;
@@ -85,6 +87,7 @@ public class LoadBondYeildDaoImpl implements LoadBondYeildDao
 			q.setParameter(2, item.params);
 			q.setParameter(3, item.date);
 			q.setParameter(4, item.char_value);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

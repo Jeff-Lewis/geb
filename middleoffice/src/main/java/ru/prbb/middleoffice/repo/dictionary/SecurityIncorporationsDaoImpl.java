@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SecurityIncorporationItem;
 import ru.prbb.middleoffice.domain.SecurityIncorporationListItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Регистрация инструментов
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.SecurityIncorporationListItem;
  * 
  */
 @Repository
-public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
+public class SecurityIncorporationsDaoImpl extends BaseDaoImpl implements SecurityIncorporationsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -55,6 +56,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 				.setParameter(1, security)
 				.setParameter(2, country)
 				.setParameter(3, dateBegin);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -66,6 +68,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 				.setParameter(1, id)
 				.setParameter(2, dateBegin)
 				.setParameter(3, dateEnd);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -75,6 +78,7 @@ public class SecurityIncorporationsDaoImpl implements SecurityIncorporationsDao
 		String sql = "{call dbo.mo_WebSet_udSecurityIncorporations_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

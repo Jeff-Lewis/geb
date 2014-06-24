@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.DividendItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Дивиденды
@@ -25,7 +26,7 @@ import ru.prbb.middleoffice.domain.DividendItem;
  * 
  */
 @Repository
-public class DividendsDaoImpl implements DividendsDao
+public class DividendsDaoImpl extends BaseDaoImpl implements DividendsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -96,6 +97,7 @@ public class DividendsDaoImpl implements DividendsDao
 				.setParameter(7, quantity)
 				.setParameter(8, dividend_per_share)
 				.setParameter(9, extra_costs_per_share);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -106,6 +108,7 @@ public class DividendsDaoImpl implements DividendsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, receive);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -117,6 +120,7 @@ public class DividendsDaoImpl implements DividendsDao
 				.setParameter(1, id)
 				.setParameter(2, type)
 				.setParameter(3, value);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -126,6 +130,7 @@ public class DividendsDaoImpl implements DividendsDao
 		String sql = "{call dbo.mo_WebSet_dDividends_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

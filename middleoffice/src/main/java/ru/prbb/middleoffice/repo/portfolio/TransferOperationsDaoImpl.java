@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.TransferOperationsItem;
 import ru.prbb.middleoffice.domain.TransferOperationsListItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Список перекидок
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.TransferOperationsListItem;
  * 
  */
 @Repository
-public class TransferOperationsDaoImpl implements TransferOperationsDao
+public class TransferOperationsDaoImpl extends BaseDaoImpl implements TransferOperationsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -58,6 +59,7 @@ public class TransferOperationsDaoImpl implements TransferOperationsDao
 		for (Long id : ids) {
 			Query q = em.createNativeQuery(sql)
 					.setParameter(1, id);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -71,6 +73,7 @@ public class TransferOperationsDaoImpl implements TransferOperationsDao
 					.setParameter(1, id)
 					.setParameter(2, field)
 					.setParameter(3, value);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

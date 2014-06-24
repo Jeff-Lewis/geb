@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.BrokerItem;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Справочник брокеров
@@ -24,7 +25,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-public class BrokersDaoImpl implements BrokersDao
+public class BrokersDaoImpl extends BaseDaoImpl implements BrokersDao
 {
 	@Autowired
 	private EntityManager em;
@@ -72,6 +73,7 @@ public class BrokersDaoImpl implements BrokersDao
 				.setParameter(3, bloomberg_code)
 				.setParameter(4, cover_russian)
 				.setParameter(5, short_name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -105,6 +107,7 @@ public class BrokersDaoImpl implements BrokersDao
 				.setParameter(4, bloomberg_code)
 				.setParameter(5, cover_russian)
 				.setParameter(6, short_name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -114,6 +117,7 @@ public class BrokersDaoImpl implements BrokersDao
 		String sql = "{call dbo.anca_WebSet_udBrokers_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Загрузка ставки по купонам
@@ -24,7 +25,7 @@ import ru.prbb.Utils;
  * @author RBr
  */
 @Service
-public class LoadRateCouponDaoImpl implements LoadRateCouponDao
+public class LoadRateCouponDaoImpl extends BaseDaoImpl implements LoadRateCouponDao
 {
 
 	@Autowired
@@ -66,6 +67,7 @@ public class LoadRateCouponDaoImpl implements LoadRateCouponDao
 			q.setParameter(1, item.security_id);
 			q.setParameter(2, item.date_time);
 			q.setParameter(3, item.value);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

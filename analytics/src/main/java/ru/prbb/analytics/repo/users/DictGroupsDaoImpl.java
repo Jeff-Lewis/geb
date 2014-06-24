@@ -14,6 +14,7 @@ import ru.prbb.analytics.domain.DictGroupItem;
 import ru.prbb.analytics.domain.DictGroupsObjectItem;
 import ru.prbb.analytics.domain.DictGroupsPermisionItem;
 import ru.prbb.analytics.domain.DictGroupsUserItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * 
@@ -21,7 +22,7 @@ import ru.prbb.analytics.domain.DictGroupsUserItem;
  *
  */
 @Service
-public class DictGroupsDaoImpl implements DictGroupsDao
+public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -51,6 +52,7 @@ public class DictGroupsDaoImpl implements DictGroupsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name)
 				.setParameter(2, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -62,6 +64,7 @@ public class DictGroupsDaoImpl implements DictGroupsDao
 				.setParameter(1, id)
 				.setParameter(2, name)
 				.setParameter(3, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -71,6 +74,7 @@ public class DictGroupsDaoImpl implements DictGroupsDao
 		String sql = "{call dbo.WebSet_iudGroups_sp  'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -102,6 +106,7 @@ public class DictGroupsDaoImpl implements DictGroupsDao
 				.setParameter(1, idGroup);
 		for (Long id : ids) {
 			q.setParameter(2, id);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -114,6 +119,7 @@ public class DictGroupsDaoImpl implements DictGroupsDao
 				.setParameter(1, idGroup);
 		for (Long id : ids) {
 			q.setParameter(2, id);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -148,6 +154,7 @@ public class DictGroupsDaoImpl implements DictGroupsDao
 			q.setParameter(1, idObject);
 			for (Long idPermission : ids) {
 				q.setParameter(2, idPermission);
+				storeSql(sql, q);
 				q.executeUpdate();
 			}
 		}
@@ -160,6 +167,7 @@ public class DictGroupsDaoImpl implements DictGroupsDao
 		Query q = em.createNativeQuery(sql);
 		for (Long id : ids) {
 			q.setParameter(1, id);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

@@ -19,13 +19,14 @@ import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.CountryOffsetItem;
 import ru.prbb.middleoffice.domain.HolidaysItem;
 import ru.prbb.middleoffice.domain.HolidaysWeekItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * @author RBr
  * 
  */
 @Repository
-public class HolidaysDaoImpl implements HolidaysDao
+public class HolidaysDaoImpl extends BaseDaoImpl implements HolidaysDao
 {
 	@Autowired
 	private EntityManager em;
@@ -68,6 +69,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 				.setParameter(5, name)
 				.setParameter(6, sms)
 				.setParameter(7, portfolio);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -78,6 +80,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, country)
 				.setParameter(2, date);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -111,6 +114,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 			q.setParameter(2, item.getDay_week());
 			q.setParameter(3, item.getStart());
 			q.setParameter(4, item.getStop());
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -135,6 +139,7 @@ public class HolidaysDaoImpl implements HolidaysDao
 			q.setParameter(3, item.getOffset());
 			q.setParameter(4, item.getStart());
 			q.setParameter(5, item.getStop());
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

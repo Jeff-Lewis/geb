@@ -22,7 +22,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Service
-public class SendingDaoImpl implements SendingDao
+public class SendingDaoImpl extends BrokersDaoImpl implements SendingDao
 {
 	@Autowired
 	private EntityManager em;
@@ -59,9 +59,10 @@ public class SendingDaoImpl implements SendingDao
 				.setParameter(3, email);
 		String res = "0";
 		try {
+			storeSql(sql, q);
 			q.executeUpdate();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			log.error("sendMail", e);
 			res = e.getMessage();
 		}
 		SendingItem si = new SendingItem();
@@ -87,8 +88,8 @@ public class SendingDaoImpl implements SendingDao
 			if ("0".equals(res)) {
 				Thread.sleep(4000);
 			}
-		} catch (InterruptedException ie) {
-			// TODO Auto-generated catch block
+		} catch (InterruptedException e) {
+			log.error("sendSms", e);
 		}
 
 		return si;

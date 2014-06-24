@@ -15,13 +15,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SecuritiesRestsItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * @author RBr
  * 
  */
 @Repository
-public class SecuritiesRestsDaoImpl implements SecuritiesRestsDao
+public class SecuritiesRestsDaoImpl extends BaseDaoImpl implements SecuritiesRestsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -47,6 +48,7 @@ public class SecuritiesRestsDaoImpl implements SecuritiesRestsDao
 		Query q = em.createNativeQuery(sql, SecuritiesRestsItem.class)
 				.setParameter(1, id)
 				.setParameter(2, checkFlag);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

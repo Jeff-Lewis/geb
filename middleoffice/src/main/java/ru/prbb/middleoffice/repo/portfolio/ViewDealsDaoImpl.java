@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.ViewDealsItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Список сделок
@@ -23,7 +24,7 @@ import ru.prbb.middleoffice.domain.ViewDealsItem;
  * 
  */
 @Repository
-public class ViewDealsDaoImpl implements ViewDealsDao
+public class ViewDealsDaoImpl extends BaseDaoImpl implements ViewDealsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -47,6 +48,7 @@ public class ViewDealsDaoImpl implements ViewDealsDao
 		for (Long deal : deals) {
 			Query q = em.createNativeQuery(sql)
 					.setParameter(1, deal);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}
@@ -60,6 +62,7 @@ public class ViewDealsDaoImpl implements ViewDealsDao
 				.setParameter(3, value);
 		for (Long deal : deals) {
 			q.setParameter(1, deal);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

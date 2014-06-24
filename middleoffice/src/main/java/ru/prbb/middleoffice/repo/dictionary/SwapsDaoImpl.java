@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.SwapItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Свопы
@@ -22,7 +23,7 @@ import ru.prbb.middleoffice.domain.SwapItem;
  * 
  */
 @Repository
-public class SwapsDaoImpl implements SwapsDao
+public class SwapsDaoImpl extends BaseDaoImpl implements SwapsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -50,6 +51,7 @@ public class SwapsDaoImpl implements SwapsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, swap)
 				.setParameter(2, security);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -60,6 +62,7 @@ public class SwapsDaoImpl implements SwapsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, swap);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -69,6 +72,7 @@ public class SwapsDaoImpl implements SwapsDao
 		String sql = "{call dbo.mo_WebSet_udTrsContracts_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

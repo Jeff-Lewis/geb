@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.SecurityCashFlowItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Загрузка дат погашений
@@ -25,7 +26,7 @@ import ru.prbb.middleoffice.domain.SecurityCashFlowItem;
  * @author RBr
  */
 @Service
-public class LoadCashFlowDaoImpl implements LoadCashFlowDao
+public class LoadCashFlowDaoImpl extends BaseDaoImpl implements LoadCashFlowDao
 {
 
 	@Autowired
@@ -72,6 +73,7 @@ public class LoadCashFlowDaoImpl implements LoadCashFlowDao
 			q.setParameter(2, item.maturity_date);
 			q.setParameter(3, item.coupon_cash_flow);
 			q.setParameter(4, item.principal_cash_flow);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

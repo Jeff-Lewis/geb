@@ -14,12 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.DictUserItem;
 import ru.prbb.analytics.domain.DictUsersInfoItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * @author BrihlyaevRA
  */
 @Service
-public class DictUsersDaoImpl implements DictUsersDao
+public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 {
 
 	@Autowired
@@ -73,6 +74,7 @@ public class DictUsersDaoImpl implements DictUsersDao
 				.setParameter(2, password)
 				.setParameter(3, name)
 				.setParameter(4, email);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -86,6 +88,7 @@ public class DictUsersDaoImpl implements DictUsersDao
 				.setParameter(3, password)
 				.setParameter(4, name)
 				.setParameter(5, email);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -95,6 +98,7 @@ public class DictUsersDaoImpl implements DictUsersDao
 		String sql = "{call dbo.WebSet_iudUsers_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

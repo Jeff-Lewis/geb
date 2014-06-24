@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.CouponItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Дивиденды
@@ -26,7 +27,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class CouponsDaoImpl implements CouponsDao
+public class CouponsDaoImpl extends BaseDaoImpl implements CouponsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -99,6 +100,7 @@ public class CouponsDaoImpl implements CouponsDao
 				.setParameter(8, coupon_per_share)
 				.setParameter(9, extra_costs_per_share)
 				.setParameter(10, coupon_oper_id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -109,6 +111,7 @@ public class CouponsDaoImpl implements CouponsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id)
 				.setParameter(2, receive);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -120,6 +123,7 @@ public class CouponsDaoImpl implements CouponsDao
 				.setParameter(1, id)
 				.setParameter(2, type)
 				.setParameter(3, value);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -129,6 +133,7 @@ public class CouponsDaoImpl implements CouponsDao
 		String sql = "{call dbo.mo_WebSet_dCoupons_sp ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

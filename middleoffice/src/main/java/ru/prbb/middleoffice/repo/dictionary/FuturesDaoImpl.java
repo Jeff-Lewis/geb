@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.FuturesItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Фьючерсы
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class FuturesDaoImpl implements FuturesDao
+public class FuturesDaoImpl extends BaseDaoImpl implements FuturesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -53,6 +54,7 @@ public class FuturesDaoImpl implements FuturesDao
 				.setParameter(1, name)
 				.setParameter(2, coef)
 				.setParameter(3, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -68,6 +70,7 @@ public class FuturesDaoImpl implements FuturesDao
 		String sql = "{call dbo.mo_WebSet_udFuturesAlias_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

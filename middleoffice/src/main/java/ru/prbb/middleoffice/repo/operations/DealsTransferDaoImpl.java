@@ -11,13 +11,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * Перекидка ЦБ между фондами
  * 
  * @author RBr
  */
 @Service
-public class DealsTransferDaoImpl implements DealsTransferDao
+public class DealsTransferDaoImpl extends BaseDaoImpl implements DealsTransferDao
 {
 
 	@Autowired
@@ -35,6 +37,7 @@ public class DealsTransferDaoImpl implements DealsTransferDao
 				.setParameter(4, fundId)
 				.setParameter(5, batch)
 				.setParameter(6, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

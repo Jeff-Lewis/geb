@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.ViewPortfolioItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Добавление организаций в Portfolio
@@ -22,7 +23,7 @@ import ru.prbb.analytics.domain.ViewPortfolioItem;
  * 
  */
 @Repository
-public class ViewPortfolioDaoImpl implements ViewPortfolioDao
+public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDao
 {
 	@Autowired
 	private EntityManager em;
@@ -55,9 +56,10 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 		for (Long id_sec : ids) {
 			try {
 				q.setParameter(1, id_sec);
+				storeSql(sql, q);
 				res[i++] = q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("put", e);
 			}
 		}
 		return res;
@@ -73,9 +75,10 @@ public class ViewPortfolioDaoImpl implements ViewPortfolioDao
 		for (Long id_sec : ids) {
 			try {
 				q.setParameter(1, id_sec);
+				storeSql(sql, q);
 				res[i++] = q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("del", e);
 			}
 		}
 		return res;

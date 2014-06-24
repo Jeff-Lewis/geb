@@ -11,8 +11,6 @@ import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * BDH запрос
@@ -27,9 +26,8 @@ import ru.prbb.analytics.domain.SimpleItem;
  * @author RBr
  */
 @Service
-public class RequestBDHDaoImpl implements RequestBDHDao
+public class RequestBDHDaoImpl extends BaseDaoImpl implements RequestBDHDao
 {
-	private static final Log log = LogFactory.getLog(RequestBDHDaoImpl.class);
 
 	@Autowired
 	private EntityManager em;
@@ -67,7 +65,8 @@ public class RequestBDHDaoImpl implements RequestBDHDao
 			q.setParameter(5, d.period);
 			q.setParameter(6, d.curncy);
 			q.setParameter(7, d.calendar);
-			log.info(d);
+			storeSql(sql, q);
+			storeSql(sql, q);
 			q.executeUpdate();
 		}
 	}

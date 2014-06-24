@@ -11,11 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
+
 /**
  * @author RBr
  */
 @Repository
-public class DealsLoadingREPODaoImpl implements DealsLoadingREPODao
+public class DealsLoadingREPODaoImpl extends BaseDaoImpl implements DealsLoadingREPODao
 {
 
 	@Autowired
@@ -38,6 +40,7 @@ public class DealsLoadingREPODaoImpl implements DealsLoadingREPODao
 		q.setParameter(10, r.days);
 		q.setParameter(11, r.currency);
 		q.setParameter(12, r.trade_system);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

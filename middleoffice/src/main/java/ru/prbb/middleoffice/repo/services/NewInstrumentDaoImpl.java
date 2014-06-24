@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Ввод нового инструмента
@@ -21,7 +22,7 @@ import ru.prbb.Utils;
  * @author RBr
  */
 @Repository
-public class NewInstrumentDaoImpl implements NewInstrumentDao
+public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDao
 {
 
 	@Autowired
@@ -67,6 +68,7 @@ public class NewInstrumentDaoImpl implements NewInstrumentDao
 		q.setParameter(i++, values.get("EARN_EST_CRNCY"));
 		q.setParameter(i++, values.get("EQY_FUND_TICKER"));
 		q.setParameter(i++, values.get("EQY_FISCAL_YR_END"));
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -92,6 +94,7 @@ public class NewInstrumentDaoImpl implements NewInstrumentDao
 		q.setParameter(i++, values.get("FEED_SOURCE"));
 		q.setParameter(i++, values.get("CRNCY"));
 		q.setParameter(i++, values.get("EQY_FUND_CRNCY"));
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -136,6 +139,7 @@ public class NewInstrumentDaoImpl implements NewInstrumentDao
 		q.setParameter(i++, values.get("FIXED"));
 		q.setParameter(i++, new Double(values.get("CPN")));
 		q.setParameter(i++, new Double(values.get("PAR_AMT")));
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -174,6 +178,7 @@ public class NewInstrumentDaoImpl implements NewInstrumentDao
 		q.setParameter(i++, values.get("FUT_FIRST_TRADE_DT"));
 		q.setParameter(i++, values.get("LAST_TRADEABLE_DT"));
 		q.setParameter(i++, values.get("FUT_GEN_MONTH"));
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

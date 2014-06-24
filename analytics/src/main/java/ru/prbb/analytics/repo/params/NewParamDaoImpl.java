@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.NewParamItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 import ru.prbb.analytics.repo.BloombergServicesA;
 
 /**
@@ -23,7 +24,7 @@ import ru.prbb.analytics.repo.BloombergServicesA;
  * @author RBr
  */
 @Service
-public class NewParamDaoImpl implements NewParamDao
+public class NewParamDaoImpl extends BaseDaoImpl implements NewParamDao
 {
 
 	@Autowired
@@ -43,7 +44,7 @@ public class NewParamDaoImpl implements NewParamDao
 					.setParameter(1, code);
 			res = (NewParamItem) q.getSingleResult();
 		} catch (Exception e) {
-			// TODO: handle exception
+			log.error("setup:" + code, e);
 		}
 		if (null == res) {
 			Map<String, Object> answer = bs.executeFieldInfoRequest("Ввод нового параметра", code);
@@ -63,6 +64,7 @@ public class NewParamDaoImpl implements NewParamDao
 				.setParameter(1, blm_id)
 				.setParameter(2, code)
 				.setParameter(3, name);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -73,6 +75,7 @@ public class NewParamDaoImpl implements NewParamDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, code)
 				.setParameter(2, broker);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

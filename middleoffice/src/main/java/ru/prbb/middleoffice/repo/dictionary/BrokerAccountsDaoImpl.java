@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.BrokerAccountItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Брокерские счета
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class BrokerAccountsDaoImpl implements BrokerAccountsDao
+public class BrokerAccountsDaoImpl extends BaseDaoImpl implements BrokerAccountsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -56,6 +57,7 @@ public class BrokerAccountsDaoImpl implements BrokerAccountsDao
 				.setParameter(2, client)
 				.setParameter(3, broker)
 				.setParameter(4, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -67,6 +69,7 @@ public class BrokerAccountsDaoImpl implements BrokerAccountsDao
 				.setParameter(1, id)
 				.setParameter(2, name)
 				.setParameter(3, comment);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -76,6 +79,7 @@ public class BrokerAccountsDaoImpl implements BrokerAccountsDao
 		String sql = "{call dbo.mo_WebSet_udAccount_sp 'd', ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.DealsPatternItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Сохраненные шаблоны
@@ -22,7 +23,7 @@ import ru.prbb.middleoffice.domain.DealsPatternItem;
  * 
  */
 @Repository
-public class DealsPatternDaoImpl implements DealsPatternDao
+public class DealsPatternDaoImpl extends BaseDaoImpl implements DealsPatternDao
 {
 	@Autowired
 	private EntityManager em;
@@ -52,6 +53,7 @@ public class DealsPatternDaoImpl implements DealsPatternDao
 		String sql = "delete from dbo.DealsTemplateStorage where id=?";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 
@@ -73,6 +75,7 @@ public class DealsPatternDaoImpl implements DealsPatternDao
 				.setParameter(1, bytes)
 				.setParameter(2, name)
 				.setParameter(3, type);
+		storeSql(sql, q);
 		return q.executeUpdate();
 	}
 }
