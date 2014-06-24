@@ -123,6 +123,7 @@ public class Utils {
 				return new Date(time);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace(System.err);
 			}
 		}
 		return null;
@@ -247,6 +248,7 @@ public class Utils {
 			return column.name();
 		} catch (NoSuchFieldException | SecurityException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace(System.err);
 		}
 		return field;
 	}
@@ -280,7 +282,7 @@ public class Utils {
 			res = new String(variable.getBytes("ISO-8859-1"));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
-			//log.error("ISO-8859-1 charset not found", e);
+			e.printStackTrace(System.err);
 		}
 		return res;
 	}
