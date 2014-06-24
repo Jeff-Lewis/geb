@@ -4,23 +4,21 @@ import java.security.Principal;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.middleoffice.domain.ResultCode;
+import ru.prbb.middleoffice.rest.BaseController;
 
 @Controller
 public class LoginController
+		extends BaseController
 {
 
 	private static final ResultCode LOGIN = new ResultCode(Boolean.FALSE, "login");
 	private static final ResultCode LOGIN_ERROR = new ResultCode(Boolean.TRUE, "login_error");
-
-	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@RequestMapping(value = { "/login" }, method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
