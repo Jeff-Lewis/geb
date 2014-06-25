@@ -22,29 +22,34 @@ public abstract class BaseDaoImpl {
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	protected void storeSql(String sql, Query q) {
-		if (q.getParameters().isEmpty()) {
-			log.info(sql);
-		} else {
-			StringBuilder res = new StringBuilder(sql);
+		try {
+			if (q.getParameters().isEmpty()) {
+				log.info(sql);
+			} else {
+				StringBuilder res = new StringBuilder(sql);
+				List<Parameter<?>> ps = new ArrayList<>(q.getParameters());
+				Collections.sort(ps, new Comparator<Parameter<?>>() {
 
-			List<Parameter<?>> ps = new ArrayList<>(q.getParameters());
-			Collections.sort(ps, new Comparator<Parameter<?>>() {
-
-				@Override
-				public int compare(Parameter<?> o1, Parameter<?> o2) {
-					return o1.getPosition().compareTo(o2.getPosition());
+					@Override
+					public int compare(Parameter<?> o1, Parameter<?> o2) {
+						return o1.getPosition().compareTo(o2.getPosition());
+					}
+				});
+				res.append('(');
+				for (Parameter<?> p : ps) {
+					try {
+						Object pv = q.getParameterValue(p);
+						res.append(pv);
+						res.append(',');
+					} catch (IllegalStateException e) {
+						res.append("NULL,");
+					}
 				}
-			});
-
-			res.append('(');
-			for (Parameter<?> p : ps) {
-				Object pv = q.getParameterValue(p);
-				res.append(pv);
-				res.append(',');
+				res.setCharAt(res.length() - 1, ')');
+				log.info(res.toString());
 			}
-			res.setCharAt(res.length(), ')');
-
-			log.info(res.toString());
+		} catch (Exception e) {
+			log.error("storeSql", e);
 		}
 	}
 }

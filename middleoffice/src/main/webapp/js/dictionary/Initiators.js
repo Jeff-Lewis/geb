@@ -21,14 +21,13 @@
 	});
 
 	function addItem(self) {
-		menu.showModal(menu, 'dictionary/InitiatorsAdd');
+		showModal('dictionary/InitiatorsAdd');
 	}
 
 	function edtItem(self) {
 		if (sm.getCount() > 0) {
 			var id = sm.getSelected().data.id;
-			menu.showModal(menu, 'dictionary/InitiatorsEdit', 'rest/Initiators/' + id
-					+ '.do');
+			showModal('dictionary/InitiatorsEdit', 'rest/Initiators/' + id + '.do');
 		} else {
 			App.ui.message('Необходимо выбрать запись для редактирования!');
 		}

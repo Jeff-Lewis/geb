@@ -16,13 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.SendingItem;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * @author RBr
  * 
  */
 @Service
-public class SendingDaoImpl extends BrokersDaoImpl implements SendingDao
+public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 {
 	@Autowired
 	private EntityManager em;
