@@ -13,6 +13,7 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author ruslan
@@ -21,12 +22,17 @@ public abstract class BaseDaoImpl {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
+	@Autowired
+	private UserHistory uh;
+
 	protected void storeSql(String sql, Query q) {
+		storeSql(sql, q, true);
+	}
+
+	protected void storeSql(String sql, Query q, boolean isPutHist) {
 		try {
-			if (q.getParameters().isEmpty()) {
-				log.info(sql);
-			} else {
-				StringBuilder res = new StringBuilder(sql);
+			StringBuilder res = new StringBuilder(sql);
+			if (!q.getParameters().isEmpty()) {
 				List<Parameter<?>> ps = new ArrayList<>(q.getParameters());
 				Collections.sort(ps, new Comparator<Parameter<?>>() {
 
@@ -46,10 +52,16 @@ public abstract class BaseDaoImpl {
 					}
 				}
 				res.setCharAt(res.length() - 1, ')');
-				log.info(res.toString());
 			}
+
+			String msg = res.toString();
+			log.info(msg);
+
+			if (isPutHist && !sql.contains("WebGet"))
+				uh.putHist(msg);
 		} catch (Exception e) {
 			log.error("storeSql", e);
 		}
 	}
+
 }

@@ -3,12 +3,10 @@
  */
 package ru.prbb.analytics.repo;
 
-import java.sql.Date;
 import java.util.List;
 
 import ru.prbb.analytics.domain.LogContactItem;
 import ru.prbb.analytics.domain.LogMessagesItem;
-import ru.prbb.analytics.domain.LogUserActionItem;
 import ru.prbb.analytics.domain.SubscriptionItem;
 
 /**
@@ -39,12 +37,5 @@ public interface LogDao {
 	 * @return
 	 */
 	List<SubscriptionItem> getLogSubscription();
-
-	/**
-	 * @param begin
-	 * @param end
-	 * @return
-	 */
-	List<LogUserActionItem> getLogUserActions(Date begin, Date end);
 
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.LogUserActionItem;
-import ru.prbb.analytics.repo.LogDao;
+import ru.prbb.analytics.repo.UserHistory;
 import ru.prbb.analytics.rest.BaseController;
 
 /**
@@ -26,7 +26,7 @@ public class LogUserActionsController
 {
 
 	@Autowired
-	private LogDao dao;
+	private UserHistory uh;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
@@ -35,6 +35,6 @@ public class LogUserActionsController
 			@RequestParam String end)
 	{
 		log.info("POST LogUserActions: begin={}, end={}", begin, end);
-		return dao.getLogUserActions(Utils.parseDate(begin), Utils.parseDate(end));
+		return uh.getHistory(Utils.parseDate(begin), Utils.parseDate(end));
 	}
 }
