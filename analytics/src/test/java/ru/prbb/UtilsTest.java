@@ -4,6 +4,7 @@
 package ru.prbb;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -86,6 +87,20 @@ public class UtilsTest extends Assert {
 		java.sql.Date expected = new java.sql.Date(date.getTime());
 		java.sql.Date actual = Utils.parseDate(sdf.format(date));
 		assertEquals(expected.toString(), actual.toString());
+	}
+
+	/**
+	 * Test method for {@link ru.prbb.Utils#parseDateTime(java.lang.String)}.
+	 */
+	@Test
+	public void testParseDateTime() {
+		assertEquals(null, Utils.parseDateTime(null));
+		assertEquals(null, Utils.parseDateTime(""));
+		assertEquals(null, Utils.parseDateTime("12345"));
+
+		Timestamp expected = Timestamp.valueOf("2014-01-01 20:02:22");
+		assertEquals(expected, Utils.parseDateTime("2014-01-01 20:02:22"));
+		assertEquals(expected, Utils.parseDateTime("2014-01-01T20:02:22"));
 	}
 
 	/**

@@ -4,7 +4,9 @@
 (function() {
 
 	var _startD = Ext.id();
+	var _startT = Ext.id();
 	var _stopD = Ext.id();
+	var _stopT = Ext.id();
 
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
@@ -16,12 +18,14 @@
 	});
 
 	function showLog() {
-		var _start = App.util.Format.dateYMD(Ext.getCmp(_startD).getValue());
-		var _stop = App.util.Format.dateYMD(Ext.getCmp(_stopD).getValue());
+		var _start = App.util.Format.dateYMD(Ext.getCmp(_startD).getValue()) + 'T'
+		        + Ext.getCmp(_startT).getValue() + ':00';
+		var _stop = App.util.Format.dateYMD(Ext.getCmp(_stopD).getValue()) + 'T'
+		        + Ext.getCmp(_stopT).getValue() + ':59';
 		info.reload({
 			params : {
-				begin : _start,
-				end : _stop
+			    begin : _start,
+			    end : _stop
 			},
 		});
 	}
@@ -54,6 +58,13 @@
 				width : 100,
 				value : new Date()
 			}, {
+				id : _startT,
+				xtype : 'timefield',
+				allowBlank : false,
+				width : 60,
+				format : 'H:i',
+				value : '00:00'
+			}, {
 				xtype : 'label',
 				style : 'font-weight: bold;',
 				margins : '2 5 0 5',
@@ -65,6 +76,13 @@
 				allowBlank : false,
 				width : 100,
 				value : new Date()
+			}, {
+				id : _stopT,
+				xtype : 'timefield',
+				allowBlank : false,
+				width : 60,
+				format : 'H:i',
+				value : '23:59'
 			} ],
 
 			buttonAlign : 'left',

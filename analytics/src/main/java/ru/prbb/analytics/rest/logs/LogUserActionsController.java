@@ -35,6 +35,6 @@ public class LogUserActionsController
 			@RequestParam String end)
 	{
 		log.info("POST LogUserActions: begin={}, end={}", begin, end);
-		return uh.getHistory(Utils.parseDate(begin), Utils.parseDate(end));
+		return uh.getHistory(Utils.parseDateTime(begin), Utils.parseDateTime(end));
 	}
 }

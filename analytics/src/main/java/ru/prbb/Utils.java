@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -123,7 +124,26 @@ public class Utils {
 				return new Date(time);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace(System.err);
+				System.err.println(e);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Декодирует строку даты для SQL
+	 * 
+	 * @param date
+	 *            строка даты в формате yyyy-MM-ddThh:mm:ss
+	 * @return null при некорректном входе
+	 */
+	public static Timestamp parseDateTime(String date) {
+		if (isNotEmpty(date)) {
+			try {
+				return Timestamp.valueOf(date.replace('T', ' '));
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				System.err.println(e);
 			}
 		}
 		return null;
@@ -248,7 +268,7 @@ public class Utils {
 			return column.name();
 		} catch (NoSuchFieldException | SecurityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(System.err);
+			System.err.println(e);
 		}
 		return field;
 	}
@@ -282,7 +302,7 @@ public class Utils {
 			res = new String(variable.getBytes("ISO-8859-1"));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(System.err);
+			System.err.println(e);
 		}
 		return res;
 	}

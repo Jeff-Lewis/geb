@@ -1,6 +1,6 @@
 package ru.prbb.analytics.repo;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,9 +33,7 @@ public class UserHistoryImpl implements UserHistory {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<LogUserActionItem> getHistory(Date date_b, Date date_e) {
-		date_e.setTime(date_e.getTime() + (24 * 60 * 60 * 1000));
-		
+	public List<LogUserActionItem> getHistory(Timestamp date_b, Timestamp date_e) {
 		String sql = "{call dbo.WebGet_SelectHist_sp ?, ?}";
 		Query q = em.createNativeQuery(sql, LogUserActionItem.class)
 				.setParameter(1, date_b)

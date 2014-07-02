@@ -1,6 +1,6 @@
 package ru.prbb.analytics.repo;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import ru.prbb.analytics.domain.LogUserActionItem;
@@ -10,7 +10,7 @@ import ru.prbb.analytics.domain.LogUserActionItem;
  */
 public interface UserHistory {
 
-	List<LogUserActionItem> getHistory(Date date_b, Date date_e);
+	List<LogUserActionItem> getHistory(Timestamp date_b, Timestamp date_e);
 
 	int putHist(String command);
 
