@@ -239,6 +239,16 @@ public class CompaniesController
 		return Result.SUCCESS;
 	}
 
+	@RequestMapping(value = "/{id}/HistData", method = RequestMethod.DELETE, produces = "application/json")
+	@ResponseBody
+	public Result deleteHistData(
+			@PathVariable("id") Long id) {
+		log.info("DEL Companies/HistData: id={}", id);
+		dao.delHistData(id);
+		return Result.SUCCESS;
+		
+	}
+
 	@RequestMapping(value = "/{id}/Files", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<CompaniesFileItem> getFiles(

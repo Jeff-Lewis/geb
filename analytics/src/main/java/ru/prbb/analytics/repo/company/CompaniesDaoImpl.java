@@ -374,4 +374,15 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		storeSql(sql, q);
 		return q.executeUpdate();
 	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int delHistData(Long id_sec) {
+		String sql = "{call dbo.anca_WebSet_dhist_params_values_sp ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id_sec);
+		storeSql(sql, q);
+		return q.executeUpdate();
+	}
+
 }

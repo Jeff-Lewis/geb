@@ -176,4 +176,10 @@ public interface CompaniesDao {
 	 */
 	int fileUpload(Long id, String name, String type, byte[] content);
 
+	/**
+	 * @param id
+	 * @return
+	 */
+	int delHistData(Long id);
+
 }

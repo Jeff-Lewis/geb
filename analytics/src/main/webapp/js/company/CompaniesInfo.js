@@ -423,6 +423,24 @@
 		});
 	}
 
+	function delHistData(self) {
+		Ext.Ajax.request({
+			method : 'DELETE',
+			url : 'rest/Companies/' + id_sec + '/HistData.do',
+			timeout : 1000000000,
+			waitMsg : 'Расчёт модели.',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					refresh(id_sec);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+    }
+
 	var leftInfoForm = new Ext.form.FormPanel({
 		region : 'west',
 		title : 'Основная информация',
@@ -810,6 +828,9 @@
 		}, {
 			text : 'Построить модель',
 			handler : buildModel
+		}, {
+			text : 'Удалить исторические данные',
+			handler : delHistData
 		} ],
 
 		items : [ {
