@@ -18,6 +18,8 @@ import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewDealsItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
+import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
+import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.dictionary.InitiatorsDao;
 import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewDealsDao;
@@ -44,16 +46,24 @@ public class ViewDealsController
 	private BrokerAccountsDao daoAccounts;
 	@Autowired
 	private EquitiesDao daoEquities;
+	@Autowired
+	private ClientsDao daoClients;
+	@Autowired
+	private FundsDao daoFunds;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public List<ViewDealsItem> postShow(
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
-			@RequestParam Long ticker)
+			@RequestParam Long ticker,
+			@RequestParam Long client,
+			@RequestParam Long funds,
+			@RequestParam Long initiator)
 	{
-		log.info("POST ViewDeals: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
-		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
+		log.info("POST ViewDeals: dateBegin={}, dateEnd={}, ticker={}, client={}, funds={}, initiator={}",
+				Utils.toArray(dateBegin, dateEnd, ticker, client, funds, initiator));
+		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
@@ -61,11 +71,14 @@ public class ViewDealsController
 	public byte[] getExport(HttpServletResponse response,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
-			@RequestParam Long ticker)
+			@RequestParam Long ticker,
+			@RequestParam Long client,
+			@RequestParam Long funds,
+			@RequestParam Long initiator)
 	{
 		log.info("POST ViewDeals/Export: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
 		List<ViewDealsItem> list =
-				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
+				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator);
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Список сделок");
@@ -166,12 +179,12 @@ public class ViewDealsController
 		return daoAccounts.findCombo(query);
 	}
 
-	@RequestMapping(value = "/Portfolio", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(value = "/InvestmentPortfolio", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboPortfolio(
+	public List<SimpleItem> comboInvestmentPortfolio(
 			@RequestParam(required = false) String query)
 	{
-		log.info("COMBO ViewDeals: Portfolio='{}'", query);
+		log.info("COMBO ViewDeals: InvestmentPortfolio='{}'", query);
 		return daoEquities.findComboInvestmentPortfolio(query);
 	}
 
@@ -182,5 +195,23 @@ public class ViewDealsController
 	{
 		log.info("COMBO ViewDeals: Tickers='{}'", query);
 		return daoEquities.findComboPortfolio(query);
+	}
+
+	@RequestMapping(value = "/Client", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboFilterClient(
+			@RequestParam(required = false) String query)
+	{
+		log.info("COMBO ViewDeals: Client='{}'", query);
+		return daoClients.findCombo(query);
+	}
+
+	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboFunds(
+			@RequestParam(required = false) String query)
+	{
+		log.info("COMBO ViewDeals: Funds='{}'", query);
+		return daoFunds.findCombo(query);
 	}
 }

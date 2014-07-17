@@ -6,6 +6,9 @@
 	var _date1 = Ext.id();
 	var _date2 = Ext.id();
 	var _ticker = Ext.id();
+	var _client = Ext.id();
+	var _funds = Ext.id();
+	var _initiator = Ext.id();
 
 	var deals = new Ext.data.JsonStore({
 		autoDestroy : true,
@@ -32,7 +35,10 @@
 			params : {
 				dateBegin : App.util.Format.dateYMD(fd),
 				dateEnd : App.util.Format.dateYMD(td),
-				ticker : Ext.getCmp(_ticker).getValue()
+				ticker : Ext.getCmp(_ticker).getValue(),
+				client : Ext.getCmp(_client).getValue(),
+				funds : Ext.getCmp(_funds).getValue(),
+				initiator : Ext.getCmp(_initiator).getValue()
 			}
 		});
 	}
@@ -189,7 +195,7 @@
 	var editorPortfolio = new Ext.form.ComboBox({
 		store : new Ext.data.JsonStore({
 			autoDestroy : true,
-			url : 'rest/ViewDeals/Portfolio.do',
+			url : 'rest/ViewDeals/InvestmentPortfolio.do',
 			// root : 'info',
 			fields : [ 'name' ],
 			sortInfo : {
@@ -212,10 +218,16 @@
 			return;
 		}
 
-		window.open('rest/ViewDeals/Export.do?' + 'dateBegin='
-				+ App.util.Format.dateYMD(fd) + '&dateEnd='
-				+ App.util.Format.dateYMD(td) + '&ticker='
-				+ Ext.getCmp(_ticker).getValue());
+		var params = {
+		    dateBegin : App.util.Format.dateYMD(fd),
+		    dateEnd : App.util.Format.dateYMD(td),
+		    ticker : Ext.getCmp(_ticker).getValue(),
+		    client : Ext.getCmp(_client).getValue(),
+		    funds : Ext.getCmp(_funds).getValue(),
+		    initiator : Ext.getCmp(_initiator).getValue()
+		};
+
+		window.open('rest/ViewDeals/Export.do?' + Ext.urlEncode(params));
 	}
 
 	function selectCheck(This, checked) {
@@ -289,6 +301,105 @@
 			width : 25,
 			handler : function() {
 				Ext.getCmp(_ticker).clearValue();
+			}
+		}, {
+			xtype : 'label',
+			style : 'font-weight: bold;',
+			margins : '2 5 0 25',
+			text : 'Клиент:'
+		}, {
+			id : _client,
+			xtype : 'combo',
+			width : 100,
+			fieldLabel : 'Клиент',
+			valueField : 'id',
+			displayField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'rest/ViewDeals/Client.do',
+				// root : 'info',
+				fields : [ 'id', 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			triggerAction : 'all',
+			minChars : 2,
+			typeAhead : false
+		}, {
+			xtype : 'button',
+			text : 'Х',
+			margins : '0 5',
+			width : 25,
+			handler : function() {
+				Ext.getCmp(_client).clearValue();
+			}
+		}, {
+			xtype : 'label',
+			style : 'font-weight: bold;',
+			margins : '2 5 0 5',
+			text : 'Фонд:'
+		}, {
+			id : _funds,
+			xtype : 'combo',
+			width : 100,
+			fieldLabel : 'Фонд',
+			valueField : 'id',
+			displayField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'rest/ViewDeals/Funds.do',
+				// root : 'info',
+				fields : [ 'id', 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			triggerAction : 'all',
+			minChars : 2,
+			typeAhead : false
+		}, {
+			xtype : 'button',
+			text : 'Х',
+			margins : '0 5',
+			width : 25,
+			handler : function() {
+				Ext.getCmp(_funds).clearValue();
+			}
+		}, {
+			xtype : 'label',
+			style : 'font-weight: bold;',
+			margins : '2 5 0 5',
+			text : 'Инициатор:'
+		}, {
+			id : _initiator,
+			xtype : 'combo',
+			width : 100,
+			fieldLabel : 'Инициатор',
+			valueField : 'id',
+			displayField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'rest/ViewDeals/Initiator.do',
+				// root : 'info',
+				fields : [ 'id', 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			triggerAction : 'all',
+			minChars : 2,
+			typeAhead : false
+		}, {
+			xtype : 'button',
+			text : 'Х',
+			margins : '0 5',
+			width : 25,
+			handler : function() {
+				Ext.getCmp(_initiator).clearValue();
 			}
 		} ],
 
