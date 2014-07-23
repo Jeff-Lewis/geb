@@ -116,7 +116,7 @@ public class RequestBDHDaoImpl extends BaseDaoImpl implements RequestBDHDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findParams(String query) {
-		String sql = "select code from multy_request_params_v";
+		String sql = "select code from dbo.multy_request_params_v";
 		Query q = em.createNativeQuery(sql);
 		return Utils.toSimpleItem(q.getResultList());
 	}

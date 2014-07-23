@@ -31,7 +31,7 @@ public class NotEnoughQuotationsDaoImpl implements NotEnoughQuotationsDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<NotEnoughQuotationsItem> show() {
-		String sql = "select * from mo_WebGet_QuotesNotExist_v";
+		String sql = "select * from dbo.mo_WebGet_QuotesNotExist_v";
 		Query q = em.createNativeQuery(sql, NotEnoughQuotationsItem.class);
 		return q.getResultList();
 	}

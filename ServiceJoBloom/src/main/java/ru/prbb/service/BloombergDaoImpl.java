@@ -177,7 +177,7 @@ public class BloombergDaoImpl implements BloombergDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<String> getSecForBonds() {
-		String sql = "select security_code from mo_job_UpdateBondQuotes_v";
+		String sql = "select security_code from dbo.mo_job_UpdateBondQuotes_v";
 		Query q = em.createNativeQuery(sql);
 		return q.getResultList();
 	}

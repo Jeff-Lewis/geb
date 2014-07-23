@@ -115,7 +115,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findComboPhone(String query) {
-		String sql = "select value from ncontacts_request_v where type != 'E-mail'";
+		String sql = "select value from dbo.ncontacts_request_v where type != 'E-mail'";
 		Query q;
 		if (Utils.isEmpty(query)) {
 			q = em.createNativeQuery(sql);
@@ -130,7 +130,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SimpleItem> findComboMail(String query) {
-		String sql = "select value from ncontacts_request_v where type = 'E-mail'";
+		String sql = "select value from dbo.ncontacts_request_v where type = 'E-mail'";
 		Query q;
 		if (Utils.isEmpty(query)) {
 			q = em.createNativeQuery(sql);

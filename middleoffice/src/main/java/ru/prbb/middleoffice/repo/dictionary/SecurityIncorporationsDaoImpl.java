@@ -42,7 +42,7 @@ public class SecurityIncorporationsDaoImpl extends BaseDaoImpl implements Securi
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public SecurityIncorporationItem findById(Long id) {
-		String sql = "select * from mo_WebGet_SecurityIncorporations_v where id = ?";
+		String sql = "select * from dbo.mo_WebGet_SecurityIncorporations_v where id = ?";
 		Query q = em.createNativeQuery(sql, SecurityIncorporationItem.class)
 				.setParameter(1, id);
 		return (SecurityIncorporationItem) q.getSingleResult();

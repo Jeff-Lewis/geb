@@ -223,7 +223,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findComboEps(String query) {
-		String sql = "select id, name from anca_WebGet_ajaxEPSparams_v";
+		String sql = "select id, name from dbo.anca_WebGet_ajaxEPSparams_v";
 		Query q;
 		if (Utils.isEmpty(query)) {
 			q = em.createNativeQuery(sql, SimpleItem.class);
@@ -268,8 +268,8 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public CompaniesFileItem fileGetById(Long id, Long id_doc) {
-		String sql = "select id_doc, file_type, file_name, insert_date"
-				+ " from dbo.sec_docs where id_doc=?";
+		String sql = "select id_doc, file_type, file_name, insert_date from dbo.sec_docs"
+				+ " where id_doc=?";
 		Query q = em.createNativeQuery(sql, CompaniesFileItem.class)
 				.setParameter(1, id_doc);
 		return (CompaniesFileItem) q.getSingleResult();

@@ -118,7 +118,7 @@ public class LoadATRDaoImpl extends BaseDaoImpl implements LoadATRDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> getCalendar(String query) {
-		String sql = "select calendar_id as id, name from calendar_type";
+		String sql = "select calendar_id as id, name from dbo.calendar_type";
 		Query q;
 		if (Utils.isEmpty(query)) {
 			q = em.createNativeQuery(sql, SimpleItem.class);

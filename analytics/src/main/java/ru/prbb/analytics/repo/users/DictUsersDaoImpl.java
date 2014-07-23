@@ -30,7 +30,7 @@ public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DictUserItem> findAll() {
-		String sql = "select user_id, user_login, user_name, user_email from users_v";
+		String sql = "select user_id, user_login, user_name, user_email from dbo.users_v";
 		Query q = em.createNativeQuery(sql, DictUserItem.class);
 		return q.getResultList();
 	}
@@ -38,7 +38,7 @@ public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public DictUserItem findById(Long id) {
-		String sql = "select user_id, user_login, user_name, user_email from users_v where user_id=?";
+		String sql = "select user_id, user_login, user_name, user_email from dbo.users_v where user_id=?";
 		Query q = em.createNativeQuery(sql, DictUserItem.class)
 				.setParameter(1, id);
 		return (DictUserItem) q.getSingleResult();

@@ -31,7 +31,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DictGroupItem> findAll() {
-		String sql = "select group_id, group_name, group_comment from groups_v";
+		String sql = "select group_id, group_name, group_comment from dbo.groups_v";
 		Query q = em.createNativeQuery(sql, DictGroupItem.class);
 		return q.getResultList();
 	}
@@ -39,7 +39,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public DictGroupItem findById(Long id) {
-		String sql = "select group_id, group_name, group_comment from groups_v where group_id=?";
+		String sql = "select group_id, group_name, group_comment from dbo.groups_v where group_id=?";
 		Query q = em.createNativeQuery(sql, DictGroupItem.class)
 				.setParameter(1, id);
 		return (DictGroupItem) q.getSingleResult();

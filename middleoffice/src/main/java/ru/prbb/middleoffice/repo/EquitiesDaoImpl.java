@@ -32,7 +32,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<PortfolioItem> findAllPortfolio() {
-		String sql = "select id_sec, ticker, deal_name, date_insert from portfolio_equity_v";
+		String sql = "select id_sec, ticker, deal_name, date_insert from dbo.portfolio_equity_v";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
@@ -92,7 +92,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<ViewFuturesItem> findAllFutures() {
-		String sql = "select * from portfolio_cmdt_v";
+		String sql = "select * from dbo.portfolio_cmdt_v";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
