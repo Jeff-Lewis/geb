@@ -5,6 +5,7 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -17,8 +18,11 @@ public class NewParamItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name = "field_mnemonic")
 	private String code;
+	@Column(name = "field_id")
 	private String blmId;
+	@Column(name = "description")
 	private String name;
 
 	/**

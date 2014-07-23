@@ -38,8 +38,8 @@ public class NewParamDaoImpl extends BaseDaoImpl implements NewParamDao
 	public NewParamItem setup(String code) {
 		NewParamItem res = null;
 		try {
-			String sql = "select field_mnemonic as code, field_id as blmId, description as name" +
-					" from bloomberg_dl_fields where field_mnemonic=?";
+			String sql = "select field_mnemonic, field_id, description from dbo.bloomberg_dl_fields"
+					+ " where field_mnemonic=?";
 			Query q = em.createNativeQuery(sql, NewParamItem.class)
 					.setParameter(1, code);
 			res = (NewParamItem) q.getSingleResult();

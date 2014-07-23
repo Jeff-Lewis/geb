@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
@@ -20,7 +21,9 @@ public class BrokersForecastDateItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name = "value")
 	private Timestamp date;
+	@Column(name = "display")
 	private String value;
 
 	/**

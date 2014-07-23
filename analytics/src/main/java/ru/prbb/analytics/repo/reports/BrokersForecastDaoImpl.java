@@ -71,8 +71,7 @@ public class BrokersForecastDaoImpl implements BrokersForecastDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<BrokersForecastDateItem> findBrokerDates() {
-		String sql = "select value as 'date', display as 'value'" +
-				" from dbo.anca_WebGet_ajaxBrokerDates_v" +
+		String sql = "select value, display from dbo.anca_WebGet_ajaxBrokerDates_v" +
 				" order by value desc";
 		Query q = em.createNativeQuery(sql, BrokersForecastDateItem.class);
 		return q.getResultList();
