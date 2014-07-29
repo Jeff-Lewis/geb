@@ -104,4 +104,15 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 		return q.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int executeDelete(Date begin_date, Long id_sec) {
+		String sql = "{call dbo.mo_dFinResAndRests_sp ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, begin_date)
+				.setParameter(2, id_sec);
+		storeSql(sql, q);
+		return q.executeUpdate();
+	}
+
 }

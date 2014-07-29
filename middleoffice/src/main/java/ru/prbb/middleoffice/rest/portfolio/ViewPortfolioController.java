@@ -54,6 +54,19 @@ public class ViewPortfolioController
 
 	private Boolean isBusyCalc = Boolean.FALSE;
 
+	@RequestMapping(value = "/Delete", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	public Result postDelete(
+			@RequestParam String date,
+			@RequestParam Long security)
+	{
+		log.info("POST ViewPortfolio/Delete: date={}, security={}", date, security);
+
+		dao.executeDelete(Utils.parseDate(date), security);
+
+		return Result.SUCCESS;
+	}
+
 	@RequestMapping(value = "/Calculate", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Result postCalculate(

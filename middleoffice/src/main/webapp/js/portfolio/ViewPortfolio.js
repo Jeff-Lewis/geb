@@ -126,6 +126,83 @@
 		window.open(url);
 	}
 
+	function deleteFinResAndRests() {
+		var fd = Ext.getCmp(_date).getValue();
+		var fy = new Date().add(Date.DAY, -1);
+		var fs = futureSelect.getValue();
+
+		if (!fd && fs) {
+			App.ui.error('Необходимо выбрать дату!');
+			return;
+		}
+
+		if (fd && fs) {
+			var fn = futureSelect.getStore().getById(fs).data.name;
+			var msg = 'Будут удалены остатки и финансовые результаты<br>с ' + fd.format('d.m.Y')
+			        + ' по ' + fy.format('d.m.Y') + '<br>по инструменту: ' + fn + '.<br>Удалить?';
+			Ext.MessageBox.confirm('Внимание', msg, function(btn) {
+				if (btn == 'no') {
+					return;
+				}
+				ajaxDeleteFRR(fd, fs);
+			});
+			return;
+		}
+
+		if (fd) {
+			var msg = 'Будут удалены остатки и финансовые результаты<br>с ' + fd.format('d.m.Y')
+			        + ' по ' + fy.format('d.m.Y') + '<br>по ВСЕМ ИНСТРУМЕНТАМ.<br>Удалить?';
+			Ext.MessageBox.confirm('Внимание', msg, function(btn) {
+				if (btn == 'no') {
+					return;
+				}
+
+				var msg = 'Вы действительно хотите<br>'
+				        + 'удалить остатки и финансовые результаты<br>ПО ВСЕМ ИНСТРУМЕНТАМ?';
+				Ext.MessageBox.confirm('Внимание', msg, function(btn) {
+					if (btn == 'no') {
+						return;
+					}
+					ajaxDeleteFRR(fd, null);
+				});
+
+			});
+			return;
+		}
+
+		var msg = 'Будут удалены ВСЕ остатки и финансовые результаты.<br>Удалить?';
+		Ext.MessageBox.confirm('Внимание', msg, function(btn) {
+			if (btn == 'no') {
+				return;
+			}
+
+			var msg = 'Вы действительно хотите удалить<br>ВСЕ остатки и финансовые результаты?';
+			Ext.MessageBox.confirm('Внимание', msg, function(btn) {
+				if (btn == 'no') {
+					return;
+				}
+				ajaxDeleteFRR(null, null);
+			});
+		});
+
+	}
+	function ajaxDeleteFRR(date, id_sec) {
+		Ext.Ajax.request({
+		    url : 'rest/ViewPortfolio/Delete.do',
+		    params : {
+		        date : App.util.Format.dateYMD(date),
+		        security : futureSelect.getValue()
+		    },
+		    timeout : 2000,
+		    success : function(xhr) {
+		    	App.ui.message('Данные удалены.<br>Рекомендуется пересчитать портфель.');
+		    },
+		    failure : function() {
+			    App.ui.error('Сервер недоступен');
+		    }
+		});
+    }
+
 	var intervalID = window.setInterval(updateCalc, 2000);
 
 	return new Ext.grid.GridPanel({
@@ -207,6 +284,10 @@
 	            text : 'Выгрузить в Excel',
 	            width : 100,
 	            handler : portfolioExport
+	        }, ' ', {
+	            text : 'Удалить остатки и финрез',
+	            width : 120,
+	            handler : deleteFinResAndRests
 	        } ]
 	    },
 

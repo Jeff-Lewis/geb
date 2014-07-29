@@ -32,8 +32,15 @@ public interface ViewPortfolioDao {
 	/**
 	 * @param date
 	 * @param security
-	 * @return 
+	 * @return
 	 */
 	int executeCalc(Date date, Long security);
+
+	/**
+	 * @param date
+	 * @param security
+	 * @return
+	 */
+	int executeDelete(Date date, Long security);
 
 }
