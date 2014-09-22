@@ -18,6 +18,7 @@ import ru.prbb.middleoffice.domain.ViewDetailedFinrezItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
+import ru.prbb.middleoffice.repo.dictionary.InitiatorsDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewDetailedFinrezDao;
 import ru.prbb.middleoffice.rest.BaseController;
 
@@ -40,6 +41,8 @@ public class ViewDetailedFinrezController
 	private FundsDao daoFunds;
 	@Autowired
 	private SecuritiesDao daoSecurities;
+	@Autowired
+	private InitiatorsDao daoInitiators;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
@@ -48,11 +51,12 @@ public class ViewDetailedFinrezController
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long client,
-			@RequestParam Long fund)
+			@RequestParam Long fund,
+			@RequestParam Long initiator)
 	{
-		log.info("POST ViewDetailedFinrez: security={}, dateBegin={}, dateEnd={}, client={}, fund={}",
-				Utils.toArray(security, dateBegin, dateEnd, client, fund));
-		return dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund);
+		log.info("POST ViewDetailedFinrez: security={}, dateBegin={}, dateEnd={}, client={}, fund={}, initiator={}",
+				Utils.toArray(security, dateBegin, dateEnd, client, fund, initiator));
+		return dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund, initiator);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
@@ -62,12 +66,13 @@ public class ViewDetailedFinrezController
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long client,
-			@RequestParam Long fund)
+			@RequestParam Long fund,
+			@RequestParam Long initiator)
 	{
-		log.info("POST ViewDetailedFinrez/Export: security={}, dateBegin={}, dateEnd={}, client={}, fund={}",
+		log.info("POST ViewDetailedFinrez/Export: security={}, dateBegin={}, dateEnd={}, client={}, fund={}, initiator={}",
 				Utils.toArray(security, dateBegin, dateEnd, client, fund));
 		List<ViewDetailedFinrezItem> list =
-				dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund);
+				dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund, initiator);
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Текущий финрез");
@@ -91,7 +96,8 @@ public class ViewDetailedFinrezController
 				"Currency",
 				"Funding",
 				"Date_insert",
-				"Account");
+				"Account",
+				"Initiator");
 		for (ViewDetailedFinrezItem item : list) {
 			exp.addRow(
 					item.getClient(),
@@ -112,7 +118,8 @@ public class ViewDetailedFinrezController
 					item.getCurrency(),
 					item.getFunding(),
 					item.getDate_insert(),
-					item.getAccount());
+					item.getAccount(),
+					item.getInitiator());
 		}
 
 		String name = "Finrez.ods";
@@ -146,5 +153,14 @@ public class ViewDetailedFinrezController
 	{
 		log.info("COMBO ViewDetailedFinrez: Securities='{}'", query);
 		return daoSecurities.findCombo(query);
+	}
+
+	@RequestMapping(value = "/Initiator", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboInitiator(
+			@RequestParam(required = false) String query)
+	{
+		log.info("COMBO ViewDetailedFinrez: Initiator='{}'", query);
+		return daoInitiators.findCombo(query);
 	}
 }

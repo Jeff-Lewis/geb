@@ -23,8 +23,9 @@ public interface ViewDetailedFinrezDao {
 	 * @param end
 	 * @param client
 	 * @param fund
+	 * @param initiator
 	 * @return
 	 */
-	List<ViewDetailedFinrezItem> executeSelect(Long security, Date begin, Date end, Long client, Long fund);
+	List<ViewDetailedFinrezItem> executeSelect(Long security, Date begin, Date end, Long client, Long fund, Long initiator);
 
 }

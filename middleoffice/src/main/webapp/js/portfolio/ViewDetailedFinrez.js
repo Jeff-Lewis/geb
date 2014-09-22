@@ -8,6 +8,7 @@
 	var _client = Ext.id();
 	var _fund = Ext.id();
 	var _security = Ext.id();
+	var _initiator = Ext.id();
 
 	var info = new Ext.data.JsonStore({
 		autoDestroy : true,
@@ -19,37 +20,34 @@
 				'trade_date', 'operation', 'realised_profit',
 				'initial_quantity', 'deal_quantity', 'avg_price',
 				'avg_price_usd', 'deal_price', 'currency', 'funding',
-				'date_insert', 'account' ],
+				'date_insert', 'account', 'initiator' ],
 		listeners : App.ui.listenersJsonStore()
 	});
 
-	function reload() {
+	function getParams() {
 		var _db = Ext.getCmp(_dateBegin).getValue();
 		var _de = Ext.getCmp(_dateEnd).getValue();
 
+		var params = {
+		    dateBegin : App.util.Format.dateYMD(_db),
+		    dateEnd : App.util.Format.dateYMD(_de),
+		    client : Ext.getCmp(_client).getValue(),
+		    fund : Ext.getCmp(_fund).getValue(),
+		    security : Ext.getCmp(_security).getValue(),
+		    initiator : Ext.getCmp(_initiator).getValue()
+		};
+
+		return params;
+    }
+
+	function reload() {
 		info.reload({
-			params : {
-				dateBegin : App.util.Format.dateYMD(_db),
-				dateEnd : App.util.Format.dateYMD(_de),
-				client : Ext.getCmp(_client).getValue(),
-				fund : Ext.getCmp(_fund).getValue(),
-				security : Ext.getCmp(_security).getValue()
-			}
+			params : getParams()
 		});
 	}
 
 	function exportExcel() {
-		var _db = App.util.Format.dateYMD(Ext.getCmp(_dateBegin).getValue());
-		var _de = App.util.Format.dateYMD(Ext.getCmp(_dateEnd).getValue());
-		var _c = Ext.getCmp(_client).getValue();
-		var _f = Ext.getCmp(_fund).getValue();
-		var _s = Ext.getCmp(_security).getValue();
-
-		var url = 'rest/ViewDetailedFinrez/Export.do?dateBegin=' + _db
-				+ '&dateEnd=' + _de + '&client=' + _c + '&fund=' + _f
-				+ '&security=' + _s;
-
-		window.open(url);
+		window.open('rest/ViewDetailedFinrez/Export.do?' + Ext.urlEncode(getParams()));
 	}
 
 	var filter = new Ext.Panel({
@@ -173,6 +171,39 @@
 			handler : function() {
 				Ext.getCmp(_security).clearValue();
 			}
+		}, {
+			xtype : 'label',
+			style : 'font-weight: bold;',
+			margins : '2 5 0 5',
+			text : 'Инициатор:'
+		}, {
+			id : _initiator,
+			xtype : 'combo',
+			width : 100,
+			fieldLabel : 'Инициатор',
+			valueField : 'id',
+			displayField : 'name',
+			store : new Ext.data.JsonStore({
+				autoDestroy : true,
+				url : 'rest/ViewDetailedFinrez/Initiator.do',
+				// root : 'info',
+				fields : [ 'id', 'name' ],
+				sortInfo : {
+					field : 'name'
+				}
+			}),
+			loadingText : 'Поиск...',
+			triggerAction : 'all',
+			minChars : 2,
+			typeAhead : false
+		}, {
+			xtype : 'button',
+			text : 'Х',
+			margins : '0 5',
+			width : 25,
+			handler : function() {
+				Ext.getCmp(_initiator).clearValue();
+			}
 		} ],
 
 		buttonAlign : 'left',
@@ -267,6 +298,9 @@
 		}, {
 			header : 'Account',
 			dataIndex : 'account'
+		}, {
+			header : 'Initiator',
+			dataIndex : 'initiator'
 		} ],
 
 		viewConfig : {

@@ -59,6 +59,8 @@ public class ViewDetailedFinrezItem implements Serializable {
 	private String date_insert;
 	@Column(name = "Account")
 	private String account;
+	@Column(name = "Initiator")
+	private String initiator;
 
 	/**
 	 * @return the client
@@ -358,5 +360,15 @@ public class ViewDetailedFinrezItem implements Serializable {
 	 */
 	public void setAccount(String account) {
 		this.account = account;
+	}
+
+	
+	public String getInitiator() {
+		return initiator;
+	}
+
+	
+	public void setInitiator(String initiator) {
+		this.initiator = initiator;
 	}
 }
