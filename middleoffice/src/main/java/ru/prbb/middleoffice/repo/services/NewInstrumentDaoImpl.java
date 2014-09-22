@@ -34,7 +34,8 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		String sql = "{call dbo.put_equity_proc "
 				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
 				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
+				+ " ?, ?}";
 		Query q = em.createNativeQuery(sql);
 		int i = 1;
 		q.setParameter(i++, values.get("ID_BB_GLOBAL"));
@@ -68,6 +69,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		q.setParameter(i++, values.get("EARN_EST_CRNCY"));
 		q.setParameter(i++, values.get("EQY_FUND_TICKER"));
 		q.setParameter(i++, values.get("EQY_FISCAL_YR_END"));
+		q.setParameter(i++, values.get("PRIMARY_PERIODICITY"));
 		storeSql(sql, q);
 		return q.executeUpdate();
 	}
@@ -149,7 +151,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		String sql = "{call dbo.put_futures_proc "
 				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
 				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-				+ " ?, ?, ?, ?, ?, ?}";
+				+ " ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
 		int i = 1;
 		q.setParameter(i++, values.get("ID_BB_GLOBAL"));
@@ -178,6 +180,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		q.setParameter(i++, values.get("FUT_FIRST_TRADE_DT"));
 		q.setParameter(i++, values.get("LAST_TRADEABLE_DT"));
 		q.setParameter(i++, values.get("FUT_GEN_MONTH"));
+		q.setParameter(i++, values.get("QUOTE_UNITS"));
 		storeSql(sql, q);
 		return q.executeUpdate();
 	}

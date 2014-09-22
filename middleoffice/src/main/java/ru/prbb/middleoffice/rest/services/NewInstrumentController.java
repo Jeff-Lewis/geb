@@ -130,7 +130,8 @@ public class NewInstrumentController
 				"DVD_CRNCY",
 				"EARN_EST_CRNCY",
 				"EQY_FUND_TICKER",
-				"EQY_FISCAL_YR_END"
+				"EQY_FISCAL_YR_END",
+				"PRIMARY_PERIODICITY"
 		};
 
 		final Map<String, Map<String, String>> answer =
@@ -291,6 +292,7 @@ public class NewInstrumentController
 				"EXCH_CODE",
 				"CRNCY",
 				"QUOTED_CRNCY",
+				"QUOTE_UNITS",
 				"FUT_TICK_SIZE",
 				"FUT_TICK_VAL",
 				"FUT_CONT_SIZE",
