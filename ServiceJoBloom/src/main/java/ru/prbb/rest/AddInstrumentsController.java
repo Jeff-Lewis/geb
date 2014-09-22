@@ -150,7 +150,8 @@ public class AddInstrumentsController
 				"DVD_CRNCY",
 				"EARN_EST_CRNCY",
 				"EQY_FUND_TICKER",
-				"EQY_FISCAL_YR_END"
+				"EQY_FISCAL_YR_END",
+				"PRIMARY_PERIODICITY"
 		};
 
 		final Map<String, Map<String, String>> answer =

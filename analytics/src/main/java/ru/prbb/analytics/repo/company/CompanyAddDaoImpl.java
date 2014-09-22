@@ -69,7 +69,8 @@ public class CompanyAddDaoImpl extends BaseDaoImpl implements CompanyAddDao
 		String sql = "{call dbo.put_equity_proc "
 				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
 				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
+				+ " ?, ?}";
 		int pos = 0;
 		Query q = em.createNativeQuery(sql);
 		q.setParameter(++pos, values.get("ID_BB_GLOBAL"));
@@ -103,6 +104,7 @@ public class CompanyAddDaoImpl extends BaseDaoImpl implements CompanyAddDao
 		q.setParameter(++pos, values.get("EARN_EST_CRNCY"));
 		q.setParameter(++pos, values.get("EQY_FUND_TICKER"));
 		q.setParameter(++pos, values.get("EQY_FISCAL_YR_END"));
+		q.setParameter(++pos, values.get("PRIMARY_PERIODICITY"));
 		storeSql(sql, q);
 		return q.executeUpdate();
 	}

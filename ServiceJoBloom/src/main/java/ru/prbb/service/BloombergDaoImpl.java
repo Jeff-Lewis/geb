@@ -398,7 +398,7 @@ public class BloombergDaoImpl implements BloombergDao
 				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
 				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
 				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?}";
+				"?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, values.get("ID_BB_GLOBAL"))
 				.setParameter(2, values.get("ID_BB"))
@@ -430,7 +430,8 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(28, values.get("DVD_CRNCY"))
 				.setParameter(29, values.get("EARN_EST_CRNCY"))
 				.setParameter(30, values.get("EQY_FUND_TICKER"))
-				.setParameter(31, values.get("EQY_FISCAL_YR_END"));
+				.setParameter(31, values.get("EQY_FISCAL_YR_END"))
+				.setParameter(32, values.get("PRIMARY_PERIODICITY"));
 		// TODO q.executeUpdate();
 	}
 
