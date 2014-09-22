@@ -20,6 +20,8 @@ public class ClientsItem implements Serializable {
 	@Id
 	private Long id;
 	private String name;
+	@Column(name = "country_id")
+	private Long countryId;
 	@Column(name = "country_name")
 	private String countryName;
 	@Column(name = "country_code")
@@ -44,6 +46,14 @@ public class ClientsItem implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Long getCountryId() {
+		return countryId;
+	}
+
+	public void setCountryId(Long countryId) {
+		this.countryId = countryId;
 	}
 
 	public String getCountryName() {

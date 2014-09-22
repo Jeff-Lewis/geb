@@ -40,6 +40,7 @@
 					field : 'name'
 				}
 			}),
+			readOnly : true,
 			loadingText : 'Поиск...',
 			minChars : 2,
 			triggerAction : 'all'
@@ -72,7 +73,13 @@
 		loadData : function(data) {
 			id = data.item.id;
 			Ext.getCmp(_name).setValue(data.item.name);
-			Ext.getCmp(_country).setValue(data.item.countryName);
+			Ext.getCmp(_country).getStore().load({
+				callback : function() {
+					var cmp = Ext.getCmp(_country);
+					cmp.setValue(data.item.countryId);
+					cmp.setReadOnly(false);
+                }
+			});
 			Ext.getCmp(_dateBegin).setValue(
 					App.util.Renderer.date()(data.item.dateBegin));
 			Ext.getCmp(_dateEnd).setValue(

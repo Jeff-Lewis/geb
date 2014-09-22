@@ -24,7 +24,10 @@
 	});
 
 	var sm = new Ext.grid.RowSelectionModel({
-		singleSelect : true
+		singleSelect : true,
+		listeners : {
+			rowselect : updateFields
+		}
 	});
 
 	function loadInfo() {
@@ -71,7 +74,37 @@
 		});
 	}
 
-	return new Ext.Panel({
+	function updateFields(rsm, rowIndex, record) {
+		Ext.Ajax.request({
+			url : 'rest/SetSecurityRiscs/UpdateFields.do',
+			params : {
+				security : record.data.security_code,
+				client : record.data.client,
+				fund : record.data.fund,
+				batch : record.data.batch,
+				date : record.data.dated
+			},
+			timeout : 10 * 1000, // 10 sec
+			//waitMsg : 'Выполняется запрос',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					Ext.getCmp(_RiskAth).setValue(answer.item.risk_ath);
+					Ext.getCmp(_RiskAvg).setValue(answer.item.risk_avg);
+					Ext.getCmp(_StopLoss).setValue(answer.item.stop_loss);
+				} else {
+					Ext.getCmp(_RiskAth).reset();
+					Ext.getCmp(_RiskAvg).reset();
+					Ext.getCmp(_StopLoss).reset();
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	 return new Ext.Panel({
 		id : 'SetSecurityRiscs-component',
 		title : 'Задать параметры риска',
 		baseCls : 'x-plain',
@@ -145,10 +178,10 @@
 			viewConfig : {
 				forceFit : true,
 				emptyText : 'Записи не найдены'
-			},
+			}
 		}, {
 			region : 'south',
-			height : 180,
+			height : 200,
 			title : 'Риск',
 			border : true,
 			frame : true,
