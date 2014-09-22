@@ -1,4 +1,4 @@
-package ru.prbb.agent;
+package ru.prbb.agent.services;
 
 import java.net.InetAddress;
 import java.util.Arrays;

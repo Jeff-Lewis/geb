@@ -1,4 +1,4 @@
-package ru.prbb.agent;
+package ru.prbb.agent.services;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,7 +17,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +26,13 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@EnableScheduling
-public class RegistrationAgent {
+public class RegistrationService {
 
 	private final Log log = LogFactory.getLog(getClass());
 	private final SetupAgent setup;
 
 	@Autowired
-	public RegistrationAgent(SetupAgent setup) {
+	public RegistrationService(SetupAgent setup) {
 		this.setup = setup;
 	}
 

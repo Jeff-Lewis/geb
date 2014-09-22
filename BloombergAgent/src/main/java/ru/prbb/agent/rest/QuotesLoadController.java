@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.Utils;
-import ru.prbb.agent.service.BloombergServices;
+import ru.prbb.agent.services.BloombergServices;
 import ru.prbb.bloomberg.model.BloombergResultItem;
 
 /**

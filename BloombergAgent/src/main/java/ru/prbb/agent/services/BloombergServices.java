@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.service;
+package ru.prbb.agent.services;
 
 import java.util.ArrayList;
 import java.util.Collection;

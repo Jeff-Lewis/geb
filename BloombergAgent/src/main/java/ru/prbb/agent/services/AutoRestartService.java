@@ -1,10 +1,9 @@
-package ru.prbb.agent;
+package ru.prbb.agent.services;
 
 import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +13,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-@EnableScheduling
-public class AutoRestartAgent {
+public class AutoRestartService {
 
 	private final Log log = LogFactory.getLog(getClass());
 
