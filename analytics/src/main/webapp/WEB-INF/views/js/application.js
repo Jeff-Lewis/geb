@@ -33,7 +33,7 @@ Ext.Ajax.on('requestcomplete', function(conn, xhr, options) {
 				xhr.responseText = '';
 			}
 			if (res.error) {
-				App.ui.error('Ошибка на сервере.', res.error);
+				App.ui.error(/*'Ошибка на сервере.', */res.error);
 				xhr.responseText = '';
 			}
 		}
@@ -44,7 +44,7 @@ Ext.Ajax.on('requestexception', function(conn, response, options) {
 	if (options.waitMsg || options.progress) {
 		Ext.MessageBox.hide();
 	}
-	App.ui.error('Ошибка при обращении к серверу.', response.statusText);
+	App.ui.error(/*'Ошибка при обращении к серверу.', */response.statusText);
 });
 
 Ext.namespace('App.util.Renderer');

@@ -79,6 +79,10 @@ function loginVisible(visible) {
 	Ext.getCmp('login_restore').setVisible(visible);
 	Ext.getCmp('username_label').setVisible(!visible);
 	Ext.getCmp('logout').setVisible(!visible);
+	var un = Ext.util.Cookies.get('user');
+	if (un) {
+		Ext.getCmp('username').setValue(un);
+	}
 }
 
 function loginSubmit() {
@@ -91,6 +95,10 @@ function loginSubmit() {
 	if (!pw.isValid())
 		return;
 	pw = pw.getValue();
+
+	Ext.util.Cookies.clear('user');
+	Ext.getCmp('username').reset();
+	Ext.getCmp('password').reset();
 
 	Ext.Ajax.request({
 		url : 'j_spring_security_check',
@@ -117,6 +125,8 @@ function loginSubmit() {
 							'Логин и пароль недоступны.');
 					return;
 				case 'login_success':
+					var expires = new Date().add(Date.DAY, 7);
+					Ext.util.Cookies.set('user', res.user, expires);
 					Ext.getCmp('username_label').setText('Пользователь: ' + res.user);
 					loginVisible(false);
 					App.ui.message('Доступ разрешен.');

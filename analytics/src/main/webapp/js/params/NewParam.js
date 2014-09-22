@@ -31,7 +31,7 @@
 
 			},
 			failure : function(xhr) {
-				App.ui.error('Ошибка при обращении к серверу.', xhr.statusText);
+				App.ui.error(/*'Ошибка при обращении к серверу.', */xhr.statusText);
 			}
 		});
 	}
@@ -54,7 +54,7 @@
 				}
 			},
 			failure : function(xhr) {
-				App.ui.error('Ошибка при обращении к серверу.', xhr.statusText);
+				App.ui.error(/*'Ошибка при обращении к серверу.', */xhr.statusText);
 			}
 		});
 	}

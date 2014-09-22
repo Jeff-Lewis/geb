@@ -24,7 +24,7 @@ var panelView = new Ext.TabPanel({
 });
 
 function _fnFailure(xhr, opts) {
-	App.ui.error('Ошибка при обращении к серверу.', xhr.statusText);
+	App.ui.error(/*'Ошибка при обращении к серверу.', */xhr.statusText);
 }
 
 function _loadData(cmp, urlData) {
