@@ -1,6 +1,5 @@
 package ru.prbb.middleoffice.rest.operations;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +43,7 @@ public class DealsLoadingController
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public ResultData postUpload(
-			@RequestParam("upload") MultipartFile file)
+			@RequestParam("upload") MultipartFile file) throws Exception
 	{
 		log.info("POST DealsLoading: " + file.getOriginalFilename());
 		List<Record> records = new ArrayList<>();
@@ -66,8 +65,6 @@ public class DealsLoadingController
 					records.add(record);
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
 		Map<Record, Exception> errors = new HashMap<>();

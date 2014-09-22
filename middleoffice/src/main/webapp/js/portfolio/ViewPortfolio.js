@@ -72,16 +72,10 @@
 		    timeout : 24 * 60* 60 * 1000,
 		    success : function(xhr) {
 			    var answer = Ext.decode(xhr.responseText);
-			    if (answer.code == 'login') {
-				    App.ui.sessionExpired();
-				    return;
+			    if (answer.success) {
+			    	Ext.getCmp(_calcInfo).setText(answer.text);
+			    	//App.ui.message(answer.text);
 			    }
-			    if (answer.success)
-				    Ext.getCmp(_calcInfo).setText(answer.text);
-				    //App.ui.message(answer.text);
-			    else
-				    App.ui.error('Расчёт портфеля запущен с другой АРМ.<br>'
-				            + 'Повторите запуск после завершения расчёта.');
 		    },
 		    failure : function() {
 			    Ext.getCmp(_calcInfo).setText('Сервер недоступен');
