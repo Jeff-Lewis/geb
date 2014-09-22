@@ -441,6 +441,27 @@
 		});
     }
 
+	function executeBloom() {
+		Ext.Ajax.request({
+			url : 'rest/CompanyAdd/Bloom.do',
+			params : {
+				codes : Ext.getCmp(_bloomCode).getValue()
+			},
+			timeout : 10 * 60 * 1000, // 10 min
+			waitMsg : 'Загрузка Bloomberg...',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					App.ui.message('Данные загружены.');
+					//data.loadData(answer.item);
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
 	var leftInfoForm = new Ext.form.FormPanel({
 		region : 'west',
 		title : 'Основная информация',
@@ -788,106 +809,112 @@
 	}
 
 	return new Ext.Panel({
-		id : 'CompaniesInfo-component',
-		title : 'Компания',
-		frame : false,
-		baseCls : 'x-plain',
-		closable : true,
-		autoScroll : true,
+	    id : 'CompaniesInfo-component',
+	    title : 'Компания',
+	    frame : false,
+	    baseCls : 'x-plain',
+	    closable : true,
+	    autoScroll : true,
 
-		tbar : [ {
-			text : 'Сохранить',
-			handler : equityChange
-		}, {
-			text : 'Задать исключение',
-			menu : [ {
-				text : 'по темпу роста <b>EPS</b>',
-				handler : addEpsGrowth
-			}, {
-				text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
-				handler : addBvGrowth
-			}, '-', {
-				text : 'параметров по формулам',
-				handler : addVariableFormula
-			} ]
-		}, {
-			text : 'Удалить исключение',
-			menu : [ {
-				text : 'по темпу роста <b>EPS</b>',
-				handler : delEpsGrowth
-			}, {
-				text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
-				handler : delBvGrowth
-			}, '-', {
-				text : 'параметров по формулам',
-				handler : delVariableFormula
-			} ]
-		}, {
-			text : 'Посчитать EPS',
-			handler : calculateEPS
-		}, {
-			text : 'Построить модель',
-			handler : buildModel
-		}, {
-			text : 'Удалить исторические данные',
-			handler : delHistData
-		} ],
+	    tbar : [ {
+	        text : 'Сохранить',
+	        handler : equityChange
+	    }, {
+	        text : 'Задать исключение',
+	        menu : [ {
+	            text : 'по темпу роста <b>EPS</b>',
+	            handler : addEpsGrowth
+	        }, {
+	            text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
+	            handler : addBvGrowth
+	        }, '-', {
+	            text : 'параметров по формулам',
+	            handler : addVariableFormula
+	        } ]
+	    }, {
+	        text : 'Удалить исключение',
+	        menu : [ {
+	            text : 'по темпу роста <b>EPS</b>',
+	            handler : delEpsGrowth
+	        }, {
+	            text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
+	            handler : delBvGrowth
+	        }, '-', {
+	            text : 'параметров по формулам',
+	            handler : delVariableFormula
+	        } ]
+	    }, {
+	        text : 'Выполнить',
+	        menu : [ {
+	            text : 'Посчитать EPS',
+	            handler : calculateEPS
+	        }, {
+	            text : 'Построить модель',
+	            handler : buildModel
+	        }, {
+	            text : 'Удалить исторические данные',
+	            handler : delHistData
+	        }, {
+				text : 'Загрузить Bloomberg',
+				handler : executeBloom
+	        } ]
+	    } ],
 
-		items : [ {
-			xtype : 'panel',
-			baseCls : 'x-plain',
-			height : 400,
-			layout : 'border',
+	    items : [ {
+	        xtype : 'panel',
+	        baseCls : 'x-plain',
+	        height : 400,
+	        layout : 'border',
 
-			items : [ leftInfoForm, {
-				region : 'center',
-				xtype : 'container',
-				width : 500,
-				layout : 'border',
+	        items : [ leftInfoForm, {
+	            region : 'center',
+	            xtype : 'container',
+	            width : 500,
+	            layout : 'border',
 
-				items : [ rightInfoForm, exGrid ]
-			} ]
-		}, yearsGrid, quarterGrid, fileGrid ],
+	            items : [ rightInfoForm, exGrid ]
+	        } ]
+	    }, yearsGrid, quarterGrid, fileGrid ],
 
-		loadData : function(data) {
-			id_sec = data.item.id_sec;
+	    loadData : function(data) {
+		    id_sec = data.item.id_sec;
 
-			this.setTitle('Компания: ' + data.item.security_name);
+		    this.setTitle('Компания: ' + data.item.security_name);
 
-			if (yearsGrid.collapsed) {
-				yearsGrid.expand(false);
-			}
-			if (quarterGrid.collapsed) {
-				quarterGrid.expand(false);
-			}
-			if (fileGrid.collapsed) {
-				fileGrid.expand(false);
-			}
+		    if (yearsGrid.collapsed) {
+			    yearsGrid.expand(false);
+		    }
+		    if (quarterGrid.collapsed) {
+			    quarterGrid.expand(false);
+		    }
+		    if (fileGrid.collapsed) {
+			    fileGrid.expand(false);
+		    }
 
-			var url;
+		    var url;
 
-			url = 'rest/Companies/' + id_sec + '/Exceptions.do';
-			exStore.proxy.setUrl(url, true);
-			exStore.reload();
+		    url = 'rest/Companies/' + id_sec + '/Exceptions.do';
+		    exStore.proxy.setUrl(url, true);
+		    exStore.reload();
 
-			url = 'rest/Companies/' + id_sec + '/Years.do';
-			years.proxy.setUrl(url, true);
-			years.reload();
+		    url = 'rest/Companies/' + id_sec + '/Years.do';
+		    years.proxy.setUrl(url, true);
+		    years.reload();
 
-			url = 'rest/Companies/' + id_sec + '/Quarters.do';
-			quarters.proxy.setUrl(url, true);
-			quarters.reload();
+		    url = 'rest/Companies/' + id_sec + '/Quarters.do';
+		    quarters.proxy.setUrl(url, true);
+		    quarters.reload();
 
-			url = 'rest/Companies/' + id_sec + '/Files.do';
-			files.proxy.setUrl(url, true);
-			files.reload();
+		    url = 'rest/Companies/' + id_sec + '/Files.do';
+		    files.proxy.setUrl(url, true);
+		    files.reload();
 
-			leftInfoForm.getForm().setValues(data.item);
-			rightInfoForm.getForm().setValues(data.item);
-		},
+		    leftInfoForm.getForm().setValues(data.item);
+		    rightInfoForm.getForm().setValues(data.item);
+	    },
 
-		refreshEx : function() {
-			exStore.reload();
-		}
+	    refreshEx : function() {
+		    exStore.reload();
+	    }
 	});
 })();
