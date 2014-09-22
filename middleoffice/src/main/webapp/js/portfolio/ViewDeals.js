@@ -433,8 +433,8 @@
 
 	function clickFunding(col, grid, rowIndex, e) {
 		var record = grid.getStore().getAt(rowIndex);
-		var v = !record.data.Funding;
-		record.data.Funding = v;
+		var v = !record.data.funding;
+		record.data.funding = v;
 		record.commit();
 		updateField(record.data.id, 'Funding', (v ? 1 : 0));
 	}

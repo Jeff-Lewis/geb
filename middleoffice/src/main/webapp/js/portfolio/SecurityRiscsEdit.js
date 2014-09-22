@@ -105,7 +105,7 @@
 		} ],
 
 		loadData : function(data) {
-			itemId = data.info.id;
+			itemId = data.item.id;
 			setTimeout(function() {
 				var c = Ext.getCmp(_client);
 				c.getStore().load(
@@ -113,7 +113,7 @@
 							callback : function(r, options, success) {
 								if (success) {
 									var idx = c.getStore().find('name',
-											data.info.client);
+											data.item.client);
 									if (idx != -1) {
 										c.setValue(r[idx].data.id);
 									}
@@ -129,7 +129,7 @@
 							callback : function(r, options, success) {
 								if (success) {
 									var idx = f.getStore().find('name',
-											data.info.fund);
+											data.item.fund);
 									if (idx != -1) {
 										f.setValue(r[idx].data.id);
 									}
@@ -138,13 +138,13 @@
 						});
 			}, 0);
 
-			Ext.getCmp(_batch).setValue(data.info.batch);
-			Ext.getCmp(_riskAth).setValue(data.info.risk_ath);
-			Ext.getCmp(_riskAvg).setValue(data.info.risk_avg);
-			Ext.getCmp(_stopLoss).setValue(data.info.stop_loss);
-			Ext.getCmp(_dateBegin).setValue(data.info.date_begin);
-			Ext.getCmp(_dateEnd).setValue(data.info.date_end);
-			Ext.getCmp(_comment).setValue(data.info.comment);
+			Ext.getCmp(_batch).setValue(data.item.batch);
+			Ext.getCmp(_riskAth).setValue(data.item.risk_ath);
+			Ext.getCmp(_riskAvg).setValue(data.item.risk_avg);
+			Ext.getCmp(_stopLoss).setValue(data.item.stop_loss);
+			Ext.getCmp(_dateBegin).setValue(data.item.date_begin);
+			Ext.getCmp(_dateEnd).setValue(data.item.date_end);
+			Ext.getCmp(_comment).setValue(data.item.comment);
 		},
 		setWindow : function(window) {
 			this.window = window;
