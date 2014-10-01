@@ -23,9 +23,11 @@ public interface ViewDealsDao {
 	 * @param client
 	 * @param funds
 	 * @param initiator
+	 * @param batch
 	 * @return
 	 */
-	List<ViewDealsItem> findAll(Date begin, Date end, Long security, Long client, Long funds, Long initiator);
+	List<ViewDealsItem> findAll(Date begin, Date end,
+			Long security, Long client, Long funds, Long initiator, Integer batch);
 
 	/**
 	 * @param deals

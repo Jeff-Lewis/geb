@@ -9,6 +9,7 @@
 	var _client = Ext.id();
 	var _funds = Ext.id();
 	var _initiator = Ext.id();
+	var _batch = Ext.id();
 
 	var deals = new Ext.data.JsonStore({
 		autoDestroy : true,
@@ -38,7 +39,8 @@
 				ticker : Ext.getCmp(_ticker).getValue(),
 				client : Ext.getCmp(_client).getValue(),
 				funds : Ext.getCmp(_funds).getValue(),
-				initiator : Ext.getCmp(_initiator).getValue()
+				initiator : Ext.getCmp(_initiator).getValue(),
+				batch : Ext.getCmp(_batch).getValue()
 			}
 		});
 	}
@@ -224,7 +226,8 @@
 		    ticker : Ext.getCmp(_ticker).getValue(),
 		    client : Ext.getCmp(_client).getValue(),
 		    funds : Ext.getCmp(_funds).getValue(),
-		    initiator : Ext.getCmp(_initiator).getValue()
+		    initiator : Ext.getCmp(_initiator).getValue(),
+		    batch : Ext.getCmp(_batch).getValue()
 		};
 
 		window.open('rest/ViewDeals/Export.do?' + Ext.urlEncode(params));
@@ -306,17 +309,29 @@
 			xtype : 'label',
 			style : 'font-weight: bold;',
 			margins : '2 5 0 25',
+			text : 'Партия:'
+		}, {
+			id : _batch,
+			xtype : 'numberfield',
+			allowDecimals : false,
+			fieldLabel : 'Партия',
+			maxLength : 12,
+			width : 70
+		}, {
+			xtype : 'label',
+			style : 'font-weight: bold;',
+			margins : '2 5 0 25',
 			text : 'Клиент:'
 		}, {
 			id : _client,
 			xtype : 'combo',
 			width : 100,
-			fieldLabel : 'Клиент',
+			fieldLabel : 'Client',
 			valueField : 'id',
 			displayField : 'name',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'rest/ViewDeals/Client.do',
+				url : 'rest/ViewDeals/Clients.do',
 				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {

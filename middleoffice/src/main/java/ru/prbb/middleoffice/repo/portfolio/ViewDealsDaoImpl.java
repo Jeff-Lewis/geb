@@ -32,15 +32,17 @@ public class ViewDealsDaoImpl extends BaseDaoImpl implements ViewDealsDao
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ViewDealsItem> findAll(Date begin, Date end, Long security, Long client, Long funds, Long initiator) {
-		String sql = "{call dbo.mo_WebGet_SelectDeals_sp ?, ?, ?, ?, ?, ?}";
+	public List<ViewDealsItem> findAll(Date begin, Date end, Long security,
+			Long client, Long funds, Long initiator, Integer batch) {
+		String sql = "{call dbo.mo_WebGet_SelectDeals_sp ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql, ViewDealsItem.class)
 				.setParameter(1, begin)
 				.setParameter(2, end)
 				.setParameter(3, security)
 				.setParameter(4, client)
 				.setParameter(5, funds)
-				.setParameter(6, initiator);
+				.setParameter(6, initiator)
+				.setParameter(7, batch);
 		return q.getResultList();
 	}
 

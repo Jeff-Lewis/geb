@@ -59,11 +59,12 @@ public class ViewDealsController
 			@RequestParam Long ticker,
 			@RequestParam Long client,
 			@RequestParam Long funds,
-			@RequestParam Long initiator)
+			@RequestParam Long initiator,
+			@RequestParam Integer batch)
 	{
-		log.info("POST ViewDeals: dateBegin={}, dateEnd={}, ticker={}, client={}, funds={}, initiator={}",
-				Utils.toArray(dateBegin, dateEnd, ticker, client, funds, initiator));
-		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator);
+		log.info("POST ViewDeals: dateBegin={}, dateEnd={}, ticker={}, client={}, funds={}, initiator={}, batch={}",
+				Utils.toArray(dateBegin, dateEnd, ticker, client, funds, initiator, batch));
+		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator, batch);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
@@ -74,11 +75,14 @@ public class ViewDealsController
 			@RequestParam Long ticker,
 			@RequestParam Long client,
 			@RequestParam Long funds,
-			@RequestParam Long initiator)
+			@RequestParam Long initiator,
+			@RequestParam Integer batch)
 	{
 		log.info("POST ViewDeals/Export: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
+		log.info("POST ViewDeals/Export: dateBegin={}, dateEnd={}, ticker={}, client={}, funds={}, initiator={}, batch={}",
+				Utils.toArray(dateBegin, dateEnd, ticker, client, funds, initiator, batch));
 		List<ViewDealsItem> list =
-				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator);
+				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator, batch);
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Список сделок");
@@ -197,9 +201,9 @@ public class ViewDealsController
 		return daoEquities.findComboPortfolio(query);
 	}
 
-	@RequestMapping(value = "/Client", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboFilterClient(
+	public List<SimpleItem> comboFilterClients(
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO ViewDeals: Client='{}'", query);

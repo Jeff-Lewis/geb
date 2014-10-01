@@ -92,7 +92,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 		return res;
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED/*, timeout = 24 * 60 * 60*/)
 	@Override
 	public int executeCalc(Date begin_date, Long id_sec) {
 //		String sql = "{call dbo.mo_WebSet_PlReport_sp ?, null, ?}";
