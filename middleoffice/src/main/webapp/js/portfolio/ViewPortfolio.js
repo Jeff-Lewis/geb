@@ -39,7 +39,7 @@
 	    typeAhead : false
 	});
 
-	function portfolioShow() {
+	function show() {
 		var fd = Ext.getCmp(_date).getValue();
 
 		if (fd == '') {
@@ -55,7 +55,35 @@
 		});
 	}
 
-	function portfolioCalc() {
+	function calcStart() {
+		var fd = Ext.getCmp(_date).getValue();
+
+		if (fd == '') {
+			App.ui.error('Необходимо выбрать дату!');
+			return;
+		}
+
+		Ext.Ajax.request({
+		    url : 'rest/ViewPortfolio/Calculate.do',
+		    params : {
+		        date : App.util.Format.dateYMD(fd),
+		        security : futureSelect.getValue()
+		    },
+		    timeout : 24 * 60* 60 * 1000,
+		    success : function(xhr) {
+			    var answer = Ext.decode(xhr.responseText);
+			    if (answer.success) {
+			    	Ext.getCmp(_calcInfo).setText(answer.text);
+			    	//App.ui.message(answer.text);
+			    }
+		    },
+		    failure : function() {
+			    Ext.getCmp(_calcInfo).setText('Сервер недоступен');
+		    }
+		});
+	}
+
+	function calcStop() {
 		var fd = Ext.getCmp(_date).getValue();
 
 		if (fd == '') {
@@ -87,6 +115,10 @@
 		if (!updateInfo)
 			return;
 
+		var un = Ext.getCmp('logout');
+		if (un && un.hidden)
+			return;
+
 		Ext.Ajax.request({
 		    url : 'rest/ViewPortfolio/Calculate/Progress.do',
 		    timeout : 2000,
@@ -107,7 +139,7 @@
 		});
 	}
 
-	function portfolioExport() {
+	function exportXls() {
 		var fd = Ext.getCmp(_date).getValue();
 
 		if (fd == '') {
@@ -256,7 +288,7 @@
 	            xtype : 'label',
 	            style : 'font-weight: bold;',
 	            margins : '2 5 0 25',
-	            text : 'Расчёта портфеля:'
+	            text : 'Расчёт портфеля:'
 	        }, {
 	            id : _calcInfo,
 	            xtype : 'label',
@@ -269,15 +301,19 @@
 	        buttons : [ {
 	            text : 'Выбрать',
 	            width : 100,
-	            handler : portfolioShow
-	        }, {
+	            handler : show
+	        }, ' ', {
 	            text : 'Рассчитать',
 	            width : 100,
-	            handler : portfolioCalc
+	            handler : calcStart
 	        }, {
+	            text : 'Остановить',
+	            width : 100,
+	            handler : calcStop
+	        }, ' ', {
 	            text : 'Выгрузить в Excel',
 	            width : 100,
-	            handler : portfolioExport
+	            handler : exportXls
 	        }, ' ', {
 	            text : 'Удалить остатки и финрез',
 	            width : 120,

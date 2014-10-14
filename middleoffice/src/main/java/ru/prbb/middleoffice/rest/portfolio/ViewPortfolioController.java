@@ -53,6 +53,7 @@ public class ViewPortfolioController
 	private Result p = Result.FAIL;
 
 	private Boolean isBusyCalc = Boolean.FALSE;
+	private Boolean isStopCalc = Boolean.FALSE;
 
 	@RequestMapping(value = "/Delete", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
@@ -78,6 +79,7 @@ public class ViewPortfolioController
 			return Result.FAIL;
 		}
 		isBusyCalc = Boolean.TRUE;
+		isStopCalc = Boolean.FALSE;
 
 		log.info("POST ViewPortfolio/Calculate: date={}, security={}", date, security);
 		try {
@@ -108,6 +110,9 @@ public class ViewPortfolioController
 
 				long runTime = System.currentTimeMillis() - stTime;
 				time = "Прошло, сек: " + Long.valueOf(runTime / 1000) + " ";
+
+				if (isStopCalc)
+					break;
 			}
 		} finally {
 			p = Result.FAIL;
@@ -129,6 +134,14 @@ public class ViewPortfolioController
 	@ResponseBody
 	public Result getCalculateProgress()
 	{
+		return p;
+	}
+
+	@RequestMapping(value = "/Calculate/Stop", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public Result getCalculateStop()
+	{
+		isStopCalc = Boolean.TRUE;
 		return p;
 	}
 

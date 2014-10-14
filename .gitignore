@@ -1,3 +1,5 @@
 **/.settings/
 **/target/
 **/workspace-arm/
+*.dodeploy
+*.war
