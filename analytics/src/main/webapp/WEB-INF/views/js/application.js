@@ -60,6 +60,8 @@ App.util.Renderer = {
 		}
 
 		return function(v) {
+			if (isNaN(Number(v)))
+				return v;
 			v = Ext.util.Format.number(v, format);
 			return v.replace(/,/g, ' ');// .replace('.', ',');
 		};
@@ -68,32 +70,41 @@ App.util.Renderer = {
 	date : function(format) {
 		format = format || 'd.m.Y';
 		return function(v) {
-			v = Ext.util.Format.substr(v, 0, 10);
-			v = Date.parseDate(v, 'Y-m-d');
-			return v ? v.format(format) : '';
+			if (v) {
+	            v = Ext.util.Format.substr(v, 0, 10);
+	            v = Date.parseDate(v, 'Y-m-d');
+	            return v ? v.format(format) : '';
+            }
+			return v;
 		};
 	},
 
 	time : function(format) {
 		format = format || 'H:i:s';
 		return function(v) {
-			if (v && v.length > 11) {
-				v = Ext.util.Format.substr(v, 11, 8);
-			}
-			if (v && v.length == 5) {
-				v += ':00';
-			}
-			v = Date.parseDate(v, 'H:i:s');
-			return v ? v.format(format) : '';
+			if (v) {
+	            if (v.length > 11) {
+		            v = Ext.util.Format.substr(v, 11, 8);
+	            }
+	            if (v.length == 5) {
+		            v += ':00';
+	            }
+	            v = Date.parseDate(v, 'H:i:s');
+	            return v ? v.format(format) : '';
+            }
+			return v;
 		};
 	},
 
 	datetime : function(format) {
 		format = format || 'd.m.Y H:i:s';
 		return function(v) {
-			v = Ext.util.Format.substr(v, 0, 19);
-			v = Date.parseDate(v, 'Y-m-d H:i:s');
-			return v ? v.format(format) : '';
+			if (v) {
+	            v = Ext.util.Format.substr(v, 0, 19);
+	            v = Date.parseDate(v, 'Y-m-d H:i:s');
+	            return v ? v.format(format) : '';
+            }
+			return v;
 		};
 	},
 
