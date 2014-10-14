@@ -1,4 +1,4 @@
-package ru.prbb.middleoffice.rest.services;
+package ru.prbb.middleoffice.rest.loading;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
-import ru.prbb.middleoffice.repo.services.LoadATRDao;
+import ru.prbb.middleoffice.repo.loading.LoadATRDao;
 import ru.prbb.middleoffice.rest.BaseController;
 
 /**

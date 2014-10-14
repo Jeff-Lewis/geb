@@ -1,4 +1,4 @@
-package ru.prbb.middleoffice.rest.services;
+package ru.prbb.middleoffice.rest.loading;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SecurityCashFlowItem;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
-import ru.prbb.middleoffice.repo.services.LoadCashFlowDao;
+import ru.prbb.middleoffice.repo.loading.LoadCashFlowDao;
 import ru.prbb.middleoffice.rest.BaseController;
 
 /**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.middleoffice.repo.services;
+package ru.prbb.middleoffice.repo.loading;
 
 import java.util.ArrayList;
 import java.util.Date;

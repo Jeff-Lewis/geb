@@ -1,4 +1,4 @@
-package ru.prbb.middleoffice.rest.services;
+package ru.prbb.middleoffice.rest.loading;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,7 +19,7 @@ import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.BloombergServicesM;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
-import ru.prbb.middleoffice.repo.services.LoadQuotesDao;
+import ru.prbb.middleoffice.repo.loading.LoadQuotesDao;
 import ru.prbb.middleoffice.rest.BaseController;
 
 /**
