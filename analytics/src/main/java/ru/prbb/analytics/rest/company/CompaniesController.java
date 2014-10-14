@@ -1,6 +1,7 @@
 package ru.prbb.analytics.rest.company;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String type)
 	{
-		type = Utils.encode(type);
+		type = encode(type);
 		log.info("DEL Companies/eps: id={}, type={}", id, type);
 		dao.delEps(id, type);
 		return Result.SUCCESS;
@@ -120,7 +121,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String type)
 	{
-		type = Utils.encode(type);
+		type = encode(type);
 		log.info("DEL Companies/bv: id={}, type={}", id, type);
 		dao.delBookVal(id, type);
 		return Result.SUCCESS;
@@ -146,7 +147,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String variable)
 	{
-		variable = Utils.encode(variable);
+		variable = encode(variable);
 		log.info("DEL Companies/formula: id={}, variable={}", id, variable);
 		dao.delFormula(id, variable);
 		return Result.SUCCESS;
@@ -345,5 +346,17 @@ public class CompaniesController
 	{
 		log.info("COMBO Companies: Variables='{}'", query);
 		return dao.findComboVariables(query);
+	}
+
+	private String encode(String s) {
+		String res = s;
+		try {
+			String utf = new String(s.getBytes("ISO-8859-1"));
+			res = new String(utf.getBytes(), "cp1251");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			System.err.println(e);
+		}
+		return res;
 	}
 }

@@ -3,7 +3,6 @@
  */
 package ru.prbb;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -294,17 +293,6 @@ public class Utils {
 
 	public static Object[] asArray(Object... args) {
 		return args;
-	}
-
-	public static String encode(String variable) {
-		String res = variable;
-		try {
-			res = new String(variable.getBytes("ISO-8859-1"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			System.err.println(e);
-		}
-		return res;
 	}
 
 }
