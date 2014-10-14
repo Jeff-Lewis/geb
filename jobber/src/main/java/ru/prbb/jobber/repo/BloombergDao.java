@@ -3,6 +3,7 @@
  */
 package ru.prbb.jobber.repo;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -179,5 +180,9 @@ public interface BloombergDao {
 	 * @param values
 	 */
 	public void putFuturesData(Map<String, String> values);
+
+	public List<String> getSecForCurrency();
+
+	public void putCurrencyData(String blm_query_code, Date dated, Double px_last, Integer quote_factor);
 
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.jobber.jobber;
+package ru.prbb.jobber.services;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SubscriptionItem;
@@ -34,7 +33,7 @@ import com.bloomberglp.blpapi.SubscriptionList;
  * @author RBr
  * 
  */
-@Service
+//@Service
 public class SubscriptionTask {
 	private static final Log log = LogFactory.getLog(SubscriptionTask.class);
 

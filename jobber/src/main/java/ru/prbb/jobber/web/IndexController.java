@@ -1,4 +1,4 @@
-package ru.prbb.jobber.mvc;
+package ru.prbb.jobber.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

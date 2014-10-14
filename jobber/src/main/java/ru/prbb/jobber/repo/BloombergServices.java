@@ -13,7 +13,6 @@ import ru.prbb.jobber.domain.CashFlowResultItem;
 
 /**
  * @author RBr
- * 
  */
 public interface BloombergServices {
 
@@ -133,4 +132,11 @@ public interface BloombergServices {
 	 * 
 	 */
 	public void executeFuturesLoad();
+
+	/**
+	 * Загрузка курсов валют
+	 * 
+	 * @param yesterday
+	 */
+	public void executeCurrenciesDataLoad(Date yesterday);
 }

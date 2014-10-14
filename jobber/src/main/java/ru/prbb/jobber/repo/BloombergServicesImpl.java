@@ -577,6 +577,12 @@ public final class BloombergServicesImpl implements BloombergServices
 	public void executeFuturesLoad() {
 		log.info("executeFuturesLoad");
 
+		final String SECURITY_NAME = "SECURITY_NAME";
+		final String NAME = "NAME";
+		final String SHORT_NAME = "SHORT_NAME";
+		final String FTD = "FUT_FIRST_TRADE_DT";  
+		final String LTD = "LAST_TRADEABLE_DT";
+
 		List<SecurityItem> securities = dao.getSecForUpdateFutures();
 
 		final String[] _securities = new String[securities.size()];
@@ -584,7 +590,7 @@ public final class BloombergServicesImpl implements BloombergServices
 			_securities[i] = securities.get(i).getCode();
 		}
 		final BdpRequest r = new BdpRequest(_securities,
-				new String[] { "SECURITY_NAME", "NAME", "SHORT_NAME" });
+				new String[] { SECURITY_NAME, NAME, SHORT_NAME, FTD, LTD });
 
 		r.execute("Jobber/Update securities");
 
@@ -595,11 +601,13 @@ public final class BloombergServicesImpl implements BloombergServices
 			String code = security.getCode();
 			if (answer.containsKey(code)) {
 				final Map<String, String> values = answer.get(code);
-				final String secName = values.get("SECURITY_NAME");
-				final String name = values.get("NAME");
-				final String shortName = values.get("SHORT_NAME");
+				final String secName = values.get(SECURITY_NAME);
+				final String name = values.get(NAME);
+				final String shortName = values.get(SHORT_NAME);
+				final java.sql.Date ftd = Utils.parseDate(values.get(FTD));
+				final java.sql.Date ltd = Utils.parseDate(values.get(LTD));
 				log.info(code + ", " + secName + ", " + name + ", " + shortName);
-				UpdateFutureData item = new UpdateFutureData(security.getId(), secName, name, shortName);
+				UpdateFutureData item = new UpdateFutureData(security.getId(), secName, name, shortName, ftd, ltd);
 				items.add(item);
 			} else {
 				log.error("No answer for " + code);
@@ -649,5 +657,36 @@ public final class BloombergServicesImpl implements BloombergServices
 		final HistoricalDataRequest r = new HistoricalDataRequest(startDate, endDate, securities, fields);
 		r.execute(name);
 		return r.getAnswer();
+	}
+
+	@Override
+	public void executeCurrenciesDataLoad(Date _date) {
+		java.sql.Date date = new java.sql.Date(_date.getTime());
+
+		log.info("executeCurrenciesDataLoad " + date);
+
+		final List<String> securities = dao.getSecForCurrency();
+		log.trace("securities:" + securities.size());
+
+		ReferenceDataRequest r = new ReferenceDataRequest(
+				securities.toArray(new String[securities.size()]),
+				new String[] { "PX_LAST", "QUOTE_FACTOR" });
+
+		r.execute("Jobber/Currency");
+
+		Map<String, Map<String, String>> a = r.getAnswer();
+
+		for (String security : securities) {
+			try {
+				final Map<String, String> d = a.get(security);
+
+				Double px_last = Utils.parseDouble(d.get("PX_LAST"));
+				Integer quote_factor = Utils.parseDouble(d.get("QUOTE_FACTOR")).intValue();
+
+				dao.putCurrencyData(security, date, px_last, quote_factor);
+			} catch (Exception e) {
+				log.error("executeCurrenciesDataLoad security " + security, e);
+			}
+		}
 	}
 }

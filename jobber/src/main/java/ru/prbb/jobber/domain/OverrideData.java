@@ -6,6 +6,7 @@ package ru.prbb.jobber.domain;
 import ru.prbb.jobber.bloomberg.BdpOverrideRequest;
 
 public class OverrideData {
+
 	public final String security;
 	public static final String param = BdpOverrideRequest.BEST_EPS_GAAP;
 	public final String value;
@@ -16,5 +17,18 @@ public class OverrideData {
 		this.security = security;
 		this.value = value;
 		this.period = period;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("OverrideData [security=");
+		builder.append(security);
+		builder.append(", value=");
+		builder.append(value);
+		builder.append(", period=");
+		builder.append(period);
+		builder.append("]");
+		return builder.toString();
 	}
 }

@@ -3,13 +3,19 @@
  */
 package ru.prbb.jobber.repo;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,13 +35,49 @@ import ru.prbb.jobber.domain.UpdateFutureData;
 
 /**
  * @author RBr
- * 
  */
 @Repository
 public class BloombergDaoImpl implements BloombergDao
 {
+
+	private static final boolean IS_REAL_UPDATE = false;
+
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private EntityManager em;
+
+	protected void showSql(String sql, Query q) {
+		try {
+			StringBuilder res = new StringBuilder(sql);
+			if (!q.getParameters().isEmpty()) {
+				List<Parameter<?>> ps = new ArrayList<>(q.getParameters());
+				Collections.sort(ps, new Comparator<Parameter<?>>() {
+
+					@Override
+					public int compare(Parameter<?> o1, Parameter<?> o2) {
+						return o1.getPosition().compareTo(o2.getPosition());
+					}
+				});
+				res.append('(');
+				for (Parameter<?> p : ps) {
+					try {
+						Object pv = q.getParameterValue(p);
+						res.append(pv);
+						res.append(',');
+					} catch (IllegalStateException e) {
+						res.append("NULL,");
+					}
+				}
+				res.setCharAt(res.length() - 1, ')');
+			}
+
+			String msg = res.toString();
+			log.info(msg);
+		} catch (Exception e) {
+			log.error("showSql", e);
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -65,10 +107,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(8, item.ds_close_code);
 				q.setParameter(9, item.period);
 				q.setParameter(10, item.calendar);
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putAtrData " + item, e);
 			}
 		}
 	}
@@ -104,10 +147,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(3, item.value);
 				q.setParameter(4, item.period);
 				q.setParameter(5, item.blm_data_src_over);
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putOverrideData " + item, e);
 			}
 		}
 	}
@@ -132,10 +176,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(9, item.date);
 				q.setParameter(10, item.barr);
 				q.setParameter(11, item.year_return);
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putAnalysData " + item, e);
 			}
 		}
 	}
@@ -155,10 +200,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(6, item.ebitda);
 				q.setParameter(7, item.group);
 				q.setParameter(8, item.sub);
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putPeersData " + item, e);
 			}
 		}
 	}
@@ -172,10 +218,11 @@ public class BloombergDaoImpl implements BloombergDao
 		for (String item : items) {
 			try {
 				q.setParameter(1, item);
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putPeersProc " + item, e);
 			}
 		}
 	}
@@ -200,10 +247,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(1, item.getSecurity());
 				q.setParameter(2, item.getParams());
 				q.setParameter(3, item.getValue());
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putBondsData " + item, e);
 			}
 		}
 	}
@@ -240,10 +288,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(5, item.period);
 				q.setParameter(6, item.curncy);
 				q.setParameter(7, item.calendar);
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putHistParamsData " + item, e);
 			}
 		}
 	}
@@ -268,10 +317,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(1, item.getSecurity());
 				q.setParameter(2, item.getValue());
 				q.setParameter(3, item.getDate());
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putQuotes " + item, e);
 			}
 		}
 	}
@@ -309,10 +359,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(5, item.type_id);
 				q.setParameter(6, item.first_tradeable_date);
 				q.setParameter(7, item.last_tradeable_date);
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putUpdatesFutures " + item, e);
 			}
 		}
 	}
@@ -327,9 +378,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(2, item.getParams());
 				q.setParameter(3, item.getDate());
 				q.setParameter(4, item.getValue());
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
+				log.error("putBondYeild " + item, e);
 				item.setValue(e.getMessage());
 			}
 		}
@@ -346,10 +399,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(2, Utils.parseDate(item.getDate()));
 				q.setParameter(3, item.getValue());
 				q.setParameter(4, item.getValue2());
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putSecurityCashFlow " + item, e);
 			}
 		}
 	}
@@ -364,9 +418,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(1, item.getSecurity());
 				q.setParameter(2, item.getValue());
 				q.setParameter(3, item.getDate());
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
+				log.error("putQuotesOne " + item, e);
 				item.setValue(e.getMessage());
 			}
 		}
@@ -382,10 +438,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(1, item.getId());
 				q.setParameter(2, Utils.parseDate(item.getDate()));
 				q.setParameter(3, item.getValue());
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putSecurityCouponSchedule " + item, e);
 			}
 		}
 	}
@@ -400,10 +457,11 @@ public class BloombergDaoImpl implements BloombergDao
 				q.setParameter(1, item.getId());
 				q.setParameter(2, Utils.parseDate(item.getDate()));
 				q.setParameter(3, item.getValue());
-				// TODO q.executeUpdate();
 				showSql(sql, q);
+				if (IS_REAL_UPDATE)
+					q.executeUpdate();
 			} catch (Exception e) {
-				// TODO: handle exception
+				log.error("putFaceAmount " + item, e);
 			}
 		}
 	}
@@ -453,8 +511,9 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(29, values.get("EARN_EST_CRNCY"))
 				.setParameter(30, values.get("EQY_FUND_TICKER"))
 				.setParameter(31, values.get("EQY_FISCAL_YR_END"));
-		// TODO q.executeUpdate();
 		showSql(sql, q);
+		if (IS_REAL_UPDATE)
+			q.executeUpdate();
 	}
 
 	/**
@@ -483,8 +542,9 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(12, values.get("FEED_SOURCE"))
 				.setParameter(13, values.get("CRNCY"))
 				.setParameter(14, values.get("EQY_FUND_CRNCY"));
-		// TODO q.executeUpdate();
 		showSql(sql, q);
+		if (IS_REAL_UPDATE)
+			q.executeUpdate();
 	}
 
 	/**
@@ -532,8 +592,9 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(29, values.get("FIXED"))
 				.setParameter(30, Utils.toDouble(values.get("CPN")))
 				.setParameter(31, Utils.toDouble(values.get("PAR_AMT")));
-		// TODO q.executeUpdate();
 		showSql(sql, q);
+		if (IS_REAL_UPDATE)
+			q.executeUpdate();
 	}
 
 	/**
@@ -575,15 +636,38 @@ public class BloombergDaoImpl implements BloombergDao
 				.setParameter(24, values.get("FUT_FIRST_TRADE_DT"))
 				.setParameter(25, values.get("LAST_TRADEABLE_DT"))
 				.setParameter(26, values.get("FUT_GEN_MONTH"));
-		// TODO q.executeUpdate();
 		showSql(sql, q);
+		if (IS_REAL_UPDATE)
+			q.executeUpdate();
 	}
 
 	/**
-	 * @param sql
-	 * @param q
+	 * Загрузка курсов валют
 	 */
-	private void showSql(String sql, Query q) {
-		System.out.println(sql);
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<String> getSecForCurrency() {
+		String sql = "select blm_query_code from dbo.mo_job_LoadCurrency_rate_cbr_v";
+		Query q = em.createNativeQuery(sql);
+		showSql(sql, q);
+		return q.getResultList();
+	}
+
+	/**
+	 * Загрузка курсов валют
+	 */
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public void putCurrencyData(String blm_query_code, Date dated, Double px_last, Integer quote_factor) {
+		String sql = "{call dbo.put_currency_rate_cbr_sp null, null, ?, null, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, blm_query_code)
+				.setParameter(2, quote_factor)
+				.setParameter(3, px_last)
+				.setParameter(4, dated);
+		showSql(sql, q);
+		if (IS_REAL_UPDATE)
+			q.executeUpdate();
 	}
 }

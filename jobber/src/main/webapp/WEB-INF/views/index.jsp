@@ -3,30 +3,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Spring MVC Bloomberg Application</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8" />
+<title>Jobber</title>
 </head>
 <body>
 	<div>
 		<ol>
-			<li>Загрузка доходности облигаций <a href="/rest/BondYeildLoad">/rest/BondYeildLoad</a>
-				(String[] securities{code}, String begin, String end)
-			</li>
-			<li>Загрузка дат погашений <a href="/rest/CashFlowLoad">/rest/CashFlowLoad</a>
-				(String[] securities{id:date:name})
-			</li>
-			<li>Ввод нового инструмента <a href="/rest/InstrumentAdd">/rest/InstrumentAdd</a>
-				(String[] instruments{type:code})
-			</li>
-			<li>Загрузка котировок <a href="/rest/QuotesLoad">/rest/QuotesLoad</a>
-				(String[] securities{code}, String begin, String end)
-			</li>
-			<li>Загрузка ставки по купонам <a href="/rest/RateCouponLoad">/rest/RateCouponLoad</a>
-				(String[] securities{id:name})
-			</li>
-			<li>Загрузка номинала <a href="/rest/ValuesLoad">/rest/ValuesLoad</a>
-				(String[] securities{id:name})
-			</li>
+			<li> 0 00 3 * * ? <a href="rest/BdsLoad">executeBdsLoad</a></li>
+
+			<li> 0 15 4 * * ? <a href="rest/FuturesLoad">executeFuturesLoad</a></li>
+
+			<li> 0 00 5 * * ? <a href="rest/QuotesLoad">executeQuotesLoad</a></li>
+
+			<li> 0 10 5 * * ? <a href="rest/AtrLoad">executeAtrLoad</a></li>
+
+			<li> 0 00 6 * * ? <a href="rest/BdpOverrideLoad">executeBdpOverrideLoad</a></li>
+
+			<li> 0 00 7 * * ? <a href="rest/HistDataLoad">executeHistDataLoad</a></li>
+
+			<li> 0 00 8 * * ? <a href="rest/CurrenciesDataLoad">executeCurrenciesDataLoad</a></li>
+
+			<li> 0 59 11-18 * * ? <a href="rest/BondsLoad">executeBondsLoad</a></li>
 		</ol>
 	</div>
 </body>

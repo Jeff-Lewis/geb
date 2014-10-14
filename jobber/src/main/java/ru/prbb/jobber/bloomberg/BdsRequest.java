@@ -131,6 +131,29 @@ public class BdsRequest implements BloombergRequest, MessageHandler {
 			this.group = BloombergSession.getElementAsString(fieldData, "INDUSTRY_GROUP");
 			this.sub = BloombergSession.getElementAsString(fieldData, "INDUSTRY_subGROUP");
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("PeerData [sec=");
+			builder.append(sec);
+			builder.append(", cur_mkt_cap=");
+			builder.append(cur_mkt_cap);
+			builder.append(", oper_roe=");
+			builder.append(oper_roe);
+			builder.append(", bs_tot_liab2=");
+			builder.append(bs_tot_liab2);
+			builder.append(", pe_ration=");
+			builder.append(pe_ration);
+			builder.append(", ebitda=");
+			builder.append(ebitda);
+			builder.append(", group=");
+			builder.append(group);
+			builder.append(", sub=");
+			builder.append(sub);
+			builder.append("]");
+			return builder.toString();
+		}
 	}
 
 	private final List<PeerData> peersData = new ArrayList<>();
@@ -165,6 +188,33 @@ public class BdsRequest implements BloombergRequest, MessageHandler {
 			this.date = element.getElementAsString("Date");
 			this.barr = element.getElementAsString("BARR");
 			this.year_return = element.getElementAsString("1 Year Return");
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("BEST_ANALYST_RECS_BULK [firm=");
+			builder.append(firm);
+			builder.append(", analyst=");
+			builder.append(analyst);
+			builder.append(", recom=");
+			builder.append(recom);
+			builder.append(", rating=");
+			builder.append(rating);
+			builder.append(", action_code=");
+			builder.append(action_code);
+			builder.append(", target_price=");
+			builder.append(target_price);
+			builder.append(", period=");
+			builder.append(period);
+			builder.append(", date=");
+			builder.append(date);
+			builder.append(", barr=");
+			builder.append(barr);
+			builder.append(", year_return=");
+			builder.append(year_return);
+			builder.append("]");
+			return builder.toString();
 		}
 	}
 

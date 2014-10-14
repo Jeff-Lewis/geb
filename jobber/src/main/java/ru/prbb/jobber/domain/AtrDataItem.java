@@ -26,4 +26,17 @@ public class AtrDataItem {
 		this.date_time = date_time;
 		this.atr_value = atr_value;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("AtrDataItem [security=");
+		builder.append(security);
+		builder.append(", date_time=");
+		builder.append(date_time);
+		builder.append(", atr_value=");
+		builder.append(atr_value);
+		builder.append("]");
+		return builder.toString();
+	}
 }
