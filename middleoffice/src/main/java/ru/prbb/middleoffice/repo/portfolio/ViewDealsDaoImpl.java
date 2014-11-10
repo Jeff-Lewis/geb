@@ -29,7 +29,7 @@ public class ViewDealsDaoImpl extends BaseDaoImpl implements ViewDealsDao
 	@Autowired
 	private EntityManager em;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, timeout = 60000)
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<ViewDealsItem> findAll(Date begin, Date end, Long security,
