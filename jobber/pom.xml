@@ -218,16 +218,21 @@
 			<artifactId>blpapi</artifactId>
 			<version>3.4.5-5</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.2</version>
+		</dependency>
     </dependencies>
 
     <build>
-        <finalName>JoBloom</finalName>
+        <finalName>Jobber</finalName>
         <plugins>
             <!-- Force Java 6 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.1</version>
                 <configuration>
                     <source>${version.java}</source>
                     <target>${version.java}</target>

@@ -3,12 +3,11 @@
  */
 package ru.prbb.jobber.domain;
 
-import ru.prbb.jobber.bloomberg.BdpOverrideRequest;
 
 public class OverrideData {
 
 	public final String security;
-	public static final String param = BdpOverrideRequest.BEST_EPS_GAAP;
+	public static final String param = "BEST_EPS_GAAP";
 	public final String value;
 	public final String period;
 	public static final String blm_data_src_over = "BST";

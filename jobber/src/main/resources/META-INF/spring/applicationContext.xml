@@ -2,55 +2,20 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:task="http://www.springframework.org/schema/task"
-	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
-		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<context:component-scan base-package="ru.prbb.jobber" />
 
 	<tx:annotation-driven />
 
-<!-- 
-	<bean
-		id="bloombergDataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property
-			name="driverClassName"
-			value="com.sybase.jdbc3.jdbc.SybDriver" />
-		<property
-			name="url"
-			value="jdbc:sybase:Tds:172.16.21.14:5000/inv_db" />
-		<property
-			name="username"
-			value="dgluhov" />
-		<property
-			name="password"
-			value="lbfcjan" />
-	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 
-	<bean
-		name="jdbcTemplate"
-		class="org.springframework.jdbc.core.JdbcTemplate">
-		<property
-			name="dataSource"
-			ref="bloombergDataSource" />
-	</bean>
-
-	<bean
-		id="dbManager"
-		class="ru.prbb.JoBloom.repo.DBManager">
-		<property
-			name="jdbcTemplate"
-			ref="jdbcTemplate" />
-	</bean>
- -->
 </beans>

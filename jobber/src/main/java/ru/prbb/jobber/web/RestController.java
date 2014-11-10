@@ -16,7 +16,7 @@ import ru.prbb.jobber.services.ScheduledTasks;
 @RequestMapping(value = "/rest")
 public class RestController {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ScheduledTasks tasks;
@@ -25,56 +25,56 @@ public class RestController {
 	public String taskBdsLoad(Model model) {
 		log.info("web BdsLoad");
 		tasks.taskBdsLoad();
-		return "index";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/FuturesLoad")
 	public String taskFuturesLoad(Model model) {
 		log.info("web FuturesLoad");
 		tasks.taskFuturesLoad();
-		return "index";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/QuotesLoad")
 	public String taskQuotesLoad(Model model) {
 		log.info("web QuotesLoad");
 		tasks.taskQuotesLoad();
-		return "index";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/AtrLoad")
 	public String taskAtrLoad(Model model) {
 		log.info("web AtrLoad");
 		tasks.taskAtrLoad();
-		return "index";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/BdpOverrideLoad")
 	public String taskBdpOverrideLoad(Model model) {
 		log.info("web BdpOverrideLoad");
 		tasks.taskBdpOverrideLoad();
-		return "index";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/HistDataLoad")
 	public String taskHistDataLoad(Model model) {
 		log.info("web HistDataLoad");
 		tasks.taskHistDataLoad();
-		return "index";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/CurrenciesDataLoad")
 	public String taskCurrenciesDataLoad(Model model) {
 		log.info("web CurrenciesDataLoad");
 		tasks.taskCurrenciesDataLoad();
-		return "index";
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/BondsLoad")
 	public String taskBondsLoad(Model model) {
 		log.info("web BondsLoad");
 		tasks.taskBondsLoad();
-		return "index";
+		return "redirect:/";
 	}
 
 }

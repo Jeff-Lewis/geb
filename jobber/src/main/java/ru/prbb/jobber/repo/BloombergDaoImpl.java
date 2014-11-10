@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
@@ -22,16 +23,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
-import ru.prbb.jobber.bloomberg.BdsRequest.BEST_ANALYST_RECS_BULK;
-import ru.prbb.jobber.bloomberg.BdsRequest.PeerData;
-import ru.prbb.jobber.domain.AtrDataItem;
-import ru.prbb.jobber.domain.BloombergResultItem;
-import ru.prbb.jobber.domain.CashFlowResultItem;
-import ru.prbb.jobber.domain.HistParamData;
 import ru.prbb.jobber.domain.OverrideData;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
-import ru.prbb.jobber.domain.UpdateFutureData;
 
 /**
  * @author RBr
@@ -40,9 +34,7 @@ import ru.prbb.jobber.domain.UpdateFutureData;
 public class BloombergDaoImpl implements BloombergDao
 {
 
-	private static final boolean IS_REAL_UPDATE = false;
-
-	protected final Logger log = LoggerFactory.getLogger(getClass());
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private EntityManager em;
@@ -79,43 +71,6 @@ public class BloombergDaoImpl implements BloombergDao
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@Override
-	public List<String> getSecForAtr() {
-		String sql = "select security_code from dbo.mo_job_LoadATR_v";
-		Query q = em.createNativeQuery(sql);
-		showSql(sql, q);
-		return q.getResultList();
-	}
-
-	@SuppressWarnings("static-access")
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putAtrData(List<AtrDataItem> items) {
-		String sql = "{call dbo.mo_WebSet_putATR_sp ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (AtrDataItem item : items) {
-			try {
-				q.setParameter(1, item.security);
-				q.setParameter(2, item.date_time);
-				q.setParameter(3, item.atr_value);
-				q.setParameter(4, item.atr_period);
-				q.setParameter(5, item.algorithm);
-				q.setParameter(6, item.ds_high_code);
-				q.setParameter(7, item.ds_low_code);
-				q.setParameter(8, item.ds_close_code);
-				q.setParameter(9, item.period);
-				q.setParameter(10, item.calendar);
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putAtrData " + item, e);
-			}
-		}
-	}
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<SecForJobRequest> getLoadEstimatesPeersData() {
@@ -123,7 +78,6 @@ public class BloombergDaoImpl implements BloombergDao
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
-		showSql(sql, q);
 		List<SecForJobRequest> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -134,194 +88,82 @@ public class BloombergDaoImpl implements BloombergDao
 		return res;
 	}
 
-	@SuppressWarnings("static-access")
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void putOverrideData(List<OverrideData> items) {
-		String sql = "{call dbo.put_override_data ?, ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (OverrideData item : items) {
-			try {
-				q.setParameter(1, item.security);
-				q.setParameter(2, item.param);
-				q.setParameter(3, item.value);
-				q.setParameter(4, item.period);
-				q.setParameter(5, item.blm_data_src_over);
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putOverrideData " + item, e);
-			}
-		}
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putAnalysData(String peer, List<BEST_ANALYST_RECS_BULK> items) {
-		// TODO Auto-generated method stub
-		//				return jdbcTemplate.update(,
-		String sql = "{call dbo.put_analyst_data ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		q.setParameter(1, peer);
-		for (BEST_ANALYST_RECS_BULK item : items) {
-			try {
-				q.setParameter(2, item.firm);
-				q.setParameter(3, item.analyst);
-				q.setParameter(4, item.recom);
-				q.setParameter(5, item.rating);
-				q.setParameter(6, item.action_code);
-				q.setParameter(7, item.target_price);
-				q.setParameter(8, item.period);
-				q.setParameter(9, item.date);
-				q.setParameter(10, item.barr);
-				q.setParameter(11, item.year_return);
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putAnalysData " + item, e);
-			}
-		}
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putPeersData(List<PeerData> items) {
+	public void putPeersData(List<Map<String, Object>> answer) {
 		String sql = "{call dbo.put_blmpeers_descr_proc ?, ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
-		for (PeerData item : items) {
+		for (Map<String, Object> data : answer) {
 			try {
-				q.setParameter(1, item.sec);
-				q.setParameter(2, item.cur_mkt_cap);
-				q.setParameter(3, item.oper_roe);
-				q.setParameter(4, item.bs_tot_liab2);
-				q.setParameter(5, item.pe_ration);
-				q.setParameter(6, item.ebitda);
-				q.setParameter(7, item.group);
-				q.setParameter(8, item.sub);
+				q.setParameter(1, Utils.toString(data.get("sec")));
+				q.setParameter(2, Utils.toDouble(data.get("cur_mkt_cap")));
+				q.setParameter(3, Utils.toDouble(data.get("oper_roe")));
+				q.setParameter(4, Utils.toDouble(data.get("bs_tot_liab2")));
+				q.setParameter(5, Utils.toDouble(data.get("pe_ration")));
+				q.setParameter(6, Utils.toDouble(data.get("ebitda")));
+				q.setParameter(7, Utils.toString(data.get("group")));
+				q.setParameter(8, Utils.toString(data.get("sub")));
 				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
+				q.executeUpdate();
 			} catch (Exception e) {
-				log.error("putPeersData " + item, e);
+				log.error("putPeersData " + data, e);
 			}
 		}
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void putPeersProc(String peer, List<String> items) {
+	public void putAnalysData(String[] securities, Map<String, List<Map<String, String>>> answer) {
+		String sql = "{call dbo.put_analyst_data ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		for (String security : securities) {
+			List<Map<String, String>> datas = answer.get(security);
+			if (null == datas) {
+				log.warn("no datas for " + security);
+				continue;
+			}
+			for (Map<String, String> data : datas) {
+				try {
+					q.setParameter(1, security);
+					q.setParameter(2, Utils.parseString(data.get("firm")));
+					q.setParameter(3, Utils.parseString(data.get("analyst")));
+					q.setParameter(4, Utils.parseString(data.get("recom")));
+					q.setParameter(5, Utils.parseString(data.get("rating")));
+					q.setParameter(6, Utils.parseString(data.get("action_code")));
+					q.setParameter(7, Utils.parseString(data.get("target_price")));
+					q.setParameter(8, Utils.parseString(data.get("period")));
+					q.setParameter(9, Utils.parseString(data.get("date")));
+					q.setParameter(10, Utils.parseString(data.get("barr")));
+					q.setParameter(11, Utils.parseString(data.get("year_return")));
+					showSql(sql, q);
+					q.executeUpdate();
+				} catch (Exception e) {
+					log.error("putAnalysData " + data, e);
+				}
+			}
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public void putPeersProc(String[] securities, Map<String, List<String>> answer) {
 		String sql = "{call dbo.put_blmpeers_proc ?, ?}";
 		Query q = em.createNativeQuery(sql);
-		q.setParameter(2, peer);
-		for (String item : items) {
-			try {
-				q.setParameter(1, item);
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putPeersProc " + item, e);
+		for (String security : securities) {
+			List<String> datas = answer.get(security);
+			if (null == datas) {
+				log.warn("no datas for " + security);
+				continue;
 			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@Override
-	public List<String> getSecForBonds() {
-		String sql = "select security_code from mo_job_UpdateBondQuotes_v";
-		Query q = em.createNativeQuery(sql);
-		showSql(sql, q);
-		return q.getResultList();
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putBondsData(List<BloombergResultItem> items) {
-		String sql = "{call dbo.put_current_data ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (BloombergResultItem item : items) {
-			try {
-				q.setParameter(1, item.getSecurity());
-				q.setParameter(2, item.getParams());
-				q.setParameter(3, item.getValue());
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
+			for (String data : datas) {
+				try {
+					q.setParameter(1, data);
+					q.setParameter(2, security);
+					showSql(sql, q);
 					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putBondsData " + item, e);
-			}
-		}
-	}
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@Override
-	public List<SecForJobRequest> getSecForHistData() {
-		String sql = "select security_code as code, iso from dbo.anca_job_LoadHistoricalData_v";
-		Query q = em.createNativeQuery(sql);
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
-		showSql(sql, q);
-		List<SecForJobRequest> res = new ArrayList<>(list.size());
-		for (Object object : list) {
-			Object[] arr = (Object[]) object;
-			String code = Utils.toString(arr[0]);
-			String iso = Utils.toString(arr[1]);
-			res.add(new SecForJobRequest(code, iso));
-		}
-		return res;
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putHistParamsData(List<HistParamData> items) {
-		String sql = "{call put_hist_data ?, ?, ?, ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (HistParamData item : items) {
-			try {
-				q.setParameter(1, item.security);
-				q.setParameter(2, item.params);
-				q.setParameter(3, item.date);
-				q.setParameter(4, item.value);
-				q.setParameter(5, item.period);
-				q.setParameter(6, item.curncy);
-				q.setParameter(7, item.calendar);
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putHistParamsData " + item, e);
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@Override
-	public List<String> getSecForQuotes() {
-		String sql = "select security_code from dbo.mo_job_LoadQuotes_v";
-		Query q = em.createNativeQuery(sql);
-		showSql(sql, q);
-		return q.getResultList();
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putQuotes(List<BloombergResultItem> items) {
-		String sql = "{call dbo.put_quotes ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (BloombergResultItem item : items) {
-			try {
-				q.setParameter(1, item.getSecurity());
-				q.setParameter(2, item.getValue());
-				q.setParameter(3, item.getDate());
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putQuotes " + item, e);
+				} catch (Exception e) {
+					log.error("putPeersProc " + data, e);
+				}
 			}
 		}
 	}
@@ -333,7 +175,6 @@ public class BloombergDaoImpl implements BloombergDao
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
 		List list = q.getResultList();
-		showSql(sql, q);
 		List<SecurityItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -347,298 +188,190 @@ public class BloombergDaoImpl implements BloombergDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void putUpdatesFutures(List<UpdateFutureData> items) {
-		String sql = "{call dbo.put_updated_securities_info ?, ?, ?, ?, ?, ?, ?}";
+	public void putUpdatesFutures(List<SecurityItem> securities, Map<String, Map<String, String>> answer) {
+		String sql = "{call dbo.put_updated_securities_info ?, ?, ?, ?, 2, ?, ?}";
 		Query q = em.createNativeQuery(sql);
-		for (UpdateFutureData item : items) {
-			try {
-				q.setParameter(1, item.id_sec);
-				q.setParameter(2, item.security_name);
-				q.setParameter(3, item.name);
-				q.setParameter(4, item.short_name);
-				q.setParameter(5, item.type_id);
-				q.setParameter(6, item.first_tradeable_date);
-				q.setParameter(7, item.last_tradeable_date);
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putUpdatesFutures " + item, e);
+		for (SecurityItem security : securities) {
+			Map<String, String> data = answer.get(security.getCode());
+			if (null == data) {
+				log.warn("no datas for " + security);
+				continue;
 			}
-		}
-	}
-
-	@Override
-	public void putBondYeild(List<BloombergResultItem> items) {
-		String sql = "{call dbo.put_bond_yield_proc ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (BloombergResultItem item : items) {
 			try {
-				q.setParameter(1, item.getSecurity());
-				q.setParameter(2, item.getParams());
-				q.setParameter(3, item.getDate());
-				q.setParameter(4, item.getValue());
+				q.setParameter(1, security.getId());
+				q.setParameter(2, data.get("SECURITY_NAME"));
+				q.setParameter(3, data.get("NAME"));
+				q.setParameter(4, data.get("SHORT_NAME"));
+				q.setParameter(5, Utils.parseDate(data.get("FUT_FIRST_TRADE_DT")));
+				q.setParameter(6, Utils.parseDate(data.get("LAST_TRADEABLE_DT")));
 				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
+				q.executeUpdate();
 			} catch (Exception e) {
-				log.error("putBondYeild " + item, e);
-				item.setValue(e.getMessage());
+				log.error("putUpdatesFutures " + data, e);
 			}
 		}
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void putSecurityCashFlow(List<CashFlowResultItem> items) {
-		String sql = "{call dbo.put_security_cash_flow_sp ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (CashFlowResultItem item : items) {
-			try {
-				q.setParameter(1, item.getId());
-				q.setParameter(2, Utils.parseDate(item.getDate()));
-				q.setParameter(3, item.getValue());
-				q.setParameter(4, item.getValue2());
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putSecurityCashFlow " + item, e);
-			}
-		}
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putQuotesOne(List<BloombergResultItem> items) {
-		String sql = "{call dbo.put_quotes ? ,?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (BloombergResultItem item : items) {
-			try {
-				q.setParameter(1, item.getSecurity());
-				q.setParameter(2, item.getValue());
-				q.setParameter(3, item.getDate());
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putQuotesOne " + item, e);
-				item.setValue(e.getMessage());
-			}
-		}
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putSecurityCouponSchedule(List<BloombergResultItem> items) {
-		String sql = "{call dbo.put_security_coupon_schedule_sp ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (BloombergResultItem item : items) {
-			try {
-				q.setParameter(1, item.getId());
-				q.setParameter(2, Utils.parseDate(item.getDate()));
-				q.setParameter(3, item.getValue());
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putSecurityCouponSchedule " + item, e);
-			}
-		}
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putFaceAmount(List<BloombergResultItem> items) {
-		String sql = "{call dbo.put_face_amount_sp ?, ?, ?}";
-		Query q = em.createNativeQuery(sql);
-		for (BloombergResultItem item : items) {
-			try {
-				q.setParameter(1, item.getId());
-				q.setParameter(2, Utils.parseDate(item.getDate()));
-				q.setParameter(3, item.getValue());
-				showSql(sql, q);
-				if (IS_REAL_UPDATE)
-					q.executeUpdate();
-			} catch (Exception e) {
-				log.error("putFaceAmount " + item, e);
-			}
-		}
-	}
-
-	/**
-	 * Ввод новой акции
-	 * 
-	 * @param values
-	 */
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void putSharesData(Map<String, String> values) {
-		String sql = "{call dbo.put_equity_proc " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?}";
+	public int execQuotesPortfolio(Date date) {
+		String sql = "{call dbo.PlPortfolioOnDate ?}";
 		Query q = em.createNativeQuery(sql)
-				.setParameter(1, values.get("ID_BB_GLOBAL"))
-				.setParameter(2, values.get("ID_BB"))
-				.setParameter(3, values.get("ID_BB_UNIQUE"))
-				.setParameter(4, values.get("ID_BB_SEC_NUM_DES"))
-				.setParameter(5, values.get("ID_BB_SEC_NUM_SRC"))
-				.setParameter(6, values.get("ID_ISIN"))
-				.setParameter(7, values.get("ID_CUSIP"))
-				.setParameter(8, values.get("PARSEKYABLE_DES"))
-				.setParameter(9, values.get("PARSEKYABLE_DES_SOURCE"))
-				.setParameter(10, values.get("SECURITY_TYP"))
-				.setParameter(11, values.get("MARKET_SECTOR_DES"))
-				.setParameter(12, values.get("FEED_SOURCE"))
-				.setParameter(13, values.get("TICKER"))
-				.setParameter(14, values.get("SECURITY_NAME"))
-				.setParameter(15, values.get("NAME"))
-				.setParameter(16, values.get("SHORT_NAME"))
-				.setParameter(17, values.get("EQY_PRIM_EXCH"))
-				.setParameter(18, values.get("EXCH_CODE"))
-				.setParameter(19, values.get("EQY_FUND_IND"))
-				.setParameter(20, values.get("INDUSTRY_GROUP"))
-				.setParameter(21, values.get("INDUSTRY_SUBGROUP"))
-				.setParameter(22, values.get("ADR_SH_PER_ADR"))
-				.setParameter(23, values.get("CRNCY"))
-				.setParameter(24, values.get("EQY_FUND_CRNCY"))
-				.setParameter(25, values.get("EQY_PRIM_SECURITY_CRNCY"))
-				.setParameter(26, values.get("ADR_CRNCY"))
-				.setParameter(27, values.get("BEST_CRNCY_ISO"))
-				.setParameter(28, values.get("DVD_CRNCY"))
-				.setParameter(29, values.get("EARN_EST_CRNCY"))
-				.setParameter(30, values.get("EQY_FUND_TICKER"))
-				.setParameter(31, values.get("EQY_FISCAL_YR_END"));
-		showSql(sql, q);
-		if (IS_REAL_UPDATE)
-			q.executeUpdate();
+				.setParameter(1, date);
+		return q.executeUpdate();
 	}
 
-	/**
-	 * Ввод нового индекса
-	 * 
-	 * @param values
-	 */
-	@Transactional(propagation = Propagation.REQUIRED)
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public void putIndexData(Map<String, String> values) {
-		String sql = "{call dbo.put_indices_proc " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql)
-				.setParameter(1, values.get("ID_BB_GLOBAL"))
-				.setParameter(2, values.get("ID_BB_SEC_NUM_SRC"))
-				.setParameter(3, values.get("ID_BB_SEC_NUM_DES"))
-				.setParameter(4, values.get("PARSEKYABLE_DES"))
-				.setParameter(5, values.get("PARSEKYABLE_DES_SOURCE"))
-				.setParameter(6, values.get("TICKER"))
-				.setParameter(7, values.get("SECURITY_NAME"))
-				.setParameter(8, values.get("NAME"))
-				.setParameter(9, values.get("SHORT_NAME"))
-				.setParameter(10, values.get("SECURITY_TYP"))
-				.setParameter(11, values.get("MARKET_SECTOR_DES"))
-				.setParameter(12, values.get("FEED_SOURCE"))
-				.setParameter(13, values.get("CRNCY"))
-				.setParameter(14, values.get("EQY_FUND_CRNCY"));
-		showSql(sql, q);
-		if (IS_REAL_UPDATE)
-			q.executeUpdate();
+	public List<String> getSecForQuotes() {
+		String sql = "select security_code from dbo.mo_job_LoadQuotes_v";
+		Query q = em.createNativeQuery(sql);
+		return q.getResultList();
 	}
 
-	/**
-	 * Ввод новой облигации
-	 * 
-	 * @param values
-	 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void putBondsData(Map<String, String> values) {
-		String sql = "{call dbo.put_bond_proc " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?}";
-		Query q = em.createNativeQuery(sql)
-				.setParameter(1, values.get("ID_BB_UNIQUE"))
-				.setParameter(2, values.get("ID_BB_COMPANY"))
-				.setParameter(3, values.get("ID_CUSIP"))
-				.setParameter(4, values.get("ID_ISIN"))
-				.setParameter(5, values.get("PARSEKYABLE_DES"))
-				.setParameter(6, values.get("SECURITY_NAME"))
-				.setParameter(7, values.get("SECURITY_SHORT_DES"))
-				.setParameter(8, values.get("SHORT_NAME"))
-				.setParameter(9, values.get("TICKER"))
-				.setParameter(10, values.get("NAME"))
-				.setParameter(11, values.get("CRNCY"))
-				.setParameter(12, Utils.parseDate(values.get("MATURITY")))
-				.setParameter(13, values.get("MTY_TYP"))
-				.setParameter(14, values.get("COLLAT_TYP"))
-				.setParameter(15, values.get("SECURITY_DES"))
-				.setParameter(16, values.get("INDUSTRY_SECTOR"))
-				.setParameter(17, values.get("SECURITY_TYP"))
-				.setParameter(18, values.get("COUNTRY_ISO"))
-				.setParameter(19, values.get("CNTRY_OF_DOMICILE"))
-				.setParameter(20, values.get("PX_METHOD"))
-				.setParameter(21, values.get("PAYMENT_RANK"))
-				.setParameter(22, values.get("SINKABLE"))
-				.setParameter(23, values.get("DAY_CNT_DES"))
-				.setParameter(24, Utils.parseDate(values.get("ANNOUNCE_DT")))
-				.setParameter(25, Utils.parseDate(values.get("INT_ACC_DT")))
-				.setParameter(26, Utils.parseDate(values.get("FIRST_SETTLE_DT")))
-				.setParameter(27, Utils.parseDate(values.get("FIRST_CPN_DT")))
-				.setParameter(28, values.get("CPN_CRNCY"))
-				.setParameter(29, values.get("FIXED"))
-				.setParameter(30, Utils.toDouble(values.get("CPN")))
-				.setParameter(31, Utils.toDouble(values.get("PAR_AMT")));
-		showSql(sql, q);
-		if (IS_REAL_UPDATE)
-			q.executeUpdate();
+	public void putQuotes(String date, String[] securities, Map<String, Map<String, Map<String, String>>> answer) {
+		String sql = "{call dbo.put_quotes ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		for (String security : securities) {
+			Map<String, Map<String, String>> datas = answer.get(security);
+			if (null == datas) {
+				log.warn("no datas for " + security);
+				continue;
+			}
+			for (Entry<String, Map<String, String>> entry : datas.entrySet()) {
+				date = entry.getKey();
+				Map<String, String> data = entry.getValue();
+				try {
+					q.setParameter(1, security);
+					q.setParameter(2, Utils.toDouble(data.get("PX_LAST")));
+					q.setParameter(3, date);
+					showSql(sql, q);
+					q.executeUpdate();
+				} catch (Exception e) {
+					log.error("putQuotes " + data, e);
+				}
+			}
+		}
 	}
 
-	/**
-	 * Ввод нового фьючерса
-	 * 
-	 * @param values
-	 */
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<String> getSecForAtr() {
+		String sql = "select security_code from dbo.mo_job_LoadATR_v";
+		Query q = em.createNativeQuery(sql);
+		return q.getResultList();
+	}
+
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void putFuturesData(Map<String, String> values) {
-		String sql = "{call dbo.put_futures_proc " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-				"?, ?, ?, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql)
-				.setParameter(1, values.get("ID_BB_GLOBAL"))
-				.setParameter(2, values.get("ID_BB"))
-				.setParameter(3, values.get("ID_BB_UNIQUE"))
-				.setParameter(4, values.get("ID_BB_SEC_NUM_DES"))
-				.setParameter(5, values.get("ID_BB_SEC_NUM_SRC"))
-				.setParameter(6, values.get("PARSEKYABLE_DES"))
-				.setParameter(7, values.get("PARSEKYABLE_DES_SOURCE"))
-				.setParameter(8, values.get("SECURITY_TYP"))
-				.setParameter(9, values.get("MARKET_SECTOR_DES"))
-				.setParameter(10, values.get("FEED_SOURCE"))
-				.setParameter(11, values.get("FUTURES_CATEGORY"))
-				.setParameter(12, values.get("FUT_TRADING_UNITS"))
-				.setParameter(13, values.get("TICKER"))
-				.setParameter(14, values.get("SECURITY_NAME"))
-				.setParameter(15, values.get("NAME"))
-				.setParameter(16, values.get("SHORT_NAME"))
-				.setParameter(17, values.get("EXCH_CODE"))
-				.setParameter(18, values.get("CRNCY"))
-				.setParameter(19, values.get("QUOTED_CRNCY"))
-				.setParameter(20, values.get("FUT_TICK_SIZE"))
-				.setParameter(21, values.get("FUT_TICK_VAL"))
-				.setParameter(22, values.get("FUT_CONT_SIZE"))
-				.setParameter(23, values.get("FUT_VAL_PT"))
-				.setParameter(24, values.get("FUT_FIRST_TRADE_DT"))
-				.setParameter(25, values.get("LAST_TRADEABLE_DT"))
-				.setParameter(26, values.get("FUT_GEN_MONTH"));
-		showSql(sql, q);
-		if (IS_REAL_UPDATE)
-			q.executeUpdate();
+	public void putAtrData(String[] securities, List<Map<String, Object>> answer) {
+		String sql = "{call dbo.mo_WebSet_putATR_sp ?, ?, ?, 7, 'Exponential', 'PX_HIGH', 'PX_LOW', 'PX_LAST', 'DAILY', 'CALENDAR'}";
+		Query q = em.createNativeQuery(sql);
+		for (Map<String, Object> item : answer) {
+			try {
+				q.setParameter(1, Utils.toString(item.get("security")));
+				q.setParameter(2, Utils.parseDate(item.get("date").toString()));
+				q.setParameter(3, Utils.toDouble(item.get("value")));
+				showSql(sql, q);
+				q.executeUpdate();
+			} catch (Exception e) {
+				log.error("putAtrData " + item, e);
+			}
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public void putOverrideData(List<SecForJobRequest> securities, Map<String, Map<String, String>> answer) {
+		String sql = "{call dbo.put_override_data ?, 'BEST_EPS_GAAP', ?, ?, 'BST'}";
+		Query q = em.createNativeQuery(sql);
+
+		for (SecForJobRequest security : securities) {
+			final Map<String, String> values = answer.get(security.code);
+
+			if (null != values) {
+				for (String period : values.keySet()) {
+					final String value = values.get(period);
+					OverrideData item = new OverrideData(security.code, value, period);
+					try {
+						q.setParameter(1, item.security);
+						q.setParameter(2, item.value);
+						q.setParameter(3, item.period);
+						showSql(sql, q);
+						q.executeUpdate();
+					} catch (Exception e) {
+						log.error("putOverrideData " + item, e);
+					}
+				}
+			}
+		}
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<SecForJobRequest> getSecForHistData() {
+		String sql = "select security_code as code, iso from dbo.anca_job_LoadHistoricalData_v";
+		Query q = em.createNativeQuery(sql);
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<SecForJobRequest> res = new ArrayList<>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			String code = Utils.toString(arr[0]);
+			String iso = Utils.toString(arr[1]);
+			res.add(new SecForJobRequest(code, iso));
+		}
+		return res;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public void putHistParamsData(String date, String[] currencies, String[] cursec,
+			Map<String, Map<String, Map<String, String>>> answer) {
+		String sql = "{call put_hist_data ?, ?, ?, ?, 'DAILY', ?, 'CALENDAR'}";
+		Query q = em.createNativeQuery(sql);
+
+		final String[] fields = {
+				"EQY_WEIGHTED_AVG_PX",
+				"PX_HIGH", "PX_LAST", "PX_LOW", "PX_VOLUME",
+				"TOT_BUY_REC", "TOT_HOLD_REC", "TOT_SELL_REC"
+		};
+
+		for (String currency : currencies) {
+			for (String cs : cursec) {
+				if (cs.startsWith(currency)) {
+					final String security = cs.substring(currency.length());
+
+					final Map<String, String> values = answer.get(cs).get(date);
+					if (null == values) {
+						log.warn("no datas for " + security);
+						continue;
+					}
+
+					for (String field : fields) {
+						if (values.containsKey(field)) {
+							final String value = values.get(field);
+							try {
+								q.setParameter(1, security);
+								q.setParameter(2, field);
+								q.setParameter(3, date);
+								q.setParameter(4, value);
+								q.setParameter(5, currency);
+								showSql(sql, q);
+								q.executeUpdate();
+							} catch (Exception e) {
+								log.error("putHistParamsData " + values, e);
+							}
+						}
+					}
+
+				}
+			}
+		}
 	}
 
 	/**
@@ -650,7 +383,6 @@ public class BloombergDaoImpl implements BloombergDao
 	public List<String> getSecForCurrency() {
 		String sql = "select blm_query_code from dbo.mo_job_LoadCurrency_rate_cbr_v";
 		Query q = em.createNativeQuery(sql);
-		showSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -659,15 +391,59 @@ public class BloombergDaoImpl implements BloombergDao
 	 */
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void putCurrencyData(String blm_query_code, Date dated, Double px_last, Integer quote_factor) {
-		String sql = "{call dbo.put_currency_rate_cbr_sp null, null, ?, null, ?, ?, ?}";
-		Query q = em.createNativeQuery(sql)
-				.setParameter(1, blm_query_code)
-				.setParameter(2, quote_factor)
-				.setParameter(3, px_last)
-				.setParameter(4, dated);
-		showSql(sql, q);
-		if (IS_REAL_UPDATE)
-			q.executeUpdate();
+	public void putCurrencyData(String[] securities, Map<String, Map<String, String>> answer) {
+		String sql = "{call dbo.put_currency_rate_cbr_sp null, null, ?, null, ?, ?, null}";
+		Query q = em.createNativeQuery(sql);
+		for (String security : securities) {
+			Map<String, String> data = answer.get(security);
+			if (null == data) {
+				log.warn("no datas for " + security);
+				continue;
+			}
+			try {
+				q.setParameter(1, security);
+				q.setParameter(2, Utils.parseDouble(data.get("QUOTE_FACTOR")).intValue());
+				q.setParameter(3, Utils.parseDouble(data.get("PX_LAST")));
+				showSql(sql, q);
+				q.executeUpdate();
+			} catch (Exception e) {
+				log.error("putCurrencyData " + data, e);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<String> getSecForBonds() {
+		String sql = "select security_code from mo_job_UpdateBondQuotes_v";
+		Query q = em.createNativeQuery(sql);
+		return q.getResultList();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public void putBondsData(String[] securities, Map<String, Map<String, String>> answer) {
+		String[] fields = { "CHG_PCT_1D", "YLD_YTM_MID" };
+		String sql = "{call dbo.put_current_data ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		for (String security : securities) {
+			Map<String, String> data = answer.get(security);
+			if (null == data) {
+				log.warn("no datas for " + security);
+				continue;
+			}
+			for (String field : fields) {
+				try {
+					q.setParameter(1, security);
+					q.setParameter(2, field);
+					q.setParameter(3, data.get(field));
+					showSql(sql, q);
+					q.executeUpdate();
+				} catch (Exception e) {
+					log.error("putBondsData " + data, e);
+				}
+			}
+		}
 	}
 }

@@ -90,6 +90,19 @@ public class UtilsTest extends Assert {
 	}
 
 	/**
+	 * Test method for {@link ru.prbb.Utils#parseDate(java.lang.String)}.
+	 */
+	@Test
+	public void testParseDateLong() {
+		assertEquals(null, Utils.parseDate(null));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Utils.LOCALE);
+		Date date = Calendar.getInstance().getTime();
+		java.sql.Date expected = new java.sql.Date(date.getTime());
+		java.sql.Date actual = Utils.parseDate(sdf.format(date) + "T00:00:00.000+00:00");
+		assertEquals(expected.toString(), actual.toString());
+	}
+
+	/**
 	 * Test method for {@link ru.prbb.Utils#toString(java.lang.Object)}.
 	 */
 	@Test
@@ -105,8 +118,10 @@ public class UtilsTest extends Assert {
 	@Test
 	public void testToDouble() {
 		assertEquals(null, Utils.toDouble(null));
-		String value = "10";
-		assertEquals(new BigDecimal(value), Utils.toDouble(new BigDecimal(value)));
+		assertEquals(new Double(10), Utils.toDouble(10));
+		assertEquals(new Double(10.3), Utils.toDouble(10.3));
+		assertEquals(new Double("10.13"), Utils.toDouble("10.13"));
+		assertEquals(new Double(10.192), Utils.toDouble(new BigDecimal(10.192)));
 	}
 
 	/**

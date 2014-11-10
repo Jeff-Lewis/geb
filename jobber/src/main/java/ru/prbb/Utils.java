@@ -14,6 +14,9 @@ import java.util.Locale;
 
 import javax.persistence.Column;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.prbb.jobber.domain.SimpleItem;
 
 /**
@@ -21,6 +24,8 @@ import ru.prbb.jobber.domain.SimpleItem;
  * 
  */
 public class Utils {
+	
+	private static Logger log = LoggerFactory.getLogger(Utils.class);
 
 	public static final Locale LOCALE = new Locale("RU", "ru");
 
@@ -119,12 +124,12 @@ public class Utils {
 	 * @param s
 	 * @return null для пустой строки
 	 */
-	public static Double parseDouble(String s) {
+	public static BigDecimal parseDouble(String s) {
 		if (isNotEmpty(s)) {
 			try {
-				return Double.valueOf(s);
+				return new BigDecimal(s);
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
+				log.error("parseDouble:" + s, e);
 			}
 		}
 		return null;
@@ -147,7 +152,7 @@ public class Utils {
 				long time = sdf.parse(date).getTime();
 				return new Date(time);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
+				log.error("parseDate:" + date, e);
 			}
 		}
 		return null;
@@ -174,9 +179,20 @@ public class Utils {
 	 *            объект из БД
 	 * @return BigDecimal
 	 */
-	public static BigDecimal toDouble(Object object) {
-		if (null != object) {
-			return (BigDecimal) object;
+	public static Double toDouble(Object object) {
+		if (object instanceof Double) {
+			return (Double) object;
+		}
+		if (object instanceof Number) {
+			Number number = (Number) object;
+			return number.doubleValue();
+		}
+		if (object != null) {
+			try {
+				return new Double(object.toString());
+			} catch (NumberFormatException e) {
+				log.error("toDouble:" + object, e);
+			}
 		}
 		return null;
 	}
@@ -189,8 +205,9 @@ public class Utils {
 	 * @return Long
 	 */
 	public static Long toLong(Object object) {
-		if (null != object) {
-			return ((BigDecimal) object).longValue();
+		if (object instanceof Number) {
+			Number number = (Number) object;
+			return number.longValue();
 		}
 		return null;
 	}
@@ -203,8 +220,9 @@ public class Utils {
 	 * @return Integer
 	 */
 	public static Integer toInteger(Object object) {
-		if (null != object) {
-			return (Integer) object;
+		if (object instanceof Number) {
+			Number number = (Number) object;
+			return number.intValue();
 		}
 		return null;
 	}
@@ -217,8 +235,9 @@ public class Utils {
 	 * @return Byte
 	 */
 	public static Byte toByte(Object object) {
-		if (null != object) {
-			return (Byte) object;
+		if (object instanceof Number) {
+			Number number = (Number) object;
+			return number.byteValue();
 		}
 		return null;
 	}
@@ -271,7 +290,7 @@ public class Utils {
 			Column column = f.getAnnotation(Column.class);
 			return column.name();
 		} catch (NoSuchFieldException | SecurityException e) {
-			// TODO Auto-generated catch block
+			log.error("getColumnNameByField:" + field + ", " + _class.getSimpleName(), e);
 		}
 		return field;
 	}

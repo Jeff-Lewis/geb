@@ -9,8 +9,8 @@ import java.util.Map;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -31,11 +31,11 @@ import com.bloomberglp.blpapi.SubscriptionList;
  * Подписка блумберга
  * 
  * @author RBr
- * 
  */
 //@Service
 public class SubscriptionTask {
-	private static final Log log = LogFactory.getLog(SubscriptionTask.class);
+
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private SubscriptionDao dao;
@@ -95,6 +95,7 @@ public class SubscriptionTask {
 	}
 
 	private class SubscriptionThread implements Runnable {
+
 		public final Long id;
 
 		private volatile boolean isRun = true;
@@ -134,19 +135,19 @@ public class SubscriptionTask {
 
 			try {
 				if (!session.start()) {
-					log.fatal("Failed to start session.");
+					log.error("Failed to start session.");
 					return false;
 				}
 
 				if (!session.openService("//blp/mktdata")) {
-					log.fatal("Failed to open //blp/mktdata");
+					log.error("Failed to open //blp/mktdata");
 					return false;
 				}
 
 				log.debug("Subscribing...");
 				session.subscribe(subscriptions);
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Subscribing", e);
 				return false;
 			}
 
@@ -196,13 +197,13 @@ public class SubscriptionTask {
 					}
 				}
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Subscription run", e);
 			} finally {
 				threads.put(id, null);
 				try {
 					session.stop();
 				} catch (InterruptedException e) {
-					log.error(e);
+					log.error("Stop session", e);
 				}
 			}
 			log.info("Stopped " + thread.getName());

@@ -24,7 +24,7 @@
 		</properties>
 	</persistence-unit>
  -->
-<!-- 
+
  	<persistence-unit 
 		name="jbBloomberg"
 		transaction-type="JTA" >
@@ -44,8 +44,7 @@
 				value="false" />
 		</properties>
 	</persistence-unit>
- -->
-
+<!-- 
   	<persistence-unit
 		name="jbBloombergTest"
 		transaction-type="JTA">
@@ -65,5 +64,5 @@
 				value="false" />
 		</properties>
 	</persistence-unit>
- 
+ -->
 </persistence>

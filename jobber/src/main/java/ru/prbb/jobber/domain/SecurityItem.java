@@ -69,4 +69,17 @@ public class SecurityItem implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SecurityItem [");
+		builder.append("id=").append(id).append(", ");
+		builder.append("code=").append(code).append(", ");
+		if (name != null) {
+			builder.append("name=").append(name);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }
