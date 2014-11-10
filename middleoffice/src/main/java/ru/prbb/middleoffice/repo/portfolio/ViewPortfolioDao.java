@@ -32,9 +32,10 @@ public interface ViewPortfolioDao {
 	/**
 	 * @param date
 	 * @param security
+	 * @param client
 	 * @return
 	 */
-	int executeCalc(Date date, Long security);
+	int executeCalc(Date date, Long security, Long client);
 
 	/**
 	 * @param date

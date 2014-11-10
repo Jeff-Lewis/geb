@@ -94,7 +94,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 
 	@Transactional(propagation = Propagation.REQUIRED/*, timeout = 24 * 60 * 60*/)
 	@Override
-	public int executeCalc(Date begin_date, Long id_sec) {
+	public int executeCalc(Date begin_date, Long id_sec, Long client) {
 //		String sql = "{call dbo.mo_WebSet_PlReport_sp ?, null, ?}";
 		String sql = "{call dbo.PlPortfolioOnDate ?, ?}";
 		Query q = em.createNativeQuery(sql)

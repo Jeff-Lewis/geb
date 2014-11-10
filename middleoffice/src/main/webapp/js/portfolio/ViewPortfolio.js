@@ -39,6 +39,26 @@
 	    typeAhead : false
 	});
 
+	var clientSelect = new Ext.form.ComboBox({
+	    width : 150,
+	    fieldLabel : 'Клиент',
+	    valueField : 'id',
+	    displayField : 'name',
+	    store : new Ext.data.JsonStore({
+	        autoDestroy : true,
+	        url : 'rest/ViewPortfolio/Clients.do',
+	        // root : 'info',
+	        fields : [ 'id', 'name' ],
+	        sortInfo : {
+		        field : 'name'
+	        }
+	    }),
+	    loadingText : 'Поиск...',
+	    triggerAction : 'all',
+	    minChars : 2,
+	    typeAhead : false
+	});
+
 	function show() {
 		var fd = Ext.getCmp(_date).getValue();
 
@@ -67,7 +87,8 @@
 		    url : 'rest/ViewPortfolio/Calculate.do',
 		    params : {
 		        date : App.util.Format.dateYMD(fd),
-		        security : futureSelect.getValue()
+		        security : futureSelect.getValue(),
+		        client : clientSelect.getValue()
 		    },
 		    timeout : 24 * 60* 60 * 1000,
 		    success : function(xhr) {
@@ -84,26 +105,18 @@
 	}
 
 	function calcStop() {
-		var fd = Ext.getCmp(_date).getValue();
-
-		if (fd == '') {
-			App.ui.error('Необходимо выбрать дату!');
-			return;
-		}
-
 		Ext.Ajax.request({
-		    url : 'rest/ViewPortfolio/Calculate.do',
-		    params : {
-		        date : App.util.Format.dateYMD(fd),
-		        security : futureSelect.getValue()
-		    },
+		    url : 'rest/ViewPortfolio/Calculate/Stop.do',
 		    timeout : 24 * 60* 60 * 1000,
 		    success : function(xhr) {
+			    var msg;
 			    var answer = Ext.decode(xhr.responseText);
 			    if (answer.success) {
-			    	Ext.getCmp(_calcInfo).setText(answer.text);
-			    	//App.ui.message(answer.text);
+				    msg = Math.floor(100 * answer.value) + '% ' + answer.text;
+			    } else {
+				    msg = 'не запущено';
 			    }
+			    Ext.getCmp(_calcInfo).setText(msg);
 		    },
 		    failure : function() {
 			    Ext.getCmp(_calcInfo).setText('Сервер недоступен');
@@ -283,6 +296,19 @@
 	            width : 25,
 	            handler : function() {
 		            futureSelect.clearValue();
+	            }
+	        }, {
+	            xtype : 'label',
+	            style : 'font-weight: bold;',
+	            margins : '2 5 0 25',
+	            text : 'Клиент:'
+	        }, clientSelect, {
+	            xtype : 'button',
+	            text : 'Х',
+	            margins : '0 5',
+	            width : 25,
+	            handler : function() {
+	            	clientSelect.clearValue();
 	            }
 	        }, {
 	            xtype : 'label',

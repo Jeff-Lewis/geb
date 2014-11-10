@@ -21,6 +21,7 @@ import ru.prbb.middleoffice.domain.ResultProgress;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewPortfolioItem;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
+import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.portfolio.ViewPortfolioDao;
 import ru.prbb.middleoffice.rest.BaseController;
 
@@ -39,6 +40,8 @@ public class ViewPortfolioController
 	private ViewPortfolioDao dao;
 	@Autowired
 	private SecuritiesDao daoSecurities;
+	@Autowired
+	private ClientsDao daoClients;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
@@ -72,16 +75,17 @@ public class ViewPortfolioController
 	@ResponseBody
 	public Result postCalculate(
 			@RequestParam String date,
-			@RequestParam Long security)
+			@RequestParam Long security,
+			@RequestParam Long client)
 	{
 		if (isBusyCalc == Boolean.TRUE) {
-			log.info("POST ViewPortfolio/Calculate: busy date={}, security={}", date, security);
+			log.info("POST ViewPortfolio/Calculate: busy date={}, security={}, client={}", Utils.toArray(date, security, client));
 			return Result.FAIL;
 		}
 		isBusyCalc = Boolean.TRUE;
 		isStopCalc = Boolean.FALSE;
 
-		log.info("POST ViewPortfolio/Calculate: date={}, security={}", date, security);
+		log.info("POST ViewPortfolio/Calculate: date={}, security={}, client={}", Utils.toArray(date, security, client));
 		try {
 			p = new ResultProgress(0, "Расчёт запущен.");
 
@@ -99,6 +103,8 @@ public class ViewPortfolioController
 			String info = " Расчёт с: " + sdf.format(beg.getTime());
 			if (Utils.isNotEmpty(security))
 				info += " для Тикер: " + security;
+			if (Utils.isNotEmpty(client))
+				info += " и Клиент: " + client;
 
 			final long stTime = System.currentTimeMillis();
 			for (Calendar dateCalc = (Calendar) beg.clone(); dateCalc.before(end); dateCalc.add(Calendar.DAY_OF_MONTH, 1)) {
@@ -106,7 +112,7 @@ public class ViewPortfolioController
 				String text = time + sdf.format(dateCalc.getTime()) + info;
 				p = new ResultProgress(v, text);
 
-				dao.executeCalc(new Date(dateCalc.getTimeInMillis()), security);
+				dao.executeCalc(new Date(dateCalc.getTimeInMillis()), security, client);
 
 				long runTime = System.currentTimeMillis() - stTime;
 				time = "Прошло, сек: " + Long.valueOf(runTime / 1000) + " ";
@@ -206,5 +212,14 @@ public class ViewPortfolioController
 	{
 		log.info("COMBO ViewPortfolio: Securities='{}'", query);
 		return daoSecurities.findCombo(query);
+	}
+
+	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboClients(
+			@RequestParam(required = false) String query)
+	{
+		log.info("COMBO ViewPortfolio: Clients='{}'", query);
+		return daoClients.findCombo(query);
 	}
 }
