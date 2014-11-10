@@ -13,7 +13,10 @@
 			autoDestroy : true,
 			url : 'rest/ViewFutures/Futures.do',
 			// root : 'info',
-			fields : [ 'id', 'name' ]
+			fields : [ 'id', 'name' ],
+			sortInfo : {
+				field : 'name'
+			}
 		}),
 		emptyText : 'Выберите фьючерс',
 		loadingText : 'Поиск...',
