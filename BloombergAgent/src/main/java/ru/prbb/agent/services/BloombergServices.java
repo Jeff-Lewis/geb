@@ -153,7 +153,7 @@ public final class BloombergServices {
 
 		final Map<String, Map<String, Map<String, String>>> a =
 				executeHistoricalDataRequest("Загрузка котировок", startDate, endDate,
-						securities, new String[] { PX_LAST });
+						securities, new String[] { PX_LAST }, null);
 
 		final List<BloombergResultItem> res = new ArrayList<>();
 
@@ -477,10 +477,10 @@ public final class BloombergServices {
 	 * @return security -> {date -> { field, value } }
 	 */
 	public Map<String, Map<String, Map<String, String>>> executeHistoricalDataRequest(
-			String name, String startDate, String endDate, String[] securities, String[] fields) {
+			String name, String startDate, String endDate, String[] securities, String[] fields, String[] currencies) {
 		log.info("HistoricalDataRequest:" + name);
 
-		final HistoricalDataRequest r = new HistoricalDataRequest(startDate, endDate, securities, fields);
+		final HistoricalDataRequest r = new HistoricalDataRequest(startDate, endDate, securities, fields, currencies);
 		r.execute(name);
 		return r.getAnswer();
 	}

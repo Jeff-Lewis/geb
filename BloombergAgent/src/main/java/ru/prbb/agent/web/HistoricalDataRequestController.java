@@ -53,15 +53,17 @@ public class HistoricalDataRequestController {
 			@RequestParam String dateStart,
 			@RequestParam String dateEnd,
 			@RequestParam String[] securities,
-			@RequestParam String[] fields)
+			@RequestParam String[] fields,
+			@RequestParam(required = false) String[] currencies)
 	{
 		log.info("POST HistoricalDataRequest: name={}", name);
 		log.info("POST HistoricalDataRequest: dateStart={}, dateEnd={}", dateStart, dateEnd);
 		log.info("POST HistoricalDataRequest: securities={}", (Object) securities);
 		log.info("POST HistoricalDataRequest: fields={}", (Object) fields);
+		log.info("POST HistoricalDataRequest: currencies={}", (Object) currencies);
 
 		try {
-			return bs.executeHistoricalDataRequest(name, dateStart, dateEnd, securities, fields);
+			return bs.executeHistoricalDataRequest(name, dateStart, dateEnd, securities, fields, currencies);
 		} catch (Exception e) {
 			log.error("POST HistoricalDataRequest " + e.getMessage(), e);
 			return e;

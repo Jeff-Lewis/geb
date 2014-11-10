@@ -52,7 +52,7 @@ public class SubscriptionService {
 	 * Проверка статуса подписок.<br>
 	 * Запуск и остановка при его изменении.
 	 */
-	@Scheduled(cron = "* * * * * ?")
+	//@Scheduled(cron = "* * * * * ?")
 	public void execute() {
 		List<Map<String, Object>> subs = dbm.subsGetList();
 
