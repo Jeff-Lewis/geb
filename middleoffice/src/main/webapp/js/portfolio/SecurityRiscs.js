@@ -95,7 +95,7 @@
 			valueField : 'id',
 			store : new Ext.data.JsonStore({
 				autoDestroy : true,
-				url : 'rest/SecurityRiscs/Equities.do',
+				url : 'rest/SecurityRiscs/Securities.do',
 				// root : 'info',
 				fields : [ 'id', 'name' ],
 				sortInfo : {

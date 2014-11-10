@@ -16,7 +16,7 @@ import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SecurityRiscsItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
-import ru.prbb.middleoffice.repo.EquitiesDao;
+import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.portfolio.SecurityRiscsDao;
@@ -36,7 +36,7 @@ public class SecurityRiscsController
 	@Autowired
 	private SecurityRiscsDao dao;
 	@Autowired
-	private EquitiesDao daoEquities;
+	private SecuritiesDao daoSecurities;
 	@Autowired
 	private ClientsDao daoClients;
 	@Autowired
@@ -98,13 +98,13 @@ public class SecurityRiscsController
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Equities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboEquities(
+	public List<SimpleItem> comboSecurities(
 			@RequestParam(required = false) String query)
 	{
-		log.info("COMBO SecurityRiscs: Equities='{}'", query);
-		return daoEquities.findCombo(query);
+		log.info("COMBO SecurityRiscs: Securities='{}'", query);
+		return daoSecurities.findCombo(query);
 	}
 
 	@RequestMapping(value = "/Clients", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
