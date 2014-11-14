@@ -314,12 +314,22 @@ public final class BloombergServices {
 		return r.getAnswer();
 	}
 
-	public Map<String, Map<String, String>> executeBdpOverrideLoad(List<SecForJobRequest> securities) {
+	public Map<String, Map<String, String>> executeBdpOverrideLoad(String[] securities, String[] currencies) {
 		log.info("BdpOverrideLoad:");
 
-		// final List<SecForJobRequest> securities = dao.getLoadEstimatesPeersData();
+		List<SecForJobRequest> jobSecurities = new ArrayList<>();
+		for (String currency : currencies) {
+			for (String security : securities) {
+				if (security.startsWith(currency)) {
+					String security_code = security.substring(currency.length());
+					String iso = currency;
+					SecForJobRequest e = new SecForJobRequest(security_code, iso);
+					jobSecurities.add(e);
+				}
+			}
+		}
 
-		final BdpOverrideRequest r = new BdpOverrideRequest(securities);
+		final BdpOverrideRequest r = new BdpOverrideRequest(jobSecurities);
 
 		r.execute("Jobber/BDP override");
 

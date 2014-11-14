@@ -130,7 +130,7 @@ public class ScheduledTasks {
 		dao.putAtrData(securities, answer);
 	}
 
-	// FIXME @Scheduled(cron = "0 00 6 * * ?")
+	@Scheduled(cron = "0 00 6 * * ?")
 	public void taskBdpOverrideLoad() {
 		log.info("task BdpOverrideLoad");
 		

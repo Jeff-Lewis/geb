@@ -250,9 +250,7 @@ public class BloombergServicesJ {
 		}
 		nvps.addAll(createList("currencies", currencies.toArray(new String[currencies.size()])));
 
-		//final BdpOverrideRequest r = new BdpOverrideRequest(securities);
-
-		String response = executeHttpRequest("/LoadBdpOverride", nvps, name);
+		String response = executeHttpRequest("/LoadBdpOverrideRequest", nvps, name);
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 }
