@@ -65,7 +65,7 @@ public class BloombergDaoImpl implements BloombergDao
 			}
 
 			String msg = res.toString();
-			log.info(msg);
+			log.debug(msg);
 		} catch (Exception e) {
 			log.error("showSql", e);
 		}
@@ -156,9 +156,10 @@ public class BloombergDaoImpl implements BloombergDao
 				continue;
 			}
 			for (String data : datas) {
+				data += " Equity";
 				try {
-					q.setParameter(1, data);
-					q.setParameter(2, security);
+					q.setParameter(1, security);
+					q.setParameter(2, data);
 					showSql(sql, q);
 					q.executeUpdate();
 				} catch (Exception e) {
