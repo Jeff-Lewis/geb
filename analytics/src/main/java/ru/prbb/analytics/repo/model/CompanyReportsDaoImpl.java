@@ -39,7 +39,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 	public List<SimpleItem> findAll() {
 		String sql = "{call dbo.anca_WebGet_Reports_sp}";
 		Query q = em.createNativeQuery(sql, SimpleItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -48,7 +48,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 		String sql = "{call dbo.anca_WebGet_Reports_sp ?}";
 		Query q = em.createNativeQuery(sql, SimpleItem.class)
 				.setParameter(1, id);
-		return (SimpleItem) q.getSingleResult();
+		return (SimpleItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -58,7 +58,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -69,7 +69,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 				.setParameter(1, id)
 				.setParameter(2, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -79,7 +79,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -89,7 +89,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 		String sql = "{call dbo.anca_WebGet_EquitiesNotInReport_sp ?}";
 		Query q = em.createNativeQuery(sql, CompanyAllItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -99,7 +99,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<CompanyStaffItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -124,7 +124,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 			try {
 				q.setParameter(2, security_id);
 				storeSql(sql, q);
-				res[i++] = q.executeUpdate();
+				res[i++] = executeUpdate(q, sql);
 			} catch (DataAccessException e) {
 				log.error("putStaff", e);
 			}
@@ -144,7 +144,7 @@ public class CompanyReportsDaoImpl extends BaseDaoImpl implements CompanyReports
 				q.setParameter(1, cid);
 				//q.setParameter(2, report_id);
 				storeSql(sql, q);
-				res[i++] = q.executeUpdate();
+				res[i++] = executeUpdate(q, sql);
 			} catch (Exception e) {
 				log.error("deleteStaff", e);
 			}

@@ -44,7 +44,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 	public List<CompaniesListItem> findAll() {
 		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 0}";
 		Query q = em.createNativeQuery(sql, CompaniesListItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -53,7 +53,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 1, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		Object[] arr = (Object[]) q.getSingleResult();
+		Object[] arr = (Object[]) getSingleResult(q, sql);
 		CompaniesItem item = new CompaniesItem();
 		item.setId_sec(Utils.toLong(arr[0]));
 		item.setIsin(Utils.toString(arr[1]));
@@ -87,7 +87,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 			q.setParameter(2, param.getKey());
 			q.setParameter(3, param.getValue());
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = q.getResultList();
+		List<Object[]> list = getResultList(q, sql);
 		List<CompaniesQuarterItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			CompaniesQuarterItem item = new CompaniesQuarterItem();
@@ -124,7 +124,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = q.getResultList();
+		List<Object[]> list = getResultList(q, sql);
 		List<CompaniesYearItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			CompaniesYearItem item = new CompaniesYearItem();
@@ -152,7 +152,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		String sql = "select id_doc, file_type, file_name, insert_date from dbo.sec_docs where id_sec=?";
 		Query q = em.createNativeQuery(sql, CompaniesFileItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -162,7 +162,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = q.getResultList();
+		List<Object[]> list = getResultList(q, sql);
 		List<CompaniesExceptionItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			CompaniesExceptionItem item = new CompaniesExceptionItem();
@@ -185,7 +185,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -200,7 +200,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -216,7 +216,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -232,7 +232,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -247,7 +247,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -262,7 +262,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				.setParameter(3, type)
 				.setParameter(4, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -272,7 +272,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				+ " where id_doc=?";
 		Query q = em.createNativeQuery(sql, CompaniesFileItem.class)
 				.setParameter(1, id_doc);
-		return (CompaniesFileItem) q.getSingleResult();
+		return (CompaniesFileItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -281,7 +281,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		String sql = "select file from dbo.sec_docs where id_doc=?";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id_doc);
-		return (byte[]) q.getSingleResult();
+		return (byte[]) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -291,7 +291,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id_doc);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -300,7 +300,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		String sql = "{call dbo.equity_vars_notused ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -313,7 +313,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				.setParameter(3, baseYear)
 				.setParameter(4, calcYear);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -324,7 +324,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				.setParameter(1, id)
 				.setParameter(2, type);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -337,7 +337,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				.setParameter(3, baseYear)
 				.setParameter(4, calcYear);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -348,7 +348,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				.setParameter(1, id)
 				.setParameter(2, type);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -361,7 +361,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				.setParameter(3, expression)
 				.setParameter(4, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -372,7 +372,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				.setParameter(1, id)
 				.setParameter(2, variable);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -382,7 +382,7 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id_sec);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

@@ -36,7 +36,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 	public List<SimpleItem> findAll() {
 		String sql = "{call dbo.anca_WebGet_PivotGroups_sp}";
 		Query q = em.createNativeQuery(sql, SimpleItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -45,7 +45,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 		String sql = "{call dbo.anca_WebGet_PivotGroups_sp ?}";
 		Query q = em.createNativeQuery(sql, SimpleItem.class)
 				.setParameter(1, id);
-		return (SimpleItem) q.getSingleResult();
+		return (SimpleItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -55,7 +55,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -66,7 +66,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 				.setParameter(1, id)
 				.setParameter(2, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -76,7 +76,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -85,7 +85,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 	public List<CompanyStaffItem> findStaff() {
 		String sql = "{call dbo.anca_WebGet_SelectEquitiesNotPivotGroup_sp}";
 		Query q = em.createNativeQuery(sql, CompanyStaffItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -95,7 +95,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 		String sql = "{call dbo.anca_WebGet_SelectPivotGroupEquities_sp ?}";
 		Query q = em.createNativeQuery(sql, CompanyStaffItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -110,7 +110,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 			try {
 				q.setParameter(1, id_sec);
 				storeSql(sql, q);
-				res[i++] = q.executeUpdate();
+				res[i++] = executeUpdate(q, sql);
 			} catch (DataAccessException e) {
 				log.error("putStaff", e);
 			}
@@ -129,7 +129,7 @@ public class CompanyGroupDaoImpl extends BaseDaoImpl implements CompanyGroupDao
 			try {
 				q.setParameter(1, id_sec);
 				storeSql(sql, q);
-				res[i++] = q.executeUpdate();
+				res[i++] = executeUpdate(q, sql);
 			} catch (DataAccessException e) {
 				log.error("deleteStaff", e);
 			}

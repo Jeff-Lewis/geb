@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.NotEnoughQuotationsItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Не хватает котировок
@@ -22,7 +23,7 @@ import ru.prbb.middleoffice.domain.NotEnoughQuotationsItem;
  * 
  */
 @Repository
-public class NotEnoughQuotationsDaoImpl implements NotEnoughQuotationsDao
+public class NotEnoughQuotationsDaoImpl extends BaseDaoImpl implements NotEnoughQuotationsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -33,7 +34,7 @@ public class NotEnoughQuotationsDaoImpl implements NotEnoughQuotationsDao
 	public List<NotEnoughQuotationsItem> show() {
 		String sql = "select * from dbo.mo_WebGet_QuotesNotExist_v";
 		Query q = em.createNativeQuery(sql, NotEnoughQuotationsItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

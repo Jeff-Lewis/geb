@@ -41,7 +41,7 @@ public class SecurityRiscsDaoImpl extends BaseDaoImpl implements SecurityRiscsDa
 				.setParameter(3, batch)
 				.setParameter(2, p_id)
 				.setParameter(5, date);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -50,7 +50,7 @@ public class SecurityRiscsDaoImpl extends BaseDaoImpl implements SecurityRiscsDa
 		String sql = "{call dbo.mo_WebGet_SecurityRiscs_sp ?}";
 		Query q = em.createNativeQuery(sql, SecurityRiscsItem.class)
 				.setParameter(1, id);
-		return (SecurityRiscsItem) q.getSingleResult();
+		return (SecurityRiscsItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -60,7 +60,7 @@ public class SecurityRiscsDaoImpl extends BaseDaoImpl implements SecurityRiscsDa
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -81,6 +81,6 @@ public class SecurityRiscsDaoImpl extends BaseDaoImpl implements SecurityRiscsDa
 				.setParameter(9, date_end)
 				.setParameter(10, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 }

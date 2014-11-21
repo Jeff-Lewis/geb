@@ -67,7 +67,7 @@ public class RequestBDHDaoImpl extends BaseDaoImpl implements RequestBDHDao
 			q.setParameter(7, d.calendar);
 			storeSql(sql, q);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -118,7 +118,7 @@ public class RequestBDHDaoImpl extends BaseDaoImpl implements RequestBDHDao
 	public List<SimpleItem> findParams(String query) {
 		String sql = "select code from dbo.multy_request_params_v";
 		Query q = em.createNativeQuery(sql);
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 }

@@ -43,7 +43,7 @@ public class ViewDealsDaoImpl extends BaseDaoImpl implements ViewDealsDao
 				.setParameter(5, funds)
 				.setParameter(6, initiator)
 				.setParameter(7, batch);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -54,7 +54,7 @@ public class ViewDealsDaoImpl extends BaseDaoImpl implements ViewDealsDao
 			Query q = em.createNativeQuery(sql)
 					.setParameter(1, deal);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class ViewDealsDaoImpl extends BaseDaoImpl implements ViewDealsDao
 		for (Long deal : deals) {
 			q.setParameter(1, deal);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 

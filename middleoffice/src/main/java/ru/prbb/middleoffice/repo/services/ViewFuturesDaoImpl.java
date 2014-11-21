@@ -34,7 +34,7 @@ public class ViewFuturesDaoImpl extends BaseDaoImpl implements ViewFuturesDao
 				.setParameter(2, deal)
 				.setParameter(3, futures);
 		storeSql(sql, q);
-		q.executeUpdate();
+		executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -45,7 +45,7 @@ public class ViewFuturesDaoImpl extends BaseDaoImpl implements ViewFuturesDao
 				.setParameter(1, id_sec)
 				.setParameter(2, deal);
 		storeSql(sql, q);
-		q.executeUpdate();
+		executeUpdate(q, sql);
 	}
 
 }

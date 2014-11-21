@@ -37,7 +37,7 @@ public class ClientsDaoImpl extends BaseDaoImpl implements ClientsDao
 	public List<ClientsItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_SelectClients_sp}";
 		Query q = em.createNativeQuery(sql, ClientsItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -46,7 +46,7 @@ public class ClientsDaoImpl extends BaseDaoImpl implements ClientsDao
 		String sql = "{call dbo.mo_WebGet_SelectClients_sp ?}";
 		Query q = em.createNativeQuery(sql, ClientsItem.class)
 				.setParameter(1, id);
-		return (ClientsItem) q.getSingleResult();
+		return (ClientsItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -60,7 +60,7 @@ public class ClientsDaoImpl extends BaseDaoImpl implements ClientsDao
 				.setParameter(4, date_begin)
 				.setParameter(5, date_end);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -75,7 +75,7 @@ public class ClientsDaoImpl extends BaseDaoImpl implements ClientsDao
 				.setParameter(5, date_begin)
 				.setParameter(6, date_end);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -85,7 +85,7 @@ public class ClientsDaoImpl extends BaseDaoImpl implements ClientsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -101,6 +101,6 @@ public class ClientsDaoImpl extends BaseDaoImpl implements ClientsDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }

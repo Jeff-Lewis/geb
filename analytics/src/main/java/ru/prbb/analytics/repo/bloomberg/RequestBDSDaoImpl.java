@@ -222,7 +222,7 @@ public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 			q.setParameter(10, d.barr);
 			q.setParameter(11, d.year_return);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -281,7 +281,7 @@ public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 			q.setParameter(6, d.comparable_eps);
 			q.setParameter(7, d.estimate_eps);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -318,7 +318,7 @@ public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 			q.setParameter(2, d.ead);
 			q.setParameter(3, d.eyap);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -350,7 +350,7 @@ public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 			q.setParameter(1, d.sec);
 			q.setParameter(2, d.name);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -413,7 +413,7 @@ public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 			q.setParameter(7, d.group);
 			q.setParameter(8, d.sub);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -422,7 +422,7 @@ public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 	public List<SimpleItem> findParams(String query) {
 		String sql = "select code from dbo.bulk_request_params_v";
 		Query q = em.createNativeQuery(sql);
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 }

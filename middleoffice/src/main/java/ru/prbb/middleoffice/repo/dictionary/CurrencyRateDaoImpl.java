@@ -17,13 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.CurrencyRateItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * @author RBr
  *
  */
 @Repository
-public class CurrencyRateDaoImpl implements CurrencyRateDao
+public class CurrencyRateDaoImpl extends BaseDaoImpl implements CurrencyRateDao
 {
 	@Autowired
 	private EntityManager em;
@@ -36,7 +37,7 @@ public class CurrencyRateDaoImpl implements CurrencyRateDao
 				.setParameter(1, dated)
 				.setParameter(2, iso);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<CurrencyRateItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;

@@ -36,7 +36,7 @@ public class BrokersDaoImpl extends BaseDaoImpl implements BrokersDao
 	public List<BrokerItem> findAll() {
 		String sql = "{call dbo.anca_WebGet_SelectBrokers_sp}";
 		Query q = em.createNativeQuery(sql, BrokerItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -45,7 +45,7 @@ public class BrokersDaoImpl extends BaseDaoImpl implements BrokersDao
 		String sql = "{call dbo.anca_WebGet_SelectBrokers_sp ?}";
 		Query q = em.createNativeQuery(sql, BrokerItem.class)
 				.setParameter(1, id);
-		return (BrokerItem) q.getSingleResult();
+		return (BrokerItem) getSingleResult(q, sql);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class BrokersDaoImpl extends BaseDaoImpl implements BrokersDao
 				.setParameter(4, cover_russian)
 				.setParameter(5, short_name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class BrokersDaoImpl extends BaseDaoImpl implements BrokersDao
 				.setParameter(5, cover_russian)
 				.setParameter(6, short_name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -118,7 +118,7 @@ public class BrokersDaoImpl extends BaseDaoImpl implements BrokersDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -134,6 +134,6 @@ public class BrokersDaoImpl extends BaseDaoImpl implements BrokersDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }

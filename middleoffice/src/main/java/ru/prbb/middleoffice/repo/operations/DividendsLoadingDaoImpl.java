@@ -38,7 +38,7 @@ public class DividendsLoadingDaoImpl extends BaseDaoImpl implements DividendsLoa
 		q.setParameter(8, r.currency);
 		q.setParameter(9, r.fund);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

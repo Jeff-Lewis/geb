@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.BuildEPSItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Расчёт EPS по компании
@@ -24,7 +25,7 @@ import ru.prbb.analytics.domain.BuildEPSItem;
  * 
  */
 @Service
-public class BuildEPSDaoImpl implements BuildEPSDao
+public class BuildEPSDaoImpl extends BaseDaoImpl implements BuildEPSDao
 {
 	@Autowired
 	private EntityManager em;
@@ -38,7 +39,7 @@ public class BuildEPSDaoImpl implements BuildEPSDao
 		for (Long id : ids) {
 			try {
 				q.setParameter(1, id);
-				Object[] arr = (Object[]) q.getSingleResult();
+				Object[] arr = (Object[]) getSingleResult(q, sql);
 				BuildEPSItem item = createItem(arr);
 				res.add(item);
 			} catch (Exception e) {
@@ -56,7 +57,7 @@ public class BuildEPSDaoImpl implements BuildEPSDao
 		String sql = "{call dbo.main_create_eps_proc ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		Object[] arr = (Object[]) q.getSingleResult();
+		Object[] arr = (Object[]) getSingleResult(q, sql);
 		BuildEPSItem item = createItem(arr);
 		return item;
 	}
@@ -67,7 +68,7 @@ public class BuildEPSDaoImpl implements BuildEPSDao
 		String sql = "{call dbo.main_create_eps_proc}";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = q.getResultList();
+		List<Object[]> list = getResultList(q, sql);
 		final List<BuildEPSItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			BuildEPSItem item = createItem(arr);

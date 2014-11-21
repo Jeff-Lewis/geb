@@ -36,7 +36,7 @@ public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 	public List<SimpleItem> findAll() {
 		String sql = "{call dbo.WebGet_SelectGroups_sp}";
 		Query q = em.createNativeQuery(sql, SimpleItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -58,7 +58,7 @@ public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -69,7 +69,7 @@ public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 				.setParameter(1, id)
 				.setParameter(2, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -79,7 +79,7 @@ public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -89,7 +89,7 @@ public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 		String sql = "{call dbo.WebGet_SelectContactsAddress_sp ?}";
 		Query q = em.createNativeQuery(sql, GroupAddressItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -99,7 +99,7 @@ public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 		String sql = "{call dbo.WebGet_SelectGroupContacts_sp ?}";
 		Query q = em.createNativeQuery(sql, GroupContactsItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -112,7 +112,7 @@ public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 					.setParameter(1, id)
 					.setParameter(2, cids[i]);
 			storeSql(sql, q);
-			res[i] = q.executeUpdate();
+			res[i] = executeUpdate(q, sql);
 		}
 		return res;
 	}
@@ -127,7 +127,7 @@ public class GroupsDaoImpl extends BaseDaoImpl implements GroupsDao
 					.setParameter(1, id)
 					.setParameter(2, cids[i]);
 			storeSql(sql, q);
-			res[i] = q.executeUpdate();
+			res[i] = executeUpdate(q, sql);
 		}
 		return res;
 	}

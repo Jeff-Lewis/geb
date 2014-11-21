@@ -96,7 +96,7 @@ public class LoadQuotesDaoImpl extends BaseDaoImpl implements LoadQuotesDao
 			q.setParameter(2, item.value);
 			q.setParameter(3, item.date);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 }

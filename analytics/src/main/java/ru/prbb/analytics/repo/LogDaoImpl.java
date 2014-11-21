@@ -42,7 +42,7 @@ public class LogDaoImpl extends BaseDaoImpl implements LogDao
 				.setParameter(1, start)
 				.setParameter(2, stop);
 		storeSql(sql, q);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -55,7 +55,7 @@ public class LogDaoImpl extends BaseDaoImpl implements LogDao
 				.setParameter(2, start)
 				.setParameter(3, stop);
 		storeSql(sql, q);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -65,7 +65,7 @@ public class LogDaoImpl extends BaseDaoImpl implements LogDao
 		Query q = em.createNativeQuery(sql);
 		storeSql(sql, q);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<SubscriptionItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;

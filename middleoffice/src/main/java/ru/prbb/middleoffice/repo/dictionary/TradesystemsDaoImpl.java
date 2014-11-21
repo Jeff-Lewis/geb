@@ -36,7 +36,7 @@ public class TradesystemsDaoImpl extends BaseDaoImpl implements TradesystemsDao
 	public List<ReferenceItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_SelectTradeSystem_sp}";
 		Query q = em.createNativeQuery(sql, ReferenceItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -45,7 +45,7 @@ public class TradesystemsDaoImpl extends BaseDaoImpl implements TradesystemsDao
 		String sql = "{call dbo.mo_WebGet_SelectTradeSystem_sp ?}";
 		Query q = em.createNativeQuery(sql, ReferenceItem.class)
 				.setParameter(1, id);
-		return (ReferenceItem) q.getSingleResult();
+		return (ReferenceItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -56,7 +56,7 @@ public class TradesystemsDaoImpl extends BaseDaoImpl implements TradesystemsDao
 				.setParameter(1, name)
 				.setParameter(2, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -68,7 +68,7 @@ public class TradesystemsDaoImpl extends BaseDaoImpl implements TradesystemsDao
 				.setParameter(2, name)
 				.setParameter(3, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -78,7 +78,7 @@ public class TradesystemsDaoImpl extends BaseDaoImpl implements TradesystemsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -94,6 +94,6 @@ public class TradesystemsDaoImpl extends BaseDaoImpl implements TradesystemsDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }

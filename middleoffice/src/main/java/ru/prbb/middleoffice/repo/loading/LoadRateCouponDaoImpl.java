@@ -68,7 +68,7 @@ public class LoadRateCouponDaoImpl extends BaseDaoImpl implements LoadRateCoupon
 			q.setParameter(2, item.date_time);
 			q.setParameter(3, item.value);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 }

@@ -44,7 +44,7 @@ public class CouponsDaoImpl extends BaseDaoImpl implements CouponsDao
 				.setParameter(5, begin)
 				.setParameter(6, end);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = q.getResultList();
+		List<Object[]> list = getResultList(q, sql);
 		List<CouponItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			int i = 0;
@@ -80,7 +80,7 @@ public class CouponsDaoImpl extends BaseDaoImpl implements CouponsDao
 		String sql = "{call dbo.mo_WebGet_Coupons_sp ?}";
 		Query q = em.createNativeQuery(sql, CouponItem.class)
 				.setParameter(1, id);
-		return (CouponItem) q.getSingleResult();
+		return (CouponItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -101,7 +101,7 @@ public class CouponsDaoImpl extends BaseDaoImpl implements CouponsDao
 				.setParameter(9, extra_costs_per_share)
 				.setParameter(10, coupon_oper_id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -112,7 +112,7 @@ public class CouponsDaoImpl extends BaseDaoImpl implements CouponsDao
 				.setParameter(1, id)
 				.setParameter(2, receive);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -124,7 +124,7 @@ public class CouponsDaoImpl extends BaseDaoImpl implements CouponsDao
 				.setParameter(2, type)
 				.setParameter(3, value);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -134,7 +134,7 @@ public class CouponsDaoImpl extends BaseDaoImpl implements CouponsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -150,6 +150,6 @@ public class CouponsDaoImpl extends BaseDaoImpl implements CouponsDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }

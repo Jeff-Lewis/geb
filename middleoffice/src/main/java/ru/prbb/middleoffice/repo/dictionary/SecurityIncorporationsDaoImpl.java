@@ -36,7 +36,7 @@ public class SecurityIncorporationsDaoImpl extends BaseDaoImpl implements Securi
 	public List<SecurityIncorporationListItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_SecurityIncorporations_sp}";
 		Query q = em.createNativeQuery(sql, SecurityIncorporationListItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -45,7 +45,7 @@ public class SecurityIncorporationsDaoImpl extends BaseDaoImpl implements Securi
 		String sql = "select * from dbo.mo_WebGet_SecurityIncorporations_v where id = ?";
 		Query q = em.createNativeQuery(sql, SecurityIncorporationItem.class)
 				.setParameter(1, id);
-		return (SecurityIncorporationItem) q.getSingleResult();
+		return (SecurityIncorporationItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -57,7 +57,7 @@ public class SecurityIncorporationsDaoImpl extends BaseDaoImpl implements Securi
 				.setParameter(2, country)
 				.setParameter(3, dateBegin);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -69,7 +69,7 @@ public class SecurityIncorporationsDaoImpl extends BaseDaoImpl implements Securi
 				.setParameter(2, dateBegin)
 				.setParameter(3, dateEnd);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -79,7 +79,7 @@ public class SecurityIncorporationsDaoImpl extends BaseDaoImpl implements Securi
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

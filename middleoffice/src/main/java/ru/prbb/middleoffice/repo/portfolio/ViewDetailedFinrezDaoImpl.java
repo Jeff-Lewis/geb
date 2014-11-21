@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.ViewDetailedFinrezItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Текущий финрез
@@ -23,7 +24,7 @@ import ru.prbb.middleoffice.domain.ViewDetailedFinrezItem;
  * 
  */
 @Repository
-public class ViewDetailedFinrezDaoImpl implements ViewDetailedFinrezDao
+public class ViewDetailedFinrezDaoImpl extends BaseDaoImpl implements ViewDetailedFinrezDao
 {
 	@Autowired
 	private EntityManager em;
@@ -40,7 +41,7 @@ public class ViewDetailedFinrezDaoImpl implements ViewDetailedFinrezDao
 				.setParameter(4, client)
 				.setParameter(5, fund)
 				.setParameter(6, initiator);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

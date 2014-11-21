@@ -18,6 +18,7 @@ import ru.prbb.Utils;
 import ru.prbb.analytics.domain.ViewModelInfoItem;
 import ru.prbb.analytics.domain.ViewModelItem;
 import ru.prbb.analytics.domain.ViewModelPriceItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Просмотр текущей модели
@@ -26,7 +27,7 @@ import ru.prbb.analytics.domain.ViewModelPriceItem;
  * 
  */
 @Service
-public class ViewModelDaoImpl implements ViewModelDao
+public class ViewModelDaoImpl extends BaseDaoImpl implements ViewModelDao
 {
 	@Autowired
 	private EntityManager em;
@@ -37,7 +38,7 @@ public class ViewModelDaoImpl implements ViewModelDao
 	public List<ViewModelItem> findAll() {
 		String sql = "{call dbo.MainPageReportProc}";
 		Query q = em.createNativeQuery(sql, ViewModelItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -57,7 +58,7 @@ public class ViewModelDaoImpl implements ViewModelDao
 				" and id_sec = ?";
 		Query q = em.createNativeQuery(sql, ViewModelInfoItem.class)
 				.setParameter(1, id_sec);
-		return (ViewModelInfoItem) q.getSingleResult();
+		return (ViewModelInfoItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -70,7 +71,7 @@ public class ViewModelDaoImpl implements ViewModelDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id_sec);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<ViewModelPriceItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;

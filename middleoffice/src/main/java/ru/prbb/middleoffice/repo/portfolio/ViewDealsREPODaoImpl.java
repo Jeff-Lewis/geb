@@ -38,7 +38,7 @@ public class ViewDealsREPODaoImpl extends BaseDaoImpl implements ViewDealsREPODa
 				.setParameter(1, begin)
 				.setParameter(2, end)
 				.setParameter(3, security);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -47,7 +47,7 @@ public class ViewDealsREPODaoImpl extends BaseDaoImpl implements ViewDealsREPODa
 		String sql = "{call dbo.mo_WebGet_RepoDeals_sp ?}";
 		Query q = em.createNativeQuery(sql, ViewDealsREPOItem.class)
 				.setParameter(1, id);
-		return (ViewDealsREPOItem) q.getSingleResult();
+		return (ViewDealsREPOItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -61,7 +61,7 @@ public class ViewDealsREPODaoImpl extends BaseDaoImpl implements ViewDealsREPODa
 				.setParameter(4, price)
 				.setParameter(5, days);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -71,7 +71,7 @@ public class ViewDealsREPODaoImpl extends BaseDaoImpl implements ViewDealsREPODa
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

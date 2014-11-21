@@ -22,7 +22,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  *
  */
 @Repository
-public class SecuritiesDaoImpl implements SecuritiesDao
+public class SecuritiesDaoImpl extends BaseDaoImpl implements SecuritiesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -35,7 +35,7 @@ public class SecuritiesDaoImpl implements SecuritiesDao
 		Query q = em.createNativeQuery(sql, SecurityItem.class)
 				.setParameter(1, filter)
 				.setParameter(2, security);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -51,7 +51,7 @@ public class SecuritiesDaoImpl implements SecuritiesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -66,7 +66,7 @@ public class SecuritiesDaoImpl implements SecuritiesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 }

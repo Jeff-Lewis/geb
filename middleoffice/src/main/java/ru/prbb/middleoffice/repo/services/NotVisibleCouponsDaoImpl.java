@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.NotEnoughCouponsItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Нет настроек для купонов
@@ -23,7 +24,7 @@ import ru.prbb.middleoffice.domain.NotEnoughCouponsItem;
  * @author RBr
  */
 @Repository
-public class NotVisibleCouponsDaoImpl implements NotVisibleCouponsDao
+public class NotVisibleCouponsDaoImpl extends BaseDaoImpl implements NotVisibleCouponsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -34,7 +35,7 @@ public class NotVisibleCouponsDaoImpl implements NotVisibleCouponsDao
 		String sql = "select * from dbo.mo_WebGet_CouponsNotVisible_v";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = q.getResultList();
+		List<Object[]> list = getResultList(q, sql);
 		List<NotEnoughCouponsItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			NotEnoughCouponsItem item = new NotEnoughCouponsItem();

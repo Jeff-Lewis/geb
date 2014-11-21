@@ -39,7 +39,7 @@ public class CouponsLoadingDaoImpl extends BaseDaoImpl implements CouponsLoading
 		q.setParameter(9, r.oper_name);
 		q.setParameter(10, r.fund);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

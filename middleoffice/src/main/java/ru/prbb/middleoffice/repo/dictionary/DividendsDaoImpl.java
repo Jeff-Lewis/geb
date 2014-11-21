@@ -43,7 +43,7 @@ public class DividendsDaoImpl extends BaseDaoImpl implements DividendsDao
 				.setParameter(5, begin)
 				.setParameter(6, end);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = q.getResultList();
+		List<Object[]> list = getResultList(q, sql);
 		List<DividendItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			int i = 0;
@@ -78,7 +78,7 @@ public class DividendsDaoImpl extends BaseDaoImpl implements DividendsDao
 		String sql = "{call dbo.mo_WebGet_Dividends_sp ?}";
 		Query q = em.createNativeQuery(sql, DividendItem.class)
 				.setParameter(1, id);
-		return (DividendItem) q.getSingleResult();
+		return (DividendItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -98,7 +98,7 @@ public class DividendsDaoImpl extends BaseDaoImpl implements DividendsDao
 				.setParameter(8, dividend_per_share)
 				.setParameter(9, extra_costs_per_share);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -109,7 +109,7 @@ public class DividendsDaoImpl extends BaseDaoImpl implements DividendsDao
 				.setParameter(1, id)
 				.setParameter(2, receive);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -121,7 +121,7 @@ public class DividendsDaoImpl extends BaseDaoImpl implements DividendsDao
 				.setParameter(2, type)
 				.setParameter(3, value);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -131,7 +131,7 @@ public class DividendsDaoImpl extends BaseDaoImpl implements DividendsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

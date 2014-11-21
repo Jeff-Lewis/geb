@@ -64,4 +64,35 @@ public abstract class BaseDaoImpl {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
+	protected List getResultList(Query q, String sql) {
+		long st = System.currentTimeMillis();
+		try {
+			return q.getResultList();
+		} finally {
+			long time = System.currentTimeMillis() - st;
+			log.debug("==> exec time {} ms: {}", Long.valueOf(time), sql);
+		}
+	}
+
+	protected Object getSingleResult(Query q, String sql) {
+		long st = System.currentTimeMillis();
+		try {
+			return q.getSingleResult();
+		} finally {
+			long time = System.currentTimeMillis() - st;
+			log.debug("==> exec time {} ms: {}", Long.valueOf(time), sql);
+		}
+	}
+
+	protected int executeUpdate(Query q, String sql) {
+		long st = System.currentTimeMillis();
+		try {
+			return q.executeUpdate();
+		} finally {
+			long time = System.currentTimeMillis() - st;
+			log.debug("==> exec time {} ms: {}", Long.valueOf(time), sql);
+		}
+	}
+
 }

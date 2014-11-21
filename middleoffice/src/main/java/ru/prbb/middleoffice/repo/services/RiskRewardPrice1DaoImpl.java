@@ -32,7 +32,7 @@ public class RiskRewardPrice1DaoImpl extends BaseDaoImpl implements RiskRewardPr
 	public List<RiskRewardPrice1Item> findAll() {
 		String sql = "{call dbo.mo_WebGet_SecuritiesAttributes_sp}";
 		Query q = em.createNativeQuery(sql, RiskRewardPrice1Item.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -41,7 +41,7 @@ public class RiskRewardPrice1DaoImpl extends BaseDaoImpl implements RiskRewardPr
 		String sql = "{call dbo.mo_WebGet_SecuritiesAttributes_sp ?}";
 		Query q = em.createNativeQuery(sql, RiskRewardPrice1Item.class)
 				.setParameter(1, id);
-		return (RiskRewardPrice1Item) q.getSingleResult();
+		return (RiskRewardPrice1Item) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -51,7 +51,7 @@ public class RiskRewardPrice1DaoImpl extends BaseDaoImpl implements RiskRewardPr
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

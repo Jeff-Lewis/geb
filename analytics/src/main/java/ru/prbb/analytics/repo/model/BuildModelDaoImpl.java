@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.BuildModelItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Расчёт модели по компании
@@ -24,7 +25,7 @@ import ru.prbb.analytics.domain.BuildModelItem;
  * 
  */
 @Service
-public class BuildModelDaoImpl implements BuildModelDao
+public class BuildModelDaoImpl extends BaseDaoImpl implements BuildModelDao
 {
 	@Autowired
 	private EntityManager em;
@@ -39,7 +40,7 @@ public class BuildModelDaoImpl implements BuildModelDao
 			BuildModelItem item = new BuildModelItem();
 			try {
 				q.setParameter(1, id);
-				Object[] arr = (Object[]) q.getSingleResult();
+				Object[] arr = (Object[]) getSingleResult(q, sql);
 				item.setSecurity_code(Utils.toString(arr[0]));
 				item.setStatus(Utils.toString(arr[1]));
 			} catch (Exception e) {
@@ -57,7 +58,7 @@ public class BuildModelDaoImpl implements BuildModelDao
 		String sql = "{call dbo.build_model_proc}";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<BuildModelItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;

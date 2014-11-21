@@ -34,7 +34,7 @@ public class SwapsDaoImpl extends BaseDaoImpl implements SwapsDao
 	public List<SwapItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_TrsContracts_sp}";
 		Query q = em.createNativeQuery(sql, SwapItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -52,7 +52,7 @@ public class SwapsDaoImpl extends BaseDaoImpl implements SwapsDao
 				.setParameter(1, swap)
 				.setParameter(2, security);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -63,7 +63,7 @@ public class SwapsDaoImpl extends BaseDaoImpl implements SwapsDao
 				.setParameter(1, id)
 				.setParameter(2, swap);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -73,7 +73,7 @@ public class SwapsDaoImpl extends BaseDaoImpl implements SwapsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.CurrenciesItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Валюты
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class CurrenciesDaoImpl implements CurrenciesDao
+public class CurrenciesDaoImpl extends BaseDaoImpl implements CurrenciesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -35,7 +36,7 @@ public class CurrenciesDaoImpl implements CurrenciesDao
 	public List<CurrenciesItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_Currency_sp}";
 		Query q = em.createNativeQuery(sql, CurrenciesItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -51,6 +52,6 @@ public class CurrenciesDaoImpl implements CurrenciesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }

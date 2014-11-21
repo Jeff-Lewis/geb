@@ -37,7 +37,7 @@ public class SetSecurityRiscsDaoImpl extends BaseDaoImpl implements SetSecurityR
 				.setParameter(4, stopLoss)
 				.setParameter(5, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

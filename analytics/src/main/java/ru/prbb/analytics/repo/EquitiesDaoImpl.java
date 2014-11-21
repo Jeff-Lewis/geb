@@ -24,7 +24,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Repository
-public class EquitiesDaoImpl implements EquitiesDao
+public class EquitiesDaoImpl extends BaseDaoImpl implements EquitiesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -78,18 +78,18 @@ public class EquitiesDaoImpl implements EquitiesDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<EquitiesItem> findAllEquities(String filter, Long security_id, Integer fund_flag) {
+		String sql = "{call dbo.anca_WebGet_EquityFilter_sp}";
 		Query q;
 		if (Utils.isEmpty(filter) && Utils.isEmpty(security_id)) {
-			String sql = "{call dbo.anca_WebGet_EquityFilter_sp}";
 			q = em.createNativeQuery(sql, EquitiesItem.class);
 		} else {
-			String sql = "{call dbo.anca_WebGet_EquityFilter_sp ?, ?, ?}";
+			sql = "{call dbo.anca_WebGet_EquityFilter_sp ?, ?, ?}";
 			q = em.createNativeQuery(sql, EquitiesItem.class)
 					.setParameter(1, filter)
 					.setParameter(2, fund_flag)
 					.setParameter(3, security_id);
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -104,7 +104,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -120,6 +120,6 @@ public class EquitiesDaoImpl implements EquitiesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }

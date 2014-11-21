@@ -40,7 +40,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 				.setParameter(1, date)
 				.setParameter(2, security);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<ViewPortfolioItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -72,7 +72,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, date);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<ViewPortfolioTransferItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -101,7 +101,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 				.setParameter(1, begin_date)
 				.setParameter(2, id_sec);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -112,7 +112,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 				.setParameter(1, begin_date)
 				.setParameter(2, id_sec);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

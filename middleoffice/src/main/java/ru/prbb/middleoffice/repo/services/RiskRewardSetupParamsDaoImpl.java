@@ -15,13 +15,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.middleoffice.domain.RiskRewardSetupParamsItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * @author RBr
  * 
  */
 @Repository
-public class RiskRewardSetupParamsDaoImpl implements RiskRewardSetupParamsDao
+public class RiskRewardSetupParamsDaoImpl extends BaseDaoImpl implements RiskRewardSetupParamsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -34,7 +35,7 @@ public class RiskRewardSetupParamsDaoImpl implements RiskRewardSetupParamsDao
 		Query q = em.createNativeQuery(sql, RiskRewardSetupParamsItem.class)
 				.setParameter(1, security)
 				.setParameter(2, date);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -43,7 +44,7 @@ public class RiskRewardSetupParamsDaoImpl implements RiskRewardSetupParamsDao
 		String sql = "{call dbo.mo_WebGet_SecurityParams_sp ?}";
 		Query q = em.createNativeQuery(sql, RiskRewardSetupParamsItem.class)
 				.setParameter(1, id);
-		return (RiskRewardSetupParamsItem) q.getSingleResult();
+		return (RiskRewardSetupParamsItem) getSingleResult(q, sql);
 	}
 
 }

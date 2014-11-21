@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.ViewParamItem;
 import ru.prbb.analytics.domain.ViewParamsItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Справочник параметров
@@ -23,7 +24,7 @@ import ru.prbb.analytics.domain.ViewParamsItem;
  * 
  */
 @Repository
-public class ViewParamsDaoImpl implements ViewParamsDao
+public class ViewParamsDaoImpl extends BaseDaoImpl implements ViewParamsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -34,7 +35,7 @@ public class ViewParamsDaoImpl implements ViewParamsDao
 	public List<ViewParamsItem> findAll() {
 		String sql = "select param_id, blm_id, code, name from dbo.params";
 		Query q = em.createNativeQuery(sql, ViewParamsItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -49,7 +50,7 @@ public class ViewParamsDaoImpl implements ViewParamsDao
 				" where field_id=?";
 		Query q = em.createNativeQuery(sql, ViewParamItem.class)
 				.setParameter(1, blm_id);
-		return (ViewParamItem) q.getSingleResult();
+		return (ViewParamItem) getSingleResult(q, sql);
 	}
 
 }

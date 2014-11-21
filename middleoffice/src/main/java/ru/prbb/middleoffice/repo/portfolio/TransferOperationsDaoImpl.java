@@ -39,7 +39,7 @@ public class TransferOperationsDaoImpl extends BaseDaoImpl implements TransferOp
 				.setParameter(1, begin)
 				.setParameter(2, end)
 				.setParameter(3, security);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -49,7 +49,7 @@ public class TransferOperationsDaoImpl extends BaseDaoImpl implements TransferOp
 		String sql = "{call dbo.mo_WebGet_SelectTransferDeals_sp ?}";
 		Query q = em.createNativeQuery(sql, TransferOperationsItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -60,7 +60,7 @@ public class TransferOperationsDaoImpl extends BaseDaoImpl implements TransferOp
 			Query q = em.createNativeQuery(sql)
 					.setParameter(1, id);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -74,7 +74,7 @@ public class TransferOperationsDaoImpl extends BaseDaoImpl implements TransferOp
 					.setParameter(2, field)
 					.setParameter(3, value);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 

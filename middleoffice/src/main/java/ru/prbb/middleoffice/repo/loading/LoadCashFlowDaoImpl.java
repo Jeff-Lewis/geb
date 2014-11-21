@@ -74,7 +74,7 @@ public class LoadCashFlowDaoImpl extends BaseDaoImpl implements LoadCashFlowDao
 			q.setParameter(3, item.coupon_cash_flow);
 			q.setParameter(4, item.principal_cash_flow);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -84,7 +84,7 @@ public class LoadCashFlowDaoImpl extends BaseDaoImpl implements LoadCashFlowDao
 	public List<SecurityCashFlowItem> findAllSecurities() {
 		String sql = "select * from dbo.mo_WebGet_bonds_v";
 		Query q = em.createNativeQuery(sql, SecurityCashFlowItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

@@ -53,6 +53,6 @@ public class DealsOneNewDaoImpl extends BaseDaoImpl implements DealsOneNewDao
 		q.setParameter(++i, futuresAlias);
 		q.setParameter(++i, kindTicker);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 }

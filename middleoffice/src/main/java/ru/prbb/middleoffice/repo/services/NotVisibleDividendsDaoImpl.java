@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.NotEnoughDividendsItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Нет настроек для дивидендов
@@ -23,7 +24,7 @@ import ru.prbb.middleoffice.domain.NotEnoughDividendsItem;
  * @author RBr
  */
 @Repository
-public class NotVisibleDividendsDaoImpl implements NotVisibleDividendsDao
+public class NotVisibleDividendsDaoImpl extends BaseDaoImpl implements NotVisibleDividendsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -34,7 +35,7 @@ public class NotVisibleDividendsDaoImpl implements NotVisibleDividendsDao
 		String sql = "select * from dbo.mo_WebGet_DividendsNotVisible_v";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = q.getResultList();
+		List<Object[]> list = getResultList(q, sql);
 		List<NotEnoughDividendsItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			NotEnoughDividendsItem item = new NotEnoughDividendsItem();

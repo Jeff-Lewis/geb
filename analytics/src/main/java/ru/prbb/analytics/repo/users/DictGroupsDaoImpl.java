@@ -33,7 +33,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 	public List<DictGroupItem> findAll() {
 		String sql = "select group_id, group_name, group_comment from dbo.groups_v";
 		Query q = em.createNativeQuery(sql, DictGroupItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -42,7 +42,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		String sql = "select group_id, group_name, group_comment from dbo.groups_v where group_id=?";
 		Query q = em.createNativeQuery(sql, DictGroupItem.class)
 				.setParameter(1, id);
-		return (DictGroupItem) q.getSingleResult();
+		return (DictGroupItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -53,7 +53,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 				.setParameter(1, name)
 				.setParameter(2, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -65,7 +65,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 				.setParameter(2, name)
 				.setParameter(3, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -75,7 +75,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -85,7 +85,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		String sql = "{call dbo.WebGet_noGroupUsers_sp ?}";
 		Query q = em.createNativeQuery(sql, DictGroupsUserItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -95,7 +95,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		String sql = "{call dbo.WebGet_SelectGroupUsers_sp ?}";
 		Query q = em.createNativeQuery(sql, DictGroupsUserItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -107,7 +107,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		for (Long id : ids) {
 			q.setParameter(2, id);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -120,7 +120,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		for (Long id : ids) {
 			q.setParameter(2, id);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		String sql = "{call dbo.WebGet_noPermission2Group_sp ?}";
 		Query q = em.createNativeQuery(sql, DictGroupsObjectItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -141,7 +141,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		String sql = "{call dbo.WebGet_SelectPermission2Group_sp ?}";
 		Query q = em.createNativeQuery(sql, DictGroupsPermisionItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -155,7 +155,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 			for (Long idPermission : ids) {
 				q.setParameter(2, idPermission);
 				storeSql(sql, q);
-				q.executeUpdate();
+				executeUpdate(q, sql);
 			}
 		}
 	}
@@ -168,7 +168,7 @@ public class DictGroupsDaoImpl extends BaseDaoImpl implements DictGroupsDao
 		for (Long id : ids) {
 			q.setParameter(1, id);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 }

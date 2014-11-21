@@ -36,7 +36,7 @@ public class BrokersCoverageDaoImpl extends BaseDaoImpl implements BrokersCovera
 		String sql = "{call dbo.anca_WebGet_EquityBrokerCoverage_sp}";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<BrokersCoverageItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -66,6 +66,6 @@ public class BrokersCoverageDaoImpl extends BaseDaoImpl implements BrokersCovera
 				.setParameter(2, broker)
 				.setParameter(3, value);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 }

@@ -34,7 +34,7 @@ public class DealsPatternDaoImpl extends BaseDaoImpl implements DealsPatternDao
 	public List<DealsPatternItem> show() {
 		String sql = "select id, file_name, file_type, date_insert from dbo.DealsTemplateStorage";
 		Query q = em.createNativeQuery(sql, DealsPatternItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -43,7 +43,7 @@ public class DealsPatternDaoImpl extends BaseDaoImpl implements DealsPatternDao
 		String sql = "select id, file_name, file_type, date_insert from dbo.DealsTemplateStorage where id=?";
 		Query q = em.createNativeQuery(sql, DealsPatternItem.class)
 				.setParameter(1, id);
-		return (DealsPatternItem) q.getSingleResult();
+		return (DealsPatternItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -53,7 +53,7 @@ public class DealsPatternDaoImpl extends BaseDaoImpl implements DealsPatternDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -62,7 +62,7 @@ public class DealsPatternDaoImpl extends BaseDaoImpl implements DealsPatternDao
 		String sql = "select file from dbo.DealsTemplateStorage where id=?";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
-		return (byte[]) q.getSingleResult();
+		return (byte[]) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -75,6 +75,6 @@ public class DealsPatternDaoImpl extends BaseDaoImpl implements DealsPatternDao
 				.setParameter(2, name)
 				.setParameter(3, type);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 }

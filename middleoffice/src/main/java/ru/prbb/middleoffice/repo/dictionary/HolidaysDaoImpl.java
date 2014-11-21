@@ -39,7 +39,7 @@ public class HolidaysDaoImpl extends BaseDaoImpl implements HolidaysDao
 				" from dbo.holidays";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<HolidaysItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -70,7 +70,7 @@ public class HolidaysDaoImpl extends BaseDaoImpl implements HolidaysDao
 				.setParameter(6, sms)
 				.setParameter(7, portfolio);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -81,7 +81,7 @@ public class HolidaysDaoImpl extends BaseDaoImpl implements HolidaysDao
 				.setParameter(1, country)
 				.setParameter(2, date);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -90,7 +90,7 @@ public class HolidaysDaoImpl extends BaseDaoImpl implements HolidaysDao
 		String sql = "select country, day_week, start, stop from dbo.quotes_send_sms_time_v_" + country;
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<HolidaysWeekItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -115,7 +115,7 @@ public class HolidaysDaoImpl extends BaseDaoImpl implements HolidaysDao
 			q.setParameter(3, item.getStart());
 			q.setParameter(4, item.getStop());
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -125,7 +125,7 @@ public class HolidaysDaoImpl extends BaseDaoImpl implements HolidaysDao
 	public List<CountryOffsetItem> showCountryOffset() {
 		String sql = "{call dbo.mo_WebGet_offset_sp}";
 		Query q = em.createNativeQuery(sql, CountryOffsetItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -140,7 +140,7 @@ public class HolidaysDaoImpl extends BaseDaoImpl implements HolidaysDao
 			q.setParameter(4, item.getStart());
 			q.setParameter(5, item.getStop());
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 }

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.CountryItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Страны
@@ -24,7 +25,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * 
  */
 @Repository
-public class CountriesDaoImpl implements CountriesDao
+public class CountriesDaoImpl extends BaseDaoImpl implements CountriesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -35,7 +36,7 @@ public class CountriesDaoImpl implements CountriesDao
 	public List<CountryItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_Countries_sp}";
 		Query q = em.createNativeQuery(sql, CountryItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -51,7 +52,7 @@ public class CountriesDaoImpl implements CountriesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

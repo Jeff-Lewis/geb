@@ -88,7 +88,7 @@ public class LoadBondYeildDaoImpl extends BaseDaoImpl implements LoadBondYeildDa
 			q.setParameter(3, item.date);
 			q.setParameter(4, item.char_value);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 }

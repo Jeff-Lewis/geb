@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Параметры запросов
@@ -22,7 +23,7 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 @Service
-public class BloombergParamsDaoImpl implements BloombergParamsDao
+public class BloombergParamsDaoImpl extends BaseDaoImpl implements BloombergParamsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -33,7 +34,7 @@ public class BloombergParamsDaoImpl implements BloombergParamsDao
 	public List<SimpleItem> findPeriod(String query) {
 		String sql = "select period_id as id, name from dbo.period_type";
 		Query q = em.createNativeQuery(sql, SimpleItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -42,7 +43,7 @@ public class BloombergParamsDaoImpl implements BloombergParamsDao
 	public List<SimpleItem> findCalendar(String query) {
 		String sql = "select calendar_id as id, name from dbo.calendar_type";
 		Query q = em.createNativeQuery(sql, SimpleItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

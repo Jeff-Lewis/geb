@@ -42,7 +42,7 @@ public class NewParamDaoImpl extends BaseDaoImpl implements NewParamDao
 					+ " where field_mnemonic=?";
 			Query q = em.createNativeQuery(sql, NewParamItem.class)
 					.setParameter(1, code);
-			res = (NewParamItem) q.getSingleResult();
+			res = (NewParamItem) getSingleResult(q, sql);
 		} catch (Exception e) {
 			log.error("setup:" + code, e);
 		}
@@ -65,7 +65,7 @@ public class NewParamDaoImpl extends BaseDaoImpl implements NewParamDao
 				.setParameter(2, code)
 				.setParameter(3, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -76,7 +76,7 @@ public class NewParamDaoImpl extends BaseDaoImpl implements NewParamDao
 				.setParameter(1, code)
 				.setParameter(2, broker);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

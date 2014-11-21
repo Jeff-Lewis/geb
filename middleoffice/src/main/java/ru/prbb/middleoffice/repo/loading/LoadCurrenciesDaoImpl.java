@@ -34,7 +34,7 @@ public class LoadCurrenciesDaoImpl extends BaseDaoImpl implements LoadCurrencies
 	public List<LoadCurrenciesItem> findAll() {
 		String sql = "select * from dbo.mo_job_LoadCurrency_rate_cbr_v";
 		Query q = em.createNativeQuery(sql, LoadCurrenciesItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -69,7 +69,7 @@ public class LoadCurrenciesDaoImpl extends BaseDaoImpl implements LoadCurrencies
 					q.setParameter(2, Double.valueOf(value));
 					q.setParameter(3, date);
 					storeSql(sql, q);
-					q.executeUpdate();
+					executeUpdate(q, sql);
 
 					infoItem.put("value", value);
 				} catch (Exception e) {

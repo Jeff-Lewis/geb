@@ -78,7 +78,7 @@ public class LoadATRDaoImpl extends BaseDaoImpl implements LoadATRDao
 			q.setParameter(2, item.date_time);
 			q.setParameter(3, item.atr_value);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -95,7 +95,7 @@ public class LoadATRDaoImpl extends BaseDaoImpl implements LoadATRDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -111,7 +111,7 @@ public class LoadATRDaoImpl extends BaseDaoImpl implements LoadATRDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -127,7 +127,7 @@ public class LoadATRDaoImpl extends BaseDaoImpl implements LoadATRDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

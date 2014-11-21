@@ -32,7 +32,7 @@ public class ClientSortDaoImpl extends BaseDaoImpl implements ClientSortDao
 	public List<ClientSortItem> showSelected() {
 		String sql = "{call dbo.mo_WebGet_SelectClientSort_sp 1}";
 		Query q = em.createNativeQuery(sql, ClientSortItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -41,7 +41,7 @@ public class ClientSortDaoImpl extends BaseDaoImpl implements ClientSortDao
 	public List<ClientSortItem> showUnselected() {
 		String sql = "{call dbo.mo_WebGet_SelectClientSort_sp 0}";
 		Query q = em.createNativeQuery(sql, ClientSortItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -52,7 +52,7 @@ public class ClientSortDaoImpl extends BaseDaoImpl implements ClientSortDao
 		q.setParameter(1, id);
 		q.setParameter(2, flag);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -63,6 +63,6 @@ public class ClientSortDaoImpl extends BaseDaoImpl implements ClientSortDao
 		q.setParameter(1, id);
 		q.setParameter(2, date_b);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 }

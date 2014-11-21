@@ -32,7 +32,7 @@ public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 	public List<DictUserItem> findAll() {
 		String sql = "select user_id, user_login, user_name, user_email from dbo.users_v";
 		Query q = em.createNativeQuery(sql, DictUserItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -41,7 +41,7 @@ public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 		String sql = "select user_id, user_login, user_name, user_email from dbo.users_v where user_id=?";
 		Query q = em.createNativeQuery(sql, DictUserItem.class)
 				.setParameter(1, id);
-		return (DictUserItem) q.getSingleResult();
+		return (DictUserItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -51,7 +51,7 @@ public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		ArrayList<DictUsersInfoItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -75,7 +75,7 @@ public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 				.setParameter(3, name)
 				.setParameter(4, email);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -89,7 +89,7 @@ public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 				.setParameter(4, name)
 				.setParameter(5, email);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -99,7 +99,7 @@ public class DictUsersDaoImpl extends BaseDaoImpl implements DictUsersDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

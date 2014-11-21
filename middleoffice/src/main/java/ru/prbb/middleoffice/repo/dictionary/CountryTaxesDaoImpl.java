@@ -35,7 +35,7 @@ public class CountryTaxesDaoImpl extends BaseDaoImpl implements CountryTaxesDao
 	public List<CountryTaxItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_CountryTaxes_sp}";
 		Query q = em.createNativeQuery(sql, CountryTaxItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -44,7 +44,7 @@ public class CountryTaxesDaoImpl extends BaseDaoImpl implements CountryTaxesDao
 		String sql = "{call dbo.mo_WebGet_CountryTaxes_sp ?}";
 		Query q = em.createNativeQuery(sql, CountryTaxItem.class)
 				.setParameter(1, id);
-		return (CountryTaxItem) q.getSingleResult();
+		return (CountryTaxItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -59,7 +59,7 @@ public class CountryTaxesDaoImpl extends BaseDaoImpl implements CountryTaxesDao
 				.setParameter(5, dateBegin)
 				.setParameter(6, country_recipient_id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -73,7 +73,7 @@ public class CountryTaxesDaoImpl extends BaseDaoImpl implements CountryTaxesDao
 				.setParameter(4, dateEnd)
 				.setParameter(5, country_recipient_id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -83,7 +83,7 @@ public class CountryTaxesDaoImpl extends BaseDaoImpl implements CountryTaxesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

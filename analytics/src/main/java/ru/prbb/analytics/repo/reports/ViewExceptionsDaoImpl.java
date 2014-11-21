@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.ViewExceptionsItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Отчёт по исключениям
@@ -24,7 +25,7 @@ import ru.prbb.analytics.domain.ViewExceptionsItem;
  * 
  */
 @Service
-public class ViewExceptionsDaoImpl implements ViewExceptionsDao
+public class ViewExceptionsDaoImpl extends BaseDaoImpl implements ViewExceptionsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -35,7 +36,7 @@ public class ViewExceptionsDaoImpl implements ViewExceptionsDao
 		String sql = "{call dbo.output_equities_exceptions}";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<ViewExceptionsItem> res = new ArrayList<>();
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;

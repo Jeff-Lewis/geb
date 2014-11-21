@@ -15,12 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * @author RBr
  */
 @Repository
-public class BondsDaoImpl implements BondsDao
+public class BondsDaoImpl extends BaseDaoImpl implements BondsDao
 {
 
 	@Autowired
@@ -39,7 +40,7 @@ public class BondsDaoImpl implements BondsDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

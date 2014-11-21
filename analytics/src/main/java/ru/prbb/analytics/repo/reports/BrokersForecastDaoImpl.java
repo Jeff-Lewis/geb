@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.BrokersForecastDateItem;
 import ru.prbb.analytics.domain.BrokersForecastItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Прогнозы по брокерам
@@ -25,7 +26,7 @@ import ru.prbb.analytics.domain.BrokersForecastItem;
  * 
  */
 @Service
-public class BrokersForecastDaoImpl implements BrokersForecastDao
+public class BrokersForecastDaoImpl extends BaseDaoImpl implements BrokersForecastDao
 {
 	@Autowired
 	private EntityManager em;
@@ -39,7 +40,7 @@ public class BrokersForecastDaoImpl implements BrokersForecastDao
 				.setParameter(2, id_sec)
 				.setParameter(3, broker_id);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<BrokersForecastItem> res = new ArrayList<>();
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -74,7 +75,7 @@ public class BrokersForecastDaoImpl implements BrokersForecastDao
 		String sql = "select value, display from dbo.anca_WebGet_ajaxBrokerDates_v" +
 				" order by value desc";
 		Query q = em.createNativeQuery(sql, BrokersForecastDateItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

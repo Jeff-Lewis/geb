@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.analytics.domain.ViewCompaniesEpsItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * EPS по компаниям
@@ -22,7 +23,7 @@ import ru.prbb.analytics.domain.ViewCompaniesEpsItem;
  * 
  */
 @Service
-public class ViewCompaniesEpsDaoImpl implements ViewCompaniesEpsDao
+public class ViewCompaniesEpsDaoImpl extends BaseDaoImpl implements ViewCompaniesEpsDao
 {
 	@Autowired
 	private EntityManager em;
@@ -33,7 +34,7 @@ public class ViewCompaniesEpsDaoImpl implements ViewCompaniesEpsDao
 	public List<ViewCompaniesEpsItem> execute() {
 		String sql = "{call dbo.anca_WebGet_EquityEPSinfo_sp}";
 		Query q = em.createNativeQuery(sql, ViewCompaniesEpsItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

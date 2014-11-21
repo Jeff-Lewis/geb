@@ -36,7 +36,7 @@ public class FuturesDaoImpl extends BaseDaoImpl implements FuturesDao
 	public List<FuturesItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_SelectFuturesAlias_sp}";
 		Query q = em.createNativeQuery(sql, FuturesItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -55,7 +55,7 @@ public class FuturesDaoImpl extends BaseDaoImpl implements FuturesDao
 				.setParameter(2, coef)
 				.setParameter(3, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class FuturesDaoImpl extends BaseDaoImpl implements FuturesDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -87,6 +87,6 @@ public class FuturesDaoImpl extends BaseDaoImpl implements FuturesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }

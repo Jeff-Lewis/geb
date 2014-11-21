@@ -44,7 +44,7 @@ public class DealsLoadingDaoImpl extends BaseDaoImpl implements DealsLoadingDao
 		q.setParameter(12, r.Portfolio);
 		q.setParameter(13, r.Initiator);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

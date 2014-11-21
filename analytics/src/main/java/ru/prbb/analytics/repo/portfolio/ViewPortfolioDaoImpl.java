@@ -34,7 +34,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 	public List<ViewPortfolioItem> findAll() {
 		String sql = "select id_sec, security_code from dbo.equity_request_v";
 		Query q = em.createNativeQuery(sql, ViewPortfolioItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -43,7 +43,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 	public List<ViewPortfolioItem> findAllPortfolio() {
 		String sql = "select id_sec, security_code from dbo.securities where portfolio = 'portfolio'";
 		Query q = em.createNativeQuery(sql, ViewPortfolioItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -57,7 +57,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 			try {
 				q.setParameter(1, id_sec);
 				storeSql(sql, q);
-				res[i++] = q.executeUpdate();
+				res[i++] = executeUpdate(q, sql);
 			} catch (Exception e) {
 				log.error("put", e);
 			}
@@ -76,7 +76,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 			try {
 				q.setParameter(1, id_sec);
 				storeSql(sql, q);
-				res[i++] = q.executeUpdate();
+				res[i++] = executeUpdate(q, sql);
 			} catch (Exception e) {
 				log.error("del", e);
 			}

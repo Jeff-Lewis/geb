@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ViewQuotesItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * Котировки
@@ -25,7 +26,7 @@ import ru.prbb.middleoffice.domain.ViewQuotesItem;
  * 
  */
 @Repository
-public class ViewQuotesDaoImpl implements ViewQuotesDao
+public class ViewQuotesDaoImpl extends BaseDaoImpl implements ViewQuotesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -41,7 +42,7 @@ public class ViewQuotesDaoImpl implements ViewQuotesDao
 					.setParameter(2, begin)
 					.setParameter(3, end);
 			@SuppressWarnings("rawtypes")
-			List list = q.getResultList();
+			List list = getResultList(q, sql);
 			List<ViewQuotesItem> res = new ArrayList<>(list.size());
 			for (Object object : list) {
 				Object[] arr = (Object[]) object;

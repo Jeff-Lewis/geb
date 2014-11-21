@@ -38,7 +38,7 @@ public class DealsTransferDaoImpl extends BaseDaoImpl implements DealsTransferDa
 				.setParameter(5, batch)
 				.setParameter(6, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

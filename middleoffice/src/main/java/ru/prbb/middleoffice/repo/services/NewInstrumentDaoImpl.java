@@ -71,7 +71,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		q.setParameter(i++, values.get("EQY_FISCAL_YR_END"));
 		q.setParameter(i++, values.get("PRIMARY_PERIODICITY"));
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -97,7 +97,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		q.setParameter(i++, values.get("CRNCY"));
 		q.setParameter(i++, values.get("EQY_FUND_CRNCY"));
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -142,7 +142,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		q.setParameter(i++, new Double(values.get("CPN")));
 		q.setParameter(i++, new Double(values.get("PAR_AMT")));
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -182,7 +182,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		q.setParameter(i++, values.get("FUT_GEN_MONTH"));
 		q.setParameter(i++, values.get("QUOTE_UNITS"));
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

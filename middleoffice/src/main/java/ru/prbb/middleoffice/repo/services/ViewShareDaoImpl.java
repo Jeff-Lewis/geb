@@ -33,7 +33,7 @@ public class ViewShareDaoImpl extends BaseDaoImpl implements ViewShareDao
 				.setParameter(1, id_sec)
 				.setParameter(2, deal);
 		storeSql(sql, q);
-		q.executeUpdate();
+		executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -44,7 +44,7 @@ public class ViewShareDaoImpl extends BaseDaoImpl implements ViewShareDao
 				.setParameter(1, id_sec)
 				.setParameter(2, deal);
 		storeSql(sql, q);
-		q.executeUpdate();
+		executeUpdate(q, sql);
 	}
 
 }

@@ -41,7 +41,7 @@ public class DealsLoadingREPODaoImpl extends BaseDaoImpl implements DealsLoading
 		q.setParameter(11, r.currency);
 		q.setParameter(12, r.trade_system);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

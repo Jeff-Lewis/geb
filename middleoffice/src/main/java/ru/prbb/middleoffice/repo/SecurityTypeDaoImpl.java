@@ -21,7 +21,7 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  *
  */
 @Repository
-public class SecurityTypeDaoImpl implements SecurityTypeDao
+public class SecurityTypeDaoImpl extends BaseDaoImpl implements SecurityTypeDao
 {
 	@Autowired
 	private EntityManager em;
@@ -39,6 +39,6 @@ public class SecurityTypeDaoImpl implements SecurityTypeDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }

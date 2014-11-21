@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.analytics.domain.BrokersEstimateChangeItem;
+import ru.prbb.analytics.repo.BaseDaoImpl;
 
 /**
  * Изменение оценок брокеров
@@ -24,7 +25,7 @@ import ru.prbb.analytics.domain.BrokersEstimateChangeItem;
  * 
  */
 @Service
-public class BrokersEstimateChangeDaoImpl implements BrokersEstimateChangeDao
+public class BrokersEstimateChangeDaoImpl extends BaseDaoImpl implements BrokersEstimateChangeDao
 {
 	@Autowired
 	private EntityManager em;
@@ -35,7 +36,7 @@ public class BrokersEstimateChangeDaoImpl implements BrokersEstimateChangeDao
 		String sql = "{call dbo.anca_WebGet_BrokerEstimatesChange_sp}";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<BrokersEstimateChangeItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;

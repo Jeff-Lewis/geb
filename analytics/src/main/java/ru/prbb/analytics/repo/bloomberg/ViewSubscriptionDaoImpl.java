@@ -35,7 +35,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 	public List<ViewSubscriptionItem> findAll() {
 		String sql = "{call dbo.output_subscriptions_prc}";
 		Query q = em.createNativeQuery(sql, ViewSubscriptionItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -63,7 +63,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 				.setParameter(1, name)
 				.setParameter(2, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -73,7 +73,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -82,7 +82,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 	public List<SecuritySubscrItem> findAllSecurities() {
 		String sql = "{call dbo.output_securities_subscr_prc}";
 		Query q = em.createNativeQuery(sql, SecuritySubscrItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -92,7 +92,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 		String sql = "{call dbo.secs_in_subscription_prc ?}";
 		Query q = em.createNativeQuery(sql, SecuritySubscrItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -106,7 +106,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 		for (Long id_sec : ids) {
 			q.setParameter(1, id_sec);
 			storeSql(sql, q);
-			res[i++] = q.executeUpdate();
+			res[i++] = executeUpdate(q, sql);
 		}
 		return res;
 	}
@@ -122,7 +122,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 		for (Long id_sec : ids) {
 			q.setParameter(1, id_sec);
 			storeSql(sql, q);
-			res[i++] = q.executeUpdate();
+			res[i++] = executeUpdate(q, sql);
 		}
 		return res;
 	}
@@ -134,7 +134,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -144,7 +144,7 @@ public class ViewSubscriptionDaoImpl extends BaseDaoImpl implements ViewSubscrip
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

@@ -62,7 +62,7 @@ public class RequestBDPovrDaoImpl extends BaseDaoImpl implements RequestBDPovrDa
 			q.setParameter(4, d.period);
 			q.setParameter(5, d.blm_data_src_over);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class RequestBDPovrDaoImpl extends BaseDaoImpl implements RequestBDPovrDa
 	public List<SimpleItem> findParams(String query) {
 		String sql = "select code from dbo.fundamentals_params_v";
 		Query q = em.createNativeQuery(sql);
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -112,6 +112,6 @@ public class RequestBDPovrDaoImpl extends BaseDaoImpl implements RequestBDPovrDa
 	public List<SimpleItem> comboFilterOverride(String query) {
 		String sql = "select code from dbo.blm_datasource_ovr";
 		Query q = em.createNativeQuery(sql);
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 }

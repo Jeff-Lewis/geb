@@ -106,7 +106,7 @@ public class CompanyAddDaoImpl extends BaseDaoImpl implements CompanyAddDao
 		q.setParameter(++pos, values.get("EQY_FISCAL_YR_END"));
 		q.setParameter(++pos, values.get("PRIMARY_PERIODICITY"));
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class NoConformityDaoImpl extends BaseDaoImpl implements NoConformityDao
 	public List<NoConformityItem> show() {
 		String sql = "{call dbo.mo_WebGet_DealBlmTickerUnSet_sp}";
 		Query q = em.createNativeQuery(sql, NoConformityItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -47,7 +47,7 @@ public class NoConformityDaoImpl extends BaseDaoImpl implements NoConformityDao
 		for (Long id : ids) {
 			q.setParameter(1, id);
 			storeSql(sql, q);
-			res[i++] = q.executeUpdate();
+			res[i++] = executeUpdate(q, sql);
 		}
 	}
 

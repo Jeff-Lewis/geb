@@ -17,13 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.ViewAtrItem;
+import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
 /**
  * @author RBr
  * 
  */
 @Repository
-public class ViewAtrDaoImpl implements ViewAtrDao
+public class ViewAtrDaoImpl extends BaseDaoImpl implements ViewAtrDao
 {
 	@Autowired
 	private EntityManager em;
@@ -39,7 +40,7 @@ public class ViewAtrDaoImpl implements ViewAtrDao
 					.setParameter(2, begin)
 					.setParameter(3, end);
 			@SuppressWarnings("rawtypes")
-			List list = q.getResultList();
+			List list = getResultList(q, sql);
 			List<ViewAtrItem> res = new ArrayList<>(list.size());
 			for (Object object : list) {
 				Object[] arr = (Object[]) object;

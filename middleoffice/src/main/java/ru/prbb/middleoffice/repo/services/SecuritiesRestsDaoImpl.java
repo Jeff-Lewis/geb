@@ -38,7 +38,7 @@ public class SecuritiesRestsDaoImpl extends BaseDaoImpl implements SecuritiesRes
 				.setParameter(3, batch)
 				.setParameter(4, client)
 				.setParameter(5, date);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -49,7 +49,7 @@ public class SecuritiesRestsDaoImpl extends BaseDaoImpl implements SecuritiesRes
 				.setParameter(1, id)
 				.setParameter(2, checkFlag);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

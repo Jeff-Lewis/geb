@@ -35,7 +35,7 @@ public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 	public List<SimpleItem> findAll() {
 		String sql = "{call dbo.WebGet_SelectContacts_sp}";
 		Query q = em.createNativeQuery(sql, SimpleItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -57,7 +57,7 @@ public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -68,7 +68,7 @@ public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 				.setParameter(1, id)
 				.setParameter(2, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -78,7 +78,7 @@ public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -88,7 +88,7 @@ public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 		String sql = "{call dbo.WebGet_SelectContactInfo_sp ?}";
 		Query q = em.createNativeQuery(sql, ContactStaffItem.class)
 				.setParameter(1, id);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -100,7 +100,7 @@ public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 				.setParameter(2, name)
 				.setParameter(3, type);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -111,7 +111,7 @@ public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 				.setParameter(1, cid)
 				.setParameter(2, name);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -121,7 +121,7 @@ public class ContactsDaoImpl extends BaseDaoImpl implements ContactsDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, cid);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 }

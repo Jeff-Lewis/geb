@@ -68,7 +68,7 @@ public class RequestBDHepsDaoImpl extends BaseDaoImpl implements RequestBDHepsDa
 			q.setParameter(7, d.calendar);
 			q.setParameter(8, d.period);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -123,7 +123,7 @@ public class RequestBDHepsDaoImpl extends BaseDaoImpl implements RequestBDHepsDa
 	public List<SimpleItem> findParams(String query) {
 		String sql = "select code from dbo.fundamentals_params_v";
 		Query q = em.createNativeQuery(sql);
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 }

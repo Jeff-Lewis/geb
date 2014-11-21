@@ -69,7 +69,7 @@ public class LoadValuesDaoImpl extends BaseDaoImpl implements LoadValuesDao
 			q.setParameter(2, item.date_time);
 			q.setParameter(3, item.value);
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class LoadValuesDaoImpl extends BaseDaoImpl implements LoadValuesDao
 	public List<SecurityValuesItem> findAllSecurities() {
 		String sql = "select * from dbo.mo_WebGet_bonds_sinkable_v";
 		Query q = em.createNativeQuery(sql, SecurityValuesItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

@@ -35,7 +35,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 		String sql = "select value from dbo.ncontacts_groups_view where gname=? and type='E-mail'";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, group);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -45,7 +45,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 		String sql = "select value from dbo.ncontacts_groups_view where gname=? and type='Мобильный телефон'";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, group);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -61,7 +61,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 		String res = "0";
 		try {
 			storeSql(sql, q);
-			q.executeUpdate();
+			executeUpdate(q, sql);
 		} catch (Exception e) {
 			log.error("sendMail", e);
 			res = e.getMessage();
@@ -79,7 +79,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, sms_text)
 				.setParameter(2, phone);
-		Object obj = q.getSingleResult();
+		Object obj = getSingleResult(q, sql);
 		String res = Utils.toString(obj);
 		SendingItem si = new SendingItem();
 		si.setMail(phone);
@@ -101,7 +101,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 	public String getAnalitic() {
 		String sql = "{call dbo.sms_template_proc}";
 		Query q = em.createNativeQuery(sql);
-		return Utils.toString(q.getSingleResult());
+		return Utils.toString(getSingleResult(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -109,7 +109,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 	public String getTrader() {
 		String sql = "{call dbo.sms_template_trader}";
 		Query q = em.createNativeQuery(sql);
-		return Utils.toString(q.getSingleResult());
+		return Utils.toString(getSingleResult(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -124,7 +124,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, '%' + query.toLowerCase() + '%');
 		}
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -139,7 +139,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao
 			q = em.createNativeQuery(sql)
 					.setParameter(1, '%' + query.toLowerCase() + '%');
 		}
-		return Utils.toSimpleItem(q.getResultList());
+		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
 }

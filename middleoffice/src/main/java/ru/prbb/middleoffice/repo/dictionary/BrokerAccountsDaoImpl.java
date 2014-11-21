@@ -36,7 +36,7 @@ public class BrokerAccountsDaoImpl extends BaseDaoImpl implements BrokerAccounts
 	public List<BrokerAccountItem> findAll() {
 		String sql = "{call dbo.mo_WebGet_SelectAccount_sp}";
 		Query q = em.createNativeQuery(sql, BrokerAccountItem.class);
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -45,7 +45,7 @@ public class BrokerAccountsDaoImpl extends BaseDaoImpl implements BrokerAccounts
 		String sql = "{call dbo.mo_WebGet_SelectAccount_sp ?}";
 		Query q = em.createNativeQuery(sql, BrokerAccountItem.class)
 				.setParameter(1, id);
-		return (BrokerAccountItem) q.getSingleResult();
+		return (BrokerAccountItem) getSingleResult(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -58,7 +58,7 @@ public class BrokerAccountsDaoImpl extends BaseDaoImpl implements BrokerAccounts
 				.setParameter(3, broker)
 				.setParameter(4, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -70,7 +70,7 @@ public class BrokerAccountsDaoImpl extends BaseDaoImpl implements BrokerAccounts
 				.setParameter(2, name)
 				.setParameter(3, comment);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -80,7 +80,7 @@ public class BrokerAccountsDaoImpl extends BaseDaoImpl implements BrokerAccounts
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, id);
 		storeSql(sql, q);
-		return q.executeUpdate();
+		return executeUpdate(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -96,7 +96,7 @@ public class BrokerAccountsDaoImpl extends BaseDaoImpl implements BrokerAccounts
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 }

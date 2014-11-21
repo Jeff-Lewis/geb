@@ -24,7 +24,7 @@ import ru.prbb.middleoffice.domain.ViewFuturesItem;
  *
  */
 @Repository
-public class EquitiesDaoImpl implements EquitiesDao
+public class EquitiesDaoImpl extends BaseDaoImpl implements EquitiesDao
 {
 	@Autowired
 	private EntityManager em;
@@ -35,7 +35,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		String sql = "select id_sec, ticker, deal_name, date_insert from dbo.portfolio_equity_v";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<PortfolioItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -55,7 +55,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		String sql = "{call mo_WebGet_SecuritiesDealNameMapping_sp 4}";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<PortfolioItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -75,7 +75,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		String sql = "{call dbo.mo_WebGet_SecuritiesDealNameMapping_sp 5}";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<PortfolioItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -95,7 +95,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 		String sql = "select * from dbo.portfolio_cmdt_v";
 		Query q = em.createNativeQuery(sql);
 		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
+		List list = getResultList(q, sql);
 		List<ViewFuturesItem> res = new ArrayList<>(list.size());
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
@@ -124,7 +124,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -140,7 +140,7 @@ public class EquitiesDaoImpl implements EquitiesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -156,6 +156,6 @@ public class EquitiesDaoImpl implements EquitiesDao
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}
-		return q.getResultList();
+		return getResultList(q, sql);
 	}
 }
