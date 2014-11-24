@@ -63,13 +63,14 @@ public class SetSecurityRiscsController
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Portfolio", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/PortfolioShowTransfer", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public List<ViewPortfolioTransferItem> postGetPortfolio(
-			@RequestParam String date)
+			@RequestParam String date,
+			@RequestParam Long client)
 	{
-		log.info("POST SetSecurityRiscs/Portfolio: date={}", date);
-		return daoPortfolio.executeSelect(Utils.parseDate(date));
+		log.info("POST SetSecurityRiscs/PortfolioShowTransfer: date={}, client={}", date, client);
+		return daoPortfolio.executeSelect(Utils.parseDate(date), client);
 	}
 
 	@RequestMapping(value = "/UpdateFields", method = RequestMethod.POST, produces = "application/json")

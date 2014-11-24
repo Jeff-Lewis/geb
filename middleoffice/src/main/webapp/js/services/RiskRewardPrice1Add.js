@@ -24,6 +24,26 @@
 		singleSelect : true
 	});
 
+	var clientSelect = new Ext.form.ComboBox({
+	    width : 150,
+	    fieldLabel : 'Клиент',
+	    valueField : 'id',
+	    displayField : 'name',
+	    store : new Ext.data.JsonStore({
+	        autoDestroy : true,
+	        url : 'rest/ViewPortfolio/Clients.do',
+	        // root : 'info',
+	        fields : [ 'id', 'name' ],
+	        sortInfo : {
+		        field : 'name'
+	        }
+	    }),
+	    loadingText : 'Поиск...',
+	    triggerAction : 'all',
+	    minChars : 2,
+	    typeAhead : false
+	});
+
 	function loadInfo() {
 		var fd = Ext.getCmp(_FromDate);
 
@@ -34,7 +54,8 @@
 
 		info.reload({
 			params : {
-				date : App.util.Format.dateYMD(fd.getValue())
+				date : App.util.Format.dateYMD(fd.getValue()),
+				client : clientSelect.getValue()
 			}
 		});
 	}
@@ -94,6 +115,19 @@
 				width : 100,
 				value : new Date()
 			}, {
+	            xtype : 'label',
+	            style : 'font-weight: bold;',
+	            margins : '2 5 0 25',
+	            text : 'Клиент:'
+	        }, clientSelect, {
+	            xtype : 'button',
+	            text : 'Х',
+	            margins : '0 5',
+	            width : 25,
+	            handler : function() {
+	            	clientSelect.clearValue();
+	            }
+	        }, {
 				text : 'Выбрать',
 				handler : loadInfo
 			} ],

@@ -116,8 +116,10 @@ public class RiskRewardPrice1Controller
 	@RequestMapping(value = "/PortfolioShowTransfer", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
 	public List<ViewPortfolioTransferItem> getPortfolio(
-			@RequestParam String date) {
-		log.info("GET RiskRewardPrice1/PortfolioShowTransfer: date={}", date);
-		return daoPortfolio.executeSelect(Utils.parseDate(date));
+			@RequestParam String date,
+			@RequestParam Long client)
+	{
+		log.info("GET RiskRewardPrice1/PortfolioShowTransfer: date={}, client={}", date, client);
+		return daoPortfolio.executeSelect(Utils.parseDate(date), client);
 	}
 }

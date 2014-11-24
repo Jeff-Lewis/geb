@@ -47,10 +47,11 @@ public class ViewPortfolioController
 	@ResponseBody
 	public List<ViewPortfolioItem> postShow(
 			@RequestParam String date,
-			@RequestParam Long security)
+			@RequestParam Long security,
+			@RequestParam Long client)
 	{
-		log.info("POST ViewPortfolio: date={}, security={}", date, security);
-		return dao.executeSelect(Utils.parseDate(date), security);
+		log.info("POST ViewPortfolio: date={}, security={}, client={}", Utils.toArray(date, security, client));
+		return dao.executeSelect(Utils.parseDate(date), security, client);
 	}
 
 	private Result p = Result.FAIL;
@@ -155,11 +156,12 @@ public class ViewPortfolioController
 	@ResponseBody
 	public byte[] getExport(HttpServletResponse response,
 			@RequestParam String date,
-			@RequestParam Long security)
+			@RequestParam Long security,
+			@RequestParam Long client)
 	{
-		log.info("GET ViewPortfolio/Export: date={}, security={}", date, security);
+		log.info("GET ViewPortfolio/Export: date={}, security={}, client={}", Utils.toArray(date, security, client));
 		List<ViewPortfolioItem> list =
-				dao.executeSelect(Utils.parseDate(date), security);
+				dao.executeSelect(Utils.parseDate(date), security, client);
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Текущий портфель");

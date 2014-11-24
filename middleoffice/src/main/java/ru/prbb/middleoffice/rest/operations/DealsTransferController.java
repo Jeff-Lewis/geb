@@ -52,13 +52,14 @@ public class DealsTransferController
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/Portfolio", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/PortfolioShowTransfer", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public List<ViewPortfolioTransferItem> postGetPortfolio(
-			@RequestParam String date)
+			@RequestParam String date,
+			@RequestParam Long client)
 	{
-		log.info("POST DealsTransfer/Portfolio: date={}", date);
-		return daoPortfolio.executeSelect(Utils.parseDate(date));
+		log.info("POST DealsTransfer/PortfolioShowTransfer: date={}, client={}", date, client);
+		return daoPortfolio.executeSelect(Utils.parseDate(date), client);
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

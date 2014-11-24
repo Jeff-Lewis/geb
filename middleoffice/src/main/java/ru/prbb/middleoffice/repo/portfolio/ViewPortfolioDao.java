@@ -21,13 +21,13 @@ public interface ViewPortfolioDao {
 	 * @param security
 	 * @return
 	 */
-	List<ViewPortfolioItem> executeSelect(Date date, Long security);
+	List<ViewPortfolioItem> executeSelect(Date date, Long security, Long client);
 
 	/**
 	 * @param date
 	 * @return
 	 */
-	List<ViewPortfolioTransferItem> executeSelect(Date date);
+	List<ViewPortfolioTransferItem> executeSelect(Date date, Long client);
 
 	/**
 	 * @param date

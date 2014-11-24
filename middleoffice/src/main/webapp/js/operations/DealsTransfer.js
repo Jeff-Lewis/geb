@@ -14,7 +14,7 @@
 		autoDestroy : true,
 		autoLoad : false,
 		autoSave : false,
-		url : 'rest/DealsTransfer/Portfolio.do',
+		url : 'rest/DealsTransfer/PortfolioShowTransfer.do',
 		// root : 'info',
 		fields : [ 'id', 'dated', 'client', 'fund', 'security_code', 'batch',
 				'quantity', 'avg_price', 'avg_price_usd', 'currency' ],
@@ -22,6 +22,30 @@
 		// field : 'date_insert'
 		// },
 		listeners : App.ui.listenersJsonStore()
+	});
+
+	var sm = new Ext.grid.RowSelectionModel({
+		singleSelect : true
+	});
+
+	var clientSelect = new Ext.form.ComboBox({
+	    width : 150,
+	    fieldLabel : 'Клиент',
+	    valueField : 'id',
+	    displayField : 'name',
+	    store : new Ext.data.JsonStore({
+	        autoDestroy : true,
+	        url : 'rest/ViewPortfolio/Clients.do',
+	        // root : 'info',
+	        fields : [ 'id', 'name' ],
+	        sortInfo : {
+		        field : 'name'
+	        }
+	    }),
+	    loadingText : 'Поиск...',
+	    triggerAction : 'all',
+	    minChars : 2,
+	    typeAhead : false
 	});
 
 	function loadInfo() {
@@ -34,14 +58,11 @@
 
 		info.reload({
 			params : {
-				date : App.util.Format.dateYMD(fd)
+				date : App.util.Format.dateYMD(fd),
+				client : clientSelect.getValue()
 			}
 		});
 	}
-
-	var sm = new Ext.grid.RowSelectionModel({
-		singleSelect : true
-	});
 
 	function TransferDeals() {
 		if (sm.getCount() == 0) {
@@ -97,6 +118,19 @@
 				width : 100,
 				value : new Date()
 			}, {
+	            xtype : 'label',
+	            style : 'font-weight: bold;',
+	            margins : '2 5 0 25',
+	            text : 'Клиент:'
+	        }, clientSelect, {
+	            xtype : 'button',
+	            text : 'Х',
+	            margins : '0 5',
+	            width : 25,
+	            handler : function() {
+	            	clientSelect.clearValue();
+	            }
+	        }, {
 				text : 'Выбрать',
 				handler : loadInfo
 			} ],

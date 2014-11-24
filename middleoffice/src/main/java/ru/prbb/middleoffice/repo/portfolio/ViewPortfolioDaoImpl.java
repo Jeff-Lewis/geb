@@ -34,11 +34,12 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<ViewPortfolioItem> executeSelect(Date date, Long security) {
-		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, ?}";
+	public List<ViewPortfolioItem> executeSelect(Date rep_date, Long id_sec, Long funds_id) {
+		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
-				.setParameter(1, date)
-				.setParameter(2, security);
+				.setParameter(1, rep_date)
+				.setParameter(2, id_sec)
+				.setParameter(3, funds_id);
 		@SuppressWarnings("rawtypes")
 		List list = getResultList(q, sql);
 		List<ViewPortfolioItem> res = new ArrayList<>(list.size());
@@ -67,10 +68,11 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<ViewPortfolioTransferItem> executeSelect(Date date) {
-		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, null, 1}";
+	public List<ViewPortfolioTransferItem> executeSelect(Date rep_date, Long funds_id) {
+		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, null, ? 1}";
 		Query q = em.createNativeQuery(sql)
-				.setParameter(1, date);
+				.setParameter(1, rep_date)
+				.setParameter(2, funds_id);
 		@SuppressWarnings("rawtypes")
 		List list = getResultList(q, sql);
 		List<ViewPortfolioTransferItem> res = new ArrayList<>(list.size());
@@ -94,12 +96,13 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 
 	@Transactional(propagation = Propagation.REQUIRED/*, timeout = 24 * 60 * 60*/)
 	@Override
-	public int executeCalc(Date begin_date, Long id_sec, Long client) {
+	public int executeCalc(Date report_date, Long id_sec, Long funds_id) {
 //		String sql = "{call dbo.mo_WebSet_PlReport_sp ?, null, ?}";
-		String sql = "{call dbo.PlPortfolioOnDate ?, ?}";
+		String sql = "{call dbo.PlPortfolioOnDate ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
-				.setParameter(1, begin_date)
-				.setParameter(2, id_sec);
+				.setParameter(1, report_date)
+				.setParameter(2, id_sec)
+				.setParameter(3, funds_id);
 		storeSql(sql, q);
 		return executeUpdate(q, sql);
 	}

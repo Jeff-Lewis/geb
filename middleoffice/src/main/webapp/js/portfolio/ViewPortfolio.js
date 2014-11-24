@@ -70,7 +70,8 @@
 		info.reload({
 			params : {
 			    date : App.util.Format.dateYMD(fd),
-			    security : futureSelect.getValue()
+			    security : futureSelect.getValue(),
+			    client : clientSelect.getValue()
 			}
 		});
 	}
@@ -160,8 +161,12 @@
 			return;
 		}
 
-		var url = 'rest/ViewPortfolio/Export.do?date=' + App.util.Format.dateYMD(fd) + '&security='
-		        + futureSelect.getValue();
+		var params = {
+	        date : App.util.Format.dateYMD(fd),
+	        security : futureSelect.getValue(),
+	        client : clientSelect.getValue()
+		};
+		var url = Ext.urlAppend('rest/ViewPortfolio/Export.do', Ext.urlEncode(params));
 		window.open(url);
 	}
 
