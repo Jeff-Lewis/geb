@@ -96,6 +96,13 @@ public class CompanyAddController
 		cYear10.set(Calendar.DAY_OF_MONTH, 1);
 		String dateStartYear = sdf.format(cYear10.getTime());
 
+		Calendar cYear2k = Calendar.getInstance(Utils.LOCALE);
+		cYear2k.clear();
+		cYear2k.set(Calendar.YEAR, 2000);
+		cYear2k.set(Calendar.MONTH, Calendar.JANUARY);
+		cYear2k.set(Calendar.DAY_OF_MONTH, 1);
+		dateStartYear = sdf.format(cYear2k.getTime());
+
 		Calendar cToday = Calendar.getInstance(Utils.LOCALE);
 		String dateEnd = sdf.format(cToday.getTime());
 
@@ -196,7 +203,10 @@ public class CompanyAddController
 							dateStartYear, dateEnd, "YEARLY", "CALENDAR",
 							toArray(aCurrencies), securities, toArray(
 									"IS_EPS",
-									"EQY_DPS")));
+									"EQY_DPS",
+									"IS_COMP_EPS_ADJUSTED",
+									"IS_BASIC_EPS_CONT_OPS",
+									"IS_DIL_EPS_CONT_OPS")));
 		} catch (Exception e) {
 			info.put("BDH EPS YEARLY", new StringBuilder("Запрос BDH EPS YEARLY:").append(e.getMessage()));
 		}
@@ -212,7 +222,10 @@ public class CompanyAddController
 										"SALES_REV_TURN",
 										"PROF_MARGIN",
 										"OPER_MARGIN",
-										"EQY_DVD_YLD_IND")));
+										"EQY_DVD_YLD_IND",
+										"IS_COMP_EPS_ADJUSTED",
+										"IS_BASIC_EPS_CONT_OPS",
+										"IS_DIL_EPS_CONT_OPS")));
 			} catch (Exception e) {
 				info.put("BDH EPS QUARTERLY",
 						new StringBuilder("Запрос BDH EPS QUARTERLY:").append(e.getMessage()));
@@ -230,7 +243,10 @@ public class CompanyAddController
 										"SALES_REV_TURN",
 										"PROF_MARGIN",
 										"OPER_MARGIN",
-										"EQY_DVD_YLD_IND")));
+										"EQY_DVD_YLD_IND",
+										"IS_COMP_EPS_ADJUSTED",
+										"IS_BASIC_EPS_CONT_OPS",
+										"IS_DIL_EPS_CONT_OPS")));
 			} catch (Exception e) {
 				info.put("BDH EPS SEMI_ANNUALLY",
 						new StringBuilder("Запрос BDH EPS SEMI_ANNUALLY:").append(e.getMessage()));
