@@ -76,21 +76,12 @@ public class ViewShareController
 		return daoSecurities.findAll(filter, security);
 	}
 
-	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	@ResponseBody
-	public List<SimpleItem> comboFilter(
-			@RequestParam(required = false) String query)
-	{
-		log.info("COMBO ViewShare: Filter='{}'", query);
-		return daoSecurities.findComboFilter(query);
-	}
-
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
 	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO ViewShare: FilterSecurities='{}'", query);
-		return daoSecurities.findCombo(query);
+		return daoSecurities.findComboShares(query);
 	}
 }

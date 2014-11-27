@@ -62,27 +62,6 @@
 		portfolio.reload();
 	}
 
-	var filter = new Ext.form.ComboBox({
-		width : 100,
-		displayField : 'name',
-		store : new Ext.data.JsonStore({
-			autoDestroy : true,
-			url : 'rest/ViewFutures/Filter.do',
-			// root : 'info',
-			fields : [ 'name' ]
-		}),
-		editable : false,
-		allowBlank : true,
-		loadingText : 'Поиск...',
-		triggerAction : 'all',
-		listeners : {
-			select : function(combo, record, index) {
-				filterUpdate();
-			}
-		},
-		value : 'Future'
-	});
-
 	var security = new Ext.form.ComboBox({
 		width : 150,
 		displayField : 'name',
@@ -110,19 +89,13 @@
 	function filterUpdate() {
 		storeSec.reload({
 			params : {
-				filter : filter.getValue(),
+				filter : 'Future',
 				security : App.Combo.getValueId(security)
 			}
 		});
 	}
 
-	var tbarFilter = [ 'Фильтр', filter, {
-		text : 'X',
-		handler : function() {
-			filter.setValue(filter.originalValue);
-			filterUpdate();
-		}
-	}, ' ', 'Инструмент', security, {
+	var tbarFilter = [ 'Инструмент', security, {
 		text : 'X',
 		handler : function() {
 			security.setValue(security.originalValue);

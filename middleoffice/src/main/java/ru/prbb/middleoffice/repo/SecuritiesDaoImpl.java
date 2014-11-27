@@ -69,4 +69,69 @@ public class SecuritiesDaoImpl extends BaseDaoImpl implements SecuritiesDao
 		return Utils.toSimpleItem(getResultList(q, sql));
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SimpleItem> findComboShares(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxShares_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(security_code) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
+		}
+		return getResultList(q, sql);
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SimpleItem> findComboSwaps(String query) {
+		String sql = "select id_sec as id, security_code as name from dbo.mo_WebGet_ajaxSwaps_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(security_code) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
+		}
+		return getResultList(q, sql);
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SimpleItem> findComboBonds(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxBonds_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(security_code) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
+		}
+		return getResultList(q, sql);
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SimpleItem> findComboFutures(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxFutures_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(security_code) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
+		}
+		return getResultList(q, sql);
+	}
+
+	
 }

@@ -18,7 +18,7 @@ import ru.prbb.middleoffice.domain.CouponItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SimpleItem;
-import ru.prbb.middleoffice.repo.dictionary.BondsDao;
+import ru.prbb.middleoffice.repo.SecuritiesDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
@@ -45,7 +45,7 @@ public class CouponsController
 	@Autowired
 	private BrokersDao daoBrokers;
 	@Autowired
-	private BondsDao daoBonds;
+	private SecuritiesDao daoSecurities;
 	@Autowired
 	private BrokerAccountsDao daoAccounts;
 	@Autowired
@@ -220,7 +220,7 @@ public class CouponsController
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO Coupons: Bonds='{}'", query);
-		return daoBonds.findCombo(query);
+		return daoSecurities.findComboBonds(query);
 	}
 
 	@RequestMapping(value = "/Operations", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

@@ -90,21 +90,12 @@ public class ViewFuturesController
 		return daoSecurities.findAll(filter, security);
 	}
 
-	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	@ResponseBody
-	public List<SimpleItem> comboFilter(
-			@RequestParam(required = false) String query)
-	{
-		log.info("COMBO ViewFutures: Filter='{}'", query);
-		return daoSecurities.findComboFilter(query);
-	}
-
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
 	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO ViewFutures: FilterSecurities='{}'", query);
-		return daoSecurities.findCombo(query);
+		return daoSecurities.findComboFutures(query);
 	}
 }

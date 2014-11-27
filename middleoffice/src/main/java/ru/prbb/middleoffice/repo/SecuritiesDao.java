@@ -12,7 +12,6 @@ import ru.prbb.middleoffice.domain.SimpleItem;
  * Список инструментов и фильтр для списка
  * 
  * @author RBr
- * 
  */
 public interface SecuritiesDao {
 
@@ -34,5 +33,37 @@ public interface SecuritiesDao {
 	 * @return
 	 */
 	List<SimpleItem> findComboFilter(String query);
+
+	/**
+	 * Акции
+	 * 
+	 * @param query
+	 * @return
+	 */
+	List<SimpleItem> findComboShares(String query);
+
+	/**
+	 * Свопы
+	 * 
+	 * @param query
+	 * @return
+	 */
+	List<SimpleItem> findComboSwaps(String query);
+
+	/**
+	 * Облигации
+	 * 
+	 * @param query
+	 * @return
+	 */
+	List<SimpleItem> findComboBonds(String query);
+
+	/**
+	 * Фьючерсы
+	 * 
+	 * @param query
+	 * @return
+	 */
+	List<SimpleItem> findComboFutures(String query);
 
 }

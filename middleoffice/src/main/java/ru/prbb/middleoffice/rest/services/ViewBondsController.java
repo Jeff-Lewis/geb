@@ -76,21 +76,12 @@ public class ViewBondsController
 		return daoSecurities.findAll("Bond", security);
 	}
 
-	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
-	@ResponseBody
-	public List<SimpleItem> comboFilter(
-			@RequestParam(required = false) String query)
-	{
-		log.info("COMBO ViewBonds: Filter='{}'", query);
-		return daoSecurities.findComboFilter(query);
-	}
-
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
 	public List<SimpleItem> comboFilterSecurities(
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO ViewBonds: FilterSecurities='{}'", query);
-		return daoSecurities.findCombo(query);
+		return daoSecurities.findComboBonds(query);
 	}
 }
