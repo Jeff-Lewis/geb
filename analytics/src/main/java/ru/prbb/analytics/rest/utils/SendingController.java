@@ -1,6 +1,8 @@
 package ru.prbb.analytics.rest.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +93,17 @@ public class SendingController
 			break;
 		case 1:
 			text = dao.getTrader();
+			break;
+		case 2:
+			text = "Добрый день!\n" +
+					"\n" +
+					"Ридинг за " + new SimpleDateFormat("dd.MM.yyyy").format(new Date()) + " доступен по ссылке:\n" +
+					"\n" +
+					"\n" +
+					"\n" +
+					"Количество страниц: \n" +
+					"\n" +
+					"Спасибо!";
 			break;
 
 		default:

@@ -51,7 +51,7 @@
 		store : new Ext.data.ArrayStore({
 			autoDestroy : true,
 			fields : [ 'id', 'pattern' ],
-			data : [ [ 0, 'Аналитики' ], [ 1, 'Трейдеры' ] ]
+			data : [ [ 0, 'Аналитики' ], [ 1, 'Трейдеры' ], [ 2, 'Reading' ] ]
 		}),
 		allowBlank : false,
 		emptyText : 'Выберите шаблон рассылки',
@@ -60,7 +60,9 @@
 		editable : false,
 		listeners : {
 			select : function(combo, record) {
-				switch (combo.getValue()) {
+				var id = combo.getValue();
+
+				switch (id) {
 				case 0:
 					receiver1.setValue('news');
 					receiver2.setValue('news_digr@prbb.ru');
@@ -69,12 +71,17 @@
 					receiver1.setValue('');
 					receiver2.setValue('');
 					break;
+				case 2:
+					receiver1.setValue('');
+					receiver2.setValue('Reading');
+					break;
 
 				default:
 					break;
 				}
+
 				Ext.Ajax.request({
-					url : 'rest/Sending/' + combo.getValue() + '.do',
+					url : 'rest/Sending/' + id + '.do',
 					timeout : 10 * 60 * 1000, // 10 min
 					waitMsg : 'Сохранение',
 					success : function(xhr) {
