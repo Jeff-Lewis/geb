@@ -10,19 +10,30 @@ import javax.persistence.Column;
 /**
  * @author RBr
  */
-public class FuturesItem implements Serializable {
+public class FuturesCoefficientItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "futures_id")
-	private Long futuresId;
-	private String futures;
 	@Column(name = "coef_id")
 	private Long coefId;
-	private Number coefficient;
+	@Column(name = "futures_alias_id")
+	private Long futuresId;
+	@Column(name = "fut_name")
+	private String futures;
+	@Column(name = "sys_id")
+	private Long tradeSystemId;
 	@Column(name = "TradeSystem")
 	private String tradeSystem;
+	private Number coefficient;
 	private String comment;
+
+	public Long getCoefId() {
+		return coefId;
+	}
+
+	public void setCoefId(Long coefId) {
+		this.coefId = coefId;
+	}
 
 	public Long getFuturesId() {
 		return futuresId;
@@ -40,20 +51,12 @@ public class FuturesItem implements Serializable {
 		this.futures = futures;
 	}
 
-	public Long getCoefId() {
-		return coefId;
+	public Long getTradeSystemId() {
+		return tradeSystemId;
 	}
 
-	public void setCoefId(Long coefId) {
-		this.coefId = coefId;
-	}
-
-	public Number getCoefficient() {
-		return coefficient;
-	}
-
-	public void setCoefficient(Number coefficient) {
-		this.coefficient = coefficient;
+	public void setTradeSystemId(Long tradeSystemId) {
+		this.tradeSystemId = tradeSystemId;
 	}
 
 	public String getTradeSystem() {
@@ -64,6 +67,14 @@ public class FuturesItem implements Serializable {
 		this.tradeSystem = tradeSystem;
 	}
 
+	public Number getCoefficient() {
+		return coefficient;
+	}
+
+	public void setCoefficient(Number coefficient) {
+		this.coefficient = coefficient;
+	}
+
 	public String getComment() {
 		return comment;
 	}
@@ -71,4 +82,5 @@ public class FuturesItem implements Serializable {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+
 }

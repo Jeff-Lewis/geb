@@ -14,7 +14,9 @@ import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.FuturesItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.ResultData;
+import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.dictionary.FuturesDao;
+import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
 import ru.prbb.middleoffice.rest.BaseController;
 
 /**
@@ -30,6 +32,8 @@ public class FuturesController
 
 	@Autowired
 	private FuturesDao dao;
+	@Autowired
+	private TradesystemsDao daoTradesystems;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
@@ -48,15 +52,40 @@ public class FuturesController
 		return new ResultData(dao.findById(id));
 	}
 
+	@RequestMapping(value = "/Coefficients/{id}", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public ResultData getCoefficientsItem(
+			@PathVariable("id") Long id)
+	{
+		log.info("GET Futures/Coefficients: id={}", id);
+		return new ResultData(dao.findCoefficientById(id));
+	}
+
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Result postAddItem(
 			@RequestParam String name,
 			@RequestParam Double coef,
-			@RequestParam String comment)
+			@RequestParam String comment,
+			@RequestParam Long tradeSystemId)
 	{
-		log.info("POST Futures add: name={}, coef={}, comment={}", Utils.toArray(name, coef, comment));
-		dao.put(name, coef, comment);
+		log.info("POST Futures add: name={}, coef={}, comment={}, tradeSystemId={}",
+				Utils.toArray(name, coef, comment, tradeSystemId));
+		dao.put(name, coef, comment, tradeSystemId);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/Coefficients", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	public Result postAddCoefficientItem(
+			@RequestParam Long futureId,
+			@RequestParam Double coef,
+			@RequestParam String comment,
+			@RequestParam Long tradeSystemId)
+	{
+		log.info("POST Futures add: futureId={}, coef={}, comment={}, tradeSystemId={}",
+				Utils.toArray(futureId, coef, comment, tradeSystemId));
+		dao.putCoefficient(futureId, coef, comment, tradeSystemId);
 		return Result.SUCCESS;
 	}
 
@@ -64,11 +93,25 @@ public class FuturesController
 	@ResponseBody
 	public Result postUpdateItem(
 			@PathVariable("id") Long id,
-			@RequestParam String name,
-			@RequestParam String comment)
+			@RequestParam String name)
 	{
-		log.info("POST Futures update: id={}, name={}, comment={}", Utils.toArray(id, name, comment));
-		dao.updateById(id, name, comment);
+		log.info("POST Futures update: id={}, name={}", id, name);
+		dao.updateById(id, name);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/Coefficients/{id}", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	public Result postUpdateCoefficientsItem(
+			@PathVariable("id") Long coefId,
+			@RequestParam Double coef,
+			@RequestParam String comment,
+			@RequestParam Long tradeSystemId,
+			@RequestParam Long futureId)
+	{
+		log.info("POST Futures/Coefficients update: coefId={}, coef={}, comment={}, tradeSystemId={}, futureId={}",
+				Utils.toArray(coefId, coef, comment, tradeSystemId, futureId));
+		dao.updateCoefficientById(coefId, coef, comment, tradeSystemId, futureId);
 		return Result.SUCCESS;
 	}
 
@@ -81,4 +124,24 @@ public class FuturesController
 		dao.deleteById(id);
 		return Result.SUCCESS;
 	}
+
+	@RequestMapping(value = "/Coefficients/{id}", method = RequestMethod.DELETE, produces = "application/json")
+	@ResponseBody
+	public Result deleteCoefficients(
+			@PathVariable("id") Long id)
+	{
+		log.info("DEL Futures/Coefficients: id={}", id);
+		dao.deleteCoefficientById(id);
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/Tradesystems", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboTradesystems(
+			@RequestParam(required = false) String query)
+	{
+		log.info("COMBO Futures: Tradesystems='{}'", query);
+		return daoTradesystems.findCombo(query);
+	}
+
 }

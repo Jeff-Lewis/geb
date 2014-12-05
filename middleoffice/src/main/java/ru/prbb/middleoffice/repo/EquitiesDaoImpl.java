@@ -100,12 +100,12 @@ public class EquitiesDaoImpl extends BaseDaoImpl implements EquitiesDao
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
 			ViewFuturesItem item = new ViewFuturesItem();
-			item.setId_sec(Utils.toLong(arr[0]));
-			item.setTicker(Utils.toString(arr[1]));
-			item.setDeal_name(Utils.toString(arr[2]));
-			item.setCoef(Utils.toDouble(arr[3]));
-			item.setName(Utils.toString(arr[4]));
-			item.setDate_insert(Utils.toTimestamp(arr[5]));
+			int col = 0;
+			item.setId_sec(Utils.toLong(arr[col++]));
+			item.setTicker(Utils.toString(arr[col++]));
+			item.setDeal_name(Utils.toString(arr[col++]));
+			item.setName(Utils.toString(arr[col++]));
+			item.setDate_insert(Utils.toTimestamp(arr[col++]));
 			res.add(item);
 		}
 		return res;

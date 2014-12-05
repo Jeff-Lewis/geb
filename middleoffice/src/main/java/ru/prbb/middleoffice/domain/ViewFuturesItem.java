@@ -16,7 +16,6 @@ public class ViewFuturesItem implements Serializable {
 	private Long id_sec;
 	private String ticker;
 	private String deal_name;
-	private BigDecimal coef;
 	private String name;
 	private String date_insert;
 
@@ -63,21 +62,6 @@ public class ViewFuturesItem implements Serializable {
 	 */
 	public void setDeal_name(String deal_name) {
 		this.deal_name = deal_name;
-	}
-
-	/**
-	 * @return the coef
-	 */
-	public BigDecimal getCoef() {
-		return coef;
-	}
-
-	/**
-	 * @param coef
-	 *            the coef to set
-	 */
-	public void setCoef(BigDecimal coef) {
-		this.coef = coef;
 	}
 
 	/**

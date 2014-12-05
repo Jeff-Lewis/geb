@@ -4,6 +4,7 @@
 (function() {
 
 	var futuresId = -1;
+	var coefId = -1;
 
 	var _name = Ext.id();
 	var _tradeSys = Ext.id();
@@ -59,7 +60,7 @@
 	    } ],
 
 	    buttons : [ {
-	        text : 'Добавить',
+	        text : 'Сохранить',
 	        handler : save
 	    }, {
 	        text : 'Отмена',
@@ -68,68 +69,42 @@
 
 	    setWindow : function(window) {
 		    this.window = window;
-		    this.window.setTitle('Добавления нового фьючерса');
+		    this.window.setTitle('Изменение коэфициента');
 	    },
 	    loadData : function(data) {
-		    this.window.setTitle('Добавления нового коэффициента');
-
 		    var item = data.item;
 		    futuresId = item.futuresId;
+		    coefId = item.coefId;
 
-		    var cmpName = Ext.getCmp(_name);
-		    cmpName.setValue(item.futures);
-		    cmpName.setReadOnly(true);
-
-		    Ext.getCmp(_tradeSys).focus();
+		    Ext.getCmp(_name).setValue(item.futures).setReadOnly(true);
+		    Ext.getCmp(_tradeSys).setValue(item.tradeSystemId).setRawValue(item.tradeSystem);
+		    Ext.getCmp(_coef).setValue(item.coefficient);
+		    Ext.getCmp(_comment).setValue(item.comment);
 	    }
 	});
 
 	function save(b, e) {
-		if (-1 != futuresId) {
-			Ext.Ajax.request({
-			    url : 'rest/Futures/Coefficients.do',
-			    params : {
-					futureId : futuresId,
-					coef : Ext.getCmp(_coef).getValue(),
-					comment : Ext.getCmp(_comment).getValue(),
-					tradeSystemId : Ext.getCmp(_tradeSys).getValue()
-			    },
-			    timeout : 10 * 60 * 1000, // 10 min
-			    waitMsg : 'Сохранение нового фьючерса',
-			    success : function(xhr) {
-				    var answer = Ext.decode(xhr.responseText);
-				    if (answer.success) {
-					    container.window.close();
-					    Ext.getCmp('Futures-component').getStore().reload();
-				    }
-			    },
-			    failure : function() {
-				    App.ui.error('Сервер недоступен');
+		Ext.Ajax.request({
+		    url : 'rest/Futures/Coefficients/' + coefId + '.do',
+		    params : {
+		        futureId : futuresId,
+		        comment : Ext.getCmp(_comment).getValue(),
+		        tradeSystemId : Ext.getCmp(_tradeSys).getValue(),
+		        coef : Ext.getCmp(_coef).getValue()
+		    },
+		    timeout : 10 * 60 * 1000, // 10 min
+		    waitMsg : 'Сохранение нового фьючерса',
+		    success : function(xhr) {
+			    var answer = Ext.decode(xhr.responseText);
+			    if (answer.success) {
+				    container.window.close();
+				    Ext.getCmp('Futures-component').getStore().reload();
 			    }
-			});
-		} else {
-			Ext.Ajax.request({
-			    url : 'rest/Futures.do',
-			    params : {
-			        name : Ext.getCmp(_name).getValue(),
-					coef : Ext.getCmp(_coef).getValue(),
-					comment : Ext.getCmp(_comment).getValue(),
-					tradeSystemId : Ext.getCmp(_tradeSys).getValue()
-			    },
-			    timeout : 10 * 60 * 1000, // 10 min
-			    waitMsg : 'Сохранение нового фьючерса',
-			    success : function(xhr) {
-				    var answer = Ext.decode(xhr.responseText);
-				    if (answer.success) {
-					    container.window.close();
-					    Ext.getCmp('Futures-component').getStore().reload();
-				    }
-			    },
-			    failure : function() {
-				    App.ui.error('Сервер недоступен');
-			    }
-			});
-		}
+		    },
+		    failure : function() {
+			    App.ui.error('Сервер недоступен');
+		    }
+		});
 	}
 
 	function close() {

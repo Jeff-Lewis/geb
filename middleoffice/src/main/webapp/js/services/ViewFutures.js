@@ -45,7 +45,7 @@
 		autoLoad : true,
 		url : 'rest/ViewFutures/Portfolio.do',
 		// root : 'info',
-		fields : [ 'id_sec', 'ticker', 'deal_name', 'coef', 'name',
+		fields : [ 'id_sec', 'ticker', 'deal_name', 'name',
 				'date_insert' ],
 		sortInfo : {
 			field : 'ticker'
@@ -245,13 +245,6 @@
 				width : 30,
 				dataIndex : 'deal_name',
 				sortable : true
-			}, {
-				header : 'KOEF',
-				width : 30,
-				dataIndex : 'coef',
-				sortable : true,
-				align : 'right',
-				renderer : App.util.Renderer.number()
 			}, {
 				header : 'NAME',
 				width : 30,
