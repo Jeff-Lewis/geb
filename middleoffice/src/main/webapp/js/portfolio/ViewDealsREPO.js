@@ -23,7 +23,7 @@
 
 	function reload() {
 		var db = Ext.getCmp(_dateBegin).getValue();
-		var de = Ext.getCmp(_dateBegin).getValue();
+		var de = Ext.getCmp(_dateEnd).getValue();
 		info.reload({
 			params : {
 				dateBegin : App.util.Format.dateYMD(db),
