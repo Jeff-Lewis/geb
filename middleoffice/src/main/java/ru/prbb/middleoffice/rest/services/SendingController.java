@@ -49,7 +49,7 @@ public class SendingController
 			String mails[] = recMails.split(",");
 			for (String mail : mails) {
 				if (Utils.isNotEmpty(mail)) {
-					if (mail.contains("@")) {
+					if (mail.indexOf('@') > 0) {
 						res.add(dao.sendMail(text, mail));
 					} else {
 						List<String> groupMails = dao.getMailByGroup(mail);
@@ -65,7 +65,7 @@ public class SendingController
 			String phones[] = recPhones.split(",");
 			for (String phone : phones) {
 				if (Utils.isNotEmpty(phone)) {
-					if (phone.startsWith("+")) {
+					if (phone.charAt(0) == '+') {
 						res.add(dao.sendSms(text, phone));
 					} else {
 						List<String> groupPhones = dao.getPhoneByGroup(phone);

@@ -253,6 +253,16 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>3.2.5.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.5.2</version>
+		</dependency>
+	  	<dependency>
+  			<groupId>com.sun.mail</groupId>
+  			<artifactId>javax.mail</artifactId>
+  			<version>1.5.2</version>
+	  	</dependency>
     </dependencies>
 
     <build>
