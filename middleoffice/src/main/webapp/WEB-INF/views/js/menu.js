@@ -39,6 +39,11 @@ var dictionary = {
 	        showPanel('dictionary/Futures');
         }
     }, {
+        text : 'Опционы',
+        handler : function() {
+	        showPanel('dictionary/Options');
+        }
+    }, {
         text : 'Праздники',
         icon : 'images/user-plus.png',
         handler : function() {
