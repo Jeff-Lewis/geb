@@ -78,7 +78,7 @@ public final class BloombergServicesM {
 					.build();
 
 			HttpPost httpPost = new HttpPost(uri);
-			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf8"));
+			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
 
 			CloseableHttpClient httpclient = HttpClients.createDefault();
 			try {
