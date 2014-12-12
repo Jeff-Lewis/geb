@@ -123,6 +123,12 @@ var services = {
 	        showPanel('services/NotVisibleCoupons');
         }
     }, {
+        text : 'Не хватает коэффициентов',
+        icon : 'images/excel.png',
+        handler : function() {
+	        showPanel('services/NoCoefficients');
+        }
+    }, {
         text : 'Цена1 для RR',
         // ext:qtitle="Цена1 для risk-reward"
         // ext:qtip="Средневзвешенная цена без учета переброски между ПРББ и WW"
