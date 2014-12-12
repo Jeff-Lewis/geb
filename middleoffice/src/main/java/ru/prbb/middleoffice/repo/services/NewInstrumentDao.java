@@ -18,6 +18,8 @@ public interface NewInstrumentDao {
 
 	int putBondsData(Map<String, String> values);
 
-	int putNewFuturesData(Map<String, String> values);
+	int putFuturesData(Map<String, String> values);
+
+	int putOptionsData(Map<String, String> values);
 
 }

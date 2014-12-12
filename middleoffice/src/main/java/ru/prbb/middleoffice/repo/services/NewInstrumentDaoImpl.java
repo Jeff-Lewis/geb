@@ -147,7 +147,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int putNewFuturesData(Map<String, String> values) {
+	public int putFuturesData(Map<String, String> values) {
 		String sql = "{call dbo.put_futures_proc "
 				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
 				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
@@ -185,4 +185,42 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		return executeUpdate(q, sql);
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int putOptionsData(Map<String, String> values) {
+		String sql = "{call dbo.put_options_proc "
+				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
+				+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
+				+ " ?, ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		int i = 1;
+		q.setParameter(i++, values.get("ID_BB_GLOBAL"));
+		q.setParameter(i++, values.get("ID_BB"));
+		q.setParameter(i++, values.get("ID_BB_UNIQUE"));
+		q.setParameter(i++, values.get("ID_BB_SEC_NUM_DES"));
+		q.setParameter(i++, values.get("ID_BB_SEC_NUM_SRC"));
+		q.setParameter(i++, values.get("UNDERLYING_SECURITY_DES"));
+		q.setParameter(i++, values.get("PARSEKYABLE_DES_SOURCE"));
+		q.setParameter(i++, values.get("SECURITY_TYP"));
+		q.setParameter(i++, values.get("MARKET_SECTOR_DES"));
+		q.setParameter(i++, values.get("FEED_SOURCE"));
+		q.setParameter(i++, values.get("FUTURES_CATEGORY"));
+		q.setParameter(i++, values.get("FUT_TRADING_UNITS"));
+		q.setParameter(i++, values.get("TICKER"));
+		q.setParameter(i++, values.get("SECURITY_NAME"));
+		q.setParameter(i++, values.get("NAME"));
+		q.setParameter(i++, values.get("SHORT_NAME"));
+		q.setParameter(i++, values.get("EXCH_CODE"));
+		q.setParameter(i++, values.get("CRNCY"));
+		q.setParameter(i++, values.get("QUOTED_CRNCY"));
+		q.setParameter(i++, values.get("TICK_SIZE_REALTIME"));
+		q.setParameter(i++, values.get("OPT_TICK_VAL"));
+		q.setParameter(i++, values.get("OPT_CONT_SIZE"));
+		q.setParameter(i++, values.get("OPT_FIRST_TRADE_DT"));
+		q.setParameter(i++, values.get("LAST_TRADEABLE_DT"));
+		q.setParameter(i++, values.get("QUOTE_UNITS"));
+		q.setParameter(i++, values.get("OPT_STRIKE_PX"));
+		storeSql(sql, q);
+		return executeUpdate(q, sql);
+	}
 }

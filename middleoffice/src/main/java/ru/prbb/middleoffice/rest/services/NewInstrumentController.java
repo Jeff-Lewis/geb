@@ -31,6 +31,7 @@ public class NewInstrumentController
 	private static final String ИНДЕКС = "Индекс";
 	private static final String ОБЛИГАЦИЯ = "Облигация";
 	private static final String ФЬЮЧЕРС = "Фьючерс";
+	private static final String ОПЦИОН = "Опцион";
 
 	@Autowired
 	private BloombergServicesM bs;
@@ -47,6 +48,7 @@ public class NewInstrumentController
 		final List<String> indexes = new ArrayList<>();
 		final List<String> bonds = new ArrayList<>();
 		final List<String> futures = new ArrayList<>();
+		final List<String> options = new ArrayList<>();
 
 		final List<String[]> info = new ArrayList<>();
 		for (String item : instruments) {
@@ -75,6 +77,11 @@ public class NewInstrumentController
 				info.add(new String[] { code, type, "Добавлено в список." });
 				continue;
 			}
+			if (ОПЦИОН.equals(type)) {
+				options.add(code);
+				info.add(new String[] { code, type, "Добавлено в список." });
+				continue;
+			}
 
 			info.add(new String[] { code, type, "Неизвестный тип инструмента." });
 		}
@@ -93,6 +100,10 @@ public class NewInstrumentController
 
 		if (!futures.isEmpty()) {
 			processFutures(info, futures);
+		}
+
+		if (!options.isEmpty()) {
+			processOptions(info, options);
 		}
 
 		return new ResultData(info);
@@ -321,11 +332,69 @@ public class NewInstrumentController
 			}
 
 			try {
-				dao.putNewFuturesData(values);
+				dao.putFuturesData(values);
 				updateInfo(info, security, ФЬЮЧЕРС, "Загружено");
 			} catch (Exception e) {
 				log.error("Ошибка при сохранении ФЬЮЧЕРС: " + security, e);
 				updateInfo(info, security, ФЬЮЧЕРС, "Ошибка при сохранении: " + e);
+			}
+		}
+	}
+
+	private void processOptions(List<String[]> info, List<String> codes) {
+		final String[] fields = {
+				"ID_BB_GLOBAL",
+				"ID_BB",
+				"ID_BB_UNIQUE",
+				"ID_BB_SEC_NUM_DES",
+				"ID_BB_SEC_NUM_SRC",
+				"UNDERLYING_SECURITY_DES",
+				"PARSEKYABLE_DES_SOURCE",
+				"SECURITY_TYP",
+				"MARKET_SECTOR_DES",
+				"FEED_SOURCE",
+				"FUTURES_CATEGORY",
+				"FUT_TRADING_UNITS",
+				"TICKER",
+				"SECURITY_NAME",
+				"NAME",
+				"SHORT_NAME",
+				"EXCH_CODE",
+				"CRNCY",
+				"QUOTED_CRNCY",
+				"TICK_SIZE_REALTIME",
+				"OPT_TICK_VAL",
+				"OPT_CONT_SIZE",
+				"OPT_FIRST_TRADE_DT",
+				"LAST_TRADEABLE_DT",
+				"QUOTE_UNITS",
+				"OPT_STRIKE_PX"
+		};
+
+		final Map<String, Map<String, String>> answer =
+				bs.executeReferenceDataRequest("Ввод нового опциона",
+						codes.toArray(new String[codes.size()]), fields);
+
+		for (String security : codes) {
+			final Map<String, String> values = answer.get(security);
+			log.debug(security + ": " + values);
+
+			if (null == values) {
+				updateInfo(info, security, ОПЦИОН, "Нет данных для " + security);
+				continue;
+			}
+
+			if (values.containsKey("securityError")) {
+				updateInfo(info, security, ОПЦИОН, values.get("securityError"));
+				continue;
+			}
+
+			try {
+				dao.putOptionsData(values);
+				updateInfo(info, security, ОПЦИОН, "Загружено");
+			} catch (Exception e) {
+				log.error("Ошибка при сохранении ОПЦИОН: " + security, e);
+				updateInfo(info, security, ОПЦИОН, "Ошибка при сохранении: " + e);
 			}
 		}
 	}
