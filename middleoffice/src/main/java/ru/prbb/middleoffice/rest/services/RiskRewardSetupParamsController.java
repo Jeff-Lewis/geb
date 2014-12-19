@@ -121,7 +121,7 @@ public class RiskRewardSetupParamsController
 
 	@RequestMapping(value = "/Add/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityItem> postSecurities(
+	public List<SecurityItem> listSecurities(
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long security)
 	{

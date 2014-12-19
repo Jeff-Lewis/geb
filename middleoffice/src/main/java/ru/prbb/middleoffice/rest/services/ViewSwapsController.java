@@ -68,10 +68,11 @@ public class ViewSwapsController
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityItem> getSecurities(
+	public List<SecurityItem> listSecurities(
 			@RequestParam(defaultValue = "Total return swap") String filter,
 			@RequestParam(required = false) Long security)
 	{
+		filter = "Total return swap";
 		log.info("POST ViewSwaps/Securities: filter={}, security={}", filter, security);
 		return daoSecurities.findAll(filter, security);
 	}

@@ -72,6 +72,7 @@ public class ViewShareController
 			@RequestParam(defaultValue = "Equity") String filter,
 			@RequestParam(required = false) Long security)
 	{
+		filter = "Equity";
 		log.info("POST ViewShare/Securities: filter={}, security={}", filter, security);
 		return daoSecurities.findAll(filter, security);
 	}

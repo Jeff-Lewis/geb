@@ -69,7 +69,7 @@ public class ViewPortfolioDaoImpl extends BaseDaoImpl implements ViewPortfolioDa
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
 	public List<ViewPortfolioTransferItem> executeSelect(Date rep_date, Long funds_id) {
-		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, null, ? 1}";
+		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, null, ?, 1}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, rep_date)
 				.setParameter(2, funds_id);

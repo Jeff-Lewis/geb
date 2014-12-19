@@ -82,10 +82,11 @@ public class ViewFuturesController
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityItem> getSecurities(
+	public List<SecurityItem> listSecurities(
 			@RequestParam(defaultValue = "Future") String filter,
 			@RequestParam(required = false) Long security)
 	{
+		filter = "Future";
 		log.info("POST ViewFutures/Securities: filter={}, security={}", filter, security);
 		return daoSecurities.findAll(filter, security);
 	}

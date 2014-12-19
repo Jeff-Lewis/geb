@@ -72,8 +72,9 @@ public class ViewBondsController
 			@RequestParam(defaultValue = "Bond") String filter,
 			@RequestParam(required = false) Long security)
 	{
+		filter = "Bond";
 		log.info("POST ViewBonds/Securities: filter={}, security={}", filter, security);
-		return daoSecurities.findAll("Bond", security);
+		return daoSecurities.findAll(filter, security);
 	}
 
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
