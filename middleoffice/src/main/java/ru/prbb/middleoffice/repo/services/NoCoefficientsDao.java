@@ -11,6 +11,11 @@ import ru.prbb.middleoffice.domain.NoCoefficientsItem;
  */
 public interface NoCoefficientsDao {
 
+	@Deprecated
 	List<NoCoefficientsItem> show();
+
+	List<NoCoefficientsItem> showFutures();
+
+	List<NoCoefficientsItem> showOptions();
 
 }

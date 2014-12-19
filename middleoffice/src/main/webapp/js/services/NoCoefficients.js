@@ -3,13 +3,29 @@
  */
 (function() {
 
-	var info = new Ext.data.JsonStore({
-	    autoDestroy : true,
-	    autoLoad : true,
-	    url : 'rest/NoCoefficients.do',
-	    // root : 'info',
-	    fields : [ 'securityId', 'tradeSystemId', 'securityCode', 'tradeSystem' ],
-	    listeners : App.ui.listenersJsonStore()
+	var info = new Ext.data.GroupingStore({
+		autoDestroy : true,
+		autoLoad : true,
+		url : 'rest/NoCoefficients.do',
+		reader : new Ext.data.JsonReader({
+			// root : 'info',
+		    fields : [ 'type', 'securityId', 'tradeSystemId', 'securityCode', 'tradeSystem' ],
+		}),
+		groupField : 'type',
+		sortInfo : {
+			field : 'type'
+		},
+		listeners : App.ui.listenersJsonStore()
+	});
+
+	var gv = new Ext.grid.GroupingView({
+		forceFit : false,
+		emptyText : 'Записи не найдены',
+		startCollapsed : true,
+		enableGrouping : true,
+		hideGroupedColumn : true,
+		showGroupName : false,
+		groupTextTpl : '{text} ({[values.rs.length]})'
 	});
 
 	return new Ext.grid.GridPanel({
@@ -29,7 +45,11 @@
 	    },
 
 	    store : info,
+		view : gv,
 	    columns : [ {
+	        header : 'type',
+	        dataIndex : 'type'
+	    }, {
 	        header : 'Security Code',
 	        dataIndex : 'securityCode'
 	    }, {

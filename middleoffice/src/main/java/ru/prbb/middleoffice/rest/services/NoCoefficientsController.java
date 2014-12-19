@@ -1,5 +1,6 @@
 package ru.prbb.middleoffice.rest.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,13 @@ public class NoCoefficientsController
 	public List<NoCoefficientsItem> getItems()
 	{
 		log.info("GET NotVisibleCoupons");
-		return dao.show();
+
+		List<NoCoefficientsItem> f = dao.showFutures();
+		List<NoCoefficientsItem> o = dao.showOptions();
+
+		List<NoCoefficientsItem> res = new ArrayList<>(f.size() + o.size());
+		res.addAll(f);
+		res.addAll(o);
+		return res;
 	}
 }

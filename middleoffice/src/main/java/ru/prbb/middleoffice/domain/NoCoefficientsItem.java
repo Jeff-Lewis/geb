@@ -8,6 +8,7 @@ public class NoCoefficientsItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String type;
 	@Column(name = "id_sec")
 	private Long securityId;
 	@Column(name = "sys_id")
@@ -16,6 +17,14 @@ public class NoCoefficientsItem implements Serializable {
 	private String securityCode;
 	@Column(name = "TradeSystem")
 	private String tradeSystem;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public Long getSecurityId() {
 		return securityId;
