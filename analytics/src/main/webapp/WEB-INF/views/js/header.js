@@ -30,13 +30,27 @@ var panelHeader = {
 			xtype : 'textfield',
 			inputType : 'text',
 			emptyText : 'Логин',
-			allowBlank : false
+			allowBlank : false,
+            listeners : {
+	            specialkey : function(field, e) {
+		            if (e.getKey() == e.ENTER && field.isValid()) {
+		            	Ext.getCmp('password').focus();
+		            }
+	            }
+            }
 		}, {
 			id : 'password',
 			xtype : 'textfield',
 			inputType : 'password',
 			//emptyText : 'Пароль',
-			allowBlank : false
+			allowBlank : false,
+            listeners : {
+	            specialkey : function(field, e) {
+		            if (e.getKey() == e.ENTER && field.isValid()) {
+		            	loginSubmit();
+		            }
+	            }
+            }
 		}, {
 			id : 'login',
 			text : 'Регистрация',
