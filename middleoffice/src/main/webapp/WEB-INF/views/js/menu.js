@@ -197,6 +197,11 @@ var views = {
 	        showPanel('services/ViewFutures');
         }
     }, {
+        text : 'Опционы - Options',
+        handler : function() {
+	        showPanel('services/ViewOptions');
+        }
+    }, {
         text : 'Ввод нового инструмента',
         handler : function() {
 	        showPanel('services/NewInstrument');
