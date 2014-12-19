@@ -55,25 +55,61 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 				.setParameter(1, id);
 		Object[] arr = (Object[]) getSingleResult(q, sql);
 		CompaniesItem item = new CompaniesItem();
-		item.setId_sec(Utils.toLong(arr[0]));
-		item.setIsin(Utils.toString(arr[1]));
-		item.setSecurity_name(Utils.toString(arr[2]));
-		item.setSecurity_code(Utils.toString(arr[3]));
-		item.setTicker(Utils.toString(arr[4]));
-		item.setCurrency(Utils.toString(arr[5]));
-		item.setAdr(Utils.toString(arr[6]));
-		item.setIndstry_grp(Utils.toString(arr[7]));
-		item.setSvod_grp(Utils.toString(arr[8]));
-		item.setKoefUpside(Utils.toDouble(arr[9]));
-		item.setKoefUpsideNM(Utils.toDouble(arr[10]));
-		item.setPeriod(Utils.toString(arr[11]));
-		item.setEps(Utils.toString(arr[12]));
-		item.setG10(Utils.toString(arr[13]));
-		item.setG5(Utils.toString(arr[14]));
-		item.setB10(Utils.toString(arr[15]));
-		item.setB5(Utils.toString(arr[16]));
-		item.setPe10(Utils.toString(arr[17]));
-		item.setPe5(Utils.toString(arr[18]));
+		int i = 0;
+		// id
+		item.setId_sec(Utils.toLong(arr[i++]));
+		// ISIN
+		item.setIsin(Utils.toString(arr[i++]));
+		// Название компании
+		item.setSecurity_name(Utils.toString(arr[i++]));
+		// Код Блумберг
+		item.setSecurity_code(Utils.toString(arr[i++]));
+		// Родной тикер
+		item.setTicker(Utils.toString(arr[i++]));
+		// Валюта расчета
+		item.setCurrency(Utils.toString(arr[i++]));
+		// ADR
+		item.setAdr(Utils.toString(arr[i++]));
+		// Сектор
+		item.setIndstry_grp(Utils.toString(arr[i++]));
+		// Группа в сводной
+		item.setSvod_grp(Utils.toString(arr[i++]));
+		// Koef Upside
+		item.setKoefUpside(Utils.toDouble(arr[i++]));
+		// Koef Upside н.м.
+		item.setKoefUpsideNM(Utils.toDouble(arr[i++]));
+		// Периодичность отчетности
+		item.setPeriod(Utils.toString(arr[i++]));
+		// EPS
+		item.setEps(Utils.toString(arr[i++]));
+		// g10 =
+		item.setG10(Utils.toString(arr[i++]));
+		// g5 =
+		item.setG5(Utils.toString(arr[i++]));
+		// b10 =
+		item.setB10(Utils.toString(arr[i++]));
+		// b5 =
+		item.setB5(Utils.toString(arr[i++]));
+		// PE10 =
+		item.setPe10(Utils.toString(arr[i++]));
+		// PE5 =
+		item.setPe5(Utils.toString(arr[i++]));
+		// crncy
+		item.setCurrencyTrade(Utils.toString(arr[i++]));
+		// eqy_fund_crncy
+		item.setCurrencyReport(Utils.toString(arr[i++]));
+		// px_last
+		item.setPx_last(Utils.toDouble(arr[i++]));
+		// peCurrent
+		item.setPeCurrent(Utils.toDouble(arr[i++]));
+		// methodOld
+		item.setMethodOld(Utils.toDouble(arr[i++]));
+		// methodNew
+		item.setMethodNew(Utils.toDouble(arr[i++]));
+		// consensus
+		item.setConsensus(Utils.toDouble(arr[i++]));
+		// roe
+		item.setRoe(Utils.toDouble(arr[i++]));
 		return item;
 	}
 

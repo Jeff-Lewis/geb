@@ -26,9 +26,35 @@
 
 	var exGrid = new Ext.grid.GridPanel({
 		region : 'center',
-		title : 'Коды',
+		title : 'Исключения',
 		frame : true,
 		enableHdMenu : false,
+
+		tbar : [ {
+	        text : 'Добавить',
+	        menu : [ {
+	            text : 'по темпу роста <b>EPS</b>',
+	            handler : addEpsGrowth
+	        }, {
+	            text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
+	            handler : addBvGrowth
+	        }, '-', {
+	            text : 'параметров по формулам',
+	            handler : addVariableFormula
+	        } ]
+	    }, {
+	        text : 'Удалить',
+	        menu : [ {
+	            text : 'по темпу роста <b>EPS</b>',
+	            handler : delEpsGrowth
+	        }, {
+	            text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
+	            handler : delBvGrowth
+	        }, '-', {
+	            text : 'параметров по формулам',
+	            handler : delVariableFormula
+	        } ]
+	    } ],
 
 		store : exStore,
 		columns : [ {
@@ -67,16 +93,60 @@
 				'oper_margin', 'crnc' ]
 	});
 
+	var smQuarters = new Ext.grid.RowSelectionModel({
+		singleSelect : true
+	});
+
+	function delQuarter() {
+		if (smQuarters.getCount() == 0) {
+			App.ui.message('Необходимо выбрать период.');
+			return;
+		}
+
+		var period = smQuarters.getSelected().data.period;
+		App.ui.confirm('Удалить квартальный период "' + period + '"?', ajaxDelQuarter);
+    }
+	function ajaxDelQuarter() {
+		var period = smQuarters.getSelected().data.period;
+		App.ui.message('Удаление квартального периода "' + period + '"');
+    }
+
 	var quarterGrid = new Ext.grid.GridPanel({
 		title : 'Показатели по кварталам',
 		frame : true,
-		autoHeight : true,
+		//autoHeight : true,
+		height : 550,
 		collapsible : true,
 		collapsed : false,
 		enableHdMenu : false,
 
-		store : quarters,
+		tbar : [ {
+			text : 'Удалить',
+			handler : delQuarter
+	    } ],
+
+	    store : quarters,
+	    sm : smQuarters,
 		columns : [ {
+			header : 'Период',
+			dataIndex : 'period'
+		}, {
+			header : 'Валюта (отчетности)'
+		}, {
+			header : 'IS_EPS'
+		}, {
+			header : 'IS_COMP_EPS_ADJUSTED'
+		}, {
+			header : 'SALES_REV_TURN'
+		}, {
+			header : 'EBITDA'
+		}, {
+			header : 'OPER_MARGIN'
+		}, {
+			header : 'PROF_MARGIN'
+		}, {
+			header : 'OPER_ROE'
+		}/*, {
 			header : 'ПЕРИОД',
 			dataIndex : 'period'
 		}, {
@@ -112,7 +182,7 @@
 		}, {
 			header : 'Валюта',
 			dataIndex : 'crnc'
-		} ],
+		}*/ ],
 		viewConfig : {
 			forceFit : true,
 			stripeRows : true,
@@ -130,16 +200,60 @@
 				'book_val_per_sh', 'oper_roe', 'r_ratio', 'crnc' ]
 	});
 
+	var smYears = new Ext.grid.RowSelectionModel({
+		singleSelect : true
+	});
+
+	function delYears() {
+		if (smYears.getCount() == 0) {
+			App.ui.message('Необходимо выбрать период.');
+			return;
+		}
+
+		var period = smYears.getSelected().data.period;
+		App.ui.confirm('Удалить годовой период "' + period + '"?', ajaxDelYears);
+    }
+	function ajaxDelYears() {
+		var period = smYears.getSelected().data.period;
+		App.ui.message('Удаление годового периода "' + period + '"');
+    }
+
 	var yearsGrid = new Ext.grid.GridPanel({
 		title : 'Показатели по годам',
 		frame : true,
-		autoHeight : true,
+		//autoHeight : true,
+		height : 550,
 		collapsible : true,
 		collapsed : false,
 		enableHdMenu : false,
 
+		tbar : [ {
+			text : 'Удалить',
+			handler : delYears
+	    } ],
+
 		store : years,
+		sm : smYears,
 		columns : [ {
+			header : 'Период',
+			dataIndex : 'period'
+		}, {
+			header : 'Валюта (отчетности)'
+		}, {
+			header : 'IS_EPS'
+		}, {
+			header : 'IS_COMP_EPS_ADJUSTED'
+		}, {
+			header : 'SALES_REV_TURN'
+		}, {
+			header : 'EBITDA'
+		}, {
+			header : 'OPER_MARGIN'
+		}, {
+			header : 'PROF_MARGIN'
+		}, {
+			header : 'OPER_ROE'
+		}/*, {
 			header : 'ПЕРИОД',
 			dataIndex : 'period'
 		}, {
@@ -184,7 +298,7 @@
 		}, {
 			header : 'Валюта',
 			dataIndex : 'crnc'
-		} ],
+		}*/ ],
 		viewConfig : {
 			forceFit : true,
 			stripeRows : true,
@@ -472,17 +586,16 @@
 		labelWidth : 180,
 		defaults : {
 			labelStyle : 'color:#3764A0;',
+			xtype : 'displayfield',
 			cls : 'z-title',
 			width : 200
 		},
 
 		items : [ {
 			fieldLabel : 'ISIN',
-			xtype : 'displayfield',
 			name : 'isin'
 		}, {
 			fieldLabel : 'Название компании',
-			xtype : 'displayfield',
 			name : 'security_name'
 		}, {
 			id : _bloomCode,
@@ -491,7 +604,6 @@
 			name : 'security_code'
 		}, {
 			fieldLabel : 'Родной тикер',
-			xtype : 'displayfield',
 			name : 'ticker'
 		}, {
 			id : _adr,
@@ -520,7 +632,6 @@
 			triggerAction : 'all'
 		}, {
 			fieldLabel : 'Сектор',
-			xtype : 'displayfield',
 			name : 'indstry_grp'
 		}, {
 			id : _group,
@@ -590,10 +701,19 @@
 			loadingText : 'Поиск...',
 			minChars : 2,
 			triggerAction : 'all'
+		}, {
+			fieldLabel : 'Валюта торгов CRNCY',
+			name : 'currencyTrade'
+		}, {
+			fieldLabel : 'Валюта отчетности EQY_FUND_CRNCY',
+			name : 'currencyReport'
+		}, {
+			fieldLabel : 'PX_LAST',
+			name : 'px_last'
 		} ]
 	});
 
-	var rightInfoForm = new Ext.form.FormPanel({
+	var rightInfoForm1 = new Ext.form.FormPanel({
 		region : 'north',
 		title : 'Текущий расчёт',
 		padding : 10,
@@ -601,37 +721,66 @@
 		border : true,
 		autoHeight : true,
 
-		labelWidth : 50,
+		labelWidth : 70,
 		defaults : {
 			labelStyle : 'color:#3764A0;font-size:11px;',
+			xtype : 'displayfield',
 			cls : 'z-title',
-			width : 200
+			width : 150
 		},
 
 		items : [ {
 			fieldLabel : 'g10',
-			xtype : 'displayfield',
 			name : 'g10'
 		}, {
 			fieldLabel : 'g5',
-			xtype : 'displayfield',
 			name : 'g5'
 		}, {
 			fieldLabel : 'b10',
-			xtype : 'displayfield',
 			name : 'b10'
 		}, {
 			fieldLabel : 'b5',
-			xtype : 'displayfield',
 			name : 'b5'
 		}, {
 			fieldLabel : 'PE10',
-			xtype : 'displayfield',
 			name : 'pe10'
 		}, {
 			fieldLabel : 'PE5',
-			xtype : 'displayfield',
 			name : 'pe5'
+		}, {
+			fieldLabel : 'PE current',
+			name : 'peCurrent'
+		} ]
+	});
+
+	var rightInfoForm2 = new Ext.form.FormPanel({
+		region : 'north',
+		title : 'Расчётные таргеты',
+		padding : 10,
+		frame : true,
+		border : true,
+		autoHeight : true,
+
+		labelWidth : 70,
+		defaults : {
+			labelStyle : 'color:#3764A0;font-size:11px;',
+			xtype : 'displayfield',
+			cls : 'z-title',
+			width : 150
+		},
+
+		items : [ {
+			fieldLabel : 'По старой методике',
+			name : 'methodOld'
+		}, {
+			fieldLabel : 'По новой методике',
+			name : 'methodNew'
+		}, {
+			fieldLabel : 'CONSENSUS',
+			name : 'consensus'
+		}, {
+			fieldLabel : 'ROE',
+			name : 'roe'
 		} ]
 	});
 
@@ -820,30 +969,6 @@
 	        text : 'Сохранить',
 	        handler : equityChange
 	    }, {
-	        text : 'Задать исключение',
-	        menu : [ {
-	            text : 'по темпу роста <b>EPS</b>',
-	            handler : addEpsGrowth
-	        }, {
-	            text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
-	            handler : addBvGrowth
-	        }, '-', {
-	            text : 'параметров по формулам',
-	            handler : addVariableFormula
-	        } ]
-	    }, {
-	        text : 'Удалить исключение',
-	        menu : [ {
-	            text : 'по темпу роста <b>EPS</b>',
-	            handler : delEpsGrowth
-	        }, {
-	            text : 'по темпу роста <b>BOOK_VAL_PER_SH</b>',
-	            handler : delBvGrowth
-	        }, '-', {
-	            text : 'параметров по формулам',
-	            handler : delVariableFormula
-	        } ]
-	    }, {
 	        text : 'Выполнить',
 	        menu : [ {
 	            text : 'Посчитать EPS',
@@ -863,7 +988,7 @@
 	    items : [ {
 	        xtype : 'panel',
 	        baseCls : 'x-plain',
-	        height : 400,
+	        height : 450,
 	        layout : 'border',
 
 	        items : [ leftInfoForm, {
@@ -872,7 +997,17 @@
 	            width : 500,
 	            layout : 'border',
 
-	            items : [ rightInfoForm, exGrid ]
+	            items : [ {
+	        		region : 'north',
+	        		xtype : 'container',
+	        		height : 230,
+	        		layout : 'hbox',
+	        		layoutConfig : {
+	        			align : 'stretch'
+	        		},
+
+	        		items : [ rightInfoForm1, rightInfoForm2 ]
+	        	}, exGrid ]
 	        } ]
 	    }, yearsGrid, quarterGrid, fileGrid ],
 
@@ -910,7 +1045,8 @@
 		    files.reload();
 
 		    leftInfoForm.getForm().setValues(data.item);
-		    rightInfoForm.getForm().setValues(data.item);
+		    rightInfoForm1.getForm().setValues(data.item);
+		    rightInfoForm2.getForm().setValues(data.item);
 	    },
 
 	    refreshEx : function() {

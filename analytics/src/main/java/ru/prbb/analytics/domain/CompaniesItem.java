@@ -12,10 +12,10 @@ import javax.persistence.Id;
 
 /**
  * @author RBr
- * 
  */
 @Entity
 public class CompaniesItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -57,290 +57,237 @@ public class CompaniesItem implements Serializable {
 	private String pe10;
 	@Column(name = "PE5 =")
 	private String pe5;
+	@Column(name = "crncy")
+	private String currencyTrade;
+	@Column(name = "eqy_fund_crncy")
+	private String currencyReport;
+	@Column(name = "px_last")
+	private BigDecimal px_last;
+	@Column(name = "peCurrent")
+	private BigDecimal peCurrent;
+	@Column(name = "methodOld")
+	private BigDecimal methodOld;
+	@Column(name = "methodNew")
+	private BigDecimal methodNew;
+	@Column(name = "consensus")
+	private BigDecimal consensus;
+	@Column(name = "roe")
+	private BigDecimal roe;
 
-	/**
-	 * @return the id_sec
-	 */
 	public Long getId_sec() {
 		return id_sec;
 	}
 
-	/**
-	 * @param id_sec
-	 *            the id_sec to set
-	 */
 	public void setId_sec(Long id_sec) {
 		this.id_sec = id_sec;
 	}
 
-	/**
-	 * @return the isin
-	 */
 	public String getIsin() {
 		return isin;
 	}
 
-	/**
-	 * @param isin
-	 *            the isin to set
-	 */
 	public void setIsin(String isin) {
 		this.isin = isin;
 	}
 
-	/**
-	 * @return the security_name
-	 */
 	public String getSecurity_name() {
 		return security_name;
 	}
 
-	/**
-	 * @param security_name
-	 *            the security_name to set
-	 */
 	public void setSecurity_name(String security_name) {
 		this.security_name = security_name;
 	}
 
-	/**
-	 * @return the security_code
-	 */
 	public String getSecurity_code() {
 		return security_code;
 	}
 
-	/**
-	 * @param security_code
-	 *            the security_code to set
-	 */
 	public void setSecurity_code(String security_code) {
 		this.security_code = security_code;
 	}
 
-	/**
-	 * @return the ticker
-	 */
 	public String getTicker() {
 		return ticker;
 	}
 
-	/**
-	 * @param ticker
-	 *            the ticker to set
-	 */
 	public void setTicker(String ticker) {
 		this.ticker = ticker;
 	}
 
-	/**
-	 * @return the currency
-	 */
 	public String getCurrency() {
 		return currency;
 	}
 
-	/**
-	 * @param currency
-	 *            the currency to set
-	 */
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
 
-	/**
-	 * @return the adr
-	 */
 	public String getAdr() {
 		return adr;
 	}
 
-	/**
-	 * @param adr
-	 *            the adr to set
-	 */
 	public void setAdr(String adr) {
 		this.adr = adr;
 	}
 
-	/**
-	 * @return the indstry_grp
-	 */
 	public String getIndstry_grp() {
 		return indstry_grp;
 	}
 
-	/**
-	 * @param indstry_grp
-	 *            the indstry_grp to set
-	 */
 	public void setIndstry_grp(String indstry_grp) {
 		this.indstry_grp = indstry_grp;
 	}
 
-	/**
-	 * @return the svod_grp
-	 */
 	public String getSvod_grp() {
 		return svod_grp;
 	}
 
-	/**
-	 * @param svod_grp
-	 *            the svod_grp to set
-	 */
 	public void setSvod_grp(String svod_grp) {
 		this.svod_grp = svod_grp;
 	}
 
-	/**
-	 * @return the koefUpside
-	 */
 	public BigDecimal getKoefUpside() {
 		return koefUpside;
 	}
 
-	/**
-	 * @param koefUpside
-	 *            the koefUpside to set
-	 */
 	public void setKoefUpside(BigDecimal koefUpside) {
 		this.koefUpside = koefUpside;
 	}
 
-	/**
-	 * @return the koefUpsideNM
-	 */
 	public BigDecimal getKoefUpsideNM() {
 		return koefUpsideNM;
 	}
 
-	/**
-	 * @param koefUpsideNM
-	 *            the koefUpsideNM to set
-	 */
 	public void setKoefUpsideNM(BigDecimal koefUpsideNM) {
 		this.koefUpsideNM = koefUpsideNM;
 	}
 
-	/**
-	 * @return the period
-	 */
 	public String getPeriod() {
 		return period;
 	}
 
-	/**
-	 * @param period
-	 *            the period to set
-	 */
 	public void setPeriod(String period) {
 		this.period = period;
 	}
 
-	/**
-	 * @return the eps
-	 */
 	public String getEps() {
 		return eps;
 	}
 
-	/**
-	 * @param eps
-	 *            the eps to set
-	 */
 	public void setEps(String eps) {
 		this.eps = eps;
 	}
 
-	/**
-	 * @return the g10
-	 */
 	public String getG10() {
 		return g10;
 	}
 
-	/**
-	 * @param g10
-	 *            the g10 to set
-	 */
 	public void setG10(String g10) {
 		this.g10 = g10;
 	}
 
-	/**
-	 * @return the g5
-	 */
 	public String getG5() {
 		return g5;
 	}
 
-	/**
-	 * @param g5
-	 *            the g5 to set
-	 */
 	public void setG5(String g5) {
 		this.g5 = g5;
 	}
 
-	/**
-	 * @return the b10
-	 */
 	public String getB10() {
 		return b10;
 	}
 
-	/**
-	 * @param b10
-	 *            the b10 to set
-	 */
 	public void setB10(String b10) {
 		this.b10 = b10;
 	}
 
-	/**
-	 * @return the b5
-	 */
 	public String getB5() {
 		return b5;
 	}
 
-	/**
-	 * @param b5
-	 *            the b5 to set
-	 */
 	public void setB5(String b5) {
 		this.b5 = b5;
 	}
 
-	/**
-	 * @return the pe10
-	 */
 	public String getPe10() {
 		return pe10;
 	}
 
-	/**
-	 * @param pe10
-	 *            the pe10 to set
-	 */
 	public void setPe10(String pe10) {
 		this.pe10 = pe10;
 	}
 
-	/**
-	 * @return the pe5
-	 */
 	public String getPe5() {
 		return pe5;
 	}
 
-	/**
-	 * @param pe5
-	 *            the pe5 to set
-	 */
 	public void setPe5(String pe5) {
 		this.pe5 = pe5;
+	}
+
+	public String getCurrencyTrade() {
+		return currencyTrade;
+	}
+
+	public void setCurrencyTrade(String currencyTrade) {
+		this.currencyTrade = currencyTrade;
+	}
+
+	public String getCurrencyReport() {
+		return currencyReport;
+	}
+
+	public void setCurrencyReport(String currencyReport) {
+		this.currencyReport = currencyReport;
+	}
+
+	public BigDecimal getPx_last() {
+		return px_last;
+	}
+
+	public void setPx_last(BigDecimal px_last) {
+		this.px_last = px_last;
+	}
+
+	public BigDecimal getPeCurrent() {
+		return peCurrent;
+	}
+
+	public void setPeCurrent(BigDecimal peCurrent) {
+		this.peCurrent = peCurrent;
+	}
+
+	public BigDecimal getMethodOld() {
+		return methodOld;
+	}
+
+	public void setMethodOld(BigDecimal methodOld) {
+		this.methodOld = methodOld;
+	}
+
+	public BigDecimal getMethodNew() {
+		return methodNew;
+	}
+
+	public void setMethodNew(BigDecimal methodNew) {
+		this.methodNew = methodNew;
+	}
+
+	public BigDecimal getConsensus() {
+		return consensus;
+	}
+
+	public void setConsensus(BigDecimal consensus) {
+		this.consensus = consensus;
+	}
+
+	public BigDecimal getRoe() {
+		return roe;
+	}
+
+	public void setRoe(BigDecimal roe) {
+		this.roe = roe;
 	}
 
 }
