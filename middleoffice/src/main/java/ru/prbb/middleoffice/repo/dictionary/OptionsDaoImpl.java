@@ -174,12 +174,12 @@ public class OptionsDaoImpl extends BaseDaoImpl implements OptionsDao
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleItem> findCombo(String query) {
-		String sql = "select id, name from dbo.mo_WebGet_ajaxOptions_v";
+		String sql = "select id, name from dbo.mo_WebGet_ajaxOptionsAlias_v";
 		Query q;
 		if (Utils.isEmpty(query)) {
 			q = em.createNativeQuery(sql, SimpleItem.class);
 		} else {
-			sql += " where lower(name) like ?";
+			sql += " where lower(security_code) like ?";
 			q = em.createNativeQuery(sql, SimpleItem.class)
 					.setParameter(1, query.toLowerCase() + '%');
 		}

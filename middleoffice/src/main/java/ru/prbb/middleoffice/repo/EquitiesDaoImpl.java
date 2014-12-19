@@ -18,6 +18,7 @@ import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.PortfolioItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewFuturesItem;
+import ru.prbb.middleoffice.domain.ViewOptionsItem;
 
 /**
  * @author RBr
@@ -100,6 +101,28 @@ public class EquitiesDaoImpl extends BaseDaoImpl implements EquitiesDao
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
 			ViewFuturesItem item = new ViewFuturesItem();
+			int col = 0;
+			item.setId_sec(Utils.toLong(arr[col++]));
+			item.setTicker(Utils.toString(arr[col++]));
+			item.setDeal_name(Utils.toString(arr[col++]));
+			item.setName(Utils.toString(arr[col++]));
+			item.setDate_insert(Utils.toTimestamp(arr[col++]));
+			res.add(item);
+		}
+		return res;
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<ViewOptionsItem> findAllOptions() {
+		String sql = "select * from dbo.portfolio_options_v";
+		Query q = em.createNativeQuery(sql);
+		@SuppressWarnings("rawtypes")
+		List list = getResultList(q, sql);
+		List<ViewOptionsItem> res = new ArrayList<>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			ViewOptionsItem item = new ViewOptionsItem();
 			int col = 0;
 			item.setId_sec(Utils.toLong(arr[col++]));
 			item.setTicker(Utils.toString(arr[col++]));

@@ -133,5 +133,20 @@ public class SecuritiesDaoImpl extends BaseDaoImpl implements SecuritiesDao
 		return getResultList(q, sql);
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SimpleItem> findComboOptions(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxOptions_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(security_code) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
+		}
+		return getResultList(q, sql);
+	}
 	
 }

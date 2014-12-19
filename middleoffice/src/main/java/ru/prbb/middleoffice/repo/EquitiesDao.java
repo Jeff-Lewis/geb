@@ -8,6 +8,7 @@ import java.util.List;
 import ru.prbb.middleoffice.domain.PortfolioItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewFuturesItem;
+import ru.prbb.middleoffice.domain.ViewOptionsItem;
 
 /**
  * @author RBr
@@ -34,6 +35,11 @@ public interface EquitiesDao {
 	 * @return
 	 */
 	List<ViewFuturesItem> findAllFutures();
+
+	/**
+	 * @return
+	 */
+	List<ViewOptionsItem> findAllOptions();
 
 	/**
 	 * mo_WebGet_ajaxEquity_v

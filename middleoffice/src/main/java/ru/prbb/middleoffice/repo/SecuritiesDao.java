@@ -66,4 +66,12 @@ public interface SecuritiesDao {
 	 */
 	List<SimpleItem> findComboFutures(String query);
 
+	/**
+	 * Опционы
+	 * 
+	 * @param query
+	 * @return
+	 */
+	List<SimpleItem> findComboOptions(String query);
+
 }
