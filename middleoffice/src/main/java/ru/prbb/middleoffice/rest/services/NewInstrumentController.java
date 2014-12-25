@@ -348,7 +348,7 @@ public class NewInstrumentController
 				"ID_BB_UNIQUE",
 				"ID_BB_SEC_NUM_DES",
 				"ID_BB_SEC_NUM_SRC",
-				"UNDERLYING_SECURITY_DES",
+				"PARSEKYABLE_DES",
 				"PARSEKYABLE_DES_SOURCE",
 				"SECURITY_TYP",
 				"MARKET_SECTOR_DES",

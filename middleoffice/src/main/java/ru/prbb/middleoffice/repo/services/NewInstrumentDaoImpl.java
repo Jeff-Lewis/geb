@@ -199,7 +199,7 @@ public class NewInstrumentDaoImpl extends BaseDaoImpl implements NewInstrumentDa
 		q.setParameter(i++, values.get("ID_BB_UNIQUE"));
 		q.setParameter(i++, values.get("ID_BB_SEC_NUM_DES"));
 		q.setParameter(i++, values.get("ID_BB_SEC_NUM_SRC"));
-		q.setParameter(i++, values.get("UNDERLYING_SECURITY_DES"));
+		q.setParameter(i++, values.get("PARSEKYABLE_DES"));
 		q.setParameter(i++, values.get("PARSEKYABLE_DES_SOURCE"));
 		q.setParameter(i++, values.get("SECURITY_TYP"));
 		q.setParameter(i++, values.get("MARKET_SECTOR_DES"));
