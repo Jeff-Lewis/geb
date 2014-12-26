@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>BloombergAgent</name>
-	<description>Bloomberg Agent</description>
+	<description>Автономный модуль для взаимодействия с терминалом блумберг.</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
