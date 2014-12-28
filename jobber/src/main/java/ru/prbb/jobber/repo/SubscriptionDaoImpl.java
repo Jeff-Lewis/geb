@@ -68,4 +68,20 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 	private void showSql(String sql, Query q) {
 		System.out.println(sql);
 	}
+
+	@Override
+	public void start(List<SubscriptionItem> subscriptions) {
+		for (SubscriptionItem subscription : subscriptions) {
+			// TODO Auto-generated method stub
+			log.info("EXEC:" + subscription);
+		}
+	}
+
+	@Override
+	public void stop(List<SubscriptionItem> subscriptions) {
+		for (SubscriptionItem subscription : subscriptions) {
+			// TODO Auto-generated method stub
+			log.info("STOP:" + subscription);
+		}
+	}
 }

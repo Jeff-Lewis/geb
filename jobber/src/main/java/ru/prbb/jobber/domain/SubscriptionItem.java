@@ -27,62 +27,34 @@ public class SubscriptionItem implements Serializable {
 	@Column(name = "subscription_status")
 	private String status;
 
-	/**
-	 * @return the id
-	 */
 	public Long getId() {
 		return id;
 	}
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	/**
-	 * @return the comment
-	 */
 	public String getComment() {
 		return comment;
 	}
 
-	/**
-	 * @param comment
-	 *            the comment to set
-	 */
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
 
-	/**
-	 * @return the status
-	 */
 	public String getStatus() {
 		return status;
 	}
 
-	/**
-	 * @param status
-	 *            the status to set
-	 */
 	public void setStatus(String status) {
 		this.status = status;
 	}
@@ -96,10 +68,12 @@ public class SubscriptionItem implements Serializable {
 	}
 
 	public boolean isStopped() {
-		if ("Running".equals(status))
-			return false;
-		if ("Stopped".equals(status))
-			return true;
-		throw new RuntimeException("Unknown subscription status: " + status);
+		return !isRunning();
+	}
+
+	@Override
+	public String toString() {
+		return "SubscriptionItem [id=" + id + ", name=" + name + ", comment="
+				+ comment + ", status=" + status + "]";
 	}
 }
