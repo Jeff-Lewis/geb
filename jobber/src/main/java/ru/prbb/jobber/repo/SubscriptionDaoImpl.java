@@ -28,6 +28,10 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 	@Autowired
 	private EntityManager em;
 
+	private void showSql(String sql, Query q) {
+		log.info(sql);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
@@ -58,30 +62,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 				.setParameter(2, last_price)
 				.setParameter(3, last_chng);
 		showSql(sql, q);
-		return 0;// TODO q.executeUpdate();
+		return q.executeUpdate();
 	}
 
-	/**
-	 * @param sql
-	 * @param q
-	 */
-	private void showSql(String sql, Query q) {
-		System.out.println(sql);
-	}
-
-	@Override
-	public void start(List<SubscriptionItem> subscriptions) {
-		for (SubscriptionItem subscription : subscriptions) {
-			// TODO Auto-generated method stub
-			log.info("EXEC:" + subscription);
-		}
-	}
-
-	@Override
-	public void stop(List<SubscriptionItem> subscriptions) {
-		for (SubscriptionItem subscription : subscriptions) {
-			// TODO Auto-generated method stub
-			log.info("STOP:" + subscription);
-		}
-	}
 }

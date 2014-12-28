@@ -46,8 +46,9 @@ public class SubscriptionController {
 	@RequestMapping("/{id}")
 	@ResponseBody
 	public String getData(
-			@RequestParam Long id) {
-		return ss.getData(id);
+			@RequestParam Long id,
+			@RequestParam(defaultValue = "false", required=false) Boolean isClean) {
+		return ss.getData(id, isClean);
 	}
 
 }

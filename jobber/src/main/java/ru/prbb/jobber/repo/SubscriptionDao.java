@@ -38,8 +38,4 @@ public interface SubscriptionDao {
 	 */
 	public int subsUpdate(String security_code, String last_price, String last_chng);
 
-	public void start(List<SubscriptionItem> subscriptions);
-
-	public void stop(List<SubscriptionItem> subscriptions);
-
 }

@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import ru.prbb.jobber.domain.SubscriptionItem;
+import ru.prbb.jobber.repo.BloombergServicesJ;
 import ru.prbb.jobber.repo.SubscriptionDao;
 
 /**
@@ -31,6 +32,8 @@ public class SubscriptionTask {
 
 	@Autowired
 	private SubscriptionDao dao;
+	@Autowired
+	private BloombergServicesJ bs;
 
 	/**
 	 * Проверка статуса подписок.<br>
@@ -50,8 +53,20 @@ public class SubscriptionTask {
 				listStop.add(subscription);
 			}
 		}
-		dao.stop(listStop);
-		dao.start(listStart);
+
+		bs.subscriptionStop(listStop);
+		bs.subscriptionStart(listStart);
+
+		for (SubscriptionItem item : listStart) {
+			List<String[]> data = bs.subscriptionData(item);
+			for (String[] arr : data) {
+				try {
+					dao.subsUpdate(arr[0], arr[1], arr[2]);
+				} catch (Exception e) {
+					log.error("Store subscription data", e);
+				}
+			}
+		}
 	}
 
 	@PreDestroy
@@ -60,7 +75,7 @@ public class SubscriptionTask {
 		log.info("Subscriptions stop");
 
 		List<SubscriptionItem> subscriptions = dao.getSubscriptions();
-		dao.stop(subscriptions);
+		bs.subscriptionStop(subscriptions);
 	}
 
 }

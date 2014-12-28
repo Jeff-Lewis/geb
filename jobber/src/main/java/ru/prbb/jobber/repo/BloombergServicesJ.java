@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import ru.prbb.jobber.domain.SecForJobRequest;
+import ru.prbb.jobber.domain.SubscriptionItem;
 
 /**
  * @author RBr
@@ -61,7 +63,7 @@ public class BloombergServicesJ {
 			URI uri = new URIBuilder()
 					.setScheme("http")
 					.setHost("172.16.15.117")
-					//.setHost(InetAddress.getLocalHost().getHostAddress())
+					// .setHost(InetAddress.getLocalHost().getHostAddress())
 					.setPort(48080)
 					.setPath(path)
 					.build();
@@ -122,8 +124,7 @@ public class BloombergServicesJ {
 	 * @param name
 	 * @param securities
 	 * @param fields
-	 * @return
-	 *         [Peers, EARN_ANN_DT_TIME_HIST_WITH_EPS, ERN_ANN_DT_AND_PER,
+	 * @return [Peers, EARN_ANN_DT_TIME_HIST_WITH_EPS, ERN_ANN_DT_AND_PER,
 	 *         PeerTicker, BEST_ANALYST_RECS_BULK]
 	 */
 	@SuppressWarnings("unchecked")
@@ -243,7 +244,7 @@ public class BloombergServicesJ {
 	public Map<String, Map<String, String>> executeBdpOverrideLoad(String name, List<SecForJobRequest> securities) {
 		Set<String> currencies = new HashSet<>();
 		List<NameValuePair> nvps = new ArrayList<>();
-		for (SecForJobRequest security: securities) {
+		for (SecForJobRequest security : securities) {
 			currencies.add(security.iso);
 			String cursec = security.iso + security.code;
 			nvps.add(new BasicNameValuePair("securities", cursec));
@@ -253,4 +254,48 @@ public class BloombergServicesJ {
 		String response = executeHttpRequest("/LoadBdpOverrideRequest", nvps, name);
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
+
+	public void subscriptionStart(List<SubscriptionItem> items) {
+		for (SubscriptionItem item : items) {
+			String path = "/Subscriptions/" + item.getId() + "/start";
+			String name = "Start subscription " + item.getName();
+
+			@SuppressWarnings("unused")
+			String response = executeHttpRequest(path, new ArrayList<NameValuePair>(), name);
+		}
+	}
+
+	public void subscriptionStop(List<SubscriptionItem> items) {
+		for (SubscriptionItem item : items) {
+			String path = "/Subscriptions/" + item.getId() + "/stop";
+			String name = "Stop subscription " + item.getName();
+
+			@SuppressWarnings("unused")
+			String response = executeHttpRequest(path, new ArrayList<NameValuePair>(), name);
+		}
+	}
+
+	public List<String[]> subscriptionData(SubscriptionItem item) {
+		String path = "/Subscriptions/" + item.getId();
+		String name = "Get data subscription " + item.getName();
+
+		String response = executeHttpRequest(path, new ArrayList<NameValuePair>(), name);
+
+		List<String[]> result = new ArrayList<>();
+
+		StringTokenizer tokenizerData = new StringTokenizer(response, "\n");
+		while (tokenizerData.hasMoreElements()) {
+			String data = tokenizerData.nextToken();
+			StringTokenizer tokenizerItem = new StringTokenizer(data, "\t");
+			String[] arr = {
+					tokenizerItem.nextToken(),
+					tokenizerItem.nextToken(),
+					tokenizerItem.nextToken()
+			};
+			result.add(arr);
+		}
+
+		return result;
+	}
+
 }

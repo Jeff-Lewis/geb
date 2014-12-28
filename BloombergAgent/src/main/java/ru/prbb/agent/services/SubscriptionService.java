@@ -29,13 +29,7 @@ import com.bloomberglp.blpapi.SubscriptionList;
 @Service
 public class SubscriptionService {
 
-	public ThreadGroup group = new ThreadGroup("Subscriptions");
-
 	private final Logger log = LoggerFactory.getLogger(getClass());
-
-	public SubscriptionService() {
-		group.setDaemon(true);
-	}
 
 	/**
 	 * Зарегистрированные подписки<br>
@@ -43,16 +37,27 @@ public class SubscriptionService {
 	 */
 	private final Map<Long, SubscriptionThread> threads = new HashMap<Long, SubscriptionThread>();
 
+	private ThreadGroup group = new ThreadGroup("Subscriptions");
+
+	public SubscriptionService() {
+		group.setDaemon(true);
+	}
+
 	public String start(Long id, String[] securities) {
 		synchronized (threads) {
 			SubscriptionThread thread = threads.get(id);
 			if (null == thread) {
 				thread = new SubscriptionThread(id);
-				if (thread.startSession(securities)) {
-					threads.put(id, thread);
-					return "STARTED";
-				} else {
-					return "ERROR";
+				try {
+					if (thread.startSession(securities)) {
+						threads.put(id, thread);
+						return "STARTED";
+					} else {
+						return "ERROR";
+					}
+				} catch (Exception e) {
+					log.error("Start session failed", e);
+					return "ERROR\n" + e.toString();
 				}
 			} else {
 				return "IS ALREADY RUNNING";
@@ -66,19 +71,29 @@ public class SubscriptionService {
 			if (null == thread) {
 				return "NOT FOUND";
 			} else {
-				thread.stopSession();
-				return "STOPPING";
+				try {
+					thread.stopSession();
+					return "STOPPING";
+				} catch (Exception e) {
+					log.error("Stop session failed", e);
+					return "ERROR\n" + e.toString();
+				}
 			}
 		}
 	}
 
-	public String getData(Long id) {
+	public String getData(Long id, boolean isClean) {
 		synchronized (threads) {
 			SubscriptionThread thread = threads.get(id);
 			if (null == thread) {
 				return "NOT FOUND";
 			} else {
-				return thread.getData();
+				try {
+					return thread.getData(isClean);
+				} catch (Exception e) {
+					log.error("Get data session failed", e);
+					return "ERROR\n" + e.toString();
+				}
 			}
 		}
 	}
@@ -88,7 +103,11 @@ public class SubscriptionService {
 		log.info("Stop all subscription threads");
 		for (SubscriptionThread thread : threads.values()) {
 			if (null != thread) {
-				thread.stopSession();
+				try {
+					thread.stopSession();
+				} catch (Exception e) {
+					log.error("Stop session failed", e);
+				}
 			}
 		}
 	}
@@ -108,10 +127,12 @@ public class SubscriptionService {
 			this.id = id;
 		}
 
-		public String getData() {
+		public String getData(boolean isClean) {
 			synchronized (data) {
 				String res = data.toString();
-				data.setLength(0);
+				if (isClean) {
+					data.setLength(0);
+				}
 				return res;
 			}
 		}
@@ -175,11 +196,6 @@ public class SubscriptionService {
 					if (Event.EventType.SUBSCRIPTION_DATA == eventType
 							|| Event.EventType.SUBSCRIPTION_STATUS == eventType) {
 						for (Message msg : event) {
-							if (log.isTraceEnabled()) {
-								log.trace("Size msg=" + msg);
-								log.trace("Size msg=" + msg.toString().length());
-							}
-
 							if ("SubscriptionFailure".equals(msg.messageType().toString())) {
 								String description = msg.getElement("reason").getElementAsString("description");
 								log.error("SubscriptionFailure:" + description);
@@ -192,6 +208,9 @@ public class SubscriptionService {
 								String last_chng = getElementAsString(msg, "RT_PX_CHG_PCT_1D");
 								String update = security_code + '\t' + last_price + '\t' + last_chng;
 								synchronized (data) {
+									if (data.length() > 32 * 1024) {
+										data.setLength(0);
+									}
 									data.append(update).append('\n');
 								}
 								log.trace("subsUpdate security_code:" + security_code
@@ -209,8 +228,8 @@ public class SubscriptionService {
 				} catch (InterruptedException e) {
 					log.error("Stop session", e);
 				}
+				log.info("Stopped " + getName());
 			}
-			log.info("Stopped " + getName());
 		}
 
 		private String getElementAsString(Message msg, String name) {
