@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -281,18 +280,15 @@ public class BloombergServicesJ {
 
 		String response = executeHttpRequest(path, new ArrayList<NameValuePair>(), name);
 
-		List<String[]> result = new ArrayList<>();
-
-		StringTokenizer tokenizerData = new StringTokenizer(response, "\n");
-		while (tokenizerData.hasMoreElements()) {
-			String data = tokenizerData.nextToken();
-			StringTokenizer tokenizerItem = new StringTokenizer(data, "\t");
-			String[] arr = {
-					tokenizerItem.nextToken(),
-					tokenizerItem.nextToken(),
-					tokenizerItem.nextToken()
-			};
-			result.add(arr);
+		String[] lines = response.split("\n");
+		List<String[]> result = new ArrayList<>(lines.length);
+		for (String line : lines) {
+			String[] arr = line.split("\t");
+			if (arr.length != 3) {
+				log.error("Data line:" + line);
+			} else {
+				result.add(arr);
+			}
 		}
 
 		return result;
