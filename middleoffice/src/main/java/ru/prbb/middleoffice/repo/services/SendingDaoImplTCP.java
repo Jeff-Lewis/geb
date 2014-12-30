@@ -27,30 +27,30 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.stereotype.Service;
 
 import ru.prbb.middleoffice.domain.SendingItem;
 
 /**
  * @author RBr
- * 
  */
-//@Service
+@Service
 public class SendingDaoImplTCP extends SendingDaoImpl
 {
-	private String api_id = "fdee122b-3a2e-59d4-5951-54ace233fd42";
-	private String from = "LIFE";
-	private String proxyHostname = "prbwg.life.corp";
-	private int proxyPort = 8080;
 
 	@Override
 	public SendingItem sendMail(String email_text, String email) {
-		final String smtpServer = "appsext.life.corp";
-		final String fromAddress = "hopebackup@prbb.ru";
-		final String userName = "hopebackup";
-		final String password = "gjhdkjsfgkja";
+		final String smtpServer = "wonderworksinvestments.com";
+		final String fromAddress = "noreply@wonderworksinvestments.com";
+		final String userName = fromAddress;
+		final String password = "D6c8W3g2";
 		final String toAddress = email;
 		final String subject = "info";
 		final String body = email_text;
+
+		if (toAddress.contains("prbb.ru")) {
+			throw new IllegalArgumentException("В отправителях домен prbb.ru");
+		}
 
 		String res;
 		
@@ -86,11 +86,8 @@ public class SendingDaoImplTCP extends SendingDaoImpl
 
 	@Override
 	public SendingItem sendSms(String text, String to) {
-//		System.setProperty("http.nonProxyHosts", "localhost|127.0.0.1|172.*.*.*");
-//		System.setProperty("http.proxyHost", "prbwg.life.corp");
-//		System.setProperty("http.proxyPort", "8080");
-//		System.setProperty("http.proxyUser", "BrihlyaevRA");
-//		System.setProperty("http.proxyPassword", "Java77proG");
+		String api_id = "33bd77b5-d915-c964-a184-a6e07b15b226";
+		String from = "LIFE";
 
 		String res = null;
 		try {
@@ -103,25 +100,13 @@ public class SendingDaoImplTCP extends SendingDaoImpl
 			HttpPost httpPost = new HttpPost(uri);
 			
 			List<NameValuePair> nvps = new ArrayList<>();
-			nvps.add(new BasicNameValuePair("test", "1"));
+			//nvps.add(new BasicNameValuePair("test", "1"));
 			nvps.add(new BasicNameValuePair("api_id", api_id));
-			//nvps.add(new BasicNameValuePair("from", from));
+			// TODO nvps.add(new BasicNameValuePair("from", from));
 			nvps.add(new BasicNameValuePair("to", to));
 			nvps.add(new BasicNameValuePair("text", text));
 			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
 
-//			HttpRoutePlanner routePlanner;
-//			routePlanner = new SystemDefaultRoutePlanner(ProxySelector.getDefault());
-//			routePlanner = new DefaultProxyRoutePlanner(new HttpHost(proxyHostname, proxyPort));
-//
-//			AuthenticationStrategy auth = new ProxyAuthenticationStrategy();
-//
-//			HttpClientBuilder httpClientBuilder = HttpClients.custom()
-//					.setRoutePlanner(routePlanner)
-//					.setProxyAuthenticationStrategy(auth);
-//
-//			try (CloseableHttpClient httpclient = httpClientBuilder.build()) {
-//			try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
 			try (CloseableHttpClient httpclient = HttpClients.createSystem()) {
 				log.debug("Executing request " + httpPost.getRequestLine());
 				String responseBody = httpclient.execute(httpPost, new ResponseHandler<String>() {
@@ -159,5 +144,4 @@ public class SendingDaoImplTCP extends SendingDaoImpl
 		si.setStatus(res);
 		return si;
 	}
-
 }

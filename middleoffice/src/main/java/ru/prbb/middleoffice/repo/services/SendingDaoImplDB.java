@@ -5,7 +5,6 @@ package ru.prbb.middleoffice.repo.services;
 
 import javax.persistence.Query;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,7 @@ import ru.prbb.middleoffice.domain.SendingItem;
  * @author RBr
  * 
  */
-@Service
+//@Service
 public class SendingDaoImplDB extends SendingDaoImpl
 {
 
