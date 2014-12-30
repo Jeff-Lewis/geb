@@ -3,6 +3,7 @@
  */
 package ru.prbb.analytics.repo.company;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -138,20 +139,41 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		List<CompaniesQuarterItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			CompaniesQuarterItem item = new CompaniesQuarterItem();
-			item.setSecurity_code(Utils.toString(arr[0]));
-			item.setPeriod(Utils.toString(arr[1]));
-			item.setDate(Utils.toDate(arr[2]));
-			item.setValue(Utils.toDouble(arr[3]));
-			item.setEqy_dps(Utils.toDouble(arr[4]));
-			item.setEqy_dvd_yld_ind(Utils.toDouble(arr[5]));
-			item.setSales_rev_turn(Utils.toDouble(arr[6]));
-			item.setProf_margin(Utils.toDouble(arr[7]));
-			item.setOper_margin(Utils.toDouble(arr[8]));
-			item.setCrnc(Utils.toString(arr[9]));
+			int idx = 0;
+			item.setSecurity_code(Utils.toString(arr[idx++]));
+			item.setPeriod(Utils.toString(arr[idx++]));
+			item.setDate(Utils.toDate(arr[idx++]));
+			item.setValue(Utils.toDouble(arr[idx++]));
+			item.setEqy_dps(Utils.toDouble(arr[idx++]));
+			item.setEqy_dvd_yld_ind(Utils.toDouble(arr[idx++]));
+			item.setSales_rev_turn(Utils.toDouble(arr[idx++]));
+			item.setProf_margin(Utils.toDouble(arr[idx++]));
+			item.setOper_margin(Utils.toDouble(arr[idx++]));
+			item.setCrnc(Utils.toString(arr[idx++]));
+			item.setEqyFundCrncy(Utils.toString(arr[idx++]));
+			item.setIsCompEpsAdjusted(Utils.toDouble(arr[idx++]));
+			item.setIsBasicEpsContOps(Utils.toDouble(arr[idx++]));
+			item.setIsDilEpsContOps(Utils.toDouble(arr[idx++]));
+			item.setEbitda(Utils.toDouble(arr[idx++]));
 			res.add(item);
 		}
 		return res;
 	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int delQuarters(Long id_sec, String security_code, String period, Date date, String iso) {
+		String sql = "{call dbo.anca_WebSet_dEquityPeriodData_sp 'Q', ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id_sec)
+				.setParameter(2, security_code)
+				.setParameter(3, period)
+				.setParameter(4, date)
+				.setParameter(5, iso);   
+		storeSql(sql, q);
+		return executeUpdate(q, sql);
+	}
+
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
@@ -164,22 +186,48 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		List<CompaniesYearItem> res = new ArrayList<>(list.size());
 		for (Object[] arr : list) {
 			CompaniesYearItem item = new CompaniesYearItem();
-			item.setSecurity_code(Utils.toString(arr[0]));
-			item.setPeriod(Utils.toString(arr[1]));
-			item.setDate(Utils.toString(arr[2]));
-			item.setValue(Utils.toDouble(arr[3]));
-			item.setEps_recon_flag(Utils.toInteger(arr[4]));
-			item.setEqy_dps(Utils.toDouble(arr[5]));
-			item.setEqy_weighted_avg_px(Utils.toDouble(arr[6]));
-			item.setEqy_weighted_avg_px_adr(Utils.toDouble(arr[7]));
-			item.setBook_val_per_sh(Utils.toDouble(arr[8]));
-			item.setOper_roe(Utils.toDouble(arr[9]));
-			item.setR_ratio(Utils.toDouble(arr[10]));
-			item.setCrnc(Utils.toString(arr[11]));
+			int idx = 0;
+			item.setSecurity_code(Utils.toString(arr[idx++]));
+			item.setPeriod(Utils.toString(arr[idx++]));
+			item.setDate(Utils.toString(arr[idx++]));
+			item.setValue(Utils.toDouble(arr[idx++]));
+			item.setEps_recon_flag(Utils.toInteger(arr[idx++]));
+			item.setEqy_dps(Utils.toDouble(arr[idx++]));
+			item.setEqy_weighted_avg_px(Utils.toDouble(arr[idx++]));
+			item.setEqy_weighted_avg_px_adr(Utils.toDouble(arr[idx++]));
+			item.setBook_val_per_sh(Utils.toDouble(arr[idx++]));
+			item.setOper_roe(Utils.toDouble(arr[idx++]));
+			item.setR_ratio(Utils.toDouble(arr[idx++]));
+			item.setCrnc(Utils.toString(arr[idx++]));
+			item.setEqyFundCrncy(Utils.toString(arr[idx++]));
+			item.setIsCompEpsAdjusted(Utils.toDouble(arr[idx++]));
+			item.setIsBasicEpsContOps(Utils.toDouble(arr[idx++]));
+			item.setIsDilEpsContOps(Utils.toDouble(arr[idx++]));
+			item.setEqyDvdYldInd(Utils.toDouble(arr[idx++]));
+			item.setEbitda(Utils.toDouble(arr[idx++]));
+			item.setSalesRevTurn(Utils.toDouble(arr[idx++]));
+			item.setOperMargin(Utils.toDouble(arr[idx++]));
+			item.setProfMargin(Utils.toDouble(arr[idx++]));
+			item.setIsAvgNumShForEps(Utils.toDouble(arr[idx++]));
 			res.add(item);
 		}
 		return res;
 	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public int delYears(Long id_sec, String security_code, String period, Date date, String iso) {
+		String sql = "{call dbo.anca_WebSet_dEquityPeriodData_sp 'Y', ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql)
+				.setParameter(1, id_sec)
+				.setParameter(2, security_code)
+				.setParameter(3, period)
+				.setParameter(4, date)
+				.setParameter(5, iso);   
+		storeSql(sql, q);
+		return executeUpdate(q, sql);
+	}
+
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")

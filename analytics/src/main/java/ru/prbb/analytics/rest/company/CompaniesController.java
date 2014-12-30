@@ -180,6 +180,20 @@ public class CompaniesController
 		return dao.findQuarters(id);
 	}
 
+	@RequestMapping(value = "/{id}/Quarters", method = RequestMethod.DELETE, produces = "application/json")
+	@ResponseBody
+	public Result deleteQuarters(
+			@PathVariable("id") Long id,
+			@RequestParam String code,
+			@RequestParam String period,
+			@RequestParam String date,
+			@RequestParam String iso)
+	{
+		log.info("DELETE Companies/Quarters: id={}, code={}, period={}, date={}, iso={}", Utils.asArray(id, code, period, date, iso));
+		dao.delQuarters(id, code, period, Utils.parseDate(date), iso);
+		return Result.SUCCESS;
+	}
+
 	@RequestMapping(value = "/{id}/Years", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<CompaniesYearItem> getYears(
@@ -187,6 +201,20 @@ public class CompaniesController
 	{
 		log.info("GET Companies/Years: id={}", id);
 		return dao.findYears(id);
+	}
+
+	@RequestMapping(value = "/{id}/Years", method = RequestMethod.DELETE, produces = "application/json")
+	@ResponseBody
+	public Result deleteYears(
+			@PathVariable("id") Long id,
+			@RequestParam String code,
+			@RequestParam String period,
+			@RequestParam String date,
+			@RequestParam String iso)
+	{
+		log.info("DELETE Companies/Years: id={}, code={}, period={}, date={}, iso={}", Utils.asArray(id, code, period, date, iso));
+		dao.delYears(id, code, period, Utils.parseDate(date), iso);
+		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/EquityChange", method = RequestMethod.POST, produces = "application/json")

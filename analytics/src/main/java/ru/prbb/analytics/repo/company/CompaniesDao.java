@@ -3,6 +3,7 @@
  */
 package ru.prbb.analytics.repo.company;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,11 +39,15 @@ public interface CompaniesDao {
 	 */
 	List<CompaniesQuarterItem> findQuarters(Long id);
 
+	int delQuarters(Long id, String code, String period, Date date, String iso);
+
 	/**
 	 * @param id
 	 * @return
 	 */
 	List<CompaniesYearItem> findYears(Long id);
+
+	int delYears(Long id, String code, String period, Date date, String iso);
 
 	/**
 	 * @param id

@@ -84,13 +84,14 @@
 	});
 
 	var quarters = new Ext.data.JsonStore({
-		autoDestroy : true,
-		autoLoad : false,
-		url : 'rest/Companies/0/Quarters.do',
-		// root : 'info1',
-		fields : [ 'period', 'value', 'crnc', 'date', 'eqy_dps',
-				'eqy_dvd_yld_ind', 'sales_rev_turn', 'prof_margin',
-				'oper_margin', 'crnc' ]
+	    autoDestroy : true,
+	    autoLoad : false,
+	    url : 'rest/Companies/0/Quarters.do',
+	    // root : 'info1',
+	    fields : [ 'security_code', 'period', 'date', 'value', 'eqy_dps', 'eqy_dvd_yld_ind',
+	            'sales_rev_turn', 'prof_margin', 'oper_margin', 'crnc', 'eqyFundCrncy',
+	            'isCompEpsAdjusted', 'isBasicEpsContOps', 'isDilEpsContOps', 'ebitda' ],
+	    listeners : App.ui.listenersJsonStore()
 	});
 
 	var smQuarters = new Ext.grid.RowSelectionModel({
@@ -107,8 +108,29 @@
 		App.ui.confirm('Удалить квартальный период "' + period + '"?', ajaxDelQuarter);
     }
 	function ajaxDelQuarter() {
-		var period = smQuarters.getSelected().data.period;
-		App.ui.message('Удаление квартального периода "' + period + '"');
+		var data = smQuarters.getSelected().data;
+		var params = {
+				code : Ext.getCmp(_bloomCode).getValue(),
+				period : data.period,
+				date : data.date,
+				iso : data.crnc
+		};
+		Ext.Ajax.request({
+			method : 'DELETE',
+			url : Ext.urlAppend('rest/Companies/' + id_sec + '/Quarters.do', Ext.urlEncode(params)),
+			// timeout : 10 * 60 * 10000, // 10 min
+			timeout : 1000000000,
+			waitMsg : 'Удаление квартального периода "' + data.period + '"',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					quarters.reload();
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
     }
 
 	var quarterGrid = new Ext.grid.GridPanel({
@@ -128,76 +150,81 @@
 	    store : quarters,
 	    sm : smQuarters,
 		columns : [ {
-			header : 'Период',
-			dataIndex : 'period'
-		}, {
-			header : 'Валюта (отчетности)'
-		}, {
-			header : 'IS_EPS'
-		}, {
-			header : 'IS_COMP_EPS_ADJUSTED'
-		}, {
-			header : 'SALES_REV_TURN'
-		}, {
-			header : 'EBITDA'
-		}, {
-			header : 'OPER_MARGIN'
-		}, {
-			header : 'PROF_MARGIN'
-		}, {
-			header : 'OPER_ROE'
-		}/*, {
-			header : 'ПЕРИОД',
-			dataIndex : 'period'
-		}, {
-			header : 'EPS',
-			dataIndex : 'value',
-			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'EQY_DPS',
-			dataIndex : 'eqy_dps',
-			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'EQY_DVD_YLD_IND',
-			dataIndex : 'eqy_dvd_yld_ind',
-			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'SALES_REV_TURN',
-			dataIndex : 'sales_rev_turn',
-			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'PROF_MARGIN',
-			dataIndex : 'prof_margin',
-			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'OPER_MARGIN',
-			dataIndex : 'oper_margin',
-			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'Валюта',
-			dataIndex : 'crnc'
-		}*/ ],
+	        header : 'Период',
+	        dataIndex : 'period'
+	    }, {
+	        header : 'IS_EPS',
+	        dataIndex : 'value',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    }, {
+	        header : 'EQY_DPS',
+	        dataIndex : 'eqy_dps',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    }, {
+	        header : 'EQY_DVD_YLD_IND',
+	        dataIndex : 'eqy_dvd_yld_ind'
+	    }, {
+	        header : 'SALES_REV_TURN',
+	        dataIndex : 'sales_rev_turn',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    }, {
+	        header : 'PROF_MARGIN',
+	        dataIndex : 'prof_margin',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    }, {
+	        header : 'OPER_MARGIN',
+	        dataIndex : 'oper_margin',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    }, {
+	        header : 'Currency',
+	        dataIndex : 'crnc'
+	    }, {
+	        header : 'EQY_FUND_CRNCY',
+	        dataIndex : 'eqyFundCrncy'
+	    }, {
+	        header : 'IS_COMP_EPS_ADJUSTED',
+	        dataIndex : 'isCompEpsAdjusted',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    }, {
+	        header : 'IS_BASIC_EPS_CONT_OPS',
+	        dataIndex : 'isBasicEpsContOps',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    }, {
+	        header : 'IS_DIL_EPS_CONT_OPS',
+	        dataIndex : 'isDilEpsContOps',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    }, {
+	        header : 'EBITDA',
+	        dataIndex : 'ebitda',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+	    } ],
 		viewConfig : {
-			forceFit : true,
+			//forceFit : true,
 			stripeRows : true,
 			emptyText : 'Записи не найдены'
 		}
 	});
 
 	var years = new Ext.data.JsonStore({
-		autoDestroy : true,
-		autoLoad : false,
-		url : 'rest/Companies/0/Years.do',
-		// root : 'info2',
-		fields : [ 'period', 'value', 'crnc', 'date', 'eps_recon_flag',
-				'eqy_dps', 'eqy_weighted_avg_px', 'eqy_weighted_avg_px_adr',
-				'book_val_per_sh', 'oper_roe', 'r_ratio', 'crnc' ]
+	    autoDestroy : true,
+	    autoLoad : false,
+	    url : 'rest/Companies/0/Years.do',
+	    // root : 'info2',
+	    fields : [ 'security_code', 'period', 'date', 'value', 'eps_recon_flag', 'eqy_dps',
+	            'eqy_weighted_avg_px', 'eqy_weighted_avg_px_adr', 'book_val_per_sh', 'oper_roe',
+	            'r_ratio', 'crnc', 'eqyFundCrncy', 'isCompEpsAdjusted', 'isBasicEpsContOps',
+	            'isDilEpsContOps', 'eqyDvdYldInd', 'ebitda', 'salesRevTurn', 'operMargin',
+	            'profMargin', 'isAvgNumShForEps' ],
+	    listeners : App.ui.listenersJsonStore()
 	});
 
 	var smYears = new Ext.grid.RowSelectionModel({
@@ -214,8 +241,29 @@
 		App.ui.confirm('Удалить годовой период "' + period + '"?', ajaxDelYears);
     }
 	function ajaxDelYears() {
-		var period = smYears.getSelected().data.period;
-		App.ui.message('Удаление годового периода "' + period + '"');
+		var data = smYears.getSelected().data;
+		var params = {
+				code : Ext.getCmp(_bloomCode).getValue(),
+				period : data.period,
+				date : data.date,
+				iso : data.crnc
+		};
+		Ext.Ajax.request({
+			method : 'DELETE',
+			url : Ext.urlAppend('rest/Companies/' + id_sec + '/Years.do', Ext.urlEncode(params)),
+			// timeout : 10 * 60 * 10000, // 10 min
+			timeout : 1000000000,
+			waitMsg : 'Удаление годового периода "' + data.period + '"',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					years.reload();
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
     }
 
 	var yearsGrid = new Ext.grid.GridPanel({
@@ -235,25 +283,6 @@
 		store : years,
 		sm : smYears,
 		columns : [ {
-			header : 'Период',
-			dataIndex : 'period'
-		}, {
-			header : 'Валюта (отчетности)'
-		}, {
-			header : 'IS_EPS'
-		}, {
-			header : 'IS_COMP_EPS_ADJUSTED'
-		}, {
-			header : 'SALES_REV_TURN'
-		}, {
-			header : 'EBITDA'
-		}, {
-			header : 'OPER_MARGIN'
-		}, {
-			header : 'PROF_MARGIN'
-		}, {
-			header : 'OPER_ROE'
-		}/*, {
 			header : 'ПЕРИОД',
 			dataIndex : 'period'
 		}, {
@@ -298,9 +327,57 @@
 		}, {
 			header : 'Валюта',
 			dataIndex : 'crnc'
-		}*/ ],
+		}, {
+			header : 'EQY_FUND_CRNCY',
+			dataIndex : 'eqyFundCrncy'
+		}, {
+			header : 'IS_COMP_EPS_ADJUSTED',
+			dataIndex : 'isCompEpsAdjusted',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+		}, {
+			header : 'IS_BASIC_EPS_CONT_OPS',
+			dataIndex : 'isBasicEpsContOps',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+		}, {
+			header : 'IS_DIL_EPS_CONT_OPS',
+			dataIndex : 'isDilEpsContOps',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+		}, {
+			header : 'EQY_DVD_YLD_IND',
+			dataIndex : 'eqyDvdYldInd',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+		}, {
+			header : 'EBITDA',
+			dataIndex : 'ebitda',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+		}, {
+			header : 'SALES_REV_TURN',
+			dataIndex : 'salesRevTurn',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+		}, {
+			header : 'OPER_MARGIN',
+			dataIndex : 'operMargin',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+		}, {
+			header : 'PROF_MARGIN',
+			dataIndex : 'profMargin',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)
+		}, {
+			header : 'IS_AVG_NUM_SH_FOR_EPS',
+			dataIndex : 'isAvgNumShForEps'	,
+	        align : 'right',
+	        renderer : App.util.Renderer.number(6)		
+		} ],
 		viewConfig : {
-			forceFit : true,
+			//forceFit : true,
 			stripeRows : true,
 			emptyText : 'Записи не найдены'
 		}
@@ -311,7 +388,8 @@
 		autoLoad : false,
 		url : 'rest/Companies/0/Files.do',
 		// root : 'file',
-		fields : [ 'id_doc', 'file_type', 'file_name', 'insert_date' ]
+		fields : [ 'id_doc', 'file_type', 'file_name', 'insert_date' ],
+		listeners : App.ui.listenersJsonStore()
 //id_doc		22
 //file_type	"text/xml"
 //file_name	"EclipseFormatter.xml"

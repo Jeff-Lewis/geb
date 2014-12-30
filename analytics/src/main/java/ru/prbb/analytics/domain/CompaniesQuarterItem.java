@@ -4,15 +4,14 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 
 /**
  * @author RBr
- * 
  */
 public class CompaniesQuarterItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "Код Блумберг")
@@ -22,168 +21,147 @@ public class CompaniesQuarterItem implements Serializable {
 	@Column(name = "date")
 	private String date;
 	@Column(name = "IS_EPS")
-	private BigDecimal value;
+	private Number value;
 	@Column(name = "EQY_DPS")
-	private BigDecimal eqy_dps;
+	private Number eqy_dps;
 	@Column(name = "EQY_DVD_YLD_IND")
-	private BigDecimal eqy_dvd_yld_ind;
+	private Number eqy_dvd_yld_ind;
 	@Column(name = "SALES_REV_TURN")
-	private BigDecimal sales_rev_turn;
+	private Number sales_rev_turn;
 	@Column(name = "PROF_MARGIN")
-	private BigDecimal prof_margin;
+	private Number prof_margin;
 	@Column(name = "OPER_MARGIN")
-	private BigDecimal oper_margin;
+	private Number oper_margin;
 	@Column(name = "Currency")
 	private String crnc;
+	@Column(name = "EQY_FUND_CRNCY")
+	private String eqyFundCrncy;
+	@Column(name = "IS_COMP_EPS_ADJUSTED")
+	private Number isCompEpsAdjusted;
+	@Column(name = "IS_BASIC_EPS_CONT_OPS")
+	private Number isBasicEpsContOps;
+	@Column(name = "IS_DIL_EPS_CONT_OPS")
+	private Number isDilEpsContOps;
+	@Column(name = "EBITDA")
+	private Number ebitda;
 
-	/**
-	 * @return the security_code
-	 */
 	public String getSecurity_code() {
 		return security_code;
 	}
 
-	/**
-	 * @param security_code
-	 *            the security_code to set
-	 */
 	public void setSecurity_code(String security_code) {
 		this.security_code = security_code;
 	}
 
-	/**
-	 * @return the period
-	 */
 	public String getPeriod() {
 		return period;
 	}
 
-	/**
-	 * @param period
-	 *            the period to set
-	 */
 	public void setPeriod(String period) {
 		this.period = period;
 	}
 
-	/**
-	 * @return the date
-	 */
 	public String getDate() {
 		return date;
 	}
 
-	/**
-	 * @param date
-	 *            the date to set
-	 */
 	public void setDate(String date) {
 		this.date = date;
 	}
 
-	/**
-	 * @return the value
-	 */
-	public BigDecimal getValue() {
+	public Number getValue() {
 		return value;
 	}
 
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(BigDecimal value) {
+	public void setValue(Number value) {
 		this.value = value;
 	}
 
-	/**
-	 * @return the eqy_dps
-	 */
-	public BigDecimal getEqy_dps() {
+	public Number getEqy_dps() {
 		return eqy_dps;
 	}
 
-	/**
-	 * @param eqy_dps
-	 *            the eqy_dps to set
-	 */
-	public void setEqy_dps(BigDecimal eqy_dps) {
+	public void setEqy_dps(Number eqy_dps) {
 		this.eqy_dps = eqy_dps;
 	}
 
-	/**
-	 * @return the eqy_dvd_yld_ind
-	 */
-	public BigDecimal getEqy_dvd_yld_ind() {
+	public Number getEqy_dvd_yld_ind() {
 		return eqy_dvd_yld_ind;
 	}
 
-	/**
-	 * @param eqy_dvd_yld_ind
-	 *            the eqy_dvd_yld_ind to set
-	 */
-	public void setEqy_dvd_yld_ind(BigDecimal eqy_dvd_yld_ind) {
+	public void setEqy_dvd_yld_ind(Number eqy_dvd_yld_ind) {
 		this.eqy_dvd_yld_ind = eqy_dvd_yld_ind;
 	}
 
-	/**
-	 * @return the sales_rev_turn
-	 */
-	public BigDecimal getSales_rev_turn() {
+	public Number getSales_rev_turn() {
 		return sales_rev_turn;
 	}
 
-	/**
-	 * @param sales_rev_turn
-	 *            the sales_rev_turn to set
-	 */
-	public void setSales_rev_turn(BigDecimal sales_rev_turn) {
+	public void setSales_rev_turn(Number sales_rev_turn) {
 		this.sales_rev_turn = sales_rev_turn;
 	}
 
-	/**
-	 * @return the prof_margin
-	 */
-	public BigDecimal getProf_margin() {
+	public Number getProf_margin() {
 		return prof_margin;
 	}
 
-	/**
-	 * @param prof_margin
-	 *            the prof_margin to set
-	 */
-	public void setProf_margin(BigDecimal prof_margin) {
+	public void setProf_margin(Number prof_margin) {
 		this.prof_margin = prof_margin;
 	}
 
-	/**
-	 * @return the oper_margin
-	 */
-	public BigDecimal getOper_margin() {
+	public Number getOper_margin() {
 		return oper_margin;
 	}
 
-	/**
-	 * @param oper_margin
-	 *            the oper_margin to set
-	 */
-	public void setOper_margin(BigDecimal oper_margin) {
+	public void setOper_margin(Number oper_margin) {
 		this.oper_margin = oper_margin;
 	}
 
-	/**
-	 * @return the crnc
-	 */
 	public String getCrnc() {
 		return crnc;
 	}
 
-	/**
-	 * @param crnc
-	 *            the crnc to set
-	 */
 	public void setCrnc(String crnc) {
 		this.crnc = crnc;
 	}
 
+	public String getEqyFundCrncy() {
+		return eqyFundCrncy;
+	}
+
+	public void setEqyFundCrncy(String eqyFundCrncy) {
+		this.eqyFundCrncy = eqyFundCrncy;
+	}
+
+	public Number getIsCompEpsAdjusted() {
+		return isCompEpsAdjusted;
+	}
+
+	public void setIsCompEpsAdjusted(Number isCompEpsAdjusted) {
+		this.isCompEpsAdjusted = isCompEpsAdjusted;
+	}
+
+	public Number getIsBasicEpsContOps() {
+		return isBasicEpsContOps;
+	}
+
+	public void setIsBasicEpsContOps(Number isBasicEpsContOps) {
+		this.isBasicEpsContOps = isBasicEpsContOps;
+	}
+
+	public Number getIsDilEpsContOps() {
+		return isDilEpsContOps;
+	}
+
+	public void setIsDilEpsContOps(Number isDilEpsContOps) {
+		this.isDilEpsContOps = isDilEpsContOps;
+	}
+
+	public Number getEbitda() {
+		return ebitda;
+	}
+
+	public void setEbitda(Number ebitda) {
+		this.ebitda = ebitda;
+	}
 }

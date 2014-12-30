@@ -89,19 +89,19 @@ public class CompanyAddController
 				bs.executeReferenceDataRequest("CompanyAdd", codes, new String[] { "PRIMARY_PERIODICITY" }));
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Utils.LOCALE);
-
+/*
 		Calendar cYear10 = Calendar.getInstance(Utils.LOCALE);
 		cYear10.add(Calendar.YEAR, -10);
 		cYear10.set(Calendar.MONTH, Calendar.JANUARY);
 		cYear10.set(Calendar.DAY_OF_MONTH, 1);
 		String dateStartYear = sdf.format(cYear10.getTime());
-
+*/
 		Calendar cYear2k = Calendar.getInstance(Utils.LOCALE);
 		cYear2k.clear();
 		cYear2k.set(Calendar.YEAR, 2000);
 		cYear2k.set(Calendar.MONTH, Calendar.JANUARY);
 		cYear2k.set(Calendar.DAY_OF_MONTH, 1);
-		dateStartYear = sdf.format(cYear2k.getTime());
+		String dateStartYear = sdf.format(cYear2k.getTime());
 
 		Calendar cToday = Calendar.getInstance(Utils.LOCALE);
 		String dateEnd = sdf.format(cToday.getTime());
@@ -202,11 +202,18 @@ public class CompanyAddController
 					bs.executeBdhEpsRequest("Добавление компаний BDH EPS YEARLY",
 							dateStartYear, dateEnd, "YEARLY", "CALENDAR",
 							toArray(aCurrencies), securities, toArray(
+									"BEST_EBITDA",
+									"EBITDA",
+									"NET_REV",
 									"IS_EPS",
 									"EQY_DPS",
 									"IS_COMP_EPS_ADJUSTED",
 									"IS_BASIC_EPS_CONT_OPS",
-									"IS_DIL_EPS_CONT_OPS")));
+									"IS_DIL_EPS_CONT_OPS",
+									"SALES_REV_TURN",
+									"PROF_MARGIN",
+									"OPER_MARGIN",
+									"EQY_DVD_YLD_IND")));
 		} catch (Exception e) {
 			info.put("BDH EPS YEARLY", new StringBuilder("Запрос BDH EPS YEARLY:").append(e.getMessage()));
 		}
@@ -217,15 +224,18 @@ public class CompanyAddController
 						bs.executeBdhEpsRequest("Добавление компаний BDH EPS QUARTERLY",
 								dateStartYear, dateEnd, "QUARTERLY", "CALENDAR",
 								toArray(qaCurrencies), securities, toArray(
+										"BEST_EBITDA",
+										"EBITDA",
+										"NET_REV",
 										"IS_EPS",
 										"EQY_DPS",
+										"IS_COMP_EPS_ADJUSTED",
+										"IS_BASIC_EPS_CONT_OPS",
+										"IS_DIL_EPS_CONT_OPS",
 										"SALES_REV_TURN",
 										"PROF_MARGIN",
 										"OPER_MARGIN",
-										"EQY_DVD_YLD_IND",
-										"IS_COMP_EPS_ADJUSTED",
-										"IS_BASIC_EPS_CONT_OPS",
-										"IS_DIL_EPS_CONT_OPS")));
+										"EQY_DVD_YLD_IND")));
 			} catch (Exception e) {
 				info.put("BDH EPS QUARTERLY",
 						new StringBuilder("Запрос BDH EPS QUARTERLY:").append(e.getMessage()));
@@ -238,15 +248,18 @@ public class CompanyAddController
 						bs.executeBdhEpsRequest("Добавление компаний BDH EPS SEMI_ANNUALLY",
 								dateStartYear, dateEnd, "SEMI_ANNUALLY", "CALENDAR",
 								toArray(saCurrencies), securities, toArray(
+										"BEST_EBITDA",
+										"EBITDA",
+										"NET_REV",
 										"IS_EPS",
 										"EQY_DPS",
+										"IS_COMP_EPS_ADJUSTED",
+										"IS_BASIC_EPS_CONT_OPS",
+										"IS_DIL_EPS_CONT_OPS",
 										"SALES_REV_TURN",
 										"PROF_MARGIN",
 										"OPER_MARGIN",
-										"EQY_DVD_YLD_IND",
-										"IS_COMP_EPS_ADJUSTED",
-										"IS_BASIC_EPS_CONT_OPS",
-										"IS_DIL_EPS_CONT_OPS")));
+										"EQY_DVD_YLD_IND")));
 			} catch (Exception e) {
 				info.put("BDH EPS SEMI_ANNUALLY",
 						new StringBuilder("Запрос BDH EPS SEMI_ANNUALLY:").append(e.getMessage()));

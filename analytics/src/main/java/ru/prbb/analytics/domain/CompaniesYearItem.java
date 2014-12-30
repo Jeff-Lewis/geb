@@ -4,15 +4,14 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 
 /**
  * @author RBr
- * 
  */
 public class CompaniesYearItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "Код Блумберг")
@@ -22,201 +21,217 @@ public class CompaniesYearItem implements Serializable {
 	@Column(name = "date")
 	private String date;
 	@Column(name = "IS_EPS")
-	private BigDecimal value;
+	private Number value;
 	@Column(name = "EPS_RECONSTRUCT_FLAG")
 	private Integer eps_recon_flag;
 	@Column(name = "EQY_DPS")
-	private BigDecimal eqy_dps;
+	private Number eqy_dps;
 	@Column(name = "EQY_WEIGHTED_AVG_PX")
-	private BigDecimal eqy_weighted_avg_px;
+	private Number eqy_weighted_avg_px;
 	@Column(name = "EQY_WEIGHTED_AVG_PX_ADR")
-	private BigDecimal eqy_weighted_avg_px_adr;
+	private Number eqy_weighted_avg_px_adr;
 	@Column(name = "BOOK_VAL_PER_SH")
-	private BigDecimal book_val_per_sh;
+	private Number book_val_per_sh;
 	@Column(name = "OPER_ROE")
-	private BigDecimal oper_roe;
+	private Number oper_roe;
 	@Column(name = "RETENTION_RATIO")
-	private BigDecimal r_ratio;
+	private Number r_ratio;
 	@Column(name = "Currency")
 	private String crnc;
+	@Column(name = "EQY_FUND_CRNCY")
+	private String eqyFundCrncy;
+	@Column(name = "IS_COMP_EPS_ADJUSTED")
+	private Number isCompEpsAdjusted;
+	@Column(name = "IS_BASIC_EPS_CONT_OPS")
+	private Number isBasicEpsContOps;
+	@Column(name = "IS_DIL_EPS_CONT_OPS")
+	private Number isDilEpsContOps;
+	@Column(name = "EQY_DVD_YLD_IND")
+	private Number eqyDvdYldInd;
+	@Column(name = "EBITDA")
+	private Number ebitda;
+	@Column(name = "SALES_REV_TURN")
+	private Number salesRevTurn;
+	@Column(name = "OPER_MARGIN")
+	private Number operMargin;
+	@Column(name = "PROF_MARGIN")
+	private Number profMargin;
+	@Column(name = "IS_AVG_NUM_SH_FOR_EPS")
+	private Number isAvgNumShForEps;
 
-	/**
-	 * @return the security_code
-	 */
 	public String getSecurity_code() {
 		return security_code;
 	}
 
-	/**
-	 * @param security_code
-	 *            the security_code to set
-	 */
 	public void setSecurity_code(String security_code) {
 		this.security_code = security_code;
 	}
 
-	/**
-	 * @return the period
-	 */
 	public String getPeriod() {
 		return period;
 	}
 
-	/**
-	 * @param period
-	 *            the period to set
-	 */
 	public void setPeriod(String period) {
 		this.period = period;
 	}
 
-	/**
-	 * @return the date
-	 */
 	public String getDate() {
 		return date;
 	}
 
-	/**
-	 * @param date
-	 *            the date to set
-	 */
 	public void setDate(String date) {
 		this.date = date;
 	}
 
-	/**
-	 * @return the value
-	 */
-	public BigDecimal getValue() {
+	public Number getValue() {
 		return value;
 	}
 
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(BigDecimal value) {
+	public void setValue(Number value) {
 		this.value = value;
 	}
 
-	/**
-	 * @return the eps_recon_flag
-	 */
 	public Integer getEps_recon_flag() {
 		return eps_recon_flag;
 	}
 
-	/**
-	 * @param eps_recon_flag
-	 *            the eps_recon_flag to set
-	 */
 	public void setEps_recon_flag(Integer eps_recon_flag) {
 		this.eps_recon_flag = eps_recon_flag;
 	}
 
-	/**
-	 * @return the eqy_dps
-	 */
-	public BigDecimal getEqy_dps() {
+	public Number getEqy_dps() {
 		return eqy_dps;
 	}
 
-	/**
-	 * @param eqy_dps
-	 *            the eqy_dps to set
-	 */
-	public void setEqy_dps(BigDecimal eqy_dps) {
+	public void setEqy_dps(Number eqy_dps) {
 		this.eqy_dps = eqy_dps;
 	}
 
-	/**
-	 * @return the eqy_weighted_avg_px
-	 */
-	public BigDecimal getEqy_weighted_avg_px() {
+	public Number getEqy_weighted_avg_px() {
 		return eqy_weighted_avg_px;
 	}
 
-	/**
-	 * @param eqy_weighted_avg_px
-	 *            the eqy_weighted_avg_px to set
-	 */
-	public void setEqy_weighted_avg_px(BigDecimal eqy_weighted_avg_px) {
+	public void setEqy_weighted_avg_px(Number eqy_weighted_avg_px) {
 		this.eqy_weighted_avg_px = eqy_weighted_avg_px;
 	}
 
-	/**
-	 * @return the eqy_weighted_avg_px_adr
-	 */
-	public BigDecimal getEqy_weighted_avg_px_adr() {
+	public Number getEqy_weighted_avg_px_adr() {
 		return eqy_weighted_avg_px_adr;
 	}
 
-	/**
-	 * @param eqy_weighted_avg_px_adr
-	 *            the eqy_weighted_avg_px_adr to set
-	 */
-	public void setEqy_weighted_avg_px_adr(BigDecimal eqy_weighted_avg_px_adr) {
+	public void setEqy_weighted_avg_px_adr(Number eqy_weighted_avg_px_adr) {
 		this.eqy_weighted_avg_px_adr = eqy_weighted_avg_px_adr;
 	}
 
-	/**
-	 * @return the book_val_per_sh
-	 */
-	public BigDecimal getBook_val_per_sh() {
+	public Number getBook_val_per_sh() {
 		return book_val_per_sh;
 	}
 
-	/**
-	 * @param book_val_per_sh
-	 *            the book_val_per_sh to set
-	 */
-	public void setBook_val_per_sh(BigDecimal book_val_per_sh) {
+	public void setBook_val_per_sh(Number book_val_per_sh) {
 		this.book_val_per_sh = book_val_per_sh;
 	}
 
-	/**
-	 * @return the oper_roe
-	 */
-	public BigDecimal getOper_roe() {
+	public Number getOper_roe() {
 		return oper_roe;
 	}
 
-	/**
-	 * @param oper_roe
-	 *            the oper_roe to set
-	 */
-	public void setOper_roe(BigDecimal oper_roe) {
+	public void setOper_roe(Number oper_roe) {
 		this.oper_roe = oper_roe;
 	}
 
-	/**
-	 * @return the r_ratio
-	 */
-	public BigDecimal getR_ratio() {
+	public Number getR_ratio() {
 		return r_ratio;
 	}
 
-	/**
-	 * @param r_ratio
-	 *            the r_ratio to set
-	 */
-	public void setR_ratio(BigDecimal r_ratio) {
+	public void setR_ratio(Number r_ratio) {
 		this.r_ratio = r_ratio;
 	}
 
-	/**
-	 * @return the crnc
-	 */
 	public String getCrnc() {
 		return crnc;
 	}
 
-	/**
-	 * @param crnc
-	 *            the crnc to set
-	 */
 	public void setCrnc(String crnc) {
 		this.crnc = crnc;
+	}
+
+	public String getEqyFundCrncy() {
+		return eqyFundCrncy;
+	}
+
+	public void setEqyFundCrncy(String eqyFundCrncy) {
+		this.eqyFundCrncy = eqyFundCrncy;
+	}
+
+	public Number getIsCompEpsAdjusted() {
+		return isCompEpsAdjusted;
+	}
+
+	public void setIsCompEpsAdjusted(Number isCompEpsAdjusted) {
+		this.isCompEpsAdjusted = isCompEpsAdjusted;
+	}
+
+	public Number getIsBasicEpsContOps() {
+		return isBasicEpsContOps;
+	}
+
+	public void setIsBasicEpsContOps(Number isBasicEpsContOps) {
+		this.isBasicEpsContOps = isBasicEpsContOps;
+	}
+
+	public Number getIsDilEpsContOps() {
+		return isDilEpsContOps;
+	}
+
+	public void setIsDilEpsContOps(Number isDilEpsContOps) {
+		this.isDilEpsContOps = isDilEpsContOps;
+	}
+
+	public Number getEqyDvdYldInd() {
+		return eqyDvdYldInd;
+	}
+
+	public void setEqyDvdYldInd(Number eqyDvdYldInd) {
+		this.eqyDvdYldInd = eqyDvdYldInd;
+	}
+
+	public Number getEbitda() {
+		return ebitda;
+	}
+
+	public void setEbitda(Number ebitda) {
+		this.ebitda = ebitda;
+	}
+
+	public Number getSalesRevTurn() {
+		return salesRevTurn;
+	}
+
+	public void setSalesRevTurn(Number salesRevTurn) {
+		this.salesRevTurn = salesRevTurn;
+	}
+
+	public Number getOperMargin() {
+		return operMargin;
+	}
+
+	public void setOperMargin(Number operMargin) {
+		this.operMargin = operMargin;
+	}
+
+	public Number getProfMargin() {
+		return profMargin;
+	}
+
+	public void setProfMargin(Number profMargin) {
+		this.profMargin = profMargin;
+	}
+
+	public Number getIsAvgNumShForEps() {
+		return isAvgNumShForEps;
+	}
+
+	public void setIsAvgNumShForEps(Number isAvgNumShForEps) {
+		this.isAvgNumShForEps = isAvgNumShForEps;
 	}
 }
