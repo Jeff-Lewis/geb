@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SubscriptionItem;
 import ru.prbb.jobber.repo.BloombergServicesJ;
 import ru.prbb.jobber.repo.SubscriptionDao;
@@ -39,9 +40,9 @@ public class SubscriptionTask {
 	 * Проверка статуса подписок.<br>
 	 * Запуск и остановка при его изменении.
 	 */
-	@Scheduled(initialDelay = 2000, fixedRate = 10000)
+	@Scheduled(initialDelay = 2000, fixedRate = 60 * 1000)
 	public void execute() {
-		log.info("Subscriptions execute");
+		log.debug("Subscriptions execute");
 
 		List<SubscriptionItem> list = dao.getSubscriptions();
 		List<SubscriptionItem> listStart = new ArrayList<>(list.size());
@@ -55,20 +56,23 @@ public class SubscriptionTask {
 		}
 
 		bs.subscriptionStop(listStop);
-		bs.subscriptionStart(listStart);
+
+		for (SubscriptionItem item : listStart) {
+			List<SecurityItem> securities = dao.subsGetSecs(item.getId());
+			bs.subscriptionStart(item, securities);
+		}
 
 		for (SubscriptionItem item : listStart) {
 			List<String[]> data = bs.subscriptionData(item);
-			for (String[] arr : data) {
-				try {
-					dao.subsUpdate(arr[0], arr[1], arr[2]);
-				} catch (Exception e) {
-					log.error("Store subscription data", e);
-				}
-			}
+			dao.subsUpdate(data);
 		}
 	}
 
+	/*
+	 * Цель перезапуска
+	 * 1. блумберг изредка сходил сума и переставал отдавать данные по тикерам избирательно
+	 * 2. обновление указателей на активный контракт для фьючей
+	 */
 	@PreDestroy
 	@Scheduled(cron = "30 00 03 * * ?")
 	public void stop() {

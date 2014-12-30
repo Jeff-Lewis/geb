@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import ru.prbb.jobber.domain.SecForJobRequest;
+import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SubscriptionItem;
 
 /**
@@ -62,7 +63,7 @@ public class BloombergServicesJ {
 			URI uri = new URIBuilder()
 					.setScheme("http")
 					.setHost("172.16.15.117")
-					// .setHost(InetAddress.getLocalHost().getHostAddress())
+					//.setHost(InetAddress.getLocalHost().getHostAddress()) // TODO DEBUG localhost
 					.setPort(48080)
 					.setPath(path)
 					.build();
@@ -78,11 +79,12 @@ public class BloombergServicesJ {
 					public String handleResponse(final HttpResponse response)
 							throws ClientProtocolException, IOException {
 						int status = response.getStatusLine().getStatusCode();
+						String reason = response.getStatusLine().getReasonPhrase();
 						if (status >= HttpStatus.SC_OK && status < HttpStatus.SC_MULTIPLE_CHOICES) {
 							HttpEntity entity = response.getEntity();
 							return entity != null ? EntityUtils.toString(entity) : null;
 						} else {
-							throw new ClientProtocolException("Unexpected response status: " + status);
+							throw new ClientProtocolException("Unexpected response status: " + status + " " + reason);
 						}
 					}
 
@@ -254,31 +256,31 @@ public class BloombergServicesJ {
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 
-	public void subscriptionStart(List<SubscriptionItem> items) {
-		for (SubscriptionItem item : items) {
-			String path = "/Subscriptions/" + item.getId() + "/start";
-			String name = "Start subscription " + item.getName();
+	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
+		List<NameValuePair> nvps = new ArrayList<>(securities.size());
+		for (SecurityItem security : securities) {
+			nvps.add(new BasicNameValuePair("securities", security.getCode()));
 
-			@SuppressWarnings("unused")
-			String response = executeHttpRequest(path, new ArrayList<NameValuePair>(), name);
 		}
+		String path = "/Subscriptions/" + item.getId() + "/start";
+		String name = "Start subscription " + item.getName();
+		String response = executeHttpRequest(path, nvps, name);
 	}
 
 	public void subscriptionStop(List<SubscriptionItem> items) {
+		List<NameValuePair> nvps = new ArrayList<>(items.size());
 		for (SubscriptionItem item : items) {
-			String path = "/Subscriptions/" + item.getId() + "/stop";
-			String name = "Stop subscription " + item.getName();
-
-			@SuppressWarnings("unused")
-			String response = executeHttpRequest(path, new ArrayList<NameValuePair>(), name);
+			nvps.add(new BasicNameValuePair("ids", item.getId().toString()));
 		}
+		String response = executeHttpRequest("/Subscriptions/Stop", nvps, "Stop subscriptions");
 	}
 
 	public List<String[]> subscriptionData(SubscriptionItem item) {
+		List<NameValuePair> nvps = new ArrayList<>();
+		nvps.add(new BasicNameValuePair("isClean", "true"));
 		String path = "/Subscriptions/" + item.getId();
 		String name = "Get data subscription " + item.getName();
-
-		String response = executeHttpRequest(path, new ArrayList<NameValuePair>(), name);
+		String response = executeHttpRequest(path, nvps, name);
 
 		String[] lines = response.split("\n");
 		List<String[]> result = new ArrayList<>(lines.length);

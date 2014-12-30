@@ -1,8 +1,12 @@
 package ru.prbb.jobber.repo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
 import javax.persistence.Query;
 
 import org.slf4j.Logger;
@@ -29,7 +33,35 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 	private EntityManager em;
 
 	private void showSql(String sql, Query q) {
-		log.info(sql);
+		try {
+			StringBuilder res = new StringBuilder(sql);
+			if (!q.getParameters().isEmpty()) {
+				List<Parameter<?>> ps = new ArrayList<>(q.getParameters());
+				Collections.sort(ps, new Comparator<Parameter<?>>() {
+
+					@Override
+					public int compare(Parameter<?> o1, Parameter<?> o2) {
+						return o1.getPosition().compareTo(o2.getPosition());
+					}
+				});
+				res.append('(');
+				for (Parameter<?> p : ps) {
+					try {
+						Object pv = q.getParameterValue(p);
+						res.append(pv);
+						res.append(',');
+					} catch (IllegalStateException e) {
+						res.append("NULL,");
+					}
+				}
+				res.setCharAt(res.length() - 1, ')');
+			}
+
+			String msg = res.toString();
+			log.info(msg);
+		} catch (Exception e) {
+			log.error("storeSql", e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -55,14 +87,28 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int subsUpdate(String security_code, String last_price, String last_chng) {
+	public int[] subsUpdate(List<String[]> data) {
 		String sql = "{call dbo.upd_sect_subs_proc ?, ?, ?}";
-		Query q = em.createNativeQuery(sql)
-				.setParameter(1, security_code)
-				.setParameter(2, last_price)
-				.setParameter(3, last_chng);
-		showSql(sql, q);
-		return q.executeUpdate();
+		Query q = em.createNativeQuery(sql);
+
+		int ri = 0;
+		int[] res = new int[data.size()];
+		for (String[] arr : data) {
+			try {
+				String security_code = arr[0];
+				String last_price = arr[1];
+				String last_chng = arr[2];
+				q.setParameter(1, security_code);
+				q.setParameter(2, last_price);
+				q.setParameter(3, last_chng);
+				showSql(sql, q);
+				res[ri++] = q.executeUpdate();
+			} catch (Exception e) {
+				log.error("Store subscription data", e);
+			}
+		}
+
+		return res;
 	}
 
 }

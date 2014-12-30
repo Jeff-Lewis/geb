@@ -29,13 +29,6 @@ public interface SubscriptionDao {
 	 */
 	public List<SecurityItem> subsGetSecs(Long id);
 
-	/**
-	 * 
-	 * @param security_code
-	 * @param last_price
-	 * @param last_chng
-	 * @return
-	 */
-	public int subsUpdate(String security_code, String last_price, String last_chng);
+	public int[] subsUpdate(List<String[]> data);
 
 }
