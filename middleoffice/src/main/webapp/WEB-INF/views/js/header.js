@@ -25,12 +25,12 @@ var panelHeader = {
 		unstyled : true,
 		contentEl : 'intro-panel',
 		buttonAlign : 'center',
-        		buttons : [ {
-            id : 'username',
-            xtype : 'textfield',
-            inputType : 'text',
-            emptyText : 'Логин',
-            allowBlank : false,
+		buttons : [ {
+			id : 'username',
+			xtype : 'textfield',
+			inputType : 'text',
+			emptyText : 'Логин',
+			allowBlank : false,
             listeners : {
 	            specialkey : function(field, e) {
 		            if (e.getKey() == e.ENTER && field.isValid()) {
@@ -38,7 +38,7 @@ var panelHeader = {
 		            }
 	            }
             }
-        }, {
+		}, {
 			id : 'password',
 			xtype : 'textfield',
 			inputType : 'password',
@@ -46,9 +46,13 @@ var panelHeader = {
 			allowBlank : false,
             listeners : {
 	            specialkey : function(field, e) {
-		            if (e.getKey() == e.ENTER && field.isValid()) {
-		            	loginSubmit();
-		            }
+		            if (e.getKey() == e.ENTER) {
+	                    if (field.isValid()) {
+		                    loginSubmit();
+	                    } else {
+	                		Ext.getCmp('username').selectText().focus();
+	                    }
+                    }
 	            }
             }
 		}, {
@@ -96,6 +100,9 @@ function loginVisible(visible) {
 	var un = Ext.util.Cookies.get('user');
 	if (un) {
 		Ext.getCmp('username').setValue(un);
+		Ext.getCmp('password').focus();
+	} else {
+		Ext.getCmp('username').focus();
 	}
 }
 
@@ -126,7 +133,7 @@ function loginSubmit() {
 	});
 
 	function fnFailure(xhr, opts) {
-		App.ui.error('Ошибка при регистрации.', xhr.statusText);
+		App.ui.error(/*'Ошибка при регистрации.', */xhr.statusText);
 	}
 
 	function fnSuccess(xhr, opts) {
@@ -135,7 +142,7 @@ function loginSubmit() {
 			if (res && res.success) {
 				switch (res.code) {
 				case 'login_error':
-					App.ui.error('Ошибка регистрации.',
+					App.ui.error(/*'Ошибка регистрации.',*/
 							'Логин и пароль недоступны.');
 					return;
 				case 'login_success':
@@ -148,7 +155,7 @@ function loginSubmit() {
 				}
 			}
 		} catch (error) {
-			App.ui.error('Ошибка при регистрации.', error);
+			App.ui.error(/*'Ошибка при регистрации.', */error);
 		}
 	}
 }

@@ -46,9 +46,13 @@ var panelHeader = {
 			allowBlank : false,
             listeners : {
 	            specialkey : function(field, e) {
-		            if (e.getKey() == e.ENTER && field.isValid()) {
-		            	loginSubmit();
-		            }
+		            if (e.getKey() == e.ENTER) {
+	                    if (field.isValid()) {
+		                    loginSubmit();
+	                    } else {
+	                		Ext.getCmp('username').selectText().focus();
+	                    }
+                    }
 	            }
             }
 		}, {
@@ -96,6 +100,9 @@ function loginVisible(visible) {
 	var un = Ext.util.Cookies.get('user');
 	if (un) {
 		Ext.getCmp('username').setValue(un);
+		Ext.getCmp('password').focus();
+	} else {
+		Ext.getCmp('username').focus();
 	}
 }
 
