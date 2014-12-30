@@ -119,6 +119,62 @@
 		});
 	}
 
+	function requestDaily(b, e) {
+		if (sm.getCount() == 0) {
+			App.ui.message('Необходимо выбрать группу.');
+			return;
+		}
+
+		App.ui.confirm('Обновить ежедневные данные<BR>для группы ' + sm.getSelected().data.name + '?',
+				requestDailyCallback);
+	}
+	function requestDailyCallback() {
+		var id = sm.getSelected().data.id;
+		Ext.Ajax.request({
+			url : 'rest/CompanyGroup/' + id + '/RequestBDP.do',
+			// timeout : 10 * 60 * 10000, // 10 min
+			timeout : 1000000000,
+			waitMsg : 'Выполняется запрос к Bloomberg',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					App.ui.message('Данные загружены.');
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
+	function requestYearly(b, e) {
+		if (sm.getCount() == 0) {
+			App.ui.message('Необходимо выбрать группу.');
+			return;
+		}
+
+		App.ui.confirm('Обновить годовые данные<BR>для группы ' + sm.getSelected().data.name + '?',
+				requestYearlyCallback);
+    }
+	function requestYearlyCallback() {
+		var id = sm.getSelected().data.id;
+		Ext.Ajax.request({
+			url : 'rest/CompanyGroup/' + id + '/RequestYearly.do',
+			// timeout : 10 * 60 * 10000, // 10 min
+			timeout : 1000000000,
+			waitMsg : 'Выполняется запрос к Bloomberg',
+			success : function(xhr) {
+				var answer = Ext.decode(xhr.responseText);
+				if (answer.success) {
+					App.ui.message('Данные загружены.');
+				}
+			},
+			failure : function() {
+				App.ui.error('Сервер недоступен');
+			}
+		});
+	}
+
 	return new Ext.grid.GridPanel({
 		id : 'CompanyGroup-component',
 		title : 'Компании и группы',
@@ -138,6 +194,15 @@
 		}, {
 			text : 'Удалить',
 			handler : del
+		}, ' ', {
+			text : 'Выполнить',
+			menu : [ {
+				text : 'Обновить ежедневные данные',
+				handler : requestDaily
+			}, {
+				text : 'Обновить данные за последний год',
+				handler : requestYearly
+			} ]
 		} ],
 
 		store : info,

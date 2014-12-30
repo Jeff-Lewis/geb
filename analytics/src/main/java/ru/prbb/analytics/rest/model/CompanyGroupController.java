@@ -17,6 +17,7 @@ import ru.prbb.analytics.domain.ResultData;
 import ru.prbb.analytics.domain.SimpleItem;
 import ru.prbb.analytics.repo.model.CompanyGroupDao;
 import ru.prbb.analytics.rest.BaseController;
+import ru.prbb.analytics.rest.bloomberg.RequestBDPController;
 
 /**
  * Компании и группы
@@ -31,6 +32,8 @@ public class CompanyGroupController
 
 	@Autowired
 	private CompanyGroupDao dao;
+	@Autowired
+	private RequestBDPController reqBDP;
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
@@ -118,4 +121,44 @@ public class CompanyGroupController
 
 		return Result.SUCCESS;
 	}
+
+	@RequestMapping(value = "/{id}/RequestBDP", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public Result  getRequestBDP(
+			@PathVariable("id") Long id)
+	{
+		log.info("GET CompanyGroup/RequestBDP: id={}", id);
+
+		List<CompanyStaffItem> list = dao.findStaff(id);
+
+		String[] security = new String[list.size()];
+		int i = 0;
+		for (CompanyStaffItem item : list) {
+			security[i++] = item.getSecurity_code();
+		}
+		reqBDP.postExecute(security, null);
+
+		return Result.SUCCESS;
+	}
+
+	@RequestMapping(value = "/{id}/RequestYearly", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public Result  getRequestYearly(
+			@PathVariable("id") Long id)
+	{
+		log.info("GET CompanyGroup/RequestYearly: id={}", id);
+
+		List<CompanyStaffItem> list = dao.findStaff(id);
+
+		String[] security = new String[list.size()];
+		int i = 0;
+		for (CompanyStaffItem item : list) {
+			security[i++] = item.getSecurity_code();
+		}
+		throw new RuntimeException("Функция в разработке.");
+		//reqBDP.postExecute(security, null);
+
+		//return Result.SUCCESS;
+	}
+
 }
