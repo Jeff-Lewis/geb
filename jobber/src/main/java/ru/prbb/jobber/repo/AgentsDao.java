@@ -1,0 +1,15 @@
+package ru.prbb.jobber.repo;
+
+import java.util.Collection;
+
+public interface AgentsDao {
+
+	Collection<String> list();
+	
+	String next();
+
+	boolean add(String host);
+
+	boolean remove(String host);
+
+}

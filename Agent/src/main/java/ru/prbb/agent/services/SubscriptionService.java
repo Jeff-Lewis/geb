@@ -4,18 +4,13 @@
 package ru.prbb.agent.services;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import ru.prbb.agent.dao.DBManager;
 
 import com.bloomberglp.blpapi.CorrelationID;
 import com.bloomberglp.blpapi.Event;
@@ -34,13 +29,7 @@ import com.bloomberglp.blpapi.SubscriptionList;
 @Service
 public class SubscriptionService {
 
-	private Log log = LogFactory.getLog(getClass());
-
-	@Autowired
-	private BloombergServices bs;
-
-	@Autowired
-	private DBManager dbm;
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * Зарегистрированные подписки<br>
@@ -48,97 +37,114 @@ public class SubscriptionService {
 	 */
 	private final Map<Long, SubscriptionThread> threads = new HashMap<Long, SubscriptionThread>();
 
-	/**
-	 * Проверка статуса подписок.<br>
-	 * Запуск и остановка при его изменении.
-	 */
-	//@Scheduled(cron = "* * * * * ?")
-	public void execute() {
-		List<Map<String, Object>> subs = dbm.subsGetList();
+	private ThreadGroup group = new ThreadGroup("Subscriptions");
 
-		if (threads.isEmpty()) {
-			for (Map<String, Object> map : subs) {
-				final Long id = new Long(map.get("id_subscr").toString());
-				final boolean status = convertStatus(map.get("subscription_status"));
+	public SubscriptionService() {
+		group.setDaemon(true);
+	}
 
-				threads.put(id, null);
-				log.info("Register subscription id:" + id + ", status:" + status);
-			}
-		}
-
-		for (Map<String, Object> map : subs) {
-			final Long id = new Long(map.get("id_subscr").toString());
-			final boolean status = convertStatus(map.get("subscription_status"));
-
+	public String start(Long id, String[] securities) {
+		synchronized (threads) {
 			SubscriptionThread thread = threads.get(id);
-			if (status) {
-				if (null == thread) {
-					thread = new SubscriptionThread(id);
-					if (thread.start()) {
+			if (null == thread) {
+				thread = new SubscriptionThread(id);
+				try {
+					if (thread.startSession(securities)) {
 						threads.put(id, thread);
+						return "STARTED";
 					} else {
-						// TODO Подсчитать количество неудачных запусков
+						return "ERROR";
 					}
+				} catch (Exception e) {
+					log.error("Start session failed", e);
+					return "ERROR\n" + e.toString();
 				}
 			} else {
-				if (null != thread) {
-					thread.stop();
+				return "IS ALREADY RUNNING";
+			}
+		}
+	}
+
+	public String stop(Long id) {
+		synchronized (threads) {
+			SubscriptionThread thread = threads.get(id);
+			if (null == thread) {
+				return "NOT FOUND";
+			} else {
+				thread.stopSession();
+				return "STOPPING";
+			}
+		}
+	}
+
+	public String getData(Long id, boolean isClean) {
+		synchronized (threads) {
+			SubscriptionThread thread = threads.get(id);
+			if (null == thread) {
+				return "NOT FOUND";
+			} else {
+				try {
+					return thread.getData(isClean);
+				} catch (Exception e) {
+					log.error("Get data session failed", e);
+					return "ERROR\n" + e.toString();
 				}
 			}
 		}
 	}
 
 	@PreDestroy
-	@Scheduled(cron = "30 00 03 * * ?")
-	public void stop() {
+	public void destroy() {
 		log.info("Stop all subscription threads");
 		for (SubscriptionThread thread : threads.values()) {
 			if (null != thread) {
-				thread.stop();
+				try {
+					thread.stopSession();
+					thread.join();
+				} catch (Exception e) {
+					log.error("Stop session failed", e);
+				}
 			}
 		}
 	}
 
-	private boolean convertStatus(Object object) {
-		final String status = object.toString();
-		if ("Running".equals(status))
-			return true;
-		if ("Stopped".equals(status))
-			return false;
-		throw new RuntimeException("Unknown subscription status: " + status);
-	}
-
-	private class SubscriptionThread implements Runnable {
+	private class SubscriptionThread extends Thread {
 
 		public final Long id;
 
 		private volatile boolean isRun = true;
 
 		private Session session;
-		private Thread thread;
+		private StringBuilder data = new StringBuilder();
 
 		public SubscriptionThread(Long id) {
+			super(group, "Subscription #" + id);
+			setDaemon(true);
 			this.id = id;
 		}
 
-		public boolean start() {
-			final List<Map<String, Object>> secs = dbm.subsGetSecs(id);
-			if (secs.isEmpty()) {
-				return false;
+		public String getData(boolean isClean) {
+			synchronized (data) {
+				String res = data.toString();
+				if (isClean) {
+					data.setLength(0);
+				}
+				return res;
 			}
+		}
 
-			final SessionOptions sessionOptions = new SessionOptions();
+		public boolean startSession(String[] securities) {
+			SessionOptions sessionOptions = new SessionOptions();
 			sessionOptions.setServerHost("localhost");
 			sessionOptions.setServerPort(8194);
 
-			final StringBuilder sb = new StringBuilder();
-			final SubscriptionList subscriptions = new SubscriptionList();
-			for (Map<String, Object> item : secs) {
-				final String s = item.get("security_code").toString();
-				sb.append(s).append(',');
+			StringBuilder sb = new StringBuilder();
+			SubscriptionList subscriptions = new SubscriptionList();
+			for (String security : securities) {
+				sb.append(security).append(',');
 
-				final Subscription subscription = new Subscription(s,
-						"LAST_PRICE,RT_PX_CHG_PCT_1D", "interval=25.0", new CorrelationID(s));
+				Subscription subscription = new Subscription(security,
+						"LAST_PRICE,RT_PX_CHG_PCT_1D", "interval=25.0", new CorrelationID(security));
 				subscriptions.add(subscription);
 			}
 			sb.setLength(sb.length() - 1);
@@ -149,33 +155,31 @@ public class SubscriptionService {
 
 			try {
 				if (!session.start()) {
-					log.fatal("Failed to start session.");
+					log.error("Failed to start session.");
 					return false;
 				}
 
 				if (!session.openService("//blp/mktdata")) {
-					log.fatal("Failed to open //blp/mktdata");
+					log.error("Failed to open //blp/mktdata");
 					return false;
 				}
 
 				log.debug("Subscribing...");
 				session.subscribe(subscriptions);
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Error starting subscription", e);
 				return false;
 			}
 
-			thread = new Thread(this, "Subscription #" + id);
-			thread.setDaemon(true);
-			thread.start();
+			start();
 
-			log.info("Start " + thread.getName());
+			log.info("Start " + getName());
 
 			return true;
 		}
 
-		public void stop() {
-			log.info("Send STOP " + thread.getName());
+		public void stopSession() {
+			log.info("Send STOP " + getName());
 			isRun = false;
 		}
 
@@ -183,27 +187,28 @@ public class SubscriptionService {
 		public void run() {
 			try {
 				while (isRun) {
-					final Event event = session.nextEvent();
-					final EventType eventType = event.eventType();
+					Event event = session.nextEvent();
+					EventType eventType = event.eventType();
 					if (Event.EventType.SUBSCRIPTION_DATA == eventType
 							|| Event.EventType.SUBSCRIPTION_STATUS == eventType) {
 						for (Message msg : event) {
-							if (log.isTraceEnabled()) {
-								log.trace("Size msg=" + msg);
-								log.trace("Size msg=" + msg.toString().length());
-							}
-
 							if ("SubscriptionFailure".equals(msg.messageType().toString())) {
-								log.error("SubscriptionFailure:"
-										+ msg.getElement("reason").getElementAsString("description"));
+								String description = msg.getElement("reason").getElementAsString("description");
+								log.error("SubscriptionFailure:" + description);
 								continue;
 							}
 
 							if (msg.hasElement("LAST_PRICE") && msg.hasElement("RT_PX_CHG_PCT_1D")) {
-								final String security_code = (String) msg.correlationID().object();
-								final String last_price = getElementAsString(msg, "LAST_PRICE");
-								final String last_chng = getElementAsString(msg, "RT_PX_CHG_PCT_1D");
-								dbm.subsUpdate(security_code, last_price, last_chng);
+								String security_code = msg.correlationID().object().toString();
+								String last_price = getElementAsString(msg, "LAST_PRICE");
+								String last_chng = getElementAsString(msg, "RT_PX_CHG_PCT_1D");
+								String update = security_code + '\t' + last_price + '\t' + last_chng;
+								synchronized (data) {
+									if (data.length() > 64 * 1024) {
+										data.setLength(0);
+									}
+									data.append(update).append('\n');
+								}
 								log.trace("subsUpdate security_code:" + security_code
 										+ ", last_price:" + last_price + ", last_chng:" + last_chng);
 							}
@@ -211,16 +216,16 @@ public class SubscriptionService {
 					}
 				}
 			} catch (Exception e) {
-				log.error(e);
+				log.error("Get next session event", e);
 			} finally {
 				threads.put(id, null);
 				try {
 					session.stop();
 				} catch (InterruptedException e) {
-					log.error(e);
+					log.error("Stop session", e);
 				}
+				log.info("Stopped " + getName());
 			}
-			log.info("Stopped " + thread.getName());
 		}
 
 		private String getElementAsString(Message msg, String name) {

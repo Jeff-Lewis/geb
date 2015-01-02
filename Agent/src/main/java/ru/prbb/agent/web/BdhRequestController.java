@@ -6,10 +6,11 @@ package ru.prbb.agent.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.agent.services.BloombergServices;
 
@@ -30,6 +31,7 @@ public class BdhRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
+	@ResponseBody
 	public String getHelp() {
 		log.trace("GET help");
 
@@ -51,6 +53,7 @@ public class BdhRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
 	public Object getExecute(
 			@RequestParam(required = false, defaultValue = "BdhRequest") String name,
 			@RequestParam String dateStart,
