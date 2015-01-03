@@ -6,8 +6,6 @@ public interface AgentsDao {
 
 	Collection<String> list();
 	
-	String next();
-
 	boolean add(String host);
 
 	boolean remove(String host);

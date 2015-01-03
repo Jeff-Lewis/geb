@@ -86,15 +86,4 @@ public class AgentsDaoImplTest {
 		Assert.assertEquals(2, list.size());
 	}
 
-	/**
-	 * Test method for {@link ru.prbb.analytics.repo.AgentsDaoImpl#next()}.
-	 */
-	@Test
-	public void testNext() {
-		dao.add("192.168.1.1");
-		Assert.assertEquals("192.168.1.1", dao.next());
-		Assert.assertEquals("192.168.1.1", dao.next());
-		Assert.assertEquals("192.168.1.1", dao.next());
-	}
-
 }
