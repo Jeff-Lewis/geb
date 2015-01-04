@@ -1,0 +1,54 @@
+/*
+ *  Module specific UI goes here
+ */
+#loading-mask {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 20000;
+	background: white
+		url('/ExtJS/resources/images/default/shared/large-loading.gif') center
+		center no-repeat;
+}
+
+#intro-panel h1 {
+	text-align: center;
+}
+
+#view-panel a,a:visited {
+	color: #0066cc;
+}
+
+#loading {
+	position: absolute;
+	left: 45%;
+	top: 40%;
+	padding: 2px;
+	z-index: 20001;
+	height: auto;
+}
+
+#loading img {
+	margin-bottom: 5px;
+}
+
+#loading-indicator {
+	background: white;
+	color: #555;
+	font: bold 13px tahoma, arial, helvetica;
+	padding: 10px;
+	margin: 0;
+	text-align: center;
+	height: auto;
+}
+
+.z-important {
+	color: #0099ff;
+}
+
+.z-tooltip {
+	font-size: x-small;
+	font-weight: bold;
+}

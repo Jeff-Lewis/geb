@@ -155,18 +155,6 @@ var services = {
         handler : function() {
 	        showPanel('services/SecuritiesRests');
         }
-    }, {
-        text : 'Рассылка E-mail и SMS',
-        icon : 'images/users.png',
-        handler : function() {
-	        showPanel('services/Sending');
-        }
-    }, {
-        text : 'Справочник контактов',
-        icon : 'images/user-plus.png',
-        handler : function() {
-	        showPanel('services/Contacts');
-        }
     } ]
 };
 
@@ -348,30 +336,6 @@ var portfolio = {
         text : 'Заданные параметры риска',
         handler : function() {
 	        showPanel('portfolio/SecurityRiscs');
-        }
-    } ]
-};
-
-/**
- * Журнализация
- */
-var logs = {
-    title : 'Журнализация',
-    icon : 'images/user-plus.png',
-    items : [ {
-        text : 'Журнал отправки сообщений',
-        handler : function() {
-	        showPanel('logs/LogMessages');
-        }
-    }, {
-        text : 'Журнал изменений справочника контактов',
-        handler : function() {
-	        showPanel('logs/LogContacts');
-        }
-    }, {
-        text : 'Журнал подписки',
-        handler : function() {
-	        showPanel('logs/LogSubscription');
         }
     } ]
 };

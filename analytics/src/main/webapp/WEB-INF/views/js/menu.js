@@ -158,11 +158,6 @@ var bloomberg = {
 			handler : function() {
 				showPanel('bloomberg/RequestBDS');
 			}
-		}, {
-			text : 'Subscription',
-			handler : function() {
-				showPanel('subscription/ViewSubscription');
-			}
 		} ]
 };
 
@@ -173,54 +168,9 @@ var utils = {
 		title : 'Утилиты',
 		icon : 'images/user-plus.png',
 		items : [ {
-			text : 'Рассылка E-mail и SMS',
-			icon : 'images/users.png',
-			handler : function() {
-				showPanel('utils/Sending');
-			}
-		}, {
-			text : 'Справочник контактов',
-			handler : function() {
-				showPanel('utils/Contacts');
-			}
-		}, {
 			text : 'Справочник брокеров',
 			handler : function() {
 				showPanel('utils/Brokers');
-			}
-		}, {
-			text : 'Справочник пользователей',
-			handler : function() {
-				showPanel('utils/Users');
-			}
-		} ]
-};
-
-/**
- * Журнализация
- */
-var logs = {
-		title : 'Журнализация',
-		icon : 'images/user-plus.png',
-		items : [ {
-			text : 'Журнал отправки сообщений',
-			handler : function() {
-				showPanel('logs/LogMessages');
-			}
-		}, {
-			text : 'Журнал изменений справочника контактов',
-			handler : function() {
-				showPanel('logs/LogContacts');
-			}
-		}, {
-			text : 'Журнал подписки',
-			handler : function() {
-				showPanel('logs/LogSubscription');
-			}
-		}, {
-			text : 'Журнал действий пользователя',
-			handler : function() {
-				showPanel('logs/LogUserActions');
 			}
 		} ]
 };
