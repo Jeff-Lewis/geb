@@ -196,7 +196,7 @@ function createMenuItems() {
 	return [ _createMenuGroup(currentModel), _createMenuGroup(portfolio),
 			_createMenuGroup(companies), _createMenuGroup(params),
 			_createMenuGroup(reports), _createMenuGroup(bloomberg),
-			_createMenuGroup(utils), _createMenuGroup(logs) ];
+			_createMenuGroup(utils) ];
 }
 /**
  * Menu panel

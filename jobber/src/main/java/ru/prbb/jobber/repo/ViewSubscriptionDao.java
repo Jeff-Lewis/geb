@@ -1,12 +1,12 @@
 /**
  * 
  */
-package ru.prbb.analytics.repo.bloomberg;
+package ru.prbb.jobber.repo;
 
 import java.util.List;
 
-import ru.prbb.analytics.domain.SecuritySubscrItem;
-import ru.prbb.analytics.domain.ViewSubscriptionItem;
+import ru.prbb.jobber.domain.SecuritySubscrItem;
+import ru.prbb.jobber.domain.ViewSubscriptionItem;
 
 /**
  * Subscription

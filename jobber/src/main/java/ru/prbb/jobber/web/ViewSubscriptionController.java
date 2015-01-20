@@ -1,4 +1,4 @@
-package ru.prbb.analytics.rest.bloomberg;
+package ru.prbb.jobber.web;
 
 import java.util.List;
 
@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.Utils;
-import ru.prbb.analytics.domain.Result;
-import ru.prbb.analytics.domain.ResultData;
-import ru.prbb.analytics.domain.SecuritySubscrItem;
-import ru.prbb.analytics.domain.ViewSubscriptionItem;
-import ru.prbb.analytics.repo.bloomberg.ViewSubscriptionDao;
-import ru.prbb.analytics.rest.BaseController;
+import ru.prbb.jobber.domain.Result;
+import ru.prbb.jobber.domain.ResultData;
+import ru.prbb.jobber.domain.SecuritySubscrItem;
+import ru.prbb.jobber.domain.ViewSubscriptionItem;
+import ru.prbb.jobber.repo.ViewSubscriptionDao;
 
 /**
  * Subscription
@@ -77,7 +75,7 @@ public class ViewSubscriptionController
 			@RequestParam String action,
 			@RequestParam Long[] ids)
 	{
-		log.info("POST ViewSubscription: id={}, action={}, ids={}", Utils.asArray(id, action, (Object) ids));
+		log.info("POST ViewSubscription: id={}, action={}, ids={}", toArray(id, action, (Object) ids));
 		action = action.toUpperCase();
 		switch (action) {
 		case "ADD":

@@ -18,7 +18,6 @@ import ru.prbb.jobber.domain.ResultData;
 import ru.prbb.jobber.domain.SendingItem;
 import ru.prbb.jobber.domain.SimpleItem;
 import ru.prbb.jobber.repo.SendingDao;
-import ru.prbb.jobber.web.BaseController;
 
 /**
  * Рассылка E-mail и SMS
@@ -66,11 +65,11 @@ public class SendingController
 			for (String phone : phones) {
 				if (Utils.isNotEmpty(phone)) {
 					if (phone.charAt(0) == '+') {
-						res.add(dao.sendSms(text, phone));
+						res.add(sendSms(text, phone));
 					} else {
 						List<String> groupPhones = dao.getPhoneByGroup(phone);
 						for (String groupPhone : groupPhones) {
-							res.add(dao.sendSms(text, groupPhone));
+							res.add(sendSms(text, groupPhone));
 						}
 					}
 				}
@@ -78,6 +77,32 @@ public class SendingController
 		}
 
 		return res;
+	}
+
+	private SendingItem sendSms(String text, String phone) {
+		int lenSendMsg = 144 / 2 * 8;
+		if (text.length() > lenSendMsg) {
+			StringBuilder status = new StringBuilder();
+			do {
+				int endIndex = Math.min(lenSendMsg, text.length());
+				String textSend = text.substring(0, endIndex);
+				text = text.substring(endIndex);
+
+				SendingItem item = dao.sendSms(textSend, phone);
+
+				if (status.length() > 0) {
+					status.append("<br>");
+				}
+				status.append(item.getStatus());
+			} while (!text.isEmpty());
+
+			SendingItem res = new SendingItem();
+			res.setMail(phone);
+			res.setStatus(status.toString());
+			return res;
+		} else {
+			return dao.sendSms(text, phone);
+		}
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")

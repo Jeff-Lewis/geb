@@ -17,7 +17,7 @@
 	});
 
 	function add(b, e) {
-		showModal('subscription/ViewSubscriptionAdd');
+		showModal('services/ViewSubscriptionAdd');
 	}
 
 	function edit(b, e) {
@@ -27,7 +27,7 @@
 		}
 
 		var id = smInfo.getSelected().data.id;
-		showPanel('subscription/ViewSubscriptionEdit', 'rest/ViewSubscription/' + id + '.do');
+		showPanel('services/ViewSubscriptionEdit', 'rest/ViewSubscription/' + id + '.do');
 	}
 
 	function del(b, e) {

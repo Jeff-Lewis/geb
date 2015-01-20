@@ -82,9 +82,7 @@ function createMenuItems() {
 		};
 	}
 
-	return [ _createMenuGroup(dictionary), _createMenuGroup(views), _createMenuGroup(loading),
-	        _createMenuGroup(services), _createMenuGroup(operationsCB), _createMenuGroup(portfolio),
-	        _createMenuGroup(logs) ];
+	return [ _createMenuGroup(services), _createMenuGroup(logs) ];
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.analytics.repo.bloomberg;
+package ru.prbb.jobber.repo;
 
 import java.util.List;
 
@@ -13,9 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.prbb.analytics.domain.SecuritySubscrItem;
-import ru.prbb.analytics.domain.ViewSubscriptionItem;
-import ru.prbb.analytics.repo.BaseDaoImpl;
+import ru.prbb.jobber.domain.SecuritySubscrItem;
+import ru.prbb.jobber.domain.ViewSubscriptionItem;
 
 /**
  * Subscription

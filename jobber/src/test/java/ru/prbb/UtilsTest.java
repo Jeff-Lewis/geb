@@ -118,10 +118,10 @@ public class UtilsTest extends Assert {
 	@Test
 	public void testToDouble() {
 		assertEquals(null, Utils.toDouble(null));
-		assertEquals(new Double(10), Utils.toDouble(10));
+		assertEquals(new Double(10), Utils.toDouble(10d));
 		assertEquals(new Double(10.3), Utils.toDouble(10.3));
-		assertEquals(new Double("10.13"), Utils.toDouble("10.13"));
-		assertEquals(new Double(10.192), Utils.toDouble(new BigDecimal(10.192)));
+		assertEquals(new BigDecimal("10.13"), Utils.toDouble("10.13"));
+		assertEquals(new BigDecimal(10.192), Utils.toDouble(new BigDecimal(10.192)));
 	}
 
 	/**

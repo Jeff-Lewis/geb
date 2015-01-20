@@ -57,7 +57,9 @@ public class SubscriptionTask {
 
 		for (SubscriptionItem item : listStart) {
 			List<SecurityItem> securities = dao.subsGetSecs(item.getId());
-			bs.subscriptionStart(item, securities);
+			if (securities.size() > 0) {
+				bs.subscriptionStart(item, securities);
+			}
 		}
 
 		for (SubscriptionItem item : listStart) {

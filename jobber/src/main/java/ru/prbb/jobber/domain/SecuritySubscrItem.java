@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.analytics.domain;
+package ru.prbb.jobber.domain;
 
 import java.io.Serializable;
 

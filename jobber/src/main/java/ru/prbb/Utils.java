@@ -212,7 +212,11 @@ public class Utils {
 	 * @return Long
 	 */
 	public static Long toLong(Object object) {
-		return toNumber(object).longValue();
+		Number number = toNumber(object);
+		if (null != number) {
+			return number.longValue();
+		}
+		return null;
 	}
 
 	/**
