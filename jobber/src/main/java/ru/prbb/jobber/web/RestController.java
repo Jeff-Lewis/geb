@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.prbb.jobber.services.ScheduledTasks;
 
 /**
+ * Ручной запуск задач Жобера
+ * 
  * @author RBr
  */
 @Controller

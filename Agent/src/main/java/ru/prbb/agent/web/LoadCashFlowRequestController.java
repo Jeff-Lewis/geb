@@ -9,10 +9,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.agent.services.BloombergServices;
 
@@ -33,6 +34,7 @@ public class LoadCashFlowRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
+	@ResponseBody
 	public String getHelp() {
 		log.trace("GET");
 
@@ -49,6 +51,7 @@ public class LoadCashFlowRequestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
 	public Object postExecute(
 			@RequestParam(required = false, defaultValue = "Загрузка дат погашений") String name,
 			@RequestParam String[] ids,

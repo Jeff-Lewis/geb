@@ -1,30 +1,73 @@
-<%@ page pageEncoding="UTF-8"%>
-
+<%@ page language="java"%>
+<%@ page pageEncoding="utf-8"%>
+<%@ page contentType="text/html;charset=utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<title>Jobber</title>
+<title>АРМ Jobber</title>
+
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link rel="icon" type="image/png" href="images/favicon.png" />
+<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="images/favicon.ico" />
+
+<link rel="stylesheet" type="text/css" href="/ExtJS/resources/css/ext-all.css">
+<link rel="stylesheet" type="text/css" href="/ExtJS/resources/css/xtheme-gray.css">
+<link rel="stylesheet" type="text/css" href="/ExtJS/ux/statusbar/css/statusbar.css">
+<link rel="stylesheet" type="text/css" href="/ExtJS/ux/css/fileuploadfield.css">
+
+<link rel="stylesheet" type="text/css" href="css/overrides.css">
+<link rel="stylesheet" type="text/css" href="css/app-theme.css">
 </head>
 <body>
-	<div>
-		<ol>
-			<li> 0 00 3 * * ? <a href="rest/BdsLoad">executeBdsLoad</a></li>
+	<div id="loading-mask"></div>
 
-			<li> 0 15 4 * * ? <a href="rest/FuturesLoad">executeFuturesLoad</a></li>
-
-			<li> 0 00 5 * * ? <a href="rest/QuotesLoad">executeQuotesLoad</a></li>
-
-			<li> 0 10 5 * * ? <a href="rest/AtrLoad">executeAtrLoad</a></li>
-
-			<li> 0 00 6 * * ? <a href="rest/BdpOverrideLoad">executeBdpOverrideLoad</a></li>
-
-			<li> 0 00 7 * * ? <a href="rest/HistDataLoad">executeHistDataLoad</a></li>
-
-			<li> 0 00 8 * * ? <a href="rest/CurrenciesDataLoad">executeCurrenciesDataLoad</a></li>
-
-			<li> 0 59 11-18 * * ? <a href="rest/BondsLoad">executeBondsLoad</a></li>
-		</ol>
+	<div id="intro-panel">
+		<h1>Система автоматизированной подачи финансовой информации</h1>
+		<h1>Jobber</h1>
 	</div>
+
+	<script type="text/javascript" src="/ExtJS/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="/ExtJS/ext-all.js"></script>
+	<script type="text/javascript" src="/ExtJS/ux-all.js"></script>
+	<script type="text/javascript" src="/ExtJS/ext-lang-ru.js"></script>
+
+ 	<script type="text/javascript"><%@ include file="js/application.js" %></script>
+	<!-- Header -->
+	<script type="text/javascript"><%@ include file="js/header.js" %></script>
+	<!-- Menu -->
+	<script type="text/javascript"><%@ include file="js/menu.js" %></script>
+	<!-- View -->
+	<script type="text/javascript"><%@ include file="js/view.js" %></script>
+
+	<script type="text/javascript">
+		Ext.BLANK_IMAGE_URL = "/ExtJS/resources/images/default/s.gif";
+
+        Ext.QuickTips.init();
+
+        new Ext.Viewport({
+            layout : "border",
+            forceLayout : true,
+            items : [ panelHeader, panelMenu, panelView, {
+                region : 'south',
+                xtype : 'container',
+                height : 25
+            } ],
+            listeners : {
+	            afterrender : function() {
+					var isAnonymous = <%= (null == request.getUserPrincipal()) %>;
+					loginVisible(isAnonymous);
+
+		            Ext.get("loading-mask").fadeOut({
+			            //useDisplay : true,
+			            remove : true
+		            });
+	            }
+            }
+        });
+	</script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package ru.prbb.analytics.repo;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.prbb.analytics.domain.LogUserActionItem;
 
 /**
  * @author RBr
@@ -29,18 +27,6 @@ public class UserHistoryImpl implements UserHistory {
 
 	@Autowired
 	private EntityManager em;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<LogUserActionItem> getHistory(Timestamp date_b, Timestamp date_e) {
-		String sql = "{call dbo.WebGet_SelectHist_sp ?, ?}";
-		Query q = em.createNativeQuery(sql, LogUserActionItem.class)
-				.setParameter(1, date_b)
-				.setParameter(2, date_e);
-		storeSql(sql, q, false);
-		return q.getResultList();
-	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
