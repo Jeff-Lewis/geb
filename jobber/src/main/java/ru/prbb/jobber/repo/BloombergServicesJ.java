@@ -8,11 +8,14 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.PreDestroy;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -57,13 +60,13 @@ public class BloombergServicesJ {
 		return list;
 	}
 
-	private String executeHttpRequest(String path, List<NameValuePair> nvps, String name) {
+	private synchronized String executeHttpRequest(String path, List<NameValuePair> nvps, String name) {
 		nvps.add(new BasicNameValuePair("name", name));
 		try {
 			URI uri = new URIBuilder()
 					.setScheme("http")
 					.setHost("172.16.15.117")
-					//.setHost(InetAddress.getLocalHost().getHostAddress()) // TODO DEBUG localhost
+					//.setHost("172.23.149.175") // TODO DEBUG localhost
 					.setPort(48080)
 					.setPath(path)
 					.build();
@@ -89,7 +92,7 @@ public class BloombergServicesJ {
 					}
 
 				});
-				log.debug("Response " + responseBody);
+				log.debug("Response\n" + responseBody);
 				if (responseBody.contains("stackTrace")) {
 					@SuppressWarnings("unchecked")
 					Map<String, Object> res =
@@ -256,15 +259,29 @@ public class BloombergServicesJ {
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 
+	private List<SubscriptionItem> startedSubscriptions = new ArrayList<>();
+
+	@PreDestroy
+	public void destroy() {
+		log.info("@PreDestroy: Subscriptions stop");
+
+		subscriptionStop(startedSubscriptions);
+	}
+
 	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
+		if (startedSubscriptions.contains(item))
+			return;
 		List<NameValuePair> nvps = new ArrayList<>(securities.size());
+		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
 		for (SecurityItem security : securities) {
 			nvps.add(new BasicNameValuePair("securities", security.getCode()));
-
 		}
-		String path = "/Subscriptions/" + item.getId() + "/start";
+		String path = "/Subscriptions/Start";
 		String name = "Start subscription " + item.getName();
 		String response = executeHttpRequest(path, nvps, name);
+		if ("STARTED".equals(response)) {
+			startedSubscriptions.add(item);
+		}
 	}
 
 	public void subscriptionStop(List<SubscriptionItem> items) {
@@ -273,12 +290,28 @@ public class BloombergServicesJ {
 			nvps.add(new BasicNameValuePair("ids", item.getId().toString()));
 		}
 		String response = executeHttpRequest("/Subscriptions/Stop", nvps, "Stop subscriptions");
+		String[] lines = response.split("\n");
+		for (String line : lines) {
+			String[] s = line.split("\t");
+			String id = s[0];
+			String res = s[1];
+			if ("STOPPING".equals(res)) {
+				SubscriptionItem item = new SubscriptionItem();
+				item.setId(new Long(id));
+				startedSubscriptions.remove(item);
+			}
+		}
 	}
 
 	public List<String[]> subscriptionData(SubscriptionItem item) {
+		if (!startedSubscriptions.contains(item)) {
+			return Collections.emptyList();
+		}
+
 		List<NameValuePair> nvps = new ArrayList<>();
+		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
 		nvps.add(new BasicNameValuePair("isClean", "true"));
-		String path = "/Subscriptions/" + item.getId();
+		String path = "/Subscriptions/Data";
 		String name = "Get data subscription " + item.getName();
 		String response = executeHttpRequest(path, nvps, name);
 

@@ -37,10 +37,10 @@ public class SubscriptionService {
 	 */
 	private final Map<Long, SubscriptionThread> threads = new HashMap<Long, SubscriptionThread>();
 
-	private ThreadGroup group = new ThreadGroup("Subscriptions");
+	//private ThreadGroup group = new ThreadGroup("Subscriptions");
 
 	public SubscriptionService() {
-		group.setDaemon(true);
+		//group.setDaemon(true);
 	}
 
 	public String start(Long id, String[] securities) {
@@ -122,7 +122,8 @@ public class SubscriptionService {
 		private StringBuilder data = new StringBuilder();
 
 		public SubscriptionThread(Long id) {
-			super(group, "Subscription #" + id);
+			super("Subscription #" + id);
+			//super(group, "Subscription #" + id);
 			setDaemon(true);
 			this.id = id;
 		}
@@ -152,7 +153,7 @@ public class SubscriptionService {
 				subscriptions.add(subscription);
 			}
 			sb.setLength(sb.length() - 1);
-			log.info("Subscription: " + sb);
+			//log.info("Subscription: " + sb);
 
 			log.debug("Connecting to " + sessionOptions.getServerHost() + ":" + sessionOptions.getServerPort());
 			session = new Session(sessionOptions);

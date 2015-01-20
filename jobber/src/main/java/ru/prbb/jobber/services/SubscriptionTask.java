@@ -6,8 +6,6 @@ package ru.prbb.jobber.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PreDestroy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,7 @@ public class SubscriptionTask {
 	 * Проверка статуса подписок.<br>
 	 * Запуск и остановка при его изменении.
 	 */
-	@Scheduled(initialDelay = 2000, fixedRate = 60 * 1000)
+	@Scheduled(initialDelay = 2000, fixedRate = 5 * 1000)
 	public void execute() {
 		log.debug("Subscriptions execute");
 
@@ -73,7 +71,6 @@ public class SubscriptionTask {
 	 * 1. блумберг изредка сходил сума и переставал отдавать данные по тикерам избирательно
 	 * 2. обновление указателей на активный контракт для фьючей
 	 */
-	@PreDestroy
 	@Scheduled(cron = "30 00 03 * * ?")
 	public void stop() {
 		log.info("Subscriptions stop");

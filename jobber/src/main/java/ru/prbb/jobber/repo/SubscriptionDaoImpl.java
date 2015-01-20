@@ -70,7 +70,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 	public List<SubscriptionItem> getSubscriptions() {
 		String sql = "{call dbo.output_subscriptions_prc}";
 		Query q = em.createNativeQuery(sql, SubscriptionItem.class);
-		showSql(sql, q);
+		//showSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -81,7 +81,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 		String sql = "{call dbo.secs_in_subscription_prc ?}";
 		Query q = em.createNativeQuery(sql, SecurityItem.class)
 				.setParameter(1, id);
-		showSql(sql, q);
+		//showSql(sql, q);
 		return q.getResultList();
 	}
 
