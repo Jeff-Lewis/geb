@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -38,6 +39,9 @@ import ru.prbb.middleoffice.domain.SendingItem;
 public class SendingDaoImplTCP extends SendingDaoImpl
 {
 
+	@Resource(mappedName = "java:jboss/mail/wwi")
+	private Session session;
+
 	@Override
 	public SendingItem sendMail(String email_text, String email) {
 		final String smtpServer = "wonderworksinvestments.com";
@@ -56,7 +60,7 @@ public class SendingDaoImplTCP extends SendingDaoImpl
 		
 		// create session
 		//java:jboss/mail/Default
-		Session session = Session.getDefaultInstance(System.getProperties());
+		//Session session = Session.getDefaultInstance(System.getProperties());
 		try {
 			// create message
 			Message msg = new MimeMessage(session);
@@ -87,7 +91,7 @@ public class SendingDaoImplTCP extends SendingDaoImpl
 	@Override
 	public SendingItem sendSms(String text, String to) {
 		String api_id = "33bd77b5-d915-c964-a184-a6e07b15b226";
-		String from = "LIFE";
+		String from = "+79031633037";
 
 		String res = null;
 		try {
@@ -102,7 +106,7 @@ public class SendingDaoImplTCP extends SendingDaoImpl
 			List<NameValuePair> nvps = new ArrayList<>();
 			//nvps.add(new BasicNameValuePair("test", "1"));
 			nvps.add(new BasicNameValuePair("api_id", api_id));
-			// TODO nvps.add(new BasicNameValuePair("from", from));
+			nvps.add(new BasicNameValuePair("from", from));
 			nvps.add(new BasicNameValuePair("to", to));
 			nvps.add(new BasicNameValuePair("text", text));
 			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
