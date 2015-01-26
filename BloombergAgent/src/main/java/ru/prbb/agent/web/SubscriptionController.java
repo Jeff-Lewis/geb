@@ -31,7 +31,7 @@ public class SubscriptionController {
 	public String postStart(
 			@RequestParam Long id,
 			@RequestParam String[] securities) {
-		log.info("Start Subscription id={} for securities={}", id, securities);
+		log.debug("Start Subscription id={} for securities={}", id, securities);
 		return ss.start(id, securities);
 	}
 
@@ -49,7 +49,7 @@ public class SubscriptionController {
 			@RequestParam Long[] ids) {
 		StringBuilder res = new StringBuilder();
 		for (Long id : ids) {
-			//log.info("Stop Subscriptions id={}", id);
+			log.debug("Stop Subscriptions id={}", id);
 			String r = ss.stop(id);
 			res.append(id).append('\t').append(r).append('\n');
 		}

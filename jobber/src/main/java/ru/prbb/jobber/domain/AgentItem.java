@@ -1,24 +1,63 @@
 package ru.prbb.jobber.domain;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+/**
+ * @author RBr
+ */
 public class AgentItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
-	private String host;
+	private static final String ONLINE = "ONLINE";
+	private static final String TIMEOUT = "TIMEOUT";
 
-	public AgentItem(String host) {
+	private InetAddress host;
+	private long time;
+	private String status;
+
+	public AgentItem(InetAddress host) {
 		this.host = host;
-		// TODO Auto-generated constructor stub
+		time = System.currentTimeMillis();
+		status = ONLINE;
 	}
 
 	public String getHost() {
-		return host;
+		return host.getHostAddress();
+	}
+
+	public void setStatus(String status) {
+		this.status = (status != null) ? status : ONLINE;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	
+	public String getTime() {
+		return new SimpleDateFormat().format(new Date(time));
+	}
+
+	public void update() {
+		time = System.currentTimeMillis();
+		if (TIMEOUT.equals(status)) {
+			status = ONLINE;
+		}
 	}
 
 	public boolean isActive() {
-		// TODO Auto-generated method stub
-		return true;
+		if ((time + (7 * 60 * 1000)) < System.currentTimeMillis()) {
+			status = TIMEOUT;
+		}
+		return !(TIMEOUT.equals(status));
+	}
+
+	public boolean isNotBusy() {
+		return ONLINE.equals(status);
 	}
 
 	@Override
@@ -41,6 +80,11 @@ public class AgentItem implements Serializable {
 		} else if (!host.equals(other.host))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "AgentItem [host=" + host + ']';
 	}
 
 }

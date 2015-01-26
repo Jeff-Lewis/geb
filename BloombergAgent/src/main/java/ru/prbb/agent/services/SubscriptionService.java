@@ -73,7 +73,8 @@ public class SubscriptionService {
 			} else {
 				try {
 					thread.stopSession();
-					return "STOPPING";
+					thread.join();
+					return "STOPPED";
 				} catch (Exception e) {
 					log.error("Stop session failed", e);
 					return "ERROR\n" + e.toString();
@@ -209,7 +210,7 @@ public class SubscriptionService {
 								String last_chng = getElementAsString(msg, "RT_PX_CHG_PCT_1D");
 								String update = security_code + '\t' + last_price + '\t' + last_chng;
 								synchronized (data) {
-									if (data.length() > 32 * 1024) {
+									if (data.length() > 64 * 1024) {
 										data.setLength(0);
 									}
 									data.append(update).append('\n');
@@ -223,13 +224,13 @@ public class SubscriptionService {
 			} catch (Exception e) {
 				log.error("Get next session event", e);
 			} finally {
-				threads.put(id, null);
 				try {
 					session.stop();
 				} catch (InterruptedException e) {
 					log.error("Stop session", e);
 				}
 				log.info("Stopped " + getName());
+				threads.put(id, null);
 			}
 		}
 

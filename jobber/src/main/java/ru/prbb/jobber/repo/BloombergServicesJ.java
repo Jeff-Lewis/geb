@@ -33,8 +33,10 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.prbb.jobber.domain.AgentItem;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SubscriptionItem;
@@ -46,6 +48,9 @@ import ru.prbb.jobber.domain.SubscriptionItem;
 @Service
 public class BloombergServicesJ {
 	private Logger log = LoggerFactory.getLogger(getClass());
+
+	@Autowired
+	private AgentsDao agents;
 
 	/**
 	 * @param name
@@ -60,16 +65,18 @@ public class BloombergServicesJ {
 		return list;
 	}
 
-	private synchronized String executeHttpRequest(String path, List<NameValuePair> nvps, String name) {
+	private synchronized String executeHttpRequest(AgentItem agent, String path, List<NameValuePair> nvps, String name) {
 		nvps.add(new BasicNameValuePair("name", name));
 		try {
 			URI uri = new URIBuilder()
 					.setScheme("http")
-					.setHost("172.16.15.117")
+					.setHost(agent.getHost())
 					//.setHost("172.23.149.175") // TODO DEBUG localhost
 					.setPort(48080)
 					.setPath(path)
 					.build();
+
+			agent.setStatus(name);
 
 			HttpPost httpPost = new HttpPost(uri);
 			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
@@ -102,6 +109,7 @@ public class BloombergServicesJ {
 				}
 				return responseBody;
 			} finally {
+				agent.setStatus(null);
 				httpclient.close();
 			}
 		} catch (Exception e) {
@@ -137,7 +145,7 @@ public class BloombergServicesJ {
 		nvps.addAll(createList("securities", securities));
 		nvps.addAll(createList("fields", fields));
 
-		String response = executeHttpRequest("/BdsRequest", nvps, name);
+		String response = executeHttpRequest(agents.getRandom(), "/BdsRequest", nvps, name);
 		return (Map<String, Object>) deserialize(response);
 	}
 
@@ -161,7 +169,7 @@ public class BloombergServicesJ {
 		nvps.addAll(createList("securities", securities));
 		nvps.addAll(createList("fields", fields));
 
-		String response = executeHttpRequest("/ReferenceData", nvps, name);
+		String response = executeHttpRequest(agents.getRandom(), "/ReferenceData", nvps, name);
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 
@@ -189,7 +197,7 @@ public class BloombergServicesJ {
 		nvps.addAll(createList("securities", securities));
 		nvps.addAll(createList("fields", fields));
 
-		String response = executeHttpRequest("/HistoricalDataRequest", nvps, name);
+		String response = executeHttpRequest(agents.getRandom(), "/HistoricalDataRequest", nvps, name);
 		return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
 	}
 
@@ -218,7 +226,7 @@ public class BloombergServicesJ {
 		nvps.addAll(createList("fields", fields));
 		nvps.addAll(createList("currencies", currencies));
 
-		String response = executeHttpRequest("/HistoricalDataRequest", nvps, name);
+		String response = executeHttpRequest(agents.getRandom(), "/HistoricalDataRequest", nvps, name);
 		return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
 	}
 
@@ -240,7 +248,7 @@ public class BloombergServicesJ {
 		nvps.add(new BasicNameValuePair("period", period));
 		nvps.add(new BasicNameValuePair("calendar", calendar));
 
-		String response = executeHttpRequest("/LoadAtrRequest", nvps, name);
+		String response = executeHttpRequest(agents.getRandom(), "/LoadAtrRequest", nvps, name);
 		return (List<Map<String, Object>>) deserialize(response);
 	}
 
@@ -255,7 +263,7 @@ public class BloombergServicesJ {
 		}
 		nvps.addAll(createList("currencies", currencies.toArray(new String[currencies.size()])));
 
-		String response = executeHttpRequest("/LoadBdpOverrideRequest", nvps, name);
+		String response = executeHttpRequest(agents.getRandom(), "/LoadBdpOverrideRequest", nvps, name);
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 
@@ -278,7 +286,7 @@ public class BloombergServicesJ {
 		}
 		String path = "/Subscriptions/Start";
 		String name = "Start subscription " + item.getName();
-		String response = executeHttpRequest(path, nvps, name);
+		String response = executeHttpRequest(agents.getSubscr(), path, nvps, name);
 		if ("STARTED".equals(response)) {
 			startedSubscriptions.add(item);
 		}
@@ -289,13 +297,13 @@ public class BloombergServicesJ {
 		for (SubscriptionItem item : items) {
 			nvps.add(new BasicNameValuePair("ids", item.getId().toString()));
 		}
-		String response = executeHttpRequest("/Subscriptions/Stop", nvps, "Stop subscriptions");
+		String response = executeHttpRequest(agents.getSubscr(), "/Subscriptions/Stop", nvps, "Stop subscriptions");
 		String[] lines = response.split("\n");
 		for (String line : lines) {
 			String[] s = line.split("\t");
 			String id = s[0];
 			String res = s[1];
-			if ("STOPPING".equals(res)) {
+			if ("STOPPED".equals(res)) {
 				SubscriptionItem item = new SubscriptionItem();
 				item.setId(new Long(id));
 				startedSubscriptions.remove(item);
@@ -313,7 +321,7 @@ public class BloombergServicesJ {
 		nvps.add(new BasicNameValuePair("isClean", "true"));
 		String path = "/Subscriptions/Data";
 		String name = "Get data subscription " + item.getName();
-		String response = executeHttpRequest(path, nvps, name);
+		String response = executeHttpRequest(agents.getSubscr(), path, nvps, name);
 
 		String[] lines = response.split("\n");
 		List<String[]> result = new ArrayList<>(lines.length);

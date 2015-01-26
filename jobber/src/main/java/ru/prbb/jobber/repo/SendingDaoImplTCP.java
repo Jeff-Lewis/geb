@@ -88,7 +88,7 @@ public class SendingDaoImplTCP extends SendingDaoImpl
 	@Override
 	public SendingItem sendSms(String text, String to) {
 		String api_id = "33bd77b5-d915-c964-a184-a6e07b15b226";
-		String from = "+79031633037";
+		String from = "LIFE";
 
 		String res = null;
 		try {

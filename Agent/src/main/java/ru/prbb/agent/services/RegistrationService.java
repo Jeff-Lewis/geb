@@ -7,6 +7,7 @@ import java.net.NetworkInterface;
 import java.net.URI;
 import java.util.Enumeration;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.http.HttpEntity;
@@ -21,7 +22,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -40,22 +40,36 @@ public class RegistrationService {
 	private boolean isRegistered;
 	private URI server;
 
-	@Autowired
-	public RegistrationService(String networkInterface, String serverJobber) {
+	@PostConstruct
+	public void init() {
+ 		//String serverJobber = "http://172.23.149.175:8080/Jobber/Agents"; // мой
+		//String serverJobber = "http://192.168.100.101:8080/Jobber/Agents"; // Облако
+		String serverJobber = "http://172.16.15.36:10180/Jobber/Agents"; // Облако редирект
+
 		try {
-			Enumeration<InetAddress> inetAddresses = NetworkInterface.getByName(networkInterface).getInetAddresses();
-			while (inetAddresses.hasMoreElements()) {
-				InetAddress inetAddress = inetAddresses.nextElement();
+			Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+			while (nis.hasMoreElements()) {
+				NetworkInterface ni = nis.nextElement();
 
-				if (inetAddress instanceof Inet6Address)
+				if (!ni.isUp() || ni.isLoopback() || ni.isPointToPoint() || ni.isVirtual()) {
 					continue;
-				if (inetAddress.isAnyLocalAddress())
-					continue;
+				}
 
-				String localhost = inetAddress.getHostAddress();
-				server = new URIBuilder(serverJobber).setParameter("host", localhost).build();
-
-				return;
+				Enumeration<InetAddress> inetAddresses = ni.getInetAddresses();
+				while (inetAddresses.hasMoreElements()) {
+					InetAddress inetAddress = inetAddresses.nextElement();
+					
+					if (inetAddress instanceof Inet6Address)
+						continue;
+					if (inetAddress.isAnyLocalAddress())
+						continue;
+					
+					if ((inetAddress.getAddress()[0] & 0xff) == 172) {
+						String localhost = inetAddress.getHostAddress();
+						server = new URIBuilder(serverJobber).setParameter("host", localhost).build();
+						return;
+					}
+				}
 			}
 		} catch (Exception e) {
 			log.error("RegistrationService.init", e);

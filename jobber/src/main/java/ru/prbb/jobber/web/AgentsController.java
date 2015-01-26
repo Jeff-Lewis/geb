@@ -1,5 +1,9 @@
 package ru.prbb.jobber.web;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Collection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.jobber.domain.AgentItem;
 import ru.prbb.jobber.repo.AgentsDao;
 
 @Controller
 @RequestMapping(value = "/Agents", produces = "application/json")
 public class AgentsController
 {
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -22,16 +28,10 @@ public class AgentsController
 
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public String get()
+	public Collection<AgentItem> get()
 	{
 		log.info("GET /Agents");
-
-		StringBuilder res = new StringBuilder();
-		for (String host : dao.list()) {
-			res.append(host).append('\n');
-		}
-
-		return res.toString();
+		return dao.list();
 	}
 
 	@RequestMapping(method = RequestMethod.PUT)
@@ -41,7 +41,7 @@ public class AgentsController
 	{
 		log.info("PUT /Agents: host={}", host);
 
-		dao.add(host);
+		dao.add(toInetAddress(host));
 
 		return "OK";
 	}
@@ -53,9 +53,18 @@ public class AgentsController
 	{
 		log.info("DELETE /Agents: host={}", host);
 
-		dao.remove(host);
+		dao.remove(toInetAddress(host));
 
 		return "OK";
+	}
+
+	private InetAddress toInetAddress(String host) {
+		try {
+			return InetAddress.getByName(host);
+		} catch (UnknownHostException e) {
+			log.error("Get InetAddress for " + host);
+			throw new RuntimeException(e);
+		}
 	}
 
 }

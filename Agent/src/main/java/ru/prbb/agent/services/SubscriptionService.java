@@ -37,10 +37,10 @@ public class SubscriptionService {
 	 */
 	private final Map<Long, SubscriptionThread> threads = new HashMap<Long, SubscriptionThread>();
 
-	private ThreadGroup group = new ThreadGroup("Subscriptions");
+	//private ThreadGroup group = new ThreadGroup("Subscriptions");
 
 	public SubscriptionService() {
-		group.setDaemon(true);
+		//group.setDaemon(true);
 	}
 
 	public String start(Long id, String[] securities) {
@@ -71,8 +71,14 @@ public class SubscriptionService {
 			if (null == thread) {
 				return "NOT FOUND";
 			} else {
-				thread.stopSession();
-				return "STOPPING";
+				try {
+					thread.stopSession();
+					thread.join();
+					return "STOPPED";
+				} catch (Exception e) {
+					log.error("Stop session failed", e);
+					return "ERROR\n" + e.toString();
+				}
 			}
 		}
 	}
@@ -94,13 +100,12 @@ public class SubscriptionService {
 	}
 
 	@PreDestroy
-	public void destroy() {
+	public void stop() {
 		log.info("Stop all subscription threads");
 		for (SubscriptionThread thread : threads.values()) {
 			if (null != thread) {
 				try {
 					thread.stopSession();
-					thread.join();
 				} catch (Exception e) {
 					log.error("Stop session failed", e);
 				}
@@ -118,7 +123,8 @@ public class SubscriptionService {
 		private StringBuilder data = new StringBuilder();
 
 		public SubscriptionThread(Long id) {
-			super(group, "Subscription #" + id);
+			super("Subscription #" + id);
+			//super(group, "Subscription #" + id);
 			setDaemon(true);
 			this.id = id;
 		}
@@ -148,7 +154,7 @@ public class SubscriptionService {
 				subscriptions.add(subscription);
 			}
 			sb.setLength(sb.length() - 1);
-			log.info("Subscription: " + sb);
+			//log.info("Subscription: " + sb);
 
 			log.debug("Connecting to " + sessionOptions.getServerHost() + ":" + sessionOptions.getServerPort());
 			session = new Session(sessionOptions);
@@ -218,13 +224,13 @@ public class SubscriptionService {
 			} catch (Exception e) {
 				log.error("Get next session event", e);
 			} finally {
-				threads.put(id, null);
 				try {
 					session.stop();
 				} catch (InterruptedException e) {
 					log.error("Stop session", e);
 				}
 				log.info("Stopped " + getName());
+				threads.put(id, null);
 			}
 		}
 

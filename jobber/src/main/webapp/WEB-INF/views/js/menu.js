@@ -3,7 +3,6 @@
  */
 
 
-
 /**
  * Сервис
  */
@@ -11,6 +10,12 @@ var services = {
     title : 'Сервис',
     icon : 'images/30.png',
     items : [ {
+        text : 'Агенты БЛУМБЕРГа',
+        icon : 'images/users.png',
+        handler : function() {
+	        showPanel('services/ViewAgents');
+        }
+    }, {
         text : 'Рассылка E-mail и SMS',
         icon : 'images/users.png',
         handler : function() {
@@ -82,7 +87,7 @@ function createMenuItems() {
 		};
 	}
 
-	return [ _createMenuGroup(services), _createMenuGroup(logs) ];
+	return [ _createMenuGroup(jobs), _createMenuGroup(services), _createMenuGroup(logs) ];
 }
 
 /**
