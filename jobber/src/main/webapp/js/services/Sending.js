@@ -106,10 +106,16 @@
 	});
 
 	function send() {
+		var text = String(textarea.getValue());
+		if (text.length > 144 * 8) {
+			App.ui.error('Сообщение привысило 8 СМС.<br>Пожалуйста, сократите сообщение.');
+			return;
+		}
+
 		Ext.Ajax.request({
 			url : 'rest/Sending.do',
 			params : {
-				text : textarea.getValue(),
+				text : text,
 				recp : receiver1.getValue(),
 				recm : receiver2.getValue()
 			},
