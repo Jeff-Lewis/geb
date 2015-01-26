@@ -20,30 +20,36 @@ public class CompaniesQuarterItem implements Serializable {
 	private String period;
 	@Column(name = "date")
 	private String date;
+	@Column(name = "Currency")
+	private String currency;
+	@Column(name = "EPS")
+	private Number eps;
 	@Column(name = "IS_EPS")
-	private Number value;
-	@Column(name = "EQY_DPS")
-	private Number eqy_dps;
-	@Column(name = "EQY_DVD_YLD_IND")
-	private Number eqy_dvd_yld_ind;
+	private Number is_eps;
+	@Column(name = "IS_COMP_EPS_ADJUSTED")
+	private Number is_comp_eps_adjusted;
+	@Column(name = "IS_BASIC_EPS_CONT_OPS")
+	private Number is_basic_eps_cont_ops;
+	@Column(name = "IS_DIL_EPS_CONT_OPS")
+	private Number is_dil_eps_cont_ops;
+	@Column(name = "EBITDA")
+	private Number ebitda;
+	@Column(name = "BEST_EBITDA")
+	private Number best_ebitda;
 	@Column(name = "SALES_REV_TURN")
 	private Number sales_rev_turn;
+	@Column(name = "NET_REV")
+	private Number net_rev;
 	@Column(name = "PROF_MARGIN")
 	private Number prof_margin;
 	@Column(name = "OPER_MARGIN")
 	private Number oper_margin;
-	@Column(name = "Currency")
-	private String crnc;
-	@Column(name = "EQY_FUND_CRNCY")
-	private String eqyFundCrncy;
-	@Column(name = "IS_COMP_EPS_ADJUSTED")
-	private Number isCompEpsAdjusted;
-	@Column(name = "IS_BASIC_EPS_CONT_OPS")
-	private Number isBasicEpsContOps;
-	@Column(name = "IS_DIL_EPS_CONT_OPS")
-	private Number isDilEpsContOps;
-	@Column(name = "EBITDA")
-	private Number ebitda;
+	@Column(name = "OPER_ROE")
+	private Number oper_roe;
+	@Column(name = "EQY_DPS")
+	private Number eqy_dps;
+	@Column(name = "EQY_DVD_YLD_IND")
+	private Number eqy_dvd_yld_ind;
 
 	public String getSecurity_code() {
 		return security_code;
@@ -69,28 +75,68 @@ public class CompaniesQuarterItem implements Serializable {
 		this.date = date;
 	}
 
-	public Number getValue() {
-		return value;
+	public String getCurrency() {
+		return currency;
 	}
 
-	public void setValue(Number value) {
-		this.value = value;
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
-	public Number getEqy_dps() {
-		return eqy_dps;
+	public Number getEps() {
+		return eps;
 	}
 
-	public void setEqy_dps(Number eqy_dps) {
-		this.eqy_dps = eqy_dps;
+	public void setEps(Number eps) {
+		this.eps = eps;
 	}
 
-	public Number getEqy_dvd_yld_ind() {
-		return eqy_dvd_yld_ind;
+	public Number getIs_eps() {
+		return is_eps;
 	}
 
-	public void setEqy_dvd_yld_ind(Number eqy_dvd_yld_ind) {
-		this.eqy_dvd_yld_ind = eqy_dvd_yld_ind;
+	public void setIs_eps(Number is_eps) {
+		this.is_eps = is_eps;
+	}
+
+	public Number getIs_comp_eps_adjusted() {
+		return is_comp_eps_adjusted;
+	}
+
+	public void setIs_comp_eps_adjusted(Number is_comp_eps_adjusted) {
+		this.is_comp_eps_adjusted = is_comp_eps_adjusted;
+	}
+
+	public Number getIs_basic_eps_cont_ops() {
+		return is_basic_eps_cont_ops;
+	}
+
+	public void setIs_basic_eps_cont_ops(Number is_basic_eps_cont_ops) {
+		this.is_basic_eps_cont_ops = is_basic_eps_cont_ops;
+	}
+
+	public Number getIs_dil_eps_cont_ops() {
+		return is_dil_eps_cont_ops;
+	}
+
+	public void setIs_dil_eps_cont_ops(Number is_dil_eps_cont_ops) {
+		this.is_dil_eps_cont_ops = is_dil_eps_cont_ops;
+	}
+
+	public Number getEbitda() {
+		return ebitda;
+	}
+
+	public void setEbitda(Number ebitda) {
+		this.ebitda = ebitda;
+	}
+
+	public Number getBest_ebitda() {
+		return best_ebitda;
+	}
+
+	public void setBest_ebitda(Number best_ebitda) {
+		this.best_ebitda = best_ebitda;
 	}
 
 	public Number getSales_rev_turn() {
@@ -99,6 +145,14 @@ public class CompaniesQuarterItem implements Serializable {
 
 	public void setSales_rev_turn(Number sales_rev_turn) {
 		this.sales_rev_turn = sales_rev_turn;
+	}
+
+	public Number getNet_rev() {
+		return net_rev;
+	}
+
+	public void setNet_rev(Number net_rev) {
+		this.net_rev = net_rev;
 	}
 
 	public Number getProf_margin() {
@@ -117,51 +171,27 @@ public class CompaniesQuarterItem implements Serializable {
 		this.oper_margin = oper_margin;
 	}
 
-	public String getCrnc() {
-		return crnc;
+	public Number getOper_roe() {
+		return oper_roe;
 	}
 
-	public void setCrnc(String crnc) {
-		this.crnc = crnc;
+	public void setOper_roe(Number oper_roe) {
+		this.oper_roe = oper_roe;
 	}
 
-	public String getEqyFundCrncy() {
-		return eqyFundCrncy;
+	public Number getEqy_dps() {
+		return eqy_dps;
 	}
 
-	public void setEqyFundCrncy(String eqyFundCrncy) {
-		this.eqyFundCrncy = eqyFundCrncy;
+	public void setEqy_dps(Number eqy_dps) {
+		this.eqy_dps = eqy_dps;
 	}
 
-	public Number getIsCompEpsAdjusted() {
-		return isCompEpsAdjusted;
+	public Number getEqy_dvd_yld_ind() {
+		return eqy_dvd_yld_ind;
 	}
 
-	public void setIsCompEpsAdjusted(Number isCompEpsAdjusted) {
-		this.isCompEpsAdjusted = isCompEpsAdjusted;
-	}
-
-	public Number getIsBasicEpsContOps() {
-		return isBasicEpsContOps;
-	}
-
-	public void setIsBasicEpsContOps(Number isBasicEpsContOps) {
-		this.isBasicEpsContOps = isBasicEpsContOps;
-	}
-
-	public Number getIsDilEpsContOps() {
-		return isDilEpsContOps;
-	}
-
-	public void setIsDilEpsContOps(Number isDilEpsContOps) {
-		this.isDilEpsContOps = isDilEpsContOps;
-	}
-
-	public Number getEbitda() {
-		return ebitda;
-	}
-
-	public void setEbitda(Number ebitda) {
-		this.ebitda = ebitda;
+	public void setEqy_dvd_yld_ind(Number eqy_dvd_yld_ind) {
+		this.eqy_dvd_yld_ind = eqy_dvd_yld_ind;
 	}
 }

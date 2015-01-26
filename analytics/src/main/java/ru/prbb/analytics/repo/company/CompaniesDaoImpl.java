@@ -140,21 +140,42 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		for (Object[] arr : list) {
 			CompaniesQuarterItem item = new CompaniesQuarterItem();
 			int idx = 0;
+			//Код Блумберг
 			item.setSecurity_code(Utils.toString(arr[idx++]));
+			//Период
 			item.setPeriod(Utils.toString(arr[idx++]));
+			//date
 			item.setDate(Utils.toDate(arr[idx++]));
-			item.setValue(Utils.toDouble(arr[idx++]));
-			item.setEqy_dps(Utils.toDouble(arr[idx++]));
-			item.setEqy_dvd_yld_ind(Utils.toDouble(arr[idx++]));
-			item.setSales_rev_turn(Utils.toDouble(arr[idx++]));
-			item.setProf_margin(Utils.toDouble(arr[idx++]));
-			item.setOper_margin(Utils.toDouble(arr[idx++]));
-			item.setCrnc(Utils.toString(arr[idx++]));
-			item.setEqyFundCrncy(Utils.toString(arr[idx++]));
-			item.setIsCompEpsAdjusted(Utils.toDouble(arr[idx++]));
-			item.setIsBasicEpsContOps(Utils.toDouble(arr[idx++]));
-			item.setIsDilEpsContOps(Utils.toDouble(arr[idx++]));
+			//EPS
+			item.setEps(Utils.toDouble(arr[idx++]));
+			//IS_EPS
+			item.setIs_eps(Utils.toDouble(arr[idx++]));
+			//IS_COMP_EPS_ADJUSTED
+			item.setIs_comp_eps_adjusted(Utils.toDouble(arr[idx++]));
+			//IS_BASIC_EPS_CONT_OPS
+			item.setIs_basic_eps_cont_ops(Utils.toDouble(arr[idx++]));
+			//IS_DIL_EPS_CONT_OPS
+			item.setIs_dil_eps_cont_ops(Utils.toDouble(arr[idx++]));
+			//EBITDA
 			item.setEbitda(Utils.toDouble(arr[idx++]));
+			//BEST_EBITDA
+			item.setBest_ebitda(Utils.toDouble(arr[idx++]));
+			//SALES_REV_TURN
+			item.setSales_rev_turn(Utils.toDouble(arr[idx++]));
+			//NET_REV
+			item.setNet_rev(Utils.toDouble(arr[idx++]));
+			//PROF_MARGIN
+			item.setProf_margin(Utils.toDouble(arr[idx++]));
+			//OPER_MARGIN
+			item.setOper_margin(Utils.toDouble(arr[idx++]));
+			//OPER_ROE
+			item.setOper_roe(Utils.toDouble(arr[idx++]));
+			//EQY_DPS
+			item.setEqy_dps(Utils.toDouble(arr[idx++]));
+			//EQY_DVD_YLD_IND
+			item.setEqy_dvd_yld_ind(Utils.toDouble(arr[idx++]));
+			//Currency
+			item.setCurrency(Utils.toString(arr[idx++]));
 			res.add(item);
 		}
 		return res;
@@ -187,28 +208,54 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 		for (Object[] arr : list) {
 			CompaniesYearItem item = new CompaniesYearItem();
 			int idx = 0;
+			//Код Блумберг
 			item.setSecurity_code(Utils.toString(arr[idx++]));
+			//Период
 			item.setPeriod(Utils.toString(arr[idx++]));
+			//date
 			item.setDate(Utils.toString(arr[idx++]));
-			item.setValue(Utils.toDouble(arr[idx++]));
-			item.setEps_recon_flag(Utils.toInteger(arr[idx++]));
-			item.setEqy_dps(Utils.toDouble(arr[idx++]));
-			item.setEqy_weighted_avg_px(Utils.toDouble(arr[idx++]));
-			item.setEqy_weighted_avg_px_adr(Utils.toDouble(arr[idx++]));
-			item.setBook_val_per_sh(Utils.toDouble(arr[idx++]));
-			item.setOper_roe(Utils.toDouble(arr[idx++]));
-			item.setR_ratio(Utils.toDouble(arr[idx++]));
-			item.setCrnc(Utils.toString(arr[idx++]));
-			item.setEqyFundCrncy(Utils.toString(arr[idx++]));
-			item.setIsCompEpsAdjusted(Utils.toDouble(arr[idx++]));
-			item.setIsBasicEpsContOps(Utils.toDouble(arr[idx++]));
-			item.setIsDilEpsContOps(Utils.toDouble(arr[idx++]));
-			item.setEqyDvdYldInd(Utils.toDouble(arr[idx++]));
+			//EPS
+			item.setEps(Utils.toDouble(arr[idx++]));
+			//IS_EPS
+			item.setIs_eps(Utils.toDouble(arr[idx++]));
+			//IS_COMP_EPS_ADJUSTED
+			item.setIs_comp_eps_adjusted(Utils.toDouble(arr[idx++]));
+			//IS_BASIC_EPS_CONT_OPS
+			item.setIs_basic_eps_cont_ops(Utils.toDouble(arr[idx++]));
+			//IS_DIL_EPS_CONT_OPS
+			item.setIs_dil_eps_cont_ops(Utils.toDouble(arr[idx++]));
+			//EBITDA
 			item.setEbitda(Utils.toDouble(arr[idx++]));
-			item.setSalesRevTurn(Utils.toDouble(arr[idx++]));
-			item.setOperMargin(Utils.toDouble(arr[idx++]));
-			item.setProfMargin(Utils.toDouble(arr[idx++]));
-			item.setIsAvgNumShForEps(Utils.toDouble(arr[idx++]));
+			//BEST_EBITDA
+			item.setBest_ebitda(Utils.toDouble(arr[idx++]));
+			//SALES_REV_TURN
+			item.setSales_rev_turn(Utils.toDouble(arr[idx++]));
+			//NET_REV
+			item.setNet_rev(Utils.toDouble(arr[idx++]));
+			//OPER_MARGIN
+			item.setOper_margin(Utils.toDouble(arr[idx++]));
+			//PROF_MARGIN
+			item.setProf_margin(Utils.toDouble(arr[idx++]));
+			//OPER_ROE
+			item.setOper_roe(Utils.toDouble(arr[idx++]));
+			//RETENTION_RATIO
+			item.setRetention_ratio(Utils.toDouble(arr[idx++]));
+			//EQY_DPS
+			item.setEqy_dps(Utils.toDouble(arr[idx++]));
+			//EQY_DVD_YLD_IND
+			item.setEqy_dvd_yld_ind(Utils.toDouble(arr[idx++]));
+			//IS_AVG_NUM_SH_FOR_EPS
+			item.setIs_avg_num_sh_for_eps(Utils.toDouble(arr[idx++]));
+			//BOOK_VAL_PER_SH
+			item.setBook_val_per_sh(Utils.toDouble(arr[idx++]));
+			//EQY_WEIGHTED_AVG_PX
+			item.setEqy_weighted_avg_px(Utils.toDouble(arr[idx++]));
+			//EQY_WEIGHTED_AVG_PX_ADR
+			item.setEqy_weighted_avg_px_adr(Utils.toDouble(arr[idx++]));
+			//EPS_RECONSTRUCT_FLAG
+			item.setEps_reconstruct_flag(Utils.toInteger(arr[idx++]));
+			//Currency
+			item.setCurrency(Utils.toString(arr[idx++]));
 			res.add(item);
 		}
 		return res;

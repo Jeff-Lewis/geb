@@ -88,9 +88,10 @@
 	    autoLoad : false,
 	    url : 'rest/Companies/0/Quarters.do',
 	    // root : 'info1',
-	    fields : [ 'security_code', 'period', 'date', 'value', 'eqy_dps', 'eqy_dvd_yld_ind',
-	            'sales_rev_turn', 'prof_margin', 'oper_margin', 'crnc', 'eqyFundCrncy',
-	            'isCompEpsAdjusted', 'isBasicEpsContOps', 'isDilEpsContOps', 'ebitda' ],
+	    fields : [ 'security_code', 'period', 'date', 'currency', 'eps', 'is_eps', 'is_comp_eps_adjusted',
+	            'is_basic_eps_cont_ops', 'is_dil_eps_cont_ops', 'ebitda', 'best_ebitda',
+	            'sales_rev_turn', 'net_rev', 'prof_margin', 'oper_margin', 'oper_roe', 'eqy_dps',
+	            'eqy_dvd_yld_ind' ],
 	    listeners : App.ui.listenersJsonStore()
 	});
 
@@ -113,7 +114,7 @@
 				code : Ext.getCmp(_bloomCode).getValue(),
 				period : data.period,
 				date : data.date,
-				iso : data.crnc
+				currency : data.currency
 		};
 		Ext.Ajax.request({
 			method : 'DELETE',
@@ -153,61 +154,80 @@
 	        header : 'Период',
 	        dataIndex : 'period'
 	    }, {
+	        header : 'date',
+	        dataIndex : 'date'
+	    }, {
+	        header : 'EPS',
+	        dataIndex : 'eps',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(3)
+	    }, {
 	        header : 'IS_EPS',
-	        dataIndex : 'value',
+	        dataIndex : 'is_eps',
 	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-	    }, {
-	        header : 'EQY_DPS',
-	        dataIndex : 'eqy_dps',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-	    }, {
-	        header : 'EQY_DVD_YLD_IND',
-	        dataIndex : 'eqy_dvd_yld_ind'
-	    }, {
-	        header : 'SALES_REV_TURN',
-	        dataIndex : 'sales_rev_turn',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-	    }, {
-	        header : 'PROF_MARGIN',
-	        dataIndex : 'prof_margin',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-	    }, {
-	        header : 'OPER_MARGIN',
-	        dataIndex : 'oper_margin',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-	    }, {
-	        header : 'Currency',
-	        dataIndex : 'crnc'
-	    }, {
-	        header : 'EQY_FUND_CRNCY',
-	        dataIndex : 'eqyFundCrncy'
+	        renderer : App.util.Renderer.number(2)
 	    }, {
 	        header : 'IS_COMP_EPS_ADJUSTED',
-	        dataIndex : 'isCompEpsAdjusted',
+	        dataIndex : 'is_comp_eps_adjusted',
 	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
+	        renderer : App.util.Renderer.number(2)
 	    }, {
 	        header : 'IS_BASIC_EPS_CONT_OPS',
-	        dataIndex : 'isBasicEpsContOps',
+	        dataIndex : 'is_basic_eps_cont_ops',
 	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
+	        renderer : App.util.Renderer.number(2)
 	    }, {
 	        header : 'IS_DIL_EPS_CONT_OPS',
-	        dataIndex : 'isDilEpsContOps',
+	        dataIndex : 'is_dil_eps_cont_ops',
 	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
+	        renderer : App.util.Renderer.number(2)
 	    }, {
 	        header : 'EBITDA',
 	        dataIndex : 'ebitda',
 	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
+	        renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'BEST_EBITDA',
+	        dataIndex : 'best_ebitda',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'SALES_REV_TURN',
+	        dataIndex : 'sales_rev_turn',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'NET_REV',
+	        dataIndex : 'net_rev',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'PROF_MARGIN',
+	        dataIndex : 'prof_margin',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'OPER_MARGIN',
+	        dataIndex : 'oper_margin',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'OPER_ROE',
+	        dataIndex : 'oper_roe',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'EQY_DPS',
+	        dataIndex : 'eqy_dps',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'EQY_DVD_YLD_IND',
+	        dataIndex : 'eqy_dvd_yld_ind',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(2)
 	    } ],
-		viewConfig : {
+	    viewConfig : {
 			//forceFit : true,
 			stripeRows : true,
 			emptyText : 'Записи не найдены'
@@ -219,11 +239,11 @@
 	    autoLoad : false,
 	    url : 'rest/Companies/0/Years.do',
 	    // root : 'info2',
-	    fields : [ 'security_code', 'period', 'date', 'value', 'eps_recon_flag', 'eqy_dps',
-	            'eqy_weighted_avg_px', 'eqy_weighted_avg_px_adr', 'book_val_per_sh', 'oper_roe',
-	            'r_ratio', 'crnc', 'eqyFundCrncy', 'isCompEpsAdjusted', 'isBasicEpsContOps',
-	            'isDilEpsContOps', 'eqyDvdYldInd', 'ebitda', 'salesRevTurn', 'operMargin',
-	            'profMargin', 'isAvgNumShForEps' ],
+	    fields : [ 'security_code', 'period', 'date', 'currency', 'eps', 'is_eps', 'is_comp_eps_adjusted',
+	            'is_basic_eps_cont_ops', 'is_dil_eps_cont_ops', 'ebitda', 'best_ebitda',
+	            'sales_rev_turn', 'net_rev', 'oper_margin', 'prof_margin', 'oper_roe',
+	            'retention_ratio', 'eqy_dps', 'eqy_dvd_yld_ind', 'is_avg_num_sh_for_eps',
+	            'book_val_per_sh', 'eqy_weighted_avg_px', 'eqy_weighted_avg_px_adr', 'eps_reconstruct_flag' ],
 	    listeners : App.ui.listenersJsonStore()
 	});
 
@@ -246,7 +266,7 @@
 				code : Ext.getCmp(_bloomCode).getValue(),
 				period : data.period,
 				date : data.date,
-				iso : data.crnc
+				currency : data.currency
 		};
 		Ext.Ajax.request({
 			method : 'DELETE',
@@ -283,99 +303,111 @@
 		store : years,
 		sm : smYears,
 		columns : [ {
-			header : 'ПЕРИОД',
-			dataIndex : 'period'
-		}, {
-			header : 'EPS',
-			dataIndex : 'value',
+	        header : 'Период',
+	        dataIndex : 'period'
+	    }, {
+	        header : 'date',
+	        dataIndex : 'date'
+	    }, {
+	        header : 'EPS',
+	        dataIndex : 'eps',
 			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'EPS_RECONTR_FLAG',
-			dataIndex : 'eps_recon_flag',
-			align : 'right'
-		}, {
-			header : 'EQY_DPS',
-			dataIndex : 'eqy_dps',
+			renderer : App.util.Renderer.number(3)
+	    }, {
+	        header : 'IS_EPS',
+	        dataIndex : 'is_eps',
 			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'EQY_WEIGHTED_AVG_PX',
-			dataIndex : 'eqy_weighted_avg_px',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'IS_COMP_EPS_ADJUSTED',
+	        dataIndex : 'is_comp_eps_adjusted',
 			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'EQY_WEIGHTED_AVG_PX_ADR',
-			dataIndex : 'eqy_weighted_avg_px_adr',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'IS_BASIC_EPS_CONT_OPS',
+	        dataIndex : 'is_basic_eps_cont_ops',
 			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'BOOK_VAL_PER_SH',
-			dataIndex : 'book_val_per_sh',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'IS_DIL_EPS_CONT_OPS',
+	        dataIndex : 'is_dil_eps_cont_ops',
 			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'OPER_ROE',
-			dataIndex : 'oper_roe',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'EBITDA',
+	        dataIndex : 'ebitda',
 			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'RETENTION_RATIO',
-			dataIndex : 'r_ratio',
+			renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'BEST_EBITDA',
+	        dataIndex : 'best_ebitda',
 			align : 'right',
-			renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'Валюта',
-			dataIndex : 'crnc'
-		}, {
-			header : 'EQY_FUND_CRNCY',
-			dataIndex : 'eqyFundCrncy'
-		}, {
-			header : 'IS_COMP_EPS_ADJUSTED',
-			dataIndex : 'isCompEpsAdjusted',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'IS_BASIC_EPS_CONT_OPS',
-			dataIndex : 'isBasicEpsContOps',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'IS_DIL_EPS_CONT_OPS',
-			dataIndex : 'isDilEpsContOps',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'EQY_DVD_YLD_IND',
-			dataIndex : 'eqyDvdYldInd',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'EBITDA',
-			dataIndex : 'ebitda',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'SALES_REV_TURN',
-			dataIndex : 'salesRevTurn',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'OPER_MARGIN',
-			dataIndex : 'operMargin',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'PROF_MARGIN',
-			dataIndex : 'profMargin',
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)
-		}, {
-			header : 'IS_AVG_NUM_SH_FOR_EPS',
-			dataIndex : 'isAvgNumShForEps'	,
-	        align : 'right',
-	        renderer : App.util.Renderer.number(6)		
-		} ],
+			renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'SALES_REV_TURN',
+	        dataIndex : 'sales_rev_turn',
+			align : 'right',
+			renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'NET_REV',
+	        dataIndex : 'net_rev',
+			align : 'right',
+			renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'OPER_MARGIN',
+	        dataIndex : 'oper_margin',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'PROF_MARGIN',
+	        dataIndex : 'prof_margin',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'OPER_ROE',
+	        dataIndex : 'oper_roe',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'RETENTION_RATIO',
+	        dataIndex : 'retention_ratio',
+			align : 'right',
+			renderer : App.util.Renderer.number(1)
+	    }, {
+	        header : 'EQY_DPS',
+	        dataIndex : 'eqy_dps',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'EQY_DVD_YLD_IND',
+	        dataIndex : 'eqy_dvd_yld_ind',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'IS_AVG_NUM_SH_FOR_EPS',
+	        dataIndex : 'is_avg_num_sh_for_eps',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'BOOK_VAL_PER_SH',
+	        dataIndex : 'book_val_per_sh',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'EQY_WEIGHTED_AVG_PX',
+	        dataIndex : 'eqy_weighted_avg_px',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'EQY_WEIGHTED_AVG_PX_ADR',
+	        dataIndex : 'eqy_weighted_avg_px_adr',
+			align : 'right',
+			renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'EPS_RECONSTRUCT_FLAG',
+	        dataIndex : 'eps_reconstruct_flag',
+			renderer : App.util.Renderer.bool()
+	    } ],
 		viewConfig : {
 			//forceFit : true,
 			stripeRows : true,

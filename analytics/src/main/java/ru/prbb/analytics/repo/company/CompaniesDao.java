@@ -39,7 +39,7 @@ public interface CompaniesDao {
 	 */
 	List<CompaniesQuarterItem> findQuarters(Long id);
 
-	int delQuarters(Long id, String code, String period, Date date, String iso);
+	int delQuarters(Long id, String code, String period, Date date, String currency);
 
 	/**
 	 * @param id
@@ -47,7 +47,7 @@ public interface CompaniesDao {
 	 */
 	List<CompaniesYearItem> findYears(Long id);
 
-	int delYears(Long id, String code, String period, Date date, String iso);
+	int delYears(Long id, String code, String period, Date date, String currency);
 
 	/**
 	 * @param id

@@ -95,7 +95,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String type)
 	{
-		type = encode(type);
+		type = transform(type);
 		log.info("DEL Companies/eps: id={}, type={}", id, type);
 		dao.delEps(id, type);
 		return Result.SUCCESS;
@@ -121,7 +121,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String type)
 	{
-		type = encode(type);
+		type = transform(type);
 		log.info("DEL Companies/bv: id={}, type={}", id, type);
 		dao.delBookVal(id, type);
 		return Result.SUCCESS;
@@ -147,7 +147,7 @@ public class CompaniesController
 			@PathVariable("id") Long id,
 			@RequestParam String variable)
 	{
-		variable = encode(variable);
+		variable = transform(variable);
 		log.info("DEL Companies/formula: id={}, variable={}", id, variable);
 		dao.delFormula(id, variable);
 		return Result.SUCCESS;
@@ -187,10 +187,11 @@ public class CompaniesController
 			@RequestParam String code,
 			@RequestParam String period,
 			@RequestParam String date,
-			@RequestParam String iso)
+			@RequestParam String currency)
 	{
-		log.info("DELETE Companies/Quarters: id={}, code={}, period={}, date={}, iso={}", Utils.asArray(id, code, period, date, iso));
-		dao.delQuarters(id, code, period, Utils.parseDate(date), iso);
+		log.info("DELETE Companies/Quarters: id={}, code={}, period={}, date={}, currency={}",
+				Utils.asArray(id, code, period, date, currency));
+		dao.delQuarters(id, code, period, Utils.parseDate(date), currency);
 		return Result.SUCCESS;
 	}
 
@@ -210,10 +211,11 @@ public class CompaniesController
 			@RequestParam String code,
 			@RequestParam String period,
 			@RequestParam String date,
-			@RequestParam String iso)
+			@RequestParam String currency)
 	{
-		log.info("DELETE Companies/Years: id={}, code={}, period={}, date={}, iso={}", Utils.asArray(id, code, period, date, iso));
-		dao.delYears(id, code, period, Utils.parseDate(date), iso);
+		log.info("DELETE Companies/Years: id={}, code={}, period={}, date={}, currency={}",
+				Utils.asArray(id, code, period, date, currency));
+		dao.delYears(id, code, period, Utils.parseDate(date), currency);
 		return Result.SUCCESS;
 	}
 
@@ -376,14 +378,14 @@ public class CompaniesController
 		return dao.findComboVariables(query);
 	}
 
-	private String encode(String s) {
+	private String transform(String s) {
 		String res = s;
 		try {
 			String utf = new String(s.getBytes("ISO-8859-1"));
 			res = new String(utf.getBytes(), "cp1251");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			System.err.println(e);
+			res = utf;
+		} catch (UnsupportedEncodingException ignore) {
+			log.error("UnsupportedEncodingException", ignore);
 		}
 		return res;
 	}

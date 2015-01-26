@@ -20,44 +20,48 @@ public class CompaniesYearItem implements Serializable {
 	private String period;
 	@Column(name = "date")
 	private String date;
+	@Column(name = "Currency")
+	private String currency;
+	@Column(name = "EPS")
+	private Number eps;
 	@Column(name = "IS_EPS")
-	private Number value;
-	@Column(name = "EPS_RECONSTRUCT_FLAG")
-	private Integer eps_recon_flag;
+	private Number is_eps;
+	@Column(name = "IS_COMP_EPS_ADJUSTED")
+	private Number is_comp_eps_adjusted;
+	@Column(name = "IS_BASIC_EPS_CONT_OPS")
+	private Number is_basic_eps_cont_ops;
+	@Column(name = "IS_DIL_EPS_CONT_OPS")
+	private Number is_dil_eps_cont_ops;
+	@Column(name = "EBITDA")
+	private Number ebitda;
+	@Column(name = "BEST_EBITDA")
+	private Number best_ebitda;
+	@Column(name = "SALES_REV_TURN")
+	private Number sales_rev_turn;
+	@Column(name = "NET_REV")
+	private Number net_rev;
+	@Column(name = "OPER_MARGIN")
+	private Number oper_margin;
+	@Column(name = "PROF_MARGIN")
+	private Number prof_margin;
+	@Column(name = "OPER_ROE")
+	private Number oper_roe;
+	@Column(name = "RETENTION_RATIO")
+	private Number retention_ratio;
 	@Column(name = "EQY_DPS")
 	private Number eqy_dps;
+	@Column(name = "EQY_DVD_YLD_IND")
+	private Number eqy_dvd_yld_ind;
+	@Column(name = "IS_AVG_NUM_SH_FOR_EPS")
+	private Number is_avg_num_sh_for_eps;
+	@Column(name = "BOOK_VAL_PER_SH")
+	private Number book_val_per_sh;
 	@Column(name = "EQY_WEIGHTED_AVG_PX")
 	private Number eqy_weighted_avg_px;
 	@Column(name = "EQY_WEIGHTED_AVG_PX_ADR")
 	private Number eqy_weighted_avg_px_adr;
-	@Column(name = "BOOK_VAL_PER_SH")
-	private Number book_val_per_sh;
-	@Column(name = "OPER_ROE")
-	private Number oper_roe;
-	@Column(name = "RETENTION_RATIO")
-	private Number r_ratio;
-	@Column(name = "Currency")
-	private String crnc;
-	@Column(name = "EQY_FUND_CRNCY")
-	private String eqyFundCrncy;
-	@Column(name = "IS_COMP_EPS_ADJUSTED")
-	private Number isCompEpsAdjusted;
-	@Column(name = "IS_BASIC_EPS_CONT_OPS")
-	private Number isBasicEpsContOps;
-	@Column(name = "IS_DIL_EPS_CONT_OPS")
-	private Number isDilEpsContOps;
-	@Column(name = "EQY_DVD_YLD_IND")
-	private Number eqyDvdYldInd;
-	@Column(name = "EBITDA")
-	private Number ebitda;
-	@Column(name = "SALES_REV_TURN")
-	private Number salesRevTurn;
-	@Column(name = "OPER_MARGIN")
-	private Number operMargin;
-	@Column(name = "PROF_MARGIN")
-	private Number profMargin;
-	@Column(name = "IS_AVG_NUM_SH_FOR_EPS")
-	private Number isAvgNumShForEps;
+	@Column(name = "EPS_RECONSTRUCT_FLAG")
+	private Number eps_reconstruct_flag;
 
 	public String getSecurity_code() {
 		return security_code;
@@ -83,20 +87,116 @@ public class CompaniesYearItem implements Serializable {
 		this.date = date;
 	}
 
-	public Number getValue() {
-		return value;
+	public String getCurrency() {
+		return currency;
 	}
 
-	public void setValue(Number value) {
-		this.value = value;
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
-	public Integer getEps_recon_flag() {
-		return eps_recon_flag;
+	public Number getEps() {
+		return eps;
 	}
 
-	public void setEps_recon_flag(Integer eps_recon_flag) {
-		this.eps_recon_flag = eps_recon_flag;
+	public void setEps(Number eps) {
+		this.eps = eps;
+	}
+
+	public Number getIs_eps() {
+		return is_eps;
+	}
+
+	public void setIs_eps(Number is_eps) {
+		this.is_eps = is_eps;
+	}
+
+	public Number getIs_comp_eps_adjusted() {
+		return is_comp_eps_adjusted;
+	}
+
+	public void setIs_comp_eps_adjusted(Number is_comp_eps_adjusted) {
+		this.is_comp_eps_adjusted = is_comp_eps_adjusted;
+	}
+
+	public Number getIs_basic_eps_cont_ops() {
+		return is_basic_eps_cont_ops;
+	}
+
+	public void setIs_basic_eps_cont_ops(Number is_basic_eps_cont_ops) {
+		this.is_basic_eps_cont_ops = is_basic_eps_cont_ops;
+	}
+
+	public Number getIs_dil_eps_cont_ops() {
+		return is_dil_eps_cont_ops;
+	}
+
+	public void setIs_dil_eps_cont_ops(Number is_dil_eps_cont_ops) {
+		this.is_dil_eps_cont_ops = is_dil_eps_cont_ops;
+	}
+
+	public Number getEbitda() {
+		return ebitda;
+	}
+
+	public void setEbitda(Number ebitda) {
+		this.ebitda = ebitda;
+	}
+
+	public Number getBest_ebitda() {
+		return best_ebitda;
+	}
+
+	public void setBest_ebitda(Number best_ebitda) {
+		this.best_ebitda = best_ebitda;
+	}
+
+	public Number getSales_rev_turn() {
+		return sales_rev_turn;
+	}
+
+	public void setSales_rev_turn(Number sales_rev_turn) {
+		this.sales_rev_turn = sales_rev_turn;
+	}
+
+	public Number getNet_rev() {
+		return net_rev;
+	}
+
+	public void setNet_rev(Number net_rev) {
+		this.net_rev = net_rev;
+	}
+
+	public Number getOper_margin() {
+		return oper_margin;
+	}
+
+	public void setOper_margin(Number oper_margin) {
+		this.oper_margin = oper_margin;
+	}
+
+	public Number getProf_margin() {
+		return prof_margin;
+	}
+
+	public void setProf_margin(Number prof_margin) {
+		this.prof_margin = prof_margin;
+	}
+
+	public Number getOper_roe() {
+		return oper_roe;
+	}
+
+	public void setOper_roe(Number oper_roe) {
+		this.oper_roe = oper_roe;
+	}
+
+	public Number getRetention_ratio() {
+		return retention_ratio;
+	}
+
+	public void setRetention_ratio(Number retention_ratio) {
+		this.retention_ratio = retention_ratio;
 	}
 
 	public Number getEqy_dps() {
@@ -105,6 +205,30 @@ public class CompaniesYearItem implements Serializable {
 
 	public void setEqy_dps(Number eqy_dps) {
 		this.eqy_dps = eqy_dps;
+	}
+
+	public Number getEqy_dvd_yld_ind() {
+		return eqy_dvd_yld_ind;
+	}
+
+	public void setEqy_dvd_yld_ind(Number eqy_dvd_yld_ind) {
+		this.eqy_dvd_yld_ind = eqy_dvd_yld_ind;
+	}
+
+	public Number getIs_avg_num_sh_for_eps() {
+		return is_avg_num_sh_for_eps;
+	}
+
+	public void setIs_avg_num_sh_for_eps(Number is_avg_num_sh_for_eps) {
+		this.is_avg_num_sh_for_eps = is_avg_num_sh_for_eps;
+	}
+
+	public Number getBook_val_per_sh() {
+		return book_val_per_sh;
+	}
+
+	public void setBook_val_per_sh(Number book_val_per_sh) {
+		this.book_val_per_sh = book_val_per_sh;
 	}
 
 	public Number getEqy_weighted_avg_px() {
@@ -123,115 +247,11 @@ public class CompaniesYearItem implements Serializable {
 		this.eqy_weighted_avg_px_adr = eqy_weighted_avg_px_adr;
 	}
 
-	public Number getBook_val_per_sh() {
-		return book_val_per_sh;
+	public Number getEps_reconstruct_flag() {
+		return eps_reconstruct_flag;
 	}
 
-	public void setBook_val_per_sh(Number book_val_per_sh) {
-		this.book_val_per_sh = book_val_per_sh;
-	}
-
-	public Number getOper_roe() {
-		return oper_roe;
-	}
-
-	public void setOper_roe(Number oper_roe) {
-		this.oper_roe = oper_roe;
-	}
-
-	public Number getR_ratio() {
-		return r_ratio;
-	}
-
-	public void setR_ratio(Number r_ratio) {
-		this.r_ratio = r_ratio;
-	}
-
-	public String getCrnc() {
-		return crnc;
-	}
-
-	public void setCrnc(String crnc) {
-		this.crnc = crnc;
-	}
-
-	public String getEqyFundCrncy() {
-		return eqyFundCrncy;
-	}
-
-	public void setEqyFundCrncy(String eqyFundCrncy) {
-		this.eqyFundCrncy = eqyFundCrncy;
-	}
-
-	public Number getIsCompEpsAdjusted() {
-		return isCompEpsAdjusted;
-	}
-
-	public void setIsCompEpsAdjusted(Number isCompEpsAdjusted) {
-		this.isCompEpsAdjusted = isCompEpsAdjusted;
-	}
-
-	public Number getIsBasicEpsContOps() {
-		return isBasicEpsContOps;
-	}
-
-	public void setIsBasicEpsContOps(Number isBasicEpsContOps) {
-		this.isBasicEpsContOps = isBasicEpsContOps;
-	}
-
-	public Number getIsDilEpsContOps() {
-		return isDilEpsContOps;
-	}
-
-	public void setIsDilEpsContOps(Number isDilEpsContOps) {
-		this.isDilEpsContOps = isDilEpsContOps;
-	}
-
-	public Number getEqyDvdYldInd() {
-		return eqyDvdYldInd;
-	}
-
-	public void setEqyDvdYldInd(Number eqyDvdYldInd) {
-		this.eqyDvdYldInd = eqyDvdYldInd;
-	}
-
-	public Number getEbitda() {
-		return ebitda;
-	}
-
-	public void setEbitda(Number ebitda) {
-		this.ebitda = ebitda;
-	}
-
-	public Number getSalesRevTurn() {
-		return salesRevTurn;
-	}
-
-	public void setSalesRevTurn(Number salesRevTurn) {
-		this.salesRevTurn = salesRevTurn;
-	}
-
-	public Number getOperMargin() {
-		return operMargin;
-	}
-
-	public void setOperMargin(Number operMargin) {
-		this.operMargin = operMargin;
-	}
-
-	public Number getProfMargin() {
-		return profMargin;
-	}
-
-	public void setProfMargin(Number profMargin) {
-		this.profMargin = profMargin;
-	}
-
-	public Number getIsAvgNumShForEps() {
-		return isAvgNumShForEps;
-	}
-
-	public void setIsAvgNumShForEps(Number isAvgNumShForEps) {
-		this.isAvgNumShForEps = isAvgNumShForEps;
+	public void setEps_reconstruct_flag(Number eps_reconstruct_flag) {
+		this.eps_reconstruct_flag = eps_reconstruct_flag;
 	}
 }
