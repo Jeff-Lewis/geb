@@ -15,20 +15,21 @@ import ru.prbb.jobber.domain.SubscriptionItem;
 public interface SubscriptionDao {
 
 	/**
-	 * Список подписок и их статус
-	 * 
-	 * @return
+	 * Список подписок
 	 */
 	public List<SubscriptionItem> getSubscriptions();
 
 	/**
 	 * Список компаний в подписке
-	 * 
-	 * @param id
-	 * @return
 	 */
 	public List<SecurityItem> subsGetSecs(Long id);
 
+	/**
+	 * Сохранить данные в БД
+	 * 
+	 * @param data
+	 *            [ {security_code, last_price, last_chng} ]
+	 */
 	public int[] subsUpdate(List<String[]> data);
 
 }

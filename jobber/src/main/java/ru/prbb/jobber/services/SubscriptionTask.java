@@ -3,7 +3,6 @@
  */
 package ru.prbb.jobber.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -38,34 +37,20 @@ public class SubscriptionTask {
 	 * Проверка статуса подписок.<br>
 	 * Запуск и остановка при его изменении.
 	 */
-	@Scheduled(initialDelay = 2000, fixedRate = 5 * 1000)
-	public void execute() {
+	@Scheduled(initialDelay = 2000, fixedRate = 30 * 1000)
+	public synchronized void execute() {
 		log.debug("Subscriptions execute");
 
 		List<SubscriptionItem> list = dao.getSubscriptions();
-		List<SubscriptionItem> listStart = new ArrayList<>(list.size());
-		List<SubscriptionItem> listStop = new ArrayList<>(list.size());
 		for (SubscriptionItem subscription : list) {
 			if (subscription.isRunning()) {
-				listStart.add(subscription);
+				List<SecurityItem> securities = dao.subsGetSecs(subscription.getId());
+				bs.subscriptionStart(subscription, securities);
 			} else {
-				listStop.add(subscription);
+				bs.subscriptionStop(subscription);
 			}
 		}
 
-		bs.subscriptionStop(listStop);
-
-		for (SubscriptionItem item : listStart) {
-			List<SecurityItem> securities = dao.subsGetSecs(item.getId());
-			if (securities.size() > 0) {
-				bs.subscriptionStart(item, securities);
-			}
-		}
-
-		for (SubscriptionItem item : listStart) {
-			List<String[]> data = bs.subscriptionData(item);
-			dao.subsUpdate(data);
-		}
 	}
 
 	/*
@@ -74,11 +59,13 @@ public class SubscriptionTask {
 	 * 2. обновление указателей на активный контракт для фьючей
 	 */
 	@Scheduled(cron = "30 00 03 * * ?")
-	public void stop() {
+	public synchronized void stop() {
 		log.info("Subscriptions stop");
 
 		List<SubscriptionItem> subscriptions = dao.getSubscriptions();
-		bs.subscriptionStop(subscriptions);
+		for (SubscriptionItem subscription : subscriptions) {
+			bs.subscriptionStop(subscription);
+		}
 	}
 
 }

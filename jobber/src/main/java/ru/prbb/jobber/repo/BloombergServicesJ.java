@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class BloombergServicesJ {
 			URI uri = new URIBuilder()
 					.setScheme("http")
 					.setHost(agent.getHost())
-					//.setHost("172.23.149.175") // TODO DEBUG localhost
+					// .setHost("172.23.149.175") // TODO DEBUG localhost
 					.setPort(48080)
 					.setPath(path)
 					.build();
@@ -267,74 +268,49 @@ public class BloombergServicesJ {
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 
-	private List<SubscriptionItem> startedSubscriptions = new ArrayList<>();
+	private Map<SubscriptionItem, List<SecurityItem>> startedSubscriptions = new HashMap<>();
 
 	@PreDestroy
 	public void destroy() {
 		log.info("@PreDestroy: Subscriptions stop");
 
-		subscriptionStop(startedSubscriptions);
+		for (SubscriptionItem item : startedSubscriptions.keySet()) {
+			subscriptionStop(item);
+		}
 	}
 
 	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
-		if (startedSubscriptions.contains(item))
+		if (securities == null || securities.isEmpty())
 			return;
-		List<NameValuePair> nvps = new ArrayList<>(securities.size());
+
+		Collections.sort(securities);
+
+		if (securities.equals(startedSubscriptions.get(item)))
+			return;
+
+		List<NameValuePair> nvps = new ArrayList<>(securities.size() + 2);
 		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
 		for (SecurityItem security : securities) {
 			nvps.add(new BasicNameValuePair("securities", security.getCode()));
 		}
-		String path = "/Subscriptions/Start";
-		String name = "Start subscription " + item.getName();
-		String response = executeHttpRequest(agents.getSubscr(), path, nvps, name);
+
+		String name = "Start subscription (" + item.getId() + ") " + item.getName();
+		String response = executeHttpRequest(agents.getSubscr(), "/Subscription/Start", nvps, name);
+
 		if ("STARTED".equals(response)) {
-			startedSubscriptions.add(item);
+			startedSubscriptions.put(item, securities);
 		}
 	}
 
-	public void subscriptionStop(List<SubscriptionItem> items) {
-		List<NameValuePair> nvps = new ArrayList<>(items.size());
-		for (SubscriptionItem item : items) {
-			nvps.add(new BasicNameValuePair("ids", item.getId().toString()));
-		}
-		String response = executeHttpRequest(agents.getSubscr(), "/Subscriptions/Stop", nvps, "Stop subscriptions");
-		String[] lines = response.split("\n");
-		for (String line : lines) {
-			String[] s = line.split("\t");
-			String id = s[0];
-			String res = s[1];
-			if ("STOPPED".equals(res)) {
-				SubscriptionItem item = new SubscriptionItem();
-				item.setId(new Long(id));
-				startedSubscriptions.remove(item);
-			}
-		}
-	}
-
-	public List<String[]> subscriptionData(SubscriptionItem item) {
-		if (!startedSubscriptions.contains(item)) {
-			return Collections.emptyList();
-		}
-
+	public void subscriptionStop(SubscriptionItem item) {
 		List<NameValuePair> nvps = new ArrayList<>();
 		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
-		nvps.add(new BasicNameValuePair("isClean", "true"));
-		String path = "/Subscriptions/Data";
-		String name = "Get data subscription " + item.getName();
-		String response = executeHttpRequest(agents.getSubscr(), path, nvps, name);
 
-		String[] lines = response.split("\n");
-		List<String[]> result = new ArrayList<>(lines.length);
-		for (String line : lines) {
-			String[] arr = line.split("\t");
-			if (arr.length != 3) {
-				log.error("Data line:" + line);
-			} else {
-				result.add(arr);
-			}
+		String response = executeHttpRequest(agents.getSubscr(), "/Subscription/Stop", nvps, "Stop subscriptions");
+
+		if ("STOPPED".equals(response)) {
+			startedSubscriptions.remove(item);
 		}
-
-		return result;
 	}
 
 }

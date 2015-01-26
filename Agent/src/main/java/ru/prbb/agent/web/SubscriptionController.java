@@ -18,7 +18,7 @@ import ru.prbb.agent.services.SubscriptionService;
  * @author ruslan
  */
 @Controller
-@RequestMapping(value = "/Subscriptions", method = { RequestMethod.GET, RequestMethod.POST }, produces = "text/plain;charset=utf-8")
+@RequestMapping(value = "/Subscription", method = RequestMethod.POST, produces = "text/plain;charset=utf-8")
 public class SubscriptionController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -31,29 +31,16 @@ public class SubscriptionController {
 	public String postStart(
 			@RequestParam Long id,
 			@RequestParam String[] securities) {
-		log.debug("Start Subscription id={} for securities={}", id, securities);
+		log.debug("Subscription: Start id={} for securities={}", id, securities);
 		return ss.start(id, securities);
-	}
-
-	@RequestMapping("/Data")
-	@ResponseBody
-	public String postData(
-			@RequestParam Long id,
-			@RequestParam(defaultValue = "false", required = false) Boolean isClean) {
-		return ss.getData(id, isClean);
 	}
 
 	@RequestMapping("/Stop")
 	@ResponseBody
 	public String postStop(
-			@RequestParam Long[] ids) {
-		StringBuilder res = new StringBuilder();
-		for (Long id : ids) {
-			log.debug("Stop Subscriptions id={}", id);
-			String r = ss.stop(id);
-			res.append(id).append('\t').append(r).append('\n');
-		}
-		return res.toString();
+			@RequestParam Long id) {
+		log.debug("Subscription: Stop id={}", id);
+		return ss.stop(id);
 	}
 
 }
