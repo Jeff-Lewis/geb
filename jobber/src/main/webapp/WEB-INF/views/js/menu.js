@@ -2,6 +2,54 @@
  * Главное меню
  */
 
+/**
+ * Ночные задачи
+ */
+var jobs = {
+	title : 'Ночные задачи',
+	icon : 'images/grid.png',
+	items : [ {
+		text : '03:00 BdsLoad',
+		handler : function() {
+			window.location = 'rest/BdsLoad';
+        }
+	}, {
+		text : '04:15 FuturesLoad',
+		handler : function() {
+			window.location = 'rest/FuturesLoad';
+        }
+	}, {
+		text : '05:00 QuotesLoad',
+		handler : function() {
+			window.location = 'rest/QuotesLoad';
+        }
+	}, {
+		text : '05:10 AtrLoad',
+		handler : function() {
+			window.location = 'rest/AtrLoad';
+        }
+	}, {
+		text : '06:00 BdpOverrideLoad',
+		handler : function() {
+			window.location = 'rest/BdpOverrideLoad';
+        }
+	}, {
+		text : '07:00 HistDataLoad',
+		handler : function() {
+			window.location = 'rest/HistDataLoad';
+        }
+	}, {
+		text : '08:00 CurrenciesDataLoad',
+		handler : function() {
+			window.location = 'rest/CurrenciesDataLoad';
+        }
+	}, {
+		text : '11-19 BondsLoad',
+		handler : function() {
+			window.location = 'rest/BondsLoad';
+        }
+	} ]
+};
 
 /**
  * Сервис
