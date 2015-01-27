@@ -30,9 +30,10 @@ public class SubscriptionController {
 	@ResponseBody
 	public String postStart(
 			@RequestParam Long id,
-			@RequestParam String[] securities) {
-		log.debug("Subscription: Start id={} for securities={}", id, securities);
-		return ss.start(id, securities);
+			@RequestParam String[] securities,
+			@RequestParam String uriCallback) {
+		log.debug("Subscription: Start id={}, uriCallback={}, securities={}", id, uriCallback, securities);
+		return ss.start(id, securities, uriCallback);
 	}
 
 	@RequestMapping("/Stop")

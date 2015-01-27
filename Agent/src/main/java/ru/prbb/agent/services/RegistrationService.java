@@ -34,6 +34,8 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableScheduling
 public class RegistrationService {
+	//public static final String SERVER_JOBBER = "http://192.168.100.101:8080/Jobber"; // Облако
+	public static final String SERVER_JOBBER = "http://172.16.15.36:10180/Jobber"; // Облако редирект
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -42,10 +44,6 @@ public class RegistrationService {
 
 	@PostConstruct
 	public void init() {
- 		//String serverJobber = "http://172.23.149.175:8080/Jobber/Agents"; // мой
-		//String serverJobber = "http://192.168.100.101:8080/Jobber/Agents"; // Облако
-		String serverJobber = "http://172.16.15.36:10180/Jobber/Agents"; // Облако редирект
-
 		try {
 			Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
 			while (nis.hasMoreElements()) {
@@ -66,7 +64,8 @@ public class RegistrationService {
 					
 					if ((inetAddress.getAddress()[0] & 0xff) == 172) {
 						String localhost = inetAddress.getHostAddress();
-						server = new URIBuilder(serverJobber).setParameter("host", localhost).build();
+						server = new URIBuilder(SERVER_JOBBER + "/Agents").setParameter("host", localhost).build();
+						log.info("RegistrationService.init: " + server);
 						return;
 					}
 				}

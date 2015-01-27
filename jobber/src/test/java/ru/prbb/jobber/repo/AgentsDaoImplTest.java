@@ -46,13 +46,13 @@ public class AgentsDaoImplTest {
 	@Test
 	public void testAdd() throws UnknownHostException {
 		dao.add(InetAddress.getByName("192.168.1.1"));
-		Assert.assertEquals(1 + 1, dao.list().size());
+		Assert.assertEquals(1, dao.list().size());
 
 		dao.add(InetAddress.getByName("192.168.1.1"));
-		Assert.assertEquals(1 + 1, dao.list().size());
+		Assert.assertEquals(1, dao.list().size());
 
 		dao.add(InetAddress.getByName("192.168.1.2"));
-		Assert.assertEquals(2 + 1, dao.list().size());
+		Assert.assertEquals(2, dao.list().size());
 	}
 
 	/**
@@ -64,16 +64,16 @@ public class AgentsDaoImplTest {
 	public void testRemove() throws UnknownHostException {
 		dao.add(InetAddress.getByName("192.168.1.1"));
 		dao.add(InetAddress.getByName("192.168.1.2"));
-		Assert.assertEquals(2 + 1, dao.list().size());
+		Assert.assertEquals(2, dao.list().size());
 
 		dao.remove(InetAddress.getByName("192.168.1.1"));
-		Assert.assertEquals(1 + 1, dao.list().size());
+		Assert.assertEquals(1, dao.list().size());
 
 		dao.remove(InetAddress.getByName("192.168.1.2"));
-		Assert.assertEquals(0 + 1, dao.list().size());
+		Assert.assertEquals(0, dao.list().size());
 
 		dao.remove(InetAddress.getByName("192.168.1.1"));
-		Assert.assertEquals(0 + 1, dao.list().size());
+		Assert.assertEquals(0, dao.list().size());
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class AgentsDaoImplTest {
 		}
 
 		Collection<AgentItem> list = dao.list();
-		Assert.assertEquals(2 + 1, list.size());
+		Assert.assertEquals(2, list.size());
 	}
 
 }

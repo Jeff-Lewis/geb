@@ -1,13 +1,13 @@
 package ru.prbb.jobber.repo;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +18,11 @@ import ru.prbb.jobber.domain.AgentItem;
 /**
  * Список зарегистрированных агентов
  * 
- * @author ruslan
+ * @author RBr
  */
 @Service
 public class AgentsDaoImpl implements AgentsDao {
+
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private Map<InetAddress, AgentItem> list = new HashMap<>();
@@ -30,7 +31,6 @@ public class AgentsDaoImpl implements AgentsDao {
 	public Collection<AgentItem> list() {
 		synchronized (list) {
 			List<AgentItem> res = new ArrayList<>(list.size());
-			res.add(getSubscr());
 			for (AgentItem agent : list.values()) {
 				if (agent.isActive()) {
 					res.add(agent);
@@ -46,9 +46,11 @@ public class AgentsDaoImpl implements AgentsDao {
 			AgentItem ai = list.get(host);
 			if (null == ai) {
 				ai = new AgentItem(host);
+				log.info("Added Agent on host {}", host);
 				return list.put(host, ai) == null;
 			} else {
 				ai.update();
+				log.info("Update Agent on host {}", host);
 				return false;
 			}
 		}
@@ -57,41 +59,41 @@ public class AgentsDaoImpl implements AgentsDao {
 	@Override
 	public boolean remove(InetAddress host) {
 		synchronized (list) {
+			log.info("Remove Agent on host {}", host);
 			return list.remove(host) != null;
 		}
 	}
 
-	private final Random random = new Random(System.currentTimeMillis());
+	private Iterator<Entry<InetAddress, AgentItem>> it;
 
 	@Override
-	public AgentItem getRandom() {
+	public AgentItem nextAgent() {
 		if (list.isEmpty()) {
-			return getSubscr();
+			log.error("Agents don't registered");
+			throw new IllegalStateException("Agents don't registered");
 		}
+
 		synchronized (list) {
-			AgentItem ai;
-			//do {
-				int idx = random.nextInt(list.size());
-				ai = (AgentItem) list.values().toArray()[idx];
-			//} while (ai.isNotBusy());
-			return ai;
-		}
-	}
+			if (null == it)
+				it = list.entrySet().iterator();
 
-	private AgentItem subscr;
-
-	@Override
-	public AgentItem getSubscr() {
-		if (subscr == null) {
-			String host = "172.16.15.117";
-			try {
-				subscr = new AgentItem(InetAddress.getByName(host));
-			} catch (UnknownHostException e) {
-				log.error("Get InetAddress for " + host);
-				throw new RuntimeException(e);
+			if (it.hasNext()) {
+				AgentItem agent = it.next().getValue();
+				log.info("Using Agent on host {}", agent.getHost());
+				return agent;
 			}
+
+			it = list.entrySet().iterator();
+
+			if (it.hasNext()) {
+				AgentItem agent = it.next().getValue();
+				log.info("Using Agent on host {}", agent.getHost());
+				return agent;
+			}
+
+			log.error("No more Agents");
+			throw new IllegalStateException("No more Agents");
 		}
-		subscr.setStatus("Subscription agent");
-		return subscr;
 	}
+
 }

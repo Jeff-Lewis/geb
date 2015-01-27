@@ -1,6 +1,6 @@
 package ru.prbb.jobber.web;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -27,17 +27,29 @@ public class SubscriptionController
 	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseBody
 	public String put(
+			@RequestParam Long id,
 			@RequestParam String data)
 	{
-		log.debug("PUT /Subscription: data={}", data);
+		log.debug("PUT /Subscription id={}: data={}", id, data);
 
-		String[] rows = data.split("\n");
-		for (String row : rows) {
-			row
-			dao.subsUpdate(list);
+		String[] lines = data.split("\n");
+		List<String[]> result = new ArrayList<>(lines.length);
+		for (String line : lines) {
+			String[] arr = line.split("\t");
+			if (arr.length != 3) {
+				log.error("Data line:" + line);
+			} else {
+				result.add(arr);
+			}
 		}
 
-		return "OK";
+		try {
+			dao.subsUpdate(result);
+			return "OK";
+		} catch (Exception e) {
+			log.error("Subscription update", e);
+			return "ERROR:" + e.getMessage();
+		}
 	}
 
 }
