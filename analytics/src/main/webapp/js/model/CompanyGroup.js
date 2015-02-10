@@ -15,12 +15,13 @@
 		listeners : App.ui.listenersJsonStore()
 	});
 
-	var sm = new Ext.grid.RowSelectionModel({
-		singleSelect : true
-	});
+//	var sm = new Ext.grid.RowSelectionModel({
+//		singleSelect : true
+//	});
+	var sm = new Ext.grid.CheckboxSelectionModel();
 
 	function add(self) {
-		Ext.Msg.prompt('Добавление новой<br/>группы компаний', 'Название',
+		Ext.Msg.prompt('Добавление группы', 'Название',
 				addCallback);
 	}
 	function addCallback(btn, text) {
@@ -48,12 +49,14 @@
 	}
 
 	function ren(self) {
-		if (sm.getCount() == 0) {
-			App.ui.message('Необходимо выбрать группу.');
+		if (sm.getCount() != 1) {
+			App.ui.message('Необходимо выбрать одну группу.');
+			sm.clearSelections(true);
+			sm.grid.view.refresh();
 			return;
 		}
 
-		Ext.Msg.prompt('Переименование<br/>группы компании', 'Название',
+		Ext.Msg.prompt('Переименование группы', 'Название',
 				renCallback, this, false, sm.getSelected().data.name);
 	}
 	function renCallback(btn, text) {
@@ -82,8 +85,10 @@
 	}
 
 	function edit(self) {
-		if (sm.getCount() == 0) {
-			App.ui.message('Необходимо выбрать группу.');
+		if (sm.getCount() != 1) {
+			App.ui.message('Необходимо выбрать одну группу.');
+			sm.clearSelections(true);
+			sm.grid.view.refresh();
 			return;
 		}
 
@@ -92,8 +97,10 @@
 	}
 
 	function del(self) {
-		if (sm.getCount() == 0) {
-			App.ui.message('Необходимо выбрать группу.');
+		if (sm.getCount() != 1) {
+			App.ui.message('Необходимо выбрать одну группу.');
+			sm.clearSelections(true);
+			sm.grid.view.refresh();
 			return;
 		}
 
@@ -209,7 +216,7 @@
 		selModel : sm,
 		columns : [ new Ext.grid.RowNumberer({
 			width : 30
-		}), {
+		}), sm, {
 			header : 'Наименование',
 			dataIndex : 'name'
 		} ],
