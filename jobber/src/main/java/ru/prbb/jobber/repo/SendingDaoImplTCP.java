@@ -40,13 +40,12 @@ public class SendingDaoImplTCP extends SendingDaoImpl
 {
 
 	@Override
-	public SendingItem sendMail(String email_text, String email) {
+	public SendingItem sendMail(String email_text, String email, String subject) {
 		final String smtpServer = "wonderworksinvestments.com";
 		final String fromAddress = "noreply@wonderworksinvestments.com";
 		final String userName = fromAddress;
 		final String password = "D6c8W3g2";
 		final String toAddress = email;
-		final String subject = "info";
 		final String body = email_text;
 
 		if (toAddress.contains("prbb.ru")) {

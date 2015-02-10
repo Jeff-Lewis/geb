@@ -21,9 +21,7 @@ public class SendingDaoImplDB extends SendingDaoImpl
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public SendingItem sendMail(String email_text, String email) {
-		String subject = "info";
-
+	public SendingItem sendMail(String email_text, String email, String subject) {
 		String sql = "{call dbo.make_send_email ?, ?, ?}";
 		Query q = em.createNativeQuery(sql)
 				.setParameter(1, email_text)

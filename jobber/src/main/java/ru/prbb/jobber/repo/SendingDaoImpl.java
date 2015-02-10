@@ -1,5 +1,6 @@
 package ru.prbb.jobber.repo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,8 +11,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
+import ru.prbb.jobber.domain.SendMessageItem;
+import ru.prbb.jobber.domain.SendingItem;
 import ru.prbb.jobber.domain.SimpleItem;
-import ru.prbb.jobber.repo.BaseDaoImpl;
 
 /**
  * @author RBr
@@ -42,20 +44,40 @@ public abstract class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 		return getResultList(q, sql);
 	}
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public String getAnalitic() {
-		String sql = "{call dbo.sms_template_proc}";
-		Query q = em.createNativeQuery(sql);
-		return Utils.toString(getSingleResult(q, sql));
-	}
+	public List<SendingItem> send(List<SendMessageItem> items) {
+		List<SendingItem> list =new ArrayList<>(items.size());
+		for (SendMessageItem item : items) {
+			int type = item.getType().intValue();
+			String subject = item.getSubj();
+			String text = item.getText();
+			String[] addrs = item.getAddrsArray();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@Override
-	public String getTrader() {
-		String sql = "{call dbo.sms_template_trader}";
-		Query q = em.createNativeQuery(sql);
-		return Utils.toString(getSingleResult(q, sql));
+			SendingItem res;
+			switch (type) {
+			case 0:
+				for (String phone : addrs) {
+					res = sendSms(text, phone);
+					list.add(res);
+				}
+				break;
+
+			case 1:
+				for (String email : addrs) {
+					res = sendMail(text, email, subject);
+					list.add(res);
+				}
+				break;
+
+			default:
+				String status = "Unknow message type: " + item.getType();
+				res = new SendingItem();
+				res.setMail(subject);
+				res.setStatus(status);
+				log.warn(status);
+			}
+		}
+		return list;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -86,6 +108,22 @@ public abstract class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 					.setParameter(1, '%' + query.toLowerCase() + '%');
 		}
 		return Utils.toSimpleItem(getResultList(q, sql));
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public String getAnalitic() {
+		String sql = "{call dbo.sms_template_proc}";
+		Query q = em.createNativeQuery(sql);
+		return Utils.toString(getSingleResult(q, sql));
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public String getTrader() {
+		String sql = "{call dbo.sms_template_trader}";
+		Query q = em.createNativeQuery(sql);
+		return Utils.toString(getSingleResult(q, sql));
 	}
 
 }
