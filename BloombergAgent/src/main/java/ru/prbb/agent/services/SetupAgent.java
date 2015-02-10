@@ -1,7 +1,11 @@
 package ru.prbb.agent.services;
 
+import java.io.IOException;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -19,12 +23,11 @@ public class SetupAgent implements CommandLineRunner {
 
 	private final Log log = LogFactory.getLog(getClass());
 
-	private String hostAgent = "localhost";
+	private String hostAgent = null;
 	private int portAgent = 48080;
+
 	private String hostServer = null;
-	private int portServer = 48080;
-	private boolean isMaster = false;
-	private boolean isPassive = false;
+	private int portServer = 8080;
 
 	public String getHostAgent() {
 		return hostAgent;
@@ -42,25 +45,11 @@ public class SetupAgent implements CommandLineRunner {
 		return portServer;
 	}
 
-	public boolean isMaster() {
-		return isMaster;
-	}
-
-	public boolean isSlave() {
-		return !isMaster;
-	}
-
-	public boolean isPassive() {
-		return isPassive;
-	}
-
 	/**
 	 * Обработка командной строки
 	 */
 	@Override
 	public void run(String... args) throws Exception {
-		hostAgent = InetAddress.getLocalHost().getHostAddress();
-
 		Iterator<String> it = Arrays.asList(args).iterator();
 		while (it.hasNext()) {
 			String arg = it.next();
@@ -77,25 +66,50 @@ public class SetupAgent implements CommandLineRunner {
 				}
 				break;
 
-			case "-master":
-				isMaster = true;
+			case "-port":
+				if (it.hasNext()) {
+					arg = it.next();
+					log.trace("Get argument " + arg);
+					portServer = Integer.parseInt(arg);
+				} else {
+					log.warn("Specify server host port.");
+				}
 				break;
-
-			case "-passive":
-				isPassive = true;
 
 			default:
 				break;
 			}
 		}
 
-		if (isMaster) {
-			hostServer = hostAgent;
-		}
+		hostAgent = getLocalHostAddress();
 
-		log.info("master:" + isMaster);
-		log.info("server:" + hostServer);
-		log.info("agent:" + hostAgent);
-		log.info("passive:" + isPassive);
+		log.info("server:" + hostServer + ":" + portServer);
+		log.info("agent:" + hostAgent + ":" + portAgent);
+	}
+
+	private String getLocalHostAddress() throws IOException {
+		Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+		while (nis.hasMoreElements()) {
+			NetworkInterface ni = nis.nextElement();
+
+			if (!ni.isUp() || ni.isLoopback() || ni.isPointToPoint() || ni.isVirtual()) {
+				continue;
+			}
+
+			Enumeration<InetAddress> inetAddresses = ni.getInetAddresses();
+			while (inetAddresses.hasMoreElements()) {
+				InetAddress inetAddress = inetAddresses.nextElement();
+
+				if (inetAddress instanceof Inet6Address)
+					continue;
+				if (inetAddress.isAnyLocalAddress())
+					continue;
+
+				if ((inetAddress.getAddress()[0] & 0xff) == 172) {
+					return inetAddress.getHostAddress();
+				}
+			}
+		}
+		return InetAddress.getLocalHost().getHostAddress();
 	}
 }
