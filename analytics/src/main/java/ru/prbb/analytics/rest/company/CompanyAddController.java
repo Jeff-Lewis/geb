@@ -211,6 +211,8 @@ public class CompanyAddController
 									"IS_BASIC_EPS_CONT_OPS",
 									"IS_DIL_EPS_CONT_OPS",
 									"SALES_REV_TURN",
+									"IS_AVG_NUM_SH_FOR_EPS",
+									"OPER_ROE",
 									"PROF_MARGIN",
 									"OPER_MARGIN",
 									"EQY_DVD_YLD_IND")));
@@ -233,6 +235,8 @@ public class CompanyAddController
 										"IS_BASIC_EPS_CONT_OPS",
 										"IS_DIL_EPS_CONT_OPS",
 										"SALES_REV_TURN",
+										"IS_AVG_NUM_SH_FOR_EPS",
+										"OPER_ROE",
 										"PROF_MARGIN",
 										"OPER_MARGIN",
 										"EQY_DVD_YLD_IND")));
@@ -257,6 +261,8 @@ public class CompanyAddController
 										"IS_BASIC_EPS_CONT_OPS",
 										"IS_DIL_EPS_CONT_OPS",
 										"SALES_REV_TURN",
+										"IS_AVG_NUM_SH_FOR_EPS",
+										"OPER_ROE",
 										"PROF_MARGIN",
 										"OPER_MARGIN",
 										"EQY_DVD_YLD_IND")));
