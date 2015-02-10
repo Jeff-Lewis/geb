@@ -14,7 +14,7 @@ public interface AgentsDao {
 
 	Collection<AgentItem> list();
 
-	boolean add(InetAddress host);
+	boolean add(InetAddress host, Integer port);
 
 	boolean remove(InetAddress host);
 

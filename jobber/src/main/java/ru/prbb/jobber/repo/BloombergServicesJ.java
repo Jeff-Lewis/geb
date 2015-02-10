@@ -76,7 +76,7 @@ public class BloombergServicesJ {
 					.setScheme("http")
 					.setHost(agent.getHost())
 					// .setHost("172.23.149.175") // TODO DEBUG localhost
-					.setPort(8080)
+					.setPort(agent.getPort())
 					.setPath(path)
 					.build();
 
@@ -293,6 +293,8 @@ public class BloombergServicesJ {
 	}
 
 	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
+		if (agents.list().isEmpty())
+			return;
 		if (securities == null || securities.isEmpty())
 			return;
 
@@ -317,6 +319,8 @@ public class BloombergServicesJ {
 	}
 
 	public void subscriptionStop(SubscriptionItem item) {
+		if (agents.list().isEmpty())
+			return;
 		List<NameValuePair> nvps = new ArrayList<>();
 		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
 

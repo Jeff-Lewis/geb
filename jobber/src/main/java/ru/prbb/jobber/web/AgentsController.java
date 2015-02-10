@@ -34,14 +34,15 @@ public class AgentsController
 		return dao.list();
 	}
 
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public String put(
-			@RequestParam String host)
+			@RequestParam String host,
+			@RequestParam Integer port)
 	{
-		log.info("PUT /Agents: host={}", host);
+		log.info("POST /Agents: host={}, port={}", host, port);
 
-		dao.add(toInetAddress(host));
+		dao.add(toInetAddress(host), port);
 
 		return "OK";
 	}

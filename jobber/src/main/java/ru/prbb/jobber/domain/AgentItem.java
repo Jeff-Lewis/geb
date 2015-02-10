@@ -16,17 +16,23 @@ public class AgentItem implements Serializable {
 	private static final String TIMEOUT = "TIMEOUT";
 
 	private InetAddress host;
+	private int port;
 	private long time;
 	private String status;
 
-	public AgentItem(InetAddress host) {
+	public AgentItem(InetAddress host, Integer port) {
 		this.host = host;
+		this.port = port;
 		time = System.currentTimeMillis();
 		status = ONLINE;
 	}
 
 	public String getHost() {
 		return host.getHostAddress();
+	}
+
+	public int getPort() {
+		return port;
 	}
 
 	public void setStatus(String status) {
@@ -84,7 +90,7 @@ public class AgentItem implements Serializable {
 
 	@Override
 	public String toString() {
-		return "AgentItem [host=" + host + ']';
+		return "AgentItem [" + host + ":" + port + "]";
 	}
 
 }

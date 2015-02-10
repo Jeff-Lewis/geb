@@ -26,6 +26,7 @@ import ru.prbb.Utils;
 import ru.prbb.jobber.domain.OverrideData;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
+import ru.prbb.jobber.domain.SendMessageItem;
 
 /**
  * @author RBr
@@ -256,6 +257,15 @@ public class BloombergDaoImpl implements BloombergDao
 				}
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<SendMessageItem> checkQuotes() {
+		String sql = "{call dbo.put_quotes_check_sp}";
+		Query q = em.createNativeQuery(sql, SendMessageItem.class);
+		return q.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")

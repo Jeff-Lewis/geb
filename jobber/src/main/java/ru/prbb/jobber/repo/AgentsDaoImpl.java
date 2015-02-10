@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,24 +32,25 @@ public class AgentsDaoImpl implements AgentsDao {
 			List<AgentItem> res = new ArrayList<>(list.size());
 			for (AgentItem agent : list.values()) {
 				if (agent.isActive()) {
-					res.add(agent);
+					//
 				}
+				res.add(agent);
 			}
 			return res;
 		}
 	}
 
 	@Override
-	public boolean add(InetAddress host) {
+	public boolean add(InetAddress host, Integer port) {
 		synchronized (list) {
 			AgentItem ai = list.get(host);
 			if (null == ai) {
-				ai = new AgentItem(host);
-				log.info("Added Agent on host {}", host);
+				ai = new AgentItem(host, port);
+				log.info("Added Agent on host {}:{}", host, port);
 				return list.put(host, ai) == null;
 			} else {
 				ai.update();
-				log.info("Update Agent on host {}", host);
+				log.info("Update Agent on host {}:{}", host, port);
 				return false;
 			}
 		}
@@ -64,7 +64,7 @@ public class AgentsDaoImpl implements AgentsDao {
 		}
 	}
 
-	private Iterator<Entry<InetAddress, AgentItem>> it;
+	private Iterator<AgentItem> it;
 
 	@Override
 	public AgentItem nextAgent() {
@@ -73,20 +73,24 @@ public class AgentsDaoImpl implements AgentsDao {
 			throw new IllegalStateException("Agents don't registered");
 		}
 
+		if (list.size() == 1) {
+			return list.values().iterator().next();
+		}
+
 		synchronized (list) {
 			if (null == it)
-				it = list.entrySet().iterator();
+				it = list.values().iterator();
 
 			if (it.hasNext()) {
-				AgentItem agent = it.next().getValue();
+				AgentItem agent = it.next();
 				log.info("Using Agent on host {}", agent.getHost());
 				return agent;
 			}
 
-			it = list.entrySet().iterator();
+			it = list.values().iterator();
 
 			if (it.hasNext()) {
-				AgentItem agent = it.next().getValue();
+				AgentItem agent = it.next();
 				log.info("Using Agent on host {}", agent.getHost());
 				return agent;
 			}

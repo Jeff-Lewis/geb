@@ -45,13 +45,13 @@ public class AgentsDaoImplTest {
 	 */
 	@Test
 	public void testAdd() throws UnknownHostException {
-		dao.add(InetAddress.getByName("192.168.1.1"));
+		dao.add(InetAddress.getByName("192.168.1.1"), 8080);
 		Assert.assertEquals(1, dao.list().size());
 
-		dao.add(InetAddress.getByName("192.168.1.1"));
+		dao.add(InetAddress.getByName("192.168.1.1"), 8080);
 		Assert.assertEquals(1, dao.list().size());
 
-		dao.add(InetAddress.getByName("192.168.1.2"));
+		dao.add(InetAddress.getByName("192.168.1.2"), 8080);
 		Assert.assertEquals(2, dao.list().size());
 	}
 
@@ -62,8 +62,8 @@ public class AgentsDaoImplTest {
 	 */
 	@Test
 	public void testRemove() throws UnknownHostException {
-		dao.add(InetAddress.getByName("192.168.1.1"));
-		dao.add(InetAddress.getByName("192.168.1.2"));
+		dao.add(InetAddress.getByName("192.168.1.1"), 8080);
+		dao.add(InetAddress.getByName("192.168.1.2"), 8080);
 		Assert.assertEquals(2, dao.list().size());
 
 		dao.remove(InetAddress.getByName("192.168.1.1"));
@@ -84,7 +84,7 @@ public class AgentsDaoImplTest {
 	public void testList() throws UnknownHostException {
 		String[] addrs = { "192.168.1.1", "192.168.1.2" };
 		for (String host : addrs) {
-			dao.add(InetAddress.getByName(host));
+			dao.add(InetAddress.getByName(host), 8080);
 		}
 
 		Collection<AgentItem> list = dao.list();

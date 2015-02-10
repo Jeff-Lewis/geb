@@ -21,8 +21,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import ru.prbb.Utils;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
+import ru.prbb.jobber.domain.SendMessageItem;
 import ru.prbb.jobber.repo.BloombergDao;
 import ru.prbb.jobber.repo.BloombergServicesJ;
+import ru.prbb.jobber.repo.SendingDao;
 
 /**
  * Запланированные задачи Jobber
@@ -40,6 +42,9 @@ public class ScheduledTasks {
 
 	@Autowired
 	private BloombergDao dao;
+	
+	@Autowired
+	private SendingDao daoSending;
 
 	@Scheduled(cron = "0 00 3 * * ?")
 	public void taskBdsLoad() {
@@ -113,6 +118,9 @@ public class ScheduledTasks {
 						securities, toArray("PX_LAST"));
 
 		dao.putQuotes(_date, securities, answer);
+
+		List<SendMessageItem> msgItems = dao.checkQuotes();
+		daoSending.send(msgItems);
 	}
 
 	@Scheduled(cron = "0 10 5 * * ?")

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
+import ru.prbb.jobber.domain.SendMessageItem;
 
 /**
  * @author RBr
@@ -52,5 +53,7 @@ public interface BloombergDao {
 	public List<String> getSecForBonds();
 
 	public void putBondsData(String[] securities, Map<String, Map<String, String>> answer);
+
+	public List<SendMessageItem> checkQuotes();
 
 }
