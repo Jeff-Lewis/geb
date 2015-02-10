@@ -3,11 +3,26 @@
  */
 package ru.prbb.agent.services;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PreDestroy;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,22 +50,17 @@ public class SubscriptionService {
 	 * Зарегистрированные подписки<br>
 	 * id -> thread
 	 */
-	private final Map<Long, SubscriptionThread> threads = new HashMap<Long, SubscriptionThread>();
+	private final Map<SubscriptionThreadKey, SubscriptionThread> threads = new HashMap<>();
 
-	//private ThreadGroup group = new ThreadGroup("Subscriptions");
-
-	public SubscriptionService() {
-		//group.setDaemon(true);
-	}
-
-	public String start(Long id, String[] securities) {
+	public String start(String host, Long id, String[] securities, String uriCallback) {
+		SubscriptionThreadKey key = new SubscriptionThreadKey(host, id);
 		synchronized (threads) {
-			SubscriptionThread thread = threads.get(id);
+			SubscriptionThread thread = threads.get(key);
 			if (null == thread) {
-				thread = new SubscriptionThread(id);
+				thread = new SubscriptionThread(key, id, uriCallback);
 				try {
 					if (thread.startSession(securities)) {
-						threads.put(id, thread);
+						threads.put(key, thread);
 						return "STARTED";
 					} else {
 						return "ERROR";
@@ -65,11 +75,12 @@ public class SubscriptionService {
 		}
 	}
 
-	public String stop(Long id) {
+	public String stop(String host, Long id) {
+		SubscriptionThreadKey key = new SubscriptionThreadKey(host, id);
 		synchronized (threads) {
-			SubscriptionThread thread = threads.get(id);
+			SubscriptionThread thread = threads.get(key);
 			if (null == thread) {
-				return "NOT FOUND";
+				return threads.containsKey(key) ? "IS ALREADY STOPPED" : "NOT FOUND";
 			} else {
 				try {
 					thread.stopSession();
@@ -77,30 +88,14 @@ public class SubscriptionService {
 					return "STOPPED";
 				} catch (Exception e) {
 					log.error("Stop session failed", e);
-					return "ERROR\n" + e.toString();
-				}
-			}
-		}
-	}
-
-	public String getData(Long id, boolean isClean) {
-		synchronized (threads) {
-			SubscriptionThread thread = threads.get(id);
-			if (null == thread) {
-				return "NOT FOUND";
-			} else {
-				try {
-					return thread.getData(isClean);
-				} catch (Exception e) {
-					log.error("Get data session failed", e);
-					return "ERROR\n" + e.toString();
+					return "ERROR:" + e.toString();
 				}
 			}
 		}
 	}
 
 	@PreDestroy
-	public void stop() {
+	public void destroy() {
 		log.info("Stop all subscription threads");
 		for (SubscriptionThread thread : threads.values()) {
 			if (null != thread) {
@@ -113,30 +108,79 @@ public class SubscriptionService {
 		}
 	}
 
-	private class SubscriptionThread extends Thread {
+	private class SubscriptionThreadKey {
+	
+		private final Long id;
+		private final String host;
+	
+		public SubscriptionThreadKey(String host, Long id) {
+			this.id = id;
+			this.host = host;
+		}
+	
+		@Override
+		public String toString() {
+			return "SubscriptionThreadKey [host=" + host + ", id=" + id + "]";
+		}
+	
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + id.hashCode();
+			result = prime * result + host.hashCode();
+			return result;
+		}
+	
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+	
+			SubscriptionThreadKey other = (SubscriptionThreadKey) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+	
+			if (id == null) {
+				if (other.id != null)
+					return false;
+			} else if (!id.equals(other.id))
+				return false;
+			if (host == null) {
+				if (other.host != null)
+					return false;
+			} else if (!host.equals(other.host))
+				return false;
+			return true;
+		}
+	
+		private SubscriptionService getOuterType() {
+			return SubscriptionService.this;
+		}
+	
+	}
 
-		public final Long id;
+	private class SubscriptionThread extends Thread implements ResponseHandler<String> {
+
+		private final SubscriptionThreadKey key;
+		private final Long id;
+		private final String uriCallback;
 
 		private volatile boolean isRun = true;
 
 		private Session session;
-		private StringBuilder data = new StringBuilder();
 
-		public SubscriptionThread(Long id) {
+		public SubscriptionThread(SubscriptionThreadKey key, Long id, String uriCallback) {
 			super("Subscription #" + id);
-			//super(group, "Subscription #" + id);
-			setDaemon(true);
+			this.key = key;
 			this.id = id;
-		}
-
-		public String getData(boolean isClean) {
-			synchronized (data) {
-				String res = data.toString();
-				if (isClean) {
-					data.setLength(0);
-				}
-				return res;
-			}
+			this.uriCallback = uriCallback;
+			setDaemon(true);
 		}
 
 		public boolean startSession(String[] securities) {
@@ -191,7 +235,9 @@ public class SubscriptionService {
 
 		@Override
 		public void run() {
-			try {
+			int countErrors = 0;
+			StringBuilder data = new StringBuilder();
+			try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
 				while (isRun) {
 					Event event = session.nextEvent();
 					EventType eventType = event.eventType();
@@ -208,16 +254,38 @@ public class SubscriptionService {
 								String security_code = msg.correlationID().object().toString();
 								String last_price = getElementAsString(msg, "LAST_PRICE");
 								String last_chng = getElementAsString(msg, "RT_PX_CHG_PCT_1D");
+
 								String update = security_code + '\t' + last_price + '\t' + last_chng;
-								synchronized (data) {
-									if (data.length() > 64 * 1024) {
-										data.setLength(0);
-									}
-									data.append(update).append('\n');
-								}
+
+								data.append(update).append('\n');
 								log.trace("subsUpdate security_code:" + security_code
 										+ ", last_price:" + last_price + ", last_chng:" + last_chng);
 							}
+						}
+
+						List<NameValuePair> nvps = new ArrayList<>();
+						nvps.add(new BasicNameValuePair("id", id.toString()));
+						nvps.add(new BasicNameValuePair("data", data.toString()));
+
+						HttpPut httpPut = new HttpPut(uriCallback);
+						httpPut.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+
+						String response = httpclient.execute(httpPut, this);
+						if ("OK".equals(response)) {
+							countErrors = 0;
+							data.setLength(0);
+						} else {
+							++countErrors;
+							log.error(response);
+						}
+
+						if (data.length() > 32*1024) {
+							data.setLength(0);
+							log.error("Lost subscription data");
+						}
+						if (countErrors >= 30) {
+							log.error("countErrors reached max value");
+							isRun = false;
 						}
 					}
 				}
@@ -230,7 +298,20 @@ public class SubscriptionService {
 					log.error("Stop session", e);
 				}
 				log.info("Stopped " + getName());
-				threads.put(id, null);
+				threads.put(key, null);
+			}
+		}
+
+		@Override
+		public String handleResponse(HttpResponse response)
+				throws ClientProtocolException, IOException {
+			int status = response.getStatusLine().getStatusCode();
+			String reason = response.getStatusLine().getReasonPhrase();
+			if (status >= HttpStatus.SC_OK && status < HttpStatus.SC_MULTIPLE_CHOICES) {
+				HttpEntity entity = response.getEntity();
+				return entity != null ? EntityUtils.toString(entity) : null;
+			} else {
+				return "Unexpected response status: " + status + " " + reason;
 			}
 		}
 

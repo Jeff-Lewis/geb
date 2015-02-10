@@ -3,6 +3,8 @@
  */
 package ru.prbb.agent.web;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ import ru.prbb.agent.services.SubscriptionService;
  * @author ruslan
  */
 @Controller
-@RequestMapping(value = "/Subscriptions", method = { RequestMethod.GET, RequestMethod.POST }, produces = "text/plain;charset=utf-8")
+@RequestMapping(value = "/Subscription", method = RequestMethod.POST, produces = "text/plain;charset=utf-8")
 public class SubscriptionController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -28,32 +30,20 @@ public class SubscriptionController {
 
 	@RequestMapping("/Start")
 	@ResponseBody
-	public String postStart(
+	public String postStart(HttpServletRequest request,
 			@RequestParam Long id,
-			@RequestParam String[] securities) {
-		log.debug("Start Subscription id={} for securities={}", id, securities);
-		return ss.start(id, securities);
-	}
-
-	@RequestMapping("/Data")
-	@ResponseBody
-	public String postData(
-			@RequestParam Long id,
-			@RequestParam(defaultValue = "false", required = false) Boolean isClean) {
-		return ss.getData(id, isClean);
+			@RequestParam String[] securities,
+			@RequestParam String uriCallback) {
+		log.debug("Subscription: Start id={}, uriCallback={}, securities={}", id, uriCallback, securities);
+		return ss.start(request.getRemoteHost(), id, securities, uriCallback);
 	}
 
 	@RequestMapping("/Stop")
 	@ResponseBody
-	public String postStop(
-			@RequestParam Long[] ids) {
-		StringBuilder res = new StringBuilder();
-		for (Long id : ids) {
-			log.debug("Stop Subscriptions id={}", id);
-			String r = ss.stop(id);
-			res.append(id).append('\t').append(r).append('\n');
-		}
-		return res.toString();
+	public String postStop(HttpServletRequest request,
+			@RequestParam Long id) {
+		log.debug("Subscription: Stop id={}", id);
+		return ss.stop(request.getRemoteHost(), id);
 	}
 
 }
