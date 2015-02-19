@@ -214,11 +214,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.bloomberg</groupId>
-			<artifactId>blpapi</artifactId>
-			<version>3.4.5-5</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.3.2</version>
