@@ -54,6 +54,6 @@ public interface BloombergDao {
 
 	public void putBondsData(String[] securities, Map<String, Map<String, String>> answer);
 
-	public List<SendMessageItem> checkQuotes();
+	public List<SendMessageItem> exec(String sql);
 
 }

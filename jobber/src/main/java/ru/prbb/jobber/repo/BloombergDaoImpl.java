@@ -262,15 +262,6 @@ public class BloombergDaoImpl implements BloombergDao
 	@SuppressWarnings("unchecked")
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<SendMessageItem> checkQuotes() {
-		String sql = "{call dbo.put_quotes_check_sp}";
-		Query q = em.createNativeQuery(sql, SendMessageItem.class);
-		return q.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@Override
 	public List<String> getSecForAtr() {
 		String sql = "select security_code from dbo.mo_job_LoadATR_v";
 		Query q = em.createNativeQuery(sql);
@@ -456,5 +447,13 @@ public class BloombergDaoImpl implements BloombergDao
 				}
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<SendMessageItem> exec(String sql) {
+		Query q = em.createNativeQuery(sql, SendMessageItem.class);
+		return q.getResultList();
 	}
 }
