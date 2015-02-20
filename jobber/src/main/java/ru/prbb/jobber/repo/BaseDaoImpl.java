@@ -25,7 +25,7 @@ public abstract class BaseDaoImpl {
 	@Autowired
 	private UserHistory uh;
 
-	protected void storeSql(String sql, Query q) {
+	protected String showSql(String sql, Query q) {
 		try {
 			StringBuilder res = new StringBuilder(sql);
 			if (!q.getParameters().isEmpty()) {
@@ -49,15 +49,20 @@ public abstract class BaseDaoImpl {
 				}
 				res.setCharAt(res.length() - 1, ')');
 			}
-
 			String msg = res.toString();
 			log.info(msg);
-
-			if (!sql.contains("WebGet"))
-				uh.putHist(msg);
+			return msg;
 		} catch (Exception e) {
 			log.error("storeSql", e);
 		}
+		return sql;
+	}
+
+	protected void storeSql(String sql, Query q) {
+		String msg = showSql(sql, q);
+
+		if (!sql.contains("WebGet"))
+			uh.putHist(msg);
 	}
 
 	@SuppressWarnings("rawtypes")

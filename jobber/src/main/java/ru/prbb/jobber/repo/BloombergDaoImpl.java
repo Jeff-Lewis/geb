@@ -264,8 +264,20 @@ public class BloombergDaoImpl implements BloombergDao
 	@Override
 	public List<SendMessageItem> checkQuotes() {
 		String sql = "{call dbo.put_quotes_check_sp}";
-		Query q = em.createNativeQuery(sql, SendMessageItem.class);
-		return q.getResultList();
+		Query q = em.createNativeQuery(sql);
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<SendMessageItem> res = new ArrayList<>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			SendMessageItem item = new SendMessageItem();
+			item.setType(Utils.toNumber(arr[0]));
+			item.setAddrs(Utils.toString(arr[1]));
+			item.setSubj(Utils.toString(arr[2]));
+			item.setText(Utils.toString(arr[3]));
+			res.add(item);
+		}
+		return res;
 	}
 
 	@SuppressWarnings("unchecked")

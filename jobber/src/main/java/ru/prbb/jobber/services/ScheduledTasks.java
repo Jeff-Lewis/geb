@@ -171,7 +171,7 @@ public class ScheduledTasks {
 		}
 
 		final String[] fields = {
-				"EQY_WEIGHTED_AVG_PX",
+				"EQY_WEIGHTED_AVG_PX", "YLD_CNV_MID",
 				"PX_HIGH", "PX_LAST", "PX_LOW", "PX_VOLUME",
 				"TOT_BUY_REC", "TOT_HOLD_REC", "TOT_SELL_REC"
 		};

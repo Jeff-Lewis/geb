@@ -30,9 +30,16 @@ public interface SendingDao {
 
 	List<SendingItem> send(List<SendMessageItem> items);
 
-	SendingItem sendMail(String text, String email, String subject);
+	List<SendingItem> sendMail(String text, List<String> emails, String subject);
 
-	SendingItem sendSms(String text, String phone);
+	/**
+	 * @param text
+	 * @param phones
+	 * @param type
+	 *            1 – автоматическая, 2 – ручная отправка
+	 * @return
+	 */
+	List<SendingItem> sendSms(String text, List<String> phones, Number type);
 
 	/**
 	 * @param query

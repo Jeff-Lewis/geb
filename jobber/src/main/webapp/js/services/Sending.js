@@ -101,23 +101,36 @@
 	var textarea = new Ext.form.TextArea({
 		fieldLabel : 'Текст рассылки',
 		height : 200,
-		editable : false,
-		maxLength : 1500
+		//editable : false,
+		//maxLength : 1500
 	});
 
 	function send() {
-		var text = String(textarea.getValue());
-		if (text.length > 144 * 8) {
-			App.ui.error('Сообщение привысило 8 СМС.<br>Пожалуйста, сократите сообщение.');
+		var _recp = new String(receiver1.getValue()).trim();
+		var _recm = new String(receiver2.getValue()).trim();
+		var _text = new String(textarea.getValue()).trim();
+
+		if (!_recp && !_recm) {
+			App.ui.error('Не указан получатель.');
 			return;
 		}
+
+		if (!_text) {
+			App.ui.error('Сообщение пустое.');
+			return;
+		}
+
+//		if (text.length > 144 * 8) {
+//			App.ui.error('Сообщение привысило 8 СМС.<br>Пожалуйста, сократите сообщение.');
+//			return;
+//		}
 
 		Ext.Ajax.request({
 			url : 'rest/Sending.do',
 			params : {
-				text : text,
-				recp : receiver1.getValue(),
-				recm : receiver2.getValue()
+				text : _text,
+				recp : _recp,
+				recm : _recm
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Отправка сообщения ...',

@@ -45,35 +45,37 @@ public class SendingController
 		List<SendingItem> res = new ArrayList<>();
 
 		if (Utils.isNotEmpty(recMails)) {
-			String mails[] = recMails.split(",");
-			for (String mail : mails) {
+			List<String> mails = new ArrayList<>();
+			for (String mail : recMails.split(",")) {
 				if (Utils.isNotEmpty(mail)) {
 					if (mail.indexOf('@') > 0) {
-						res.add(dao.sendMail(text, mail));
+						mails.add(mail);
 					} else {
 						List<String> groupMails = dao.getMailByGroup(mail);
 						for (String groupMail : groupMails) {
-							res.add(dao.sendMail(text, groupMail));
+							mails.add(groupMail);
 						}
 					}
 				}
 			}
+			res.addAll(dao.sendMail(text, mails, "info"));
 		}
 
 		if (Utils.isNotEmpty(recPhones)) {
-			String phones[] = recPhones.split(",");
-			for (String phone : phones) {
+			List<String> phones = new ArrayList<>();
+			for (String phone : recPhones.split(",")) {
 				if (Utils.isNotEmpty(phone)) {
 					if (phone.charAt(0) == '+') {
-						res.add(dao.sendSms(text, phone));
+						phones.add(phone);
 					} else {
 						List<String> groupPhones = dao.getPhoneByGroup(phone);
 						for (String groupPhone : groupPhones) {
-							res.add(dao.sendSms(text, groupPhone));
+							phones.add(groupPhone);
 						}
 					}
 				}
 			}
+			res.addAll(dao.sendSms(text, phones, 2));
 		}
 
 		return res;

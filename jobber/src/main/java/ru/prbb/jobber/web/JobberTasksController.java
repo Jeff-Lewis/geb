@@ -16,7 +16,7 @@ import ru.prbb.jobber.services.ScheduledTasks;
  */
 @Controller
 @RequestMapping(value = "/rest")
-public class RestController {
+public class JobberTasksController {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 

@@ -3,12 +3,10 @@ package ru.prbb.jobber.domain;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 
 /**
  * @author RBr
  */
-@Entity
 public class SendMessageItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;

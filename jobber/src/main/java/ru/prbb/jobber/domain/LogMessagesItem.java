@@ -19,7 +19,6 @@ public class LogMessagesItem implements Serializable {
 	@Id
 	private Long sl_id;
 	private String name;
-	private String value;
 	private String text;
 	private String status;
 	private String date_insert;
@@ -52,21 +51,6 @@ public class LogMessagesItem implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(String value) {
-		this.value = value;
 	}
 
 	/**
