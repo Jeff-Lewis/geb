@@ -15,7 +15,7 @@ import ru.prbb.jobber.services.ScheduledTasks;
  * @author RBr
  */
 @Controller
-@RequestMapping(value = "/rest")
+@RequestMapping(value = "/JobberTasks")
 public class JobberTasksController {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -23,59 +23,115 @@ public class JobberTasksController {
 	@Autowired
 	private ScheduledTasks tasks;
 
-	@RequestMapping(value = "/BdsLoad")
-	public String taskBdsLoad(Model model) {
-		log.info("web BdsLoad");
+	@RequestMapping(value = "/LoadBds")
+	public String taskLoadBds(Model model) {
+		log.info("web LoadBds");
 		tasks.taskBdsLoad();
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/FuturesLoad")
-	public String taskFuturesLoad(Model model) {
-		log.info("web FuturesLoad");
+	@RequestMapping(value = "/LoadFutures")
+	public String taskLoadFutures(Model model) {
+		log.info("web LoadFutures");
 		tasks.taskFuturesLoad();
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/QuotesLoad")
-	public String taskQuotesLoad(Model model) {
-		log.info("web QuotesLoad");
+	@RequestMapping(value = "/LoadQuotes")
+	public String taskLoadQuotes(Model model) {
+		log.info("web LoadQuotes");
 		tasks.taskQuotesLoad();
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/AtrLoad")
-	public String taskAtrLoad(Model model) {
-		log.info("web AtrLoad");
+	@RequestMapping(value = "/LoadAtr")
+	public String taskLoadAtr(Model model) {
+		log.info("web LoadAtr");
 		tasks.taskAtrLoad();
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/BdpOverrideLoad")
-	public String taskBdpOverrideLoad(Model model) {
-		log.info("web BdpOverrideLoad");
+	@RequestMapping(value = "/LoadBdpOverride")
+	public String taskLoadBdpOverride(Model model) {
+		log.info("web LoadBdpOverride");
 		tasks.taskBdpOverrideLoad();
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/HistDataLoad")
-	public String taskHistDataLoad(Model model) {
-		log.info("web HistDataLoad");
+	@RequestMapping(value = "/LoadHistData")
+	public String taskLoadHistData(Model model) {
+		log.info("web LoadHistData");
 		tasks.taskHistDataLoad();
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/CurrenciesDataLoad")
-	public String taskCurrenciesDataLoad(Model model) {
-		log.info("web CurrenciesDataLoad");
+	@RequestMapping(value = "/LoadCurrenciesData")
+	public String taskLoadCurrenciesData(Model model) {
+		log.info("web LoadCurrenciesData");
 		tasks.taskCurrenciesDataLoad();
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/BondsLoad")
-	public String taskBondsLoad(Model model) {
-		log.info("web BondsLoad");
+	@RequestMapping(value = "/LoadBonds")
+	public String taskLoadBonds(Model model) {
+		log.info("web LoadBonds");
 		tasks.taskBondsLoad();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/MsgSubscription")
+	public String taskMsgSubscription() {
+		log.info("web MsgSubscription");
+		tasks.taskSubscription();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/MsgJobbers")
+	public String taskMsgJobbers() {
+		log.info("web MsgJobbers");
+		tasks.taskJobbers();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/MsgQuotes")
+	public String taskMsgQuotes() {
+		log.info("web MsgQuotes");
+		tasks.taskQuotes();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/MsgBonds")
+	public String taskMsgBonds() {
+		log.info("web MsgBonds");
+		tasks.taskBonds();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/MsgQuotesRus")
+	public String taskMsgQuotesRus() {
+		log.info("web MsgQuotesRus");
+		tasks.taskQuotesRus();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/MsgFullermoneyAudio")
+	public String taskMsgFullermoneyAudio() {
+		log.info("web MsgFullermoneyAudio");
+		tasks.taskFullermoneyAudio();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/MsgQuotesUsa")
+	public String taskMsgQuotesUsa() {
+		log.info("web MsgQuotesUsa");
+		tasks.taskQuotesUsa();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/MsgAnalytics")
+	public String taskMsgAnalytics() {
+		log.info("web MsgAnalytics");
+		tasks.taskAnalytics();
 		return "redirect:/";
 	}
 
