@@ -17,10 +17,10 @@
 	<%
 		out.print(new SimpleDateFormat("dd.MM.yyyy ").format(new Date()));
 
-		Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+		Class.forName("com.sybase.jdbc4.jdbc.SybDriver");
 
-		String url = "jdbc:sybase:Tds:172.16.21.14:5000/inv_db";
-		Connection conn = DriverManager.getConnection(url, "dgluhov", "lbfcjan");
+		String url = "jdbc:sybase:Tds:192.168.100.100:5000/inv_db";
+		Connection conn = DriverManager.getConnection(url, "ArmWebAccess", "cdj,jlentktgepbrfv!");
 
 		try {
 			String sql = "select top 1 run_time from xls_quotes_v order by color, SecShortName";
