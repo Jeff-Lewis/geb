@@ -58,50 +58,42 @@ var messageTasks = {
 		title : 'Отправка сообщений',
 		icon : 'images/grid.png',
 		items : [ {
-			text : 'Проверка работы real-time обновлений (подписки)',
-			tip : '0 */15 8-23 * * MON-FRI',
+			text : '0 */15 8-23 * * MON-FRI<br>Проверка работы real-time обновлений',
 			handler : function() {
 				window.location = 'JobberTasks/MsgSubscription';
 	        }
 		}, {
-			text : 'Проверка результатов ночных загрузок',
-			tip : '0 0 10 * * MON-FRI',
+			text : '0 0 10 * * MON-FRI<br>Проверка результатов ночных загрузок',
 			handler : function() {
 				window.location = 'JobberTasks/MsgJobbers';
 	        }
 		}, {
-			text : 'Рассылка котировок',
-			tip : '0 0,30 0,10-23 * * MON-FRI',
+			text : '0 0,30 0,10-23 * * MON-FRI<br>Рассылка котировок',
 			handler : function() {
 				window.location = 'JobberTasks/MsgQuotes';
 	        }
 		}, {
-			text : 'Отправка смс оповещений с котировками бондов',
-			tip : '0 0 12-19 * * MON-FRI',
+			text : '0 0 12-19 * * MON-FRI<br>Рассылка СМС с котировками бондов',
 			handler : function() {
 				window.location = 'JobberTasks/MsgBonds';
 	        }
 		}, {
-			text : 'Отправка E-mail оповещений с котировками по России',
-			tip : '0 0,30 * * * ?',
+			text : '0 0,30 * * * ?<br>Рассылка E-mail с котировками по России',
 			handler : function() {
 				window.location = 'JobberTasks/MsgQuotesRus';
 	        }
 		}, {
-			text : 'Рассылка ссылок на Fullermoney Audio',
-			tip : '0 30 12 * * TUE-SAT',
+			text : '0 30 12 * * TUE-SAT<br>Рассылка ссылок на Fullermoney Audio',
 			handler : function() {
 				window.location = 'JobberTasks/MsgFullermoneyAudio';
 	        }
 		}, {
-			text : 'Отправка смс оповещений с котировками по США',
-			tip : '0 50 18 * * ?',
+			text : '0 50 18 * * ?<br>Рассылка СМС с котировками по США',
 			handler : function() {
 				window.location = 'JobberTasks/MsgQuotesUsa';
 	        }
 		}, {
-			text : 'Рассылка SMS со ссылкой на ежедневный выпуск сводной',
-			tip : '0 0 20 * * MON-FRI',
+			text : '0 0 20 * * MON-FRI<br>Рассылка СМС со ссылкой на ежедневный выпуск сводной',
 			handler : function() {
 				window.location = 'JobberTasks/MsgAnalytics';
 	        }
