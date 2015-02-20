@@ -262,27 +262,6 @@ public class BloombergDaoImpl implements BloombergDao
 	@SuppressWarnings("unchecked")
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<SendMessageItem> checkQuotes() {
-		String sql = "{call dbo.put_quotes_check_sp}";
-		Query q = em.createNativeQuery(sql);
-		@SuppressWarnings("rawtypes")
-		List list = q.getResultList();
-		List<SendMessageItem> res = new ArrayList<>(list.size());
-		for (Object object : list) {
-			Object[] arr = (Object[]) object;
-			SendMessageItem item = new SendMessageItem();
-			item.setType(Utils.toNumber(arr[0]));
-			item.setAddrs(Utils.toString(arr[1]));
-			item.setSubj(Utils.toString(arr[2]));
-			item.setText(Utils.toString(arr[3]));
-			res.add(item);
-		}
-		return res;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	@Override
 	public List<String> getSecForAtr() {
 		String sql = "select security_code from dbo.mo_job_LoadATR_v";
 		Query q = em.createNativeQuery(sql);
@@ -468,5 +447,24 @@ public class BloombergDaoImpl implements BloombergDao
 				}
 			}
 		}
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Override
+	public List<SendMessageItem> exec(String sql) {
+		Query q = em.createNativeQuery(sql);
+		@SuppressWarnings("rawtypes")
+		List list = q.getResultList();
+		List<SendMessageItem> res = new ArrayList<>(list.size());
+		for (Object object : list) {
+			Object[] arr = (Object[]) object;
+			SendMessageItem item = new SendMessageItem();
+			item.setType(Utils.toNumber(arr[0]));
+			item.setAddrs(Utils.toString(arr[1]));
+			item.setSubj(Utils.toString(arr[2]));
+			item.setText(Utils.toString(arr[3]));
+			res.add(item);
+		}
+		return res;
 	}
 }

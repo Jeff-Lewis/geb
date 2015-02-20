@@ -3,11 +3,8 @@
  */
 package ru.prbb.jobber.repo;
 
-import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,26 +15,13 @@ import java.util.Set;
 
 import javax.annotation.PreDestroy;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ru.prbb.jobber.domain.AgentItem;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SubscriptionItem;
@@ -53,73 +37,8 @@ public class BloombergServicesJ {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	private AgentsDao agents;
-
-	/**
-	 * @param name
-	 * @param items
-	 * @return
-	 */
-	private Collection<NameValuePair> createList(String name, String[] items) {
-		List<NameValuePair> list = new ArrayList<>(items.length);
-		for (String s : items) {
-			list.add(new BasicNameValuePair(name, s));
-		}
-		return list;
-	}
-
-	private synchronized String executeHttpRequest(AgentItem agent, String path, List<NameValuePair> nvps, String name) {
-		nvps.add(new BasicNameValuePair("name", name));
-		try {
-			URI uri = new URIBuilder()
-					.setScheme("http")
-					.setHost(agent.getHost())
-					// .setHost("172.23.149.175") // TODO DEBUG localhost
-					.setPort(agent.getPort())
-					.setPath(path)
-					.build();
-
-			agent.setStatus(name);
-
-			HttpPost httpPost = new HttpPost(uri);
-			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
-
-			CloseableHttpClient httpclient = HttpClients.createDefault();
-			try {
-				log.debug("Executing request " + httpPost.getRequestLine());
-				String responseBody = httpclient.execute(httpPost, new ResponseHandler<String>() {
-
-					public String handleResponse(final HttpResponse response)
-							throws ClientProtocolException, IOException {
-						int status = response.getStatusLine().getStatusCode();
-						String reason = response.getStatusLine().getReasonPhrase();
-						if (status >= HttpStatus.SC_OK && status < HttpStatus.SC_MULTIPLE_CHOICES) {
-							HttpEntity entity = response.getEntity();
-							return entity != null ? EntityUtils.toString(entity) : null;
-						} else {
-							throw new ClientProtocolException("Unexpected response status: " + status + " " + reason);
-						}
-					}
-
-				});
-				log.debug("Response\n" + responseBody);
-				if (responseBody.contains("stackTrace")) {
-					@SuppressWarnings("unchecked")
-					Map<String, Object> res =
-							(Map<String, Object>) deserialize(responseBody);
-					Object message = res.get("message");
-					throw new Exception((message != null) ? message.toString() : res.toString());
-				}
-				return responseBody;
-			} finally {
-				agent.setStatus(null);
-				httpclient.close();
-			}
-		} catch (Exception e) {
-			log.error("executeHttpRequest", e);
-			throw new RuntimeException(e);
-		}
+	private String executeRequest(Map<String, Object> data) {
+		return ""; // TODO
 	}
 
 	private final ObjectMapper m = new ObjectMapper();
@@ -145,11 +64,13 @@ public class BloombergServicesJ {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> executeBdsRequest(String name, String[] securities, String[] fields) {
-		List<NameValuePair> nvps = new ArrayList<>();
-		nvps.addAll(createList("securities", securities));
-		nvps.addAll(createList("fields", fields));
+		Map<String, Object> m = new HashMap<>();
+		m.put("type", "BdsRequest");
+		m.put("name", name);
+		m.put("securities", securities);
+		m.put("fields", fields);
 
-		String response = executeHttpRequest(agents.nextAgent(), "/BdsRequest", nvps, name);
+		String response = executeRequest(m);
 		return (Map<String, Object>) deserialize(response);
 	}
 
@@ -169,11 +90,13 @@ public class BloombergServicesJ {
 	@SuppressWarnings("unchecked")
 	public Map<String, Map<String, String>> executeReferenceDataRequest(String name,
 			String[] securities, String[] fields) {
-		List<NameValuePair> nvps = new ArrayList<>();
-		nvps.addAll(createList("securities", securities));
-		nvps.addAll(createList("fields", fields));
+		Map<String, Object> m = new HashMap<>();
+		m.put("type", "ReferenceData");
+		m.put("name", name);
+		m.put("securities", securities);
+		m.put("fields", fields);
 
-		String response = executeHttpRequest(agents.nextAgent(), "/ReferenceData", nvps, name);
+		String response = executeRequest(m);
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 
@@ -195,13 +118,16 @@ public class BloombergServicesJ {
 	public Map<String, Map<String, Map<String, String>>> executeHistoricalDataRequest(String name,
 			Date startDate, Date endDate, String[] securities, String[] fields) {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		List<NameValuePair> nvps = new ArrayList<>();
-		nvps.add(new BasicNameValuePair("dateStart", sdf.format(startDate)));
-		nvps.add(new BasicNameValuePair("dateEnd", sdf.format(endDate)));
-		nvps.addAll(createList("securities", securities));
-		nvps.addAll(createList("fields", fields));
 
-		String response = executeHttpRequest(agents.nextAgent(), "/HistoricalDataRequest", nvps, name);
+		Map<String, Object> m = new HashMap<>();
+		m.put("type", "HistoricalDataRequest");
+		m.put("name", name);
+		m.put("dateStart", sdf.format(startDate));
+		m.put("dateEnd", sdf.format(endDate));
+		m.put("securities", securities);
+		m.put("fields", fields);
+
+		String response = executeRequest(m);
 		return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
 	}
 
@@ -223,14 +149,17 @@ public class BloombergServicesJ {
 	public Map<String, Map<String, Map<String, String>>> executeHistoricalDataRequest(String name,
 			Date startDate, Date endDate, String[] securities, String[] fields, String[] currencies) {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		List<NameValuePair> nvps = new ArrayList<>();
-		nvps.add(new BasicNameValuePair("dateStart", sdf.format(startDate)));
-		nvps.add(new BasicNameValuePair("dateEnd", sdf.format(endDate)));
-		nvps.addAll(createList("securities", securities));
-		nvps.addAll(createList("fields", fields));
-		nvps.addAll(createList("currencies", currencies));
 
-		String response = executeHttpRequest(agents.nextAgent(), "/HistoricalDataRequest", nvps, name);
+		Map<String, Object> m = new HashMap<>();
+		m.put("type", "HistoricalDataRequest");
+		m.put("name", name);
+		m.put("dateStart", sdf.format(startDate));
+		m.put("dateEnd", sdf.format(endDate));
+		m.put("securities", securities);
+		m.put("fields", fields);
+		m.put("currencies", currencies);
+
+		String response = executeRequest(m);
 		return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
 	}
 
@@ -243,45 +172,43 @@ public class BloombergServicesJ {
 	public List<Map<String, Object>> executeAtrLoad(String name, Date startDate, Date endDate, String[] securities,
 			String maType, Integer taPeriod, String period, String calendar) {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		List<NameValuePair> nvps = new ArrayList<>();
-		nvps.add(new BasicNameValuePair("startDate", sdf.format(startDate)));
-		nvps.add(new BasicNameValuePair("endDate", sdf.format(endDate)));
-		nvps.addAll(createList("securities", securities));
-		nvps.add(new BasicNameValuePair("maType", maType));
-		nvps.add(new BasicNameValuePair("taPeriod", taPeriod.toString()));
-		nvps.add(new BasicNameValuePair("period", period));
-		nvps.add(new BasicNameValuePair("calendar", calendar));
 
-		String response = executeHttpRequest(agents.nextAgent(), "/LoadAtrRequest", nvps, name);
+		Map<String, Object> m = new HashMap<>();
+		m.put("type", "LoadAtrRequest");
+		m.put("name", name);
+		m.put("dateStart", sdf.format(startDate));
+		m.put("dateEnd", sdf.format(endDate));
+		m.put("securities", securities);
+		m.put("maType", maType);
+		m.put("taPeriod", taPeriod);
+		m.put("period", period);
+		m.put("calendar", calendar);
+
+		String response = executeRequest(m);
 		return (List<Map<String, Object>>) deserialize(response);
 	}
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Map<String, String>> executeBdpOverrideLoad(String name, List<SecForJobRequest> securities) {
 		Set<String> currencies = new HashSet<>();
-		List<NameValuePair> nvps = new ArrayList<>();
+		List<String> cursecs = new ArrayList<>(securities.size());
 		for (SecForJobRequest security : securities) {
 			currencies.add(security.iso);
 			String cursec = security.iso + security.code;
-			nvps.add(new BasicNameValuePair("securities", cursec));
+			cursecs.add(cursec);
 		}
-		nvps.addAll(createList("currencies", currencies.toArray(new String[currencies.size()])));
 
-		String response = executeHttpRequest(agents.nextAgent(), "/LoadBdpOverrideRequest", nvps, name);
+		Map<String, Object> m = new HashMap<>();
+		m.put("type", "LoadBdpOverrideRequest");
+		m.put("name", name);
+		m.put("securities", cursecs);
+		m.put("currencies", currencies);
+
+		String response = executeRequest(m);
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 
 	private Map<SubscriptionItem, List<SecurityItem>> startedSubscriptions = new HashMap<>();
-
-	private AgentItem subscrAgent;
-
-	private AgentItem getSubscrAgent() {
-		if (null == subscrAgent) {
-			subscrAgent = agents.nextAgent();
-		}
-		subscrAgent.setStatus("Subscription agent");
-		return subscrAgent;
-	}
 
 	@PreDestroy
 	public void destroy() {
@@ -293,8 +220,6 @@ public class BloombergServicesJ {
 	}
 
 	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
-		if (agents.list().isEmpty())
-			return;
 		if (securities == null || securities.isEmpty())
 			return;
 
@@ -303,29 +228,34 @@ public class BloombergServicesJ {
 		if (securities.equals(startedSubscriptions.get(item)))
 			return;
 
-		List<NameValuePair> nvps = new ArrayList<>(securities.size() + 4);
-		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
-		nvps.add(new BasicNameValuePair("uriCallback", SERVER_JOBBER + "/Subscription"));
+		List<String> secs = new ArrayList<>(securities.size());
 		for (SecurityItem security : securities) {
-			nvps.add(new BasicNameValuePair("securities", security.getCode()));
+			secs.add(security.getCode());
 		}
+		
+		Map<String, Object> m = new HashMap<>();
+		m.put("type", "SubscriptionStart");
+		m.put("id", item.getId());
+		m.put("name", "Start subscriptions" + item.getName());
+		m.put("uriCallback", SERVER_JOBBER + "/Subscription");
+		m.put("securities", secs);
 
-		String name = "Start subscription (" + item.getId() + ") " + item.getName();
-		String response = executeHttpRequest(getSubscrAgent(), "/Subscription/Start", nvps, name);
-
+		String response = executeRequest(m);
 		if ("STARTED".equals(response)) {
 			startedSubscriptions.put(item, securities);
 		}
 	}
 
 	public void subscriptionStop(SubscriptionItem item) {
-		if (agents.list().isEmpty())
-			return;
+		Map<String, Object> m = new HashMap<>();
+		m.put("type", "SubscriptionStop");
+		m.put("id", item.getId());
+		m.put("name", "Stop subscriptions " + item.getName());
+
 		List<NameValuePair> nvps = new ArrayList<>();
 		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
 
-		String response = executeHttpRequest(getSubscrAgent(), "/Subscription/Stop", nvps, "Stop subscriptions");
-
+		String response = executeRequest(m);
 		if ("STOPPED".equals(response)) {
 			startedSubscriptions.remove(item);
 		}
