@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.PersistenceException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -214,8 +216,16 @@ public class ScheduledTasks {
 	@Scheduled(cron = "0 */15 8-23 * * MON-FRI")
 	public void taskSubscription() {
 		log.info("task Subscription");
-		List<SendMessageItem> items = dao.exec("{call dbo.chck_cbot_sp}");
-		daoSending.send(items);
+		try {
+			List<SendMessageItem> items = dao.exec("{call dbo.chck_cbot_sp}");
+			daoSending.send(items);
+		} catch (PersistenceException e) {
+			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
+				// всё в порядке
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	/**
@@ -224,8 +234,16 @@ public class ScheduledTasks {
 	@Scheduled(cron = "0 0 10 * * MON-FRI")
 	public void taskJobbers() {
 		log.info("task Jobbers");
-		List<SendMessageItem> items = dao.exec("{call dbo.put_quotes_check_sp}");
-		daoSending.send(items);
+		try {
+			List<SendMessageItem> items = dao.exec("{call dbo.put_quotes_check_sp}");
+			daoSending.send(items);
+		} catch (PersistenceException e) {
+			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
+				log.info("task Subscription: No data");
+			} else {
+				log.error("task Subscription", e);
+			}
+		}
 	}
 
 	/**
@@ -235,8 +253,16 @@ public class ScheduledTasks {
 	@Scheduled(cron = "0 0,30 0,10-23 * * MON-FRI")
 	public void taskQuotes() {
 		log.info("task Quotes");
-		List<SendMessageItem> items = dao.exec("{call dbo.quotes_send_mail_sp}");
-		daoSending.send(items);
+		try {
+			List<SendMessageItem> items = dao.exec("{call dbo.quotes_send_mail_sp}");
+			daoSending.send(items);
+		} catch (PersistenceException e) {
+			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
+				log.info("task Subscription: No data");
+			} else {
+				log.error("task Subscription", e);
+			}
+		}
 	}
 
 	/**
@@ -245,8 +271,16 @@ public class ScheduledTasks {
 	//@Scheduled(cron = "0 0 12-19 * * MON-FRI")
 	public void taskBonds() {
 		log.info("task Bonds");
-		List<SendMessageItem> items = dao.exec("{call dbo.quotes_send_sms_bonds_sp}");
-		daoSending.send(items);
+		try {
+			List<SendMessageItem> items = dao.exec("{call dbo.quotes_send_sms_bonds_sp}");
+			daoSending.send(items);
+		} catch (PersistenceException e) {
+			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
+				log.info("task Subscription: No data");
+			} else {
+				log.error("task Subscription", e);
+			}
+		}
 	}
 
 	/**
@@ -255,8 +289,16 @@ public class ScheduledTasks {
 	@Scheduled(cron = "0 0,30 * * * ?")
 	public void taskQuotesRus() {
 		log.info("task QuotesRus");
-		List<SendMessageItem> items = dao.exec("{call dbo.quotes_send_mail_rus_sp}");
-		daoSending.send(items);
+		try {
+			List<SendMessageItem> items = dao.exec("{call dbo.quotes_send_mail_rus_sp}");
+			daoSending.send(items);
+		} catch (PersistenceException e) {
+			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
+				log.info("task Subscription: No data");
+			} else {
+				log.error("task Subscription", e);
+			}
+		}
 	}
 
 	/**
@@ -266,8 +308,16 @@ public class ScheduledTasks {
 	@Scheduled(cron = "0 30 12 * * TUE-SAT")
 	public void taskFullermoneyAudio() {
 		log.info("task Fullermoney Audio");
-		List<SendMessageItem> items = dao.exec("{call dbo.fuller_send_sms_sp}");
-		daoSending.send(items);
+		try {
+			List<SendMessageItem> items = dao.exec("{call dbo.fuller_send_sms_sp}");
+			daoSending.send(items);
+		} catch (PersistenceException e) {
+			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
+				log.info("task Subscription: No data");
+			} else {
+				log.error("task Subscription", e);
+			}
+		}
 	}
 
 	/**
@@ -276,8 +326,16 @@ public class ScheduledTasks {
 	@Scheduled(cron = "0 50 18 * * ?")
 	public void taskQuotesUsa() {
 		log.info("task QuotesUsa");
-		List<SendMessageItem> items = dao.exec("{call dbo.quotes_send_sms_usa_sp}");
-		daoSending.send(items);
+		try {
+			List<SendMessageItem> items = dao.exec("{call dbo.quotes_send_sms_usa_sp}");
+			daoSending.send(items);
+		} catch (PersistenceException e) {
+			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
+				log.info("task Subscription: No data");
+			} else {
+				log.error("task Subscription", e);
+			}
+		}
 	}
 
 	/**
@@ -286,8 +344,16 @@ public class ScheduledTasks {
 	@Scheduled(cron = "0 0 20 * * MON-FRI")
 	public void taskAnalytics() {
 		log.info("task Analytics");
-		List<SendMessageItem> items = dao.exec("{call dbo.analytics_news_send_sms_sp}");
-		daoSending.send(items);
+		try {
+			List<SendMessageItem> items = dao.exec("{call dbo.analytics_news_send_sms_sp}");
+			daoSending.send(items);
+		} catch (PersistenceException e) {
+			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
+				log.info("task Subscription: No data");
+			} else {
+				log.error("task Subscription", e);
+			}
+		}
 	}
 
 	private String[] toArray(Collection<String> list) {

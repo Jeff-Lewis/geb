@@ -176,11 +176,9 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 		return q.executeUpdate();
 	}
 
-	private Map<String, String> map = new HashMap<>();
-
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public synchronized List<SendingItem> sendSms(String text, List<String> phones, Number type) {
+	public List<SendingItem> sendSms(String text, List<String> phones, Number type) {
 		final boolean isSecure = false;
 
 		text = text.replaceAll("\u20AC", "EUR");
@@ -200,15 +198,15 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 			}
 			URI uri = uriBuilder.build();
 
-			map.clear();
+			Map<String, String> map = new HashMap<>(phones.size());
 
-			String xml = createXmlConsumeOutMessageRequest(text, phones, type);
+			String xml = createXmlConsumeOutMessageRequest(map, text, phones, type);
 
 			HttpPost httpPost = new HttpPost(uri);
 			httpPost.setEntity(new StringEntity(xml, "UTF-8"));
+			log.debug("Executing request " + httpPost.getRequestLine());
 
 			try (CloseableHttpClient httpclient = HttpClients.createSystem()) {
-				log.debug("Executing request " + httpPost.getRequestLine());
 				String responseBody = httpclient.execute(httpPost, new ResponseHandler<String>() {
 
 					public String handleResponse(final HttpResponse response)
@@ -224,7 +222,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 
 				});
 				log.debug("Response " + responseBody);
-				return parseConsumeOutMessageResponse(responseBody);
+				return parseConsumeOutMessageResponse(map, responseBody);
 			}
 		} catch (Exception e) {
 			log.error("executeHttpRequest", e);
@@ -232,7 +230,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 		}
 	}
 	
-	private String createXmlConsumeOutMessageRequest(String commonContent, List<String> phones, Number type) {
+	private String createXmlConsumeOutMessageRequest(Map<String, String> map, String commonContent, List<String> phones, Number type) {
 		final String login = "lifein0";
 		final String password = "JWtwRait";
 
@@ -386,7 +384,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 		return q.executeUpdate();
 	}
 
-	private List<SendingItem> parseConsumeOutMessageResponse(String xml) {
+	private List<SendingItem> parseConsumeOutMessageResponse(Map<String, String> map, String xml) {
 		List<SendingItem> result = new ArrayList<>();
 		try {
 			XMLStreamReader sr = XMLInputFactory.newFactory().createXMLStreamReader(new StringReader(xml));

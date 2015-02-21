@@ -459,10 +459,31 @@ public class BloombergDaoImpl implements BloombergDao
 		for (Object object : list) {
 			Object[] arr = (Object[]) object;
 			SendMessageItem item = new SendMessageItem();
-			item.setType(Utils.toNumber(arr[0]));
-			item.setAddrs(Utils.toString(arr[1]));
-			item.setSubj(Utils.toString(arr[2]));
-			item.setText(Utils.toString(arr[3]));
+			switch (arr.length) {
+			case 4:
+				item.setType(Utils.toNumber(arr[0]));
+				item.setAddrs(Utils.toString(arr[1]));
+				item.setSubj(Utils.toString(arr[2]));
+				item.setText(Utils.toString(arr[3]));
+				break;
+
+			case 3:
+				item.setType(1);
+				item.setAddrs(Utils.toString(arr[0]));
+				item.setSubj(Utils.toString(arr[1]));
+				item.setText(Utils.toString(arr[2]));
+				break;
+
+			case 2:
+				item.setType(0);
+				item.setAddrs(Utils.toString(arr[0]));
+				item.setSubj(null);
+				item.setText(Utils.toString(arr[1]));
+				break;
+
+			default:
+				throw new IllegalStateException("Unknow SendMessageItem for " + sql);
+			}
 			res.add(item);
 		}
 		return res;
