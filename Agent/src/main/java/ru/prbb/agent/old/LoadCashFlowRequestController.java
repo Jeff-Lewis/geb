@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.web;
+package ru.prbb.agent.old;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,15 +21,15 @@ import ru.prbb.agent.services.BloombergServices;
  * @author RBr
  */
 @Controller
-@RequestMapping("/LoadRateCouponRequest")
-public class LoadRateCouponRequestController {
+@RequestMapping("/LoadCashFlowRequest")
+public class LoadCashFlowRequestController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public LoadRateCouponRequestController(BloombergServices bs) {
+	public LoadCashFlowRequestController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -38,13 +38,14 @@ public class LoadRateCouponRequestController {
 	public String getHelp() {
 		log.trace("GET");
 
-		return "Выполнить запрос LoadRateCouponRequest"
+		return "Выполнить запрос LoadCashFlowRequest"
 				+ "\n"
 				+ "Параметр\n"
 				+ "ids : [ id;security ]\n"
+				+ "dates : [ date;security ]\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ { id_sec, security, date, value } ]\n"
+				+ "[ { id_sec, security, date, value, value2 } ]\n"
 				+ "\n"
 				+ "\n";
 	}
@@ -52,11 +53,13 @@ public class LoadRateCouponRequestController {
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Object postExecute(
-			@RequestParam(required = false, defaultValue = "Загрузка ставки по купонам") String name,
-			@RequestParam String[] ids)
+			@RequestParam(required = false, defaultValue = "Загрузка дат погашений") String name,
+			@RequestParam String[] ids,
+			@RequestParam String[] dates)
 	{
-		log.info("POST LoadRateCouponRequest: name={}", name);
-		log.info("POST LoadRateCouponRequest: ids={}", (Object) ids);
+		log.info("POST LoadCashFlowRequest: name={}", (Object) name);
+		log.info("POST LoadCashFlowRequest: ids={}", (Object) ids);
+		log.info("POST LoadCashFlowRequest: dates={}", (Object) dates);
 
 		try {
 			Map<String, Long> _ids = new HashMap<>(ids.length, 1);
@@ -66,9 +69,16 @@ public class LoadRateCouponRequestController {
 				String security = s.substring(p + 1);
 				_ids.put(security, id);
 			}
-			return bs.executeLoadRateCouponRequest(name, _ids);
+			Map<String, String> _dates = new HashMap<>(dates.length, 1);
+			for (String s : dates) {
+				int p = s.indexOf(';');
+				String date = s.substring(0, p);
+				String security = s.substring(p + 1);
+				_dates.put(security, date);
+			}
+			return bs.executeLoadCashFlowRequest(name, _ids, _dates);
 		} catch (Exception e) {
-			log.error("POST LoadRateCouponRequest " + e.getMessage(), e);
+			log.error("POST LoadCashFlowRequest " + e.getMessage(), e);
 			return e;
 		}
 	}

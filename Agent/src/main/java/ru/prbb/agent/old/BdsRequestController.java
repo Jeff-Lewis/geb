@@ -1,10 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.web;
-
-import java.util.HashMap;
-import java.util.Map;
+package ru.prbb.agent.old;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +18,15 @@ import ru.prbb.agent.services.BloombergServices;
  * @author RBr
  */
 @Controller
-@RequestMapping("/LoadValuesRequest")
-public class LoadValuesRequestController {
+@RequestMapping("/BdsRequest")
+public class BdsRequestController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public LoadValuesRequestController(BloombergServices bs) {
+	public BdsRequestController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -38,13 +35,18 @@ public class LoadValuesRequestController {
 	public String getHelp() {
 		log.trace("GET");
 
-		return "Выполнить запрос LoadValuesRequest"
+		return "BdsRequest //blp/refdata, ReferenceDataRequest"
 				+ "\n"
 				+ "Параметр\n"
-				+ "ids : [ id;security ]\n"
+				+ "securities\n"
+				+ "fields"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ { id_sec, security, date, value } ]\n"
+				+ "BEST_ANALYST_RECS_BULK -> [ security -> [ { field, value } ] ]\n"
+				+ "EARN_ANN_DT_TIME_HIST_WITH_EPS -> [ security -> [ { field, value } ] ]\n"
+				+ "ERN_ANN_DT_AND_PER -> [ security -> [ { field, value } ] ]\n"
+				+ "PeerTicker -> [ security -> [ peer ] ]\n"
+				+ "Peers -> [ PeerData ]\n"
 				+ "\n"
 				+ "\n";
 	}
@@ -52,23 +54,18 @@ public class LoadValuesRequestController {
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Object postExecute(
-			@RequestParam(required = false, defaultValue = "Загрузка номинала") String name,
-			@RequestParam String[] ids)
+			@RequestParam(required = false, defaultValue = "BdsRequest") String name,
+			@RequestParam String[] securities,
+			@RequestParam String[] fields)
 	{
-		log.info("POST LoadValuesRequest: name={}", name);
-		log.info("POST LoadValuesRequest: {}", (Object) ids);
+		log.info("POST BdsRequest: name={}", name);
+		log.info("POST BdsRequest: securities={}", (Object) securities);
+		log.info("POST BdsRequest: fields={}", (Object) fields);
 
 		try {
-			Map<String, Long> _ids = new HashMap<>(ids.length, 1);
-			for (String s : ids) {
-				int p = s.indexOf(';');
-				Long id = new Long(s.substring(0, p));
-				String security = s.substring(p + 1);
-				_ids.put(security, id);
-			}
-			return bs.executeLoadValuesRequest(name, _ids);
+			return bs.executeBdsRequest(name, securities, fields);
 		} catch (Exception e) {
-			log.error("POST LoadValuesRequest " + e.getMessage(), e);
+			log.error("POST BdsRequest " + e.getMessage(), e);
 			return e;
 		}
 	}

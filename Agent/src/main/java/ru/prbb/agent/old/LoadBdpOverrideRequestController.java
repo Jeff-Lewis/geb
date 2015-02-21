@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.web;
+package ru.prbb.agent.old;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +18,15 @@ import ru.prbb.agent.services.BloombergServices;
  * @author RBr
  */
 @Controller
-@RequestMapping("/ReferenceData")
-public class ReferenceDataController {
+@RequestMapping("/LoadBdpOverrideRequest")
+public class LoadBdpOverrideRequestController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public ReferenceDataController(BloombergServices bs) {
+	public LoadBdpOverrideRequestController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -38,11 +38,11 @@ public class ReferenceDataController {
 		return "Выполнить запрос //blp/refdata"
 				+ "\n"
 				+ "Параметр\n"
-				+ "securities\n"
-				+ "fields\n"
+				+ "currencies : []\n"
+				+ "securities : []\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ { field, value } ] ]\n"
+				+ "[ { security, date, value } ] ]\n"
 				+ "\n"
 				+ "\n";
 	}
@@ -50,18 +50,18 @@ public class ReferenceDataController {
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Object postExecute(
-			@RequestParam(required = false, defaultValue = "ReferenceDataRequest") String name,
+			@RequestParam(required = false, defaultValue = "BDP override") String name,
 			@RequestParam String[] securities,
-			@RequestParam String[] fields)
+			@RequestParam String[] currencies)
 	{
-		log.info("POST ReferenceData: name={}", name);
-		log.info("POST ReferenceData: securities={}", (Object) securities);
-		log.info("POST ReferenceData: fields={}", (Object) fields);
+		log.info("POST LoadBdpOverrideRequest: name={}", name);
+		log.info("POST LoadBdpOverrideRequest: currencies={}", (Object) currencies);
+		log.info("POST LoadBdpOverrideRequest: securities={}", (Object) securities);
 
 		try {
-			return bs.executeReferenceDataRequest(name, securities, fields);
+			return bs.executeBdpOverrideLoad(securities, currencies);
 		} catch (Exception e) {
-			log.error("POST ReferenceData " + e.getMessage(), e);
+			log.error("POST LoadBdpOverrideRequest " + e.getMessage(), e);
 			return e;
 		}
 	}

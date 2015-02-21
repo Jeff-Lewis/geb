@@ -10,7 +10,12 @@
 
     <mvc:annotation-driven />
 
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <bean id="js" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	        <property name="prefix" value="/WEB-INF/js/"/>
+	        <property name="suffix" value=".js"/>
+	</bean>
+
+    <bean id="jsp" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	        <!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
 	        <property name="prefix" value="/WEB-INF/view/"/>
 	        <property name="suffix" value=".jsp"/>

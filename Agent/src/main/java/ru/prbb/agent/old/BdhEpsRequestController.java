@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.web;
+package ru.prbb.agent.old;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,33 +18,36 @@ import ru.prbb.agent.services.BloombergServices;
  * @author RBr
  */
 @Controller
-@RequestMapping("/HistoricalDataRequest")
-public class HistoricalDataRequestController {
+@RequestMapping("/BdhEpsRequest")
+public class BdhEpsRequestController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public HistoricalDataRequestController(BloombergServices bs) {
+	public BdhEpsRequestController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/plain;charset=utf-8")
 	@ResponseBody
 	public String getHelp() {
-		log.trace("GET");
+		log.info("GET help");
 
-		return "Выполнить запрос HistoricalDataRequest"
+		return "Выполнить запрос //blp/refdata, HistoricalDataRequest"
 				+ "\n"
 				+ "Параметр\n"
 				+ "dateStart : yyyymmdd\n"
 				+ "dateEnd : yyyymmdd\n"
+				+ "period\n"
+				+ "calendar\n"
+				+ "currencies\n"
 				+ "securities : [ security|currency ]\n"
 				+ "fields\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> [ date -> [ {field -> value;period;currency;calendar } ] ] ]\n"
+				+ "[ security|currency -> [ date -> [ {field -> value;period;relative_date;currency;calendar } ] ] ]\n"
 				+ "\n"
 				+ "\n";
 	}
@@ -52,23 +55,26 @@ public class HistoricalDataRequestController {
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Object postExecute(
-			@RequestParam(required = false, defaultValue = "HistoricalDataRequest") String name,
+			@RequestParam(required = false, defaultValue = "BdhEpsRequest") String name,
 			@RequestParam String dateStart,
 			@RequestParam String dateEnd,
+			@RequestParam String period,
+			@RequestParam String calendar,
+			@RequestParam String[] currencies,
 			@RequestParam String[] securities,
-			@RequestParam String[] fields,
-			@RequestParam(required = false) String[] currencies)
+			@RequestParam String[] fields)
 	{
-		log.info("POST HistoricalDataRequest: name={}", name);
-		log.info("POST HistoricalDataRequest: dateStart={}, dateEnd={}", dateStart, dateEnd);
-		log.info("POST HistoricalDataRequest: securities={}", (Object) securities);
-		log.info("POST HistoricalDataRequest: fields={}", (Object) fields);
-		log.info("POST HistoricalDataRequest: currencies={}", (Object) currencies);
+		log.info("POST BdhEpsRequest: name={}", name);
+		log.info("POST BdhEpsRequest: dateStart={}, dateEnd={}, period={}, calendar={}", dateStart, dateEnd, period, calendar);
+		log.info("POST BdhEpsRequest: currencies={}", (Object) currencies);
+		log.info("POST BdhEpsRequest: securities={}", (Object) securities);
+		log.info("POST BdhEpsRequest: fields={}", (Object) fields);
 
 		try {
-			return bs.executeHistoricalDataRequest(name, dateStart, dateEnd, securities, fields, currencies);
+			return bs.executeBdhEpsRequest(name, dateStart, dateEnd, period, calendar,
+					currencies, securities, fields);
 		} catch (Exception e) {
-			log.error("POST HistoricalDataRequest " + e.getMessage(), e);
+			log.error("POST BdhEpsRequest " + e.getMessage(), e);
 			return e;
 		}
 	}

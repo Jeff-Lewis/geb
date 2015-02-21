@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.web;
+package ru.prbb.agent.old;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +18,15 @@ import ru.prbb.agent.services.BloombergServices;
  * @author RBr
  */
 @Controller
-@RequestMapping("/LoadBdpOverrideRequest")
-public class LoadBdpOverrideRequestController {
+@RequestMapping("/LoadAtrRequest")
+public class LoadAtrRequestController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public LoadBdpOverrideRequestController(BloombergServices bs) {
+	public LoadAtrRequestController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -35,11 +35,16 @@ public class LoadBdpOverrideRequestController {
 	public String getHelp() {
 		log.trace("GET");
 
-		return "Выполнить запрос //blp/refdata"
+		return "Выполнить запрос //blp/tasvc"
 				+ "\n"
 				+ "Параметр\n"
-				+ "currencies : []\n"
+				+ "startDate : yyyymmdd\n"
+				+ "endDate : yyyymmdd\n"
 				+ "securities : []\n"
+				+ "maType\n"
+				+ "taPeriod\n"
+				+ "period\n"
+				+ "calendar\n"
 				+ "\n"
 				+ "Результат\n"
 				+ "[ { security, date, value } ] ]\n"
@@ -50,18 +55,25 @@ public class LoadBdpOverrideRequestController {
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Object postExecute(
-			@RequestParam(required = false, defaultValue = "BDP override") String name,
+			@RequestParam(required = false, defaultValue = "Загрузка ATR") String name,
+			@RequestParam(value = "startDate") String dateStart,
+			@RequestParam(value = "endDate") String dateEnd,
 			@RequestParam String[] securities,
-			@RequestParam String[] currencies)
+			@RequestParam String maType,
+			@RequestParam Integer taPeriod,
+			@RequestParam String period,
+			@RequestParam String calendar)
 	{
-		log.info("POST LoadBdpOverrideRequest: name={}", name);
-		log.info("POST LoadBdpOverrideRequest: currencies={}", (Object) currencies);
-		log.info("POST LoadBdpOverrideRequest: securities={}", (Object) securities);
+		log.info("POST LoadAtrRequest: name={}", name);
+		log.info("POST LoadAtrRequest: dateStart={}, dateEnd={}, maType={}, taPeriod={}, period={}, calendar={}",
+				dateStart, dateEnd, maType, taPeriod, period, calendar);
+		log.info("POST LoadAtrRequest: securities={}", (Object) securities);
 
 		try {
-			return bs.executeBdpOverrideLoad(securities, currencies);
+			return bs.executeLoadAtrRequest(name, dateStart, dateEnd,
+					securities, maType, taPeriod, period, calendar);
 		} catch (Exception e) {
-			log.error("POST LoadBdpOverrideRequest " + e.getMessage(), e);
+			log.error("POST LoadAtrRequest " + e.getMessage(), e);
 			return e;
 		}
 	}

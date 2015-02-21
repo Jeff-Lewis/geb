@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.web;
+package ru.prbb.agent.old;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +18,15 @@ import ru.prbb.agent.services.BloombergServices;
  * @author RBr
  */
 @Controller
-@RequestMapping("/ReferenceDataOverrideQuarter")
-public class ReferenceDataOverrideQuarterController {
+@RequestMapping("/ReferenceData")
+public class ReferenceDataController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public ReferenceDataOverrideQuarterController(BloombergServices bs) {
+	public ReferenceDataController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -40,11 +40,9 @@ public class ReferenceDataOverrideQuarterController {
 				+ "Параметр\n"
 				+ "securities\n"
 				+ "fields\n"
-				+ "currencies\n"
-				+ "over\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "[ security -> period -> [ { field, value } ] ]\n"
+				+ "[ security -> [ { field, value } ] ]\n"
 				+ "\n"
 				+ "\n";
 	}
@@ -52,22 +50,18 @@ public class ReferenceDataOverrideQuarterController {
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Object postExecute(
-			@RequestParam(required = false, defaultValue = "BdpRequestOverrideQuarter") String name,
+			@RequestParam(required = false, defaultValue = "ReferenceDataRequest") String name,
 			@RequestParam String[] securities,
-			@RequestParam String[] fields,
-			@RequestParam String[] currencies,
-			@RequestParam String over)
+			@RequestParam String[] fields)
 	{
-		log.info("POST ReferenceDataOverrideQuarter: name={}", name);
-		log.info("POST ReferenceDataOverrideQuarter: securities={}", (Object) securities);
-		log.info("POST ReferenceDataOverrideQuarter: fields={}", (Object) fields);
-		log.info("POST ReferenceDataOverrideQuarter: currencies={}", (Object) currencies);
-		log.info("POST ReferenceDataOverrideQuarter: over={}", over);
+		log.info("POST ReferenceData: name={}", name);
+		log.info("POST ReferenceData: securities={}", (Object) securities);
+		log.info("POST ReferenceData: fields={}", (Object) fields);
 
 		try {
-			return bs.executeBdpRequestOverrideQuarter(name, securities, fields, currencies, over);
+			return bs.executeReferenceDataRequest(name, securities, fields);
 		} catch (Exception e) {
-			log.error("POST ReferenceDataOverrideQuarter " + e.getMessage(), e);
+			log.error("POST ReferenceData " + e.getMessage(), e);
 			return e;
 		}
 	}

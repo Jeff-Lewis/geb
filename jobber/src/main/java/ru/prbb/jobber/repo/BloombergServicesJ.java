@@ -3,6 +3,7 @@
  */
 package ru.prbb.jobber.repo;
 
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,11 +21,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.prbb.jobber.domain.AgentTask;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SubscriptionItem;
+import ru.prbb.jobber.services.AgentTaskService;
 
 /**
  * @author RBr
@@ -32,16 +36,52 @@ import ru.prbb.jobber.domain.SubscriptionItem;
 @Service
 public class BloombergServicesJ {
 
-	//public static final String SERVER_JOBBER = "http://192.168.100.101:8080/Jobber"; // Облако
-	public static final String SERVER_JOBBER = "http://172.16.15.36:10180/Jobber"; // Облако редирект
-
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private String executeRequest(Map<String, Object> data) {
-		return ""; // TODO
+	@Autowired
+	private AgentTaskService tasks;
+
+	private String executeRequest(Map<String, Object> data) throws InterruptedException {
+		String json = serialize(data);
+		AgentTask task = new AgentTask(json);
+		tasks.add(task);
+		synchronized (task) {
+			for (int iter = 120, c = 0; c < iter; ++c) {
+				try {
+					task.wait(1000);
+				} catch (InterruptedException ignore) {
+				}
+
+				String result = task.getResult();
+
+				if (result == null) {
+					continue;
+				}
+
+				if ("WAIT".equals(result)) {
+					iter = 600;
+					continue;
+				}
+
+				tasks.remove(task);
+				return result;
+			}
+		}
+		throw new InterruptedException("Agent task execute timeout");
 	}
 
 	private final ObjectMapper m = new ObjectMapper();
+
+	private String serialize(Object object) {
+		try {
+			StringWriter w = new StringWriter();
+			m.writeValue(w, object);
+			return w.toString();
+		} catch (Exception e) {
+			log.error("serialize", e);
+		}
+		throw new RuntimeException("serialize");
+	}
 
 	private Object deserialize(String content) {
 		try {
@@ -70,8 +110,13 @@ public class BloombergServicesJ {
 		m.put("securities", securities);
 		m.put("fields", fields);
 
-		String response = executeRequest(m);
-		return (Map<String, Object>) deserialize(response);
+		try {
+			String response = executeRequest(m);
+			return (Map<String, Object>) deserialize(response);
+		} catch (Exception e) {
+			log.error("BdsRequest", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -96,8 +141,13 @@ public class BloombergServicesJ {
 		m.put("securities", securities);
 		m.put("fields", fields);
 
-		String response = executeRequest(m);
-		return (Map<String, Map<String, String>>) deserialize(response);
+		try {
+			String response = executeRequest(m);
+			return (Map<String, Map<String, String>>) deserialize(response);
+		} catch (Exception e) {
+			log.error("ReferenceData", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -127,8 +177,13 @@ public class BloombergServicesJ {
 		m.put("securities", securities);
 		m.put("fields", fields);
 
-		String response = executeRequest(m);
-		return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
+		try {
+			String response = executeRequest(m);
+			return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
+		} catch (Exception e) {
+			log.error("HistoricalDataRequest", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -159,8 +214,13 @@ public class BloombergServicesJ {
 		m.put("fields", fields);
 		m.put("currencies", currencies);
 
-		String response = executeRequest(m);
-		return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
+		try {
+			String response = executeRequest(m);
+			return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
+		} catch (Exception e) {
+			log.error("HistoricalDataRequest", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -184,8 +244,13 @@ public class BloombergServicesJ {
 		m.put("period", period);
 		m.put("calendar", calendar);
 
-		String response = executeRequest(m);
-		return (List<Map<String, Object>>) deserialize(response);
+		try {
+			String response = executeRequest(m);
+			return (List<Map<String, Object>>) deserialize(response);
+		} catch (Exception e) {
+			log.error("LoadAtrRequest", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -204,8 +269,13 @@ public class BloombergServicesJ {
 		m.put("securities", cursecs);
 		m.put("currencies", currencies);
 
-		String response = executeRequest(m);
-		return (Map<String, Map<String, String>>) deserialize(response);
+		try {
+			String response = executeRequest(m);
+			return (Map<String, Map<String, String>>) deserialize(response);
+		} catch (Exception e) {
+			log.error("LoadBdpOverrideRequest", e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	private Map<SubscriptionItem, List<SecurityItem>> startedSubscriptions = new HashMap<>();
@@ -232,17 +302,28 @@ public class BloombergServicesJ {
 		for (SecurityItem security : securities) {
 			secs.add(security.getCode());
 		}
-		
+
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "SubscriptionStart");
 		m.put("id", item.getId());
 		m.put("name", "Start subscriptions" + item.getName());
-		m.put("uriCallback", SERVER_JOBBER + "/Subscription");
+		// FIXME uriCallback
+		// m.put("uriCallback",
+		// "http://192.168.100.101:8080/Jobber/Subscription"); // Облако
+		// m.put("uriCallback",
+		// "http://172.16.15.36:10180/Jobber/Subscription"); // Облако редирект
+		m.put("uriCallback", "http://172.16.15.36:10190/Jobber/Subscription"); // Облако
+																				// редирект
 		m.put("securities", secs);
 
-		String response = executeRequest(m);
-		if ("STARTED".equals(response)) {
-			startedSubscriptions.put(item, securities);
+		try {
+			String response = executeRequest(m);
+			if ("STARTED".equals(response)) {
+				startedSubscriptions.put(item, securities);
+			}
+		} catch (Exception e) {
+			log.error("SubscriptionStart", e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -255,9 +336,14 @@ public class BloombergServicesJ {
 		List<NameValuePair> nvps = new ArrayList<>();
 		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
 
-		String response = executeRequest(m);
-		if ("STOPPED".equals(response)) {
-			startedSubscriptions.remove(item);
+		try {
+			String response = executeRequest(m);
+			if ("STOPPED".equals(response)) {
+				startedSubscriptions.remove(item);
+			}
+		} catch (Exception e) {
+			log.error("SubscriptionStop", e);
+			throw new RuntimeException(e);
 		}
 	}
 

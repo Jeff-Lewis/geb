@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.prbb.agent.web;
+package ru.prbb.agent.old;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +18,15 @@ import ru.prbb.agent.services.BloombergServices;
  * @author RBr
  */
 @Controller
-@RequestMapping("/BdsRequest")
-public class BdsRequestController {
+@RequestMapping("/ReferenceDataOverrideQuarter")
+public class ReferenceDataOverrideQuarterController {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final BloombergServices bs;
 
 	@Autowired
-	public BdsRequestController(BloombergServices bs) {
+	public ReferenceDataOverrideQuarterController(BloombergServices bs) {
 		this.bs = bs;
 	}
 
@@ -35,18 +35,16 @@ public class BdsRequestController {
 	public String getHelp() {
 		log.trace("GET");
 
-		return "BdsRequest //blp/refdata, ReferenceDataRequest"
+		return "Выполнить запрос //blp/refdata"
 				+ "\n"
 				+ "Параметр\n"
 				+ "securities\n"
-				+ "fields"
+				+ "fields\n"
+				+ "currencies\n"
+				+ "over\n"
 				+ "\n"
 				+ "Результат\n"
-				+ "BEST_ANALYST_RECS_BULK -> [ security -> [ { field, value } ] ]\n"
-				+ "EARN_ANN_DT_TIME_HIST_WITH_EPS -> [ security -> [ { field, value } ] ]\n"
-				+ "ERN_ANN_DT_AND_PER -> [ security -> [ { field, value } ] ]\n"
-				+ "PeerTicker -> [ security -> [ peer ] ]\n"
-				+ "Peers -> [ PeerData ]\n"
+				+ "[ security -> period -> [ { field, value } ] ]\n"
 				+ "\n"
 				+ "\n";
 	}
@@ -54,18 +52,22 @@ public class BdsRequestController {
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public Object postExecute(
-			@RequestParam(required = false, defaultValue = "BdsRequest") String name,
+			@RequestParam(required = false, defaultValue = "BdpRequestOverrideQuarter") String name,
 			@RequestParam String[] securities,
-			@RequestParam String[] fields)
+			@RequestParam String[] fields,
+			@RequestParam String[] currencies,
+			@RequestParam String over)
 	{
-		log.info("POST BdsRequest: name={}", name);
-		log.info("POST BdsRequest: securities={}", (Object) securities);
-		log.info("POST BdsRequest: fields={}", (Object) fields);
+		log.info("POST ReferenceDataOverrideQuarter: name={}", name);
+		log.info("POST ReferenceDataOverrideQuarter: securities={}", (Object) securities);
+		log.info("POST ReferenceDataOverrideQuarter: fields={}", (Object) fields);
+		log.info("POST ReferenceDataOverrideQuarter: currencies={}", (Object) currencies);
+		log.info("POST ReferenceDataOverrideQuarter: over={}", over);
 
 		try {
-			return bs.executeBdsRequest(name, securities, fields);
+			return bs.executeBdpRequestOverrideQuarter(name, securities, fields, currencies, over);
 		} catch (Exception e) {
-			log.error("POST BdsRequest " + e.getMessage(), e);
+			log.error("POST ReferenceDataOverrideQuarter " + e.getMessage(), e);
 			return e;
 		}
 	}
