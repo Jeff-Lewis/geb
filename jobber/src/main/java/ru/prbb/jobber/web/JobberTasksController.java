@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import ru.prbb.jobber.services.ScheduledTasks;
+import ru.prbb.jobber.services.ScheduledServices;
 
 /**
  * Ручной запуск задач Жобера
@@ -21,7 +21,7 @@ public class JobberTasksController {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private ScheduledTasks tasks;
+	private ScheduledServices tasks;
 
 	@RequestMapping(value = "/LoadBds")
 	public String taskLoadBds(Model model) {
@@ -82,7 +82,7 @@ public class JobberTasksController {
 	@RequestMapping(value = "/MsgSubscription")
 	public String taskMsgSubscription() {
 		log.info("web MsgSubscription");
-		tasks.taskSubscription();
+		tasks.taskSubscriptionCheck();
 		return "redirect:/";
 	}
 
