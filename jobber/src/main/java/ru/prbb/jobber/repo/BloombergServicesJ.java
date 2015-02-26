@@ -105,7 +105,7 @@ public class BloombergServicesJ {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> executeBdsRequest(String name, String[] securities, String[] fields) {
 		Map<String, Object> m = new HashMap<>();
-		m.put("type", "BdsRequest");
+		m.put("type", "executeBdsRequest");
 		m.put("name", name);
 		m.put("securities", securities);
 		m.put("fields", fields);
@@ -136,7 +136,7 @@ public class BloombergServicesJ {
 	public Map<String, Map<String, String>> executeReferenceDataRequest(String name,
 			String[] securities, String[] fields) {
 		Map<String, Object> m = new HashMap<>();
-		m.put("type", "ReferenceData");
+		m.put("type", "executeReferenceDataRequest");
 		m.put("name", name);
 		m.put("securities", securities);
 		m.put("fields", fields);
@@ -170,12 +170,13 @@ public class BloombergServicesJ {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
 		Map<String, Object> m = new HashMap<>();
-		m.put("type", "HistoricalDataRequest");
+		m.put("type", "executeHistoricalDataRequest");
 		m.put("name", name);
 		m.put("dateStart", sdf.format(startDate));
 		m.put("dateEnd", sdf.format(endDate));
 		m.put("securities", securities);
 		m.put("fields", fields);
+		m.put("currencies", null);
 
 		try {
 			String response = executeRequest(m);
@@ -206,7 +207,7 @@ public class BloombergServicesJ {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
 		Map<String, Object> m = new HashMap<>();
-		m.put("type", "HistoricalDataRequest");
+		m.put("type", "executeHistoricalDataRequest");
 		m.put("name", name);
 		m.put("dateStart", sdf.format(startDate));
 		m.put("dateEnd", sdf.format(endDate));
@@ -234,7 +235,7 @@ public class BloombergServicesJ {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
 		Map<String, Object> m = new HashMap<>();
-		m.put("type", "LoadAtrRequest");
+		m.put("type", "executeAtrLoad");
 		m.put("name", name);
 		m.put("dateStart", sdf.format(startDate));
 		m.put("dateEnd", sdf.format(endDate));
@@ -264,9 +265,9 @@ public class BloombergServicesJ {
 		}
 
 		Map<String, Object> m = new HashMap<>();
-		m.put("type", "LoadBdpOverrideRequest");
+		m.put("type", "executeBdpOverrideLoad");
 		m.put("name", name);
-		m.put("securities", cursecs);
+		m.put("cursecs", cursecs);
 		m.put("currencies", currencies);
 
 		try {
@@ -308,12 +309,12 @@ public class BloombergServicesJ {
 		m.put("id", item.getId());
 		m.put("name", "Start subscriptions" + item.getName());
 		// FIXME uriCallback
-		// m.put("uriCallback",
-		// "http://192.168.100.101:8080/Jobber/Subscription"); // Облако
-		// m.put("uriCallback",
-		// "http://172.16.15.36:10180/Jobber/Subscription"); // Облако редирект
-		m.put("uriCallback", "http://172.16.15.36:10190/Jobber/Subscription"); // Облако
-																				// редирект
+		// Облако
+		// m.put("uriCallback", "http://192.168.100.101:8080/Jobber/Subscription");
+		// Облако редирект
+		m.put("uriCallback", "http://172.16.15.36:10180/Jobber/Subscription");
+		// Облако редирект
+		//m.put("uriCallback", "http://172.16.15.36:10190/Jobber/Subscription");
 		m.put("securities", secs);
 
 		try {

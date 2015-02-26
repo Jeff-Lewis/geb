@@ -39,7 +39,7 @@ public final class BloombergServices {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	public Map<String, Map<String, String>> executeBdpOverrideLoad(String[] securities, String[] currencies) {
+	public Map<String, Map<String, String>> executeBdpOverrideLoad(String name, String[] securities, String[] currencies) {
 		log.info("BdpOverrideLoad:");
 
 		List<SecForJobRequest> jobSecurities = new ArrayList<>();
@@ -56,7 +56,7 @@ public final class BloombergServices {
 
 		final BdpOverrideRequest r = new BdpOverrideRequest(jobSecurities);
 
-		r.execute("Jobber/BDP override");
+		r.execute(name);
 
 		return r.getAnswer();
 	}

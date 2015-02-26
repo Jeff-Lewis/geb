@@ -59,7 +59,7 @@ public class LoadBdpOverrideRequestController {
 		log.info("POST LoadBdpOverrideRequest: securities={}", (Object) securities);
 
 		try {
-			return bs.executeBdpOverrideLoad(securities, currencies);
+			return bs.executeBdpOverrideLoad("Jobber/BDP override", securities, currencies);
 		} catch (Exception e) {
 			log.error("POST LoadBdpOverrideRequest " + e.getMessage(), e);
 			return e;

@@ -9,11 +9,8 @@
 	<context:component-scan base-package="ru.prbb.agent.web" />
 
     <mvc:annotation-driven />
-
-    <bean id="js" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-	        <property name="prefix" value="/WEB-INF/js/"/>
-	        <property name="suffix" value=".js"/>
-	</bean>
+	
+	<mvc:resources mapping="/js/**" location="/WEB-INF/js/" />
 
     <bean id="jsp" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	        <!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->

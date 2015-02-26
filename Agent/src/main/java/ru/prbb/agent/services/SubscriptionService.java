@@ -18,7 +18,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -50,9 +50,9 @@ public class SubscriptionService {
 	 * Зарегистрированные подписки<br>
 	 * id -> thread
 	 */
-	private final Map<Long, SubscriptionThread> threads = new HashMap<Long, SubscriptionThread>();
+	private final Map<Integer, SubscriptionThread> threads = new HashMap<>();
 
-	public String start(Long id, String[] securities, String uriCallback) {
+	public String start(Integer id, String[] securities, String uriCallback) {
 		synchronized (threads) {
 			SubscriptionThread thread = threads.get(id);
 			if (null == thread) {
@@ -74,7 +74,7 @@ public class SubscriptionService {
 		}
 	}
 
-	public String stop(Long id) {
+	public String stop(Integer id) {
 		synchronized (threads) {
 			SubscriptionThread thread = threads.get(id);
 			if (null == thread) {
@@ -108,7 +108,7 @@ public class SubscriptionService {
 
 	private class SubscriptionThread extends Thread implements ResponseHandler<String> {
 
-		private final Long id;
+		private final Integer id;
 		private final String uriCallback;
 
 		private volatile boolean isRun = true;
@@ -116,7 +116,7 @@ public class SubscriptionService {
 		private Session session;
 
 
-		public SubscriptionThread(Long id, String uriCallback) {
+		public SubscriptionThread(Integer id, String uriCallback) {
 			super("Subscription #" + id);
 			this.id = id;
 			this.uriCallback = uriCallback;
@@ -206,10 +206,10 @@ public class SubscriptionService {
 						nvps.add(new BasicNameValuePair("id", id.toString()));
 						nvps.add(new BasicNameValuePair("data", data.toString()));
 
-						HttpPut httpPut = new HttpPut(uriCallback);
-						httpPut.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+						HttpPost httpPost = new HttpPost(uriCallback);
+						httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
 
-						String response = httpclient.execute(httpPut, this);
+						String response = httpclient.execute(httpPost, this);
 						if (!"OK".equals(response))
 							log.error(response);
 					}

@@ -29,7 +29,7 @@ public class SubscriptionController {
 	@RequestMapping("/Start")
 	@ResponseBody
 	public String postStart(
-			@RequestParam Long id,
+			@RequestParam Integer id,
 			@RequestParam String[] securities,
 			@RequestParam String uriCallback) {
 		log.debug("Subscription: Start id={}, uriCallback={}, securities={}", id, uriCallback, securities);
@@ -39,7 +39,7 @@ public class SubscriptionController {
 	@RequestMapping("/Stop")
 	@ResponseBody
 	public String postStop(
-			@RequestParam Long id) {
+			@RequestParam Integer id) {
 		log.debug("Subscription: Stop id={}", id);
 		return ss.stop(id);
 	}

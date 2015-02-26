@@ -26,7 +26,7 @@ public class AgentTaskController
 	@ResponseBody
 	public String get()
 	{
-		log.info("GET /Agents");
+		//log.info("GET /Agents");
 		try {
 			AgentTask task = tasks.next();
 			return (task != null) ? task.getJson() : "";

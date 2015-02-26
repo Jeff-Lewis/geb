@@ -24,13 +24,13 @@ public class SubscriptionController
 	@Autowired
 	private SubscriptionDao dao;
 
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public String put(
+	public String post(
 			@RequestParam Long id,
 			@RequestParam String data)
 	{
-		log.debug("PUT /Subscription id={}: data={}", id, data);
+		log.debug("POST /Subscription id={}: data={}", id, data);
 
 		String[] lines = data.split("\n");
 		List<String[]> result = new ArrayList<>(lines.length);

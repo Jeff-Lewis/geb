@@ -37,8 +37,8 @@ public class SubscriptionTask {
 	 * Проверка статуса подписок.<br>
 	 * Запуск и остановка при его изменении.
 	 */
-	@Scheduled(initialDelay = 2000, fixedRate = 30 * 1000)
-	public synchronized void execute() {
+	@Scheduled(initialDelay = 2000, fixedRate = 10 * 1000)
+	public void execute() {
 		log.debug("Subscriptions execute");
 
 		List<SubscriptionItem> list = dao.getSubscriptions();
@@ -59,7 +59,7 @@ public class SubscriptionTask {
 	 * 2. обновление указателей на активный контракт для фьючей
 	 */
 	@Scheduled(cron = "30 00 03 * * ?")
-	public synchronized void stop() {
+	public void stop() {
 		log.info("Subscriptions stop");
 
 		List<SubscriptionItem> subscriptions = dao.getSubscriptions();
