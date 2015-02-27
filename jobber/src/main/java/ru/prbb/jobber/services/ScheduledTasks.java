@@ -8,9 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SubscriptionItem;
@@ -24,8 +21,8 @@ import ru.prbb.jobber.repo.SubscriptionDao;
  * 
  * @author RBr
  */
-@Configuration
-@EnableScheduling
+//@Configuration
+//@EnableScheduling
 public class ScheduledTasks {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -44,7 +41,7 @@ public class ScheduledTasks {
 	 * Проверка статуса подписок.<br>
 	 * Запуск и остановка при его изменении.
 	 */
-	@Scheduled(initialDelay = 2000, fixedRate = 10 * 1000)
+	//@Scheduled(initialDelay = 2000, fixedRate = 10 * 1000)
 	public void subscriptionExecute() {
 		log.debug("Subscriptions execute");
 
@@ -65,7 +62,7 @@ public class ScheduledTasks {
 	 * 1. блумберг изредка сходил сума и переставал отдавать данные по тикерам избирательно
 	 * 2. обновление указателей на активный контракт для фьючей
 	 */
-	@Scheduled(cron = "30 00 03 * * *")
+	//@Scheduled(cron = "30 00 03 * * *")
 	public void subscriptionStop() {
 		log.info("Subscriptions stop");
 

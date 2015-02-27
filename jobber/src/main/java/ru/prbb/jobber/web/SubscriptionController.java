@@ -30,16 +30,18 @@ public class SubscriptionController
 			@RequestParam Long id,
 			@RequestParam String data)
 	{
-		log.debug("POST /Subscription id={}: data={}", id, data);
+		//log.debug("POST /Subscription id={}: data={}", id, data);
 
 		String[] lines = data.split("\n");
 		List<String[]> result = new ArrayList<>(lines.length);
 		for (String line : lines) {
-			String[] arr = line.split("\t");
-			if (arr.length != 3) {
-				log.error("Data line:" + line);
-			} else {
-				result.add(arr);
+			if (!line.isEmpty()) {
+				String[] arr = line.split("\t");
+				if (arr.length != 3) {
+					log.error("Data line:" + line);
+				} else {
+					result.add(arr);
+				}
 			}
 		}
 

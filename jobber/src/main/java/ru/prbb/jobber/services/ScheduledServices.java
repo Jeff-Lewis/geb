@@ -53,9 +53,9 @@ public class ScheduledServices {
 	 * Проверка статуса подписок.<br>
 	 * Запуск и остановка при его изменении.
 	 */
-	@Scheduled(initialDelay = 2000, fixedRate = 10 * 1000)
+	@Scheduled(cron = "0/15 * * * * *")
 	public void subscriptionExecute() {
-		log.debug("Subscription");
+		log.info("Subscription");
 
 		List<SubscriptionItem> list = daoSubscription.getSubscriptions();
 		for (SubscriptionItem subscription : list) {
@@ -73,7 +73,7 @@ public class ScheduledServices {
 	 * 1. блумберг изредка сходил сума и переставал отдавать данные по тикерам избирательно
 	 * 2. обновление указателей на активный контракт для фьючей
 	 */
-	@Scheduled(cron = "30 00 03 * * *")
+	@Scheduled(cron = "30 0 3 * * *")
 	public void subscriptionStop() {
 		log.info("Stop subscription");
 
@@ -83,7 +83,7 @@ public class ScheduledServices {
 		}
 	}
 
-	@Scheduled(cron = "0 00 3 * * *")
+	@Scheduled(cron = "0 0 3 * * *")
 	public void taskBdsLoad() {
 		log.info("task BdsLoad");
 
@@ -139,7 +139,7 @@ public class ScheduledServices {
 		daoBloomberg.execQuotesPortfolio(new java.sql.Date(yesterday().getTime()));
 	}
 
-	@Scheduled(cron = "0 00 5 * * *")
+	@Scheduled(cron = "0 0 5 * * *")
 	public void taskQuotesLoad() {
 		taskQuotesPortfolio();
 
@@ -172,7 +172,7 @@ public class ScheduledServices {
 		daoBloomberg.putAtrData(securities, answer);
 	}
 
-	@Scheduled(cron = "0 00 6 * * *")
+	@Scheduled(cron = "0 0 6 * * *")
 	public void taskBdpOverrideLoad() {
 		log.info("task BdpOverrideLoad");
 		
@@ -184,7 +184,7 @@ public class ScheduledServices {
 		daoBloomberg.putOverrideData(securities, answer);
 	}
 
-	@Scheduled(cron = "0 00 7 * * *")
+	@Scheduled(cron = "0 0 7 * * *")
 	public void taskHistDataLoad() {
 		log.info("task HistDataLoad");
 
@@ -217,7 +217,7 @@ public class ScheduledServices {
 		daoBloomberg.putHistParamsData(_date, currencies, cursec, answer);
 	}
 
-	@Scheduled(cron = "0 00 8 * * *")
+	@Scheduled(cron = "0 0 8 * * *")
 	public void taskCurrenciesDataLoad() {
 		log.info("task CurrenciesDataLoad");
 
@@ -285,7 +285,7 @@ public class ScheduledServices {
 	 * Рассылка котировок, основываясь на файлике Quotes.xls и используя jsp
 	 * Пн.-Пт., с 10:00 каждые 30 минут на протяжении 15 часов 15 минут
 	 */
-	@Scheduled(cron = "0 0,30 0,10-23 * * MON-FRI")
+	@Scheduled(cron = "0 0/30 0,10-23 * * MON-FRI")
 	public void taskQuotes() {
 		log.info("task Quotes");
 		try {
@@ -321,7 +321,7 @@ public class ScheduledServices {
 	/**
 	 * Отправка E-mail оповещений с котировками по России
 	 */
-	@Scheduled(cron = "0 0,30 * * * *")
+	@Scheduled(cron = "0 0/30 * * * *")
 	public void taskQuotesRus() {
 		log.info("task QuotesRus");
 		try {

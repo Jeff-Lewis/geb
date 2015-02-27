@@ -29,6 +29,11 @@ public class Utils {
 
 	public static final Locale LOCALE = new Locale("RU", "ru");
 
+	public static boolean isDebug() {
+		String s = System.getenv("JAVA_DEBUG");
+		return s != null ? Boolean.parseBoolean(s) : false;
+	}
+
 	/**
 	 * Проверить строку на содержимое
 	 * 

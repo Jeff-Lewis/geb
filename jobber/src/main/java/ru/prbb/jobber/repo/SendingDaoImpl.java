@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -54,6 +55,9 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 
 	@Autowired
 	protected EntityManager em;
+
+	@Resource(mappedName = "java:jboss/mail/wwi")
+	private Session mailSessionWWI;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@SuppressWarnings("unchecked")
@@ -116,9 +120,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 
 		List<SendingItem> result = new ArrayList<>(emails.size());
 
-		// create session
-		//java:jboss/mail/Default
-		Session session = Session.getDefaultInstance(System.getProperties());
+		Session session = mailSessionWWI;
 		try {
 			Transport tr = session.getTransport();
 			try {
@@ -184,6 +186,17 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 		text = text.replaceAll("\u20AC", "EUR");
 		text = text.replaceAll("\u00A5", "JPY");
 		text = text.replaceAll("\u00A3", "GBP");
+
+		if (Utils.isDebug()) {
+			List<SendingItem> res =new ArrayList<>(phones.size());
+			for (String phone : phones) {
+				SendingItem e = new SendingItem();
+				e.setMail(phone);
+				e.setStatus("Отправлено для отладки");
+				res.add(e);
+			}
+			return res;
+		}
 
 		try {
 			URIBuilder uriBuilder = new URIBuilder()
