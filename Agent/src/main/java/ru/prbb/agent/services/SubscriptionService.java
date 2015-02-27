@@ -52,7 +52,7 @@ public class SubscriptionService {
 	 */
 	private final Map<Integer, SubscriptionThread> threads = new HashMap<>();
 
-	public String start(Integer id, String[] securities, String uriCallback) {
+	public String start(Integer id, String name, String[] securities, String uriCallback) {
 		synchronized (threads) {
 			SubscriptionThread thread = threads.get(id);
 			if (null == thread) {
@@ -74,7 +74,7 @@ public class SubscriptionService {
 		}
 	}
 
-	public String stop(Integer id) {
+	public String stop(Integer id, String name) {
 		synchronized (threads) {
 			SubscriptionThread thread = threads.get(id);
 			if (null == thread) {

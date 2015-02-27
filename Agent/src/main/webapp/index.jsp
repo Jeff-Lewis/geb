@@ -11,26 +11,32 @@
 <script src="js/jquery.cookie.js"></script>
 <script type="text/javascript">
 	var intervalId;
+	
+	function updateStatus() {
+		$.get('status', function(data) {
+			$('#serversBody').html(data);
+		}, 'html');
+	}
 
 	$(document).ready(function(doc) {
-		$('#start').click(function onStartClick() {
+		updateStatus();
+		intervalId = window.setInterval(updateStatus, 5000);
+
+		$('#add').click(function onStartClick() {
 			var val = $('#address').val();
-			$.post('start', {
-				host : val
-			}, function successStart() {
-				intervalId = window.setInterval(function() {
-					$.get('status', function(data) {
-						$('#info').html(data);
-					}, 'html');
-				}, 1000);
-			});
+			//$.post('start', {
+			//	host : val
+			//}, function successStart() {
+			//});
 		});
 
-		$('#stop').click(function onStopClick() {
-			$.post('stop', null, function successStop() {
-				window.clearInterval(intervalId);
-			});
+		$('#del').click(function onStopClick() {
+			var val = $('#address').val();
+			//$.post('stop', null, function successStop() {
+			//	window.clearInterval(intervalId);
+			//});
 		});
+
 	});
 </script>
 </head>
@@ -39,15 +45,23 @@
 		<div id="control">
 			<h1>Bloomberg Agent at <%=request.getLocalAddr()%></h1>
 			Сервер Jobber <input id="address" type="text" size="50"
-				value="http://172.16.15.36:10180/Jobber/AgentTask" /><br /> Агент <input
-				id="start" type="button" value="Старт" /> <input id="stop"
-				type="button" value="Стоп" />
+				value="172.16.15.36:10180" />
+			<input id="add" type="button" value="Добавить" />
+		 	<input id="del" type="button" value="Удалить" />
 		</div>
 	</header>
+
+	<div id="servers">
+	<table border="1">
+	<thead>
+	<tr><td>Сервер</td><td>Статус</td></tr>
+	</thead>
+	<tbody id="serversBody">
+	</tbody>
+	</table>
+	</div>
+
 	<div id="info">
-	<jsp:useBean id="worker" class="ru.prbb.agent.services.TaskWorkerService">
-	</jsp:useBean>
-	<jsp:getProperty property="status" name="worker"/>
 	</div>
 </body>
 </html>

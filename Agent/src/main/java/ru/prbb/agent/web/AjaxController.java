@@ -1,6 +1,6 @@
 package ru.prbb.agent.web;
 
-import java.net.URISyntaxException;
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ru.prbb.agent.services.TaskWorkerService;
+import ru.prbb.agent.domain.JobServer;
+import ru.prbb.agent.services.JobServerRepository;
 
 /**
  * @author RBr
@@ -23,48 +24,55 @@ public class AjaxController {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private TaskWorkerService worker;
+	private JobServerRepository servers;
 
 	@RequestMapping(value = "/start", method = RequestMethod.POST)
 	@ResponseBody
 	public String start(
-			@RequestParam(required = false) String host) {
+			@RequestParam(required = false, defaultValue = "") String host) {
 		log.debug("Start: host={}", host);
 
-		if (worker.isRunning()) {
-			return "ERROR: Already running";
+		if (host.isEmpty()) {
+			return "{ RESULT : false, ERROR : 'host is empty' }";
 		}
 
-		if (host != null && host.length() > 0) {
-			try {
-				worker.start(host);
-				return "Started";
-			} catch (URISyntaxException e) {
-				return "ERROR: " + e.getMessage();
-			}
-		}
+		servers.add(host);
 
-		return "ERROR: host is empty";
+		return "{ RESULT : true }";
 	}
 
 	@RequestMapping(value = "/stop", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public String stop() {
-		log.debug("Stop");
+	public String stop(
+			@RequestParam(required = false, defaultValue = "") String host) {
+		log.debug("Stop: host={}", host);
 
-		if (worker.isRunning()) {
-			worker.stop();
-			return "Stopped";
+		if (host.isEmpty()) {
+			return "{ RESULT : false, ERROR : 'host is empty' }";
 		}
 
-		return "ERROR: Not running";
+		servers.remove(host);
+
+		return "{ RESULT : true }";
 	}
 
-	@RequestMapping(value = "/status", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/status", method = RequestMethod.GET)
 	@ResponseBody
 	public String getStatus() {
 		log.debug("Status");
 
-		return worker.getStatus();
+		StringBuilder sb = new StringBuilder();
+
+		Iterator<JobServer> it = servers.getServers();
+		while (it.hasNext()) {
+			JobServer server = it.next();
+			sb.append("<tr><td>");
+			sb.append(server);
+			sb.append("</td><td>");
+			sb.append(server.getStatus());
+			sb.append("</td></tr>");
+		}
+
+		return sb.toString();
 	}
 }
