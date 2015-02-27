@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.PreDestroy;
@@ -40,10 +41,13 @@ public class BloombergServicesJ {
 
 	@Autowired
 	private AgentTaskService tasks;
+	private Random rnd = new Random(System.currentTimeMillis());
 
 	private String executeRequest(Map<String, Object> data) throws InterruptedException {
+		long idTask = rnd.nextLong();
+		data.put("idTask", idTask);
 		String json = serialize(data);
-		AgentTask task = new AgentTask(json);
+		AgentTask task = new AgentTask(idTask, json);
 		tasks.add(task);
 		synchronized (task) {
 			for (int iter = 120, c = 0; c < iter; ++c) {

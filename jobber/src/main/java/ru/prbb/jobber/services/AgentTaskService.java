@@ -27,9 +27,9 @@ public class AgentTaskService {
 		return null;
 	}
 
-	public AgentTask find(String json) {
+	public AgentTask find(long idTask) {
 		for (AgentTask task : tasks) {
-			if (task.getJson().equals(json)) {
+			if (task.getIdTask() == idTask) {
 				return task;
 			}
 		}

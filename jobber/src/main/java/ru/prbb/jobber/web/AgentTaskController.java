@@ -38,12 +38,13 @@ public class AgentTaskController
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public String put(
-			@RequestParam String json,
+			@RequestParam String type,
+			@RequestParam Long idTask,
 			@RequestParam String result)
 	{
 		log.info("POST /Agents");
 		try {
-			AgentTask task = tasks.find(json);
+			AgentTask task = tasks.find(idTask);
 			task.setResult(result);
 			return "OK";
 		} catch (Exception e) {

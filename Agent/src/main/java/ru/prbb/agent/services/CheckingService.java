@@ -118,11 +118,11 @@ public class CheckingService {
 			
 			Map<String, Object> result = new HashMap<>();
 			result.put("type", type);
-			result.put("hash", request.get("hash"));
+			result.put("idTask", request.get("idTask"));
 			result.put("result", resultTask);
 
 			StringWriter w = new StringWriter();
-			mapper.writeValue(w, resultTask);
+			mapper.writeValue(w, result);
 
 			server.setStatus("Отправляется ответ " + type);
 			httpClient.execute(server.getUriResponse(w.toString()), responseHandler);
