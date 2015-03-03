@@ -58,15 +58,12 @@ public class SubscriptionService {
 			if (null == thread) {
 				thread = new SubscriptionThread(id, uriCallback);
 				try {
-					if (thread.startSession(securities)) {
-						threads.put(id, thread);
-						return "STARTED";
-					} else {
-						return "ERROR";
-					}
+					thread.startSession(securities);
+					threads.put(id, thread);
+					return "STARTED";
 				} catch (Exception e) {
 					log.error("Start session failed", e);
-					return "ERROR\n" + e.toString();
+					return "ERROR:" + e.getMessage();
 				}
 			} else {
 				return "IS ALREADY RUNNING";
@@ -86,7 +83,7 @@ public class SubscriptionService {
 					return "STOPPED";
 				} catch (Exception e) {
 					log.error("Stop session failed", e);
-					return "ERROR\n" + e.toString();
+					return "ERROR:" + e.getMessage();
 				}
 			}
 		}
@@ -123,7 +120,7 @@ public class SubscriptionService {
 			setDaemon(true);
 		}
 
-		public boolean startSession(String[] securities) {
+		public void startSession(String[] securities) {
 			SessionOptions sessionOptions = new SessionOptions();
 			sessionOptions.setServerHost("localhost");
 			sessionOptions.setServerPort(8194);
@@ -145,27 +142,22 @@ public class SubscriptionService {
 
 			try {
 				if (!session.start()) {
-					log.error("Failed to start session.");
-					return false;
+					throw new RuntimeException("Failed to start session.");
 				}
 
 				if (!session.openService("//blp/mktdata")) {
-					log.error("Failed to open //blp/mktdata");
-					return false;
+					throw new RuntimeException("Failed to open //blp/mktdata");
 				}
 
 				log.debug("Subscribing...");
 				session.subscribe(subscriptions);
 			} catch (Exception e) {
-				log.error("Error starting subscription", e);
-				return false;
+				throw new RuntimeException("Error starting subscription:" + e.getMessage(), e);
 			}
 
 			start();
 
 			log.info("Start " + getName());
-
-			return true;
 		}
 
 		public void stopSession() {
@@ -214,6 +206,8 @@ public class SubscriptionService {
 							log.error(response);
 					}
 				}
+			} catch (IOException e) {
+				log.error("Execute HTTP Post", e);
 			} catch (Exception e) {
 				log.error("Get next session event", e);
 			} finally {

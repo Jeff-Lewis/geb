@@ -6,7 +6,6 @@ package ru.prbb.jobber.repo;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
-import javax.annotation.PreDestroy;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -63,7 +60,7 @@ public class BloombergServicesJ {
 				}
 
 				if ("WAIT".equals(result)) {
-					iter = 600;
+					iter = 1200;
 					continue;
 				}
 
@@ -283,24 +280,8 @@ public class BloombergServicesJ {
 		}
 	}
 
-	private Map<SubscriptionItem, List<SecurityItem>> startedSubscriptions = new HashMap<>();
-
-	@PreDestroy
-	public void destroy() {
-		log.info("@PreDestroy: Subscriptions stop");
-
-		for (SubscriptionItem item : startedSubscriptions.keySet()) {
-			subscriptionStop(item);
-		}
-	}
-
 	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
 		if (securities == null || securities.isEmpty())
-			return;
-
-		Collections.sort(securities);
-
-		if (securities.equals(startedSubscriptions.get(item)))
 			return;
 
 		List<String> secs = new ArrayList<>(securities.size());
@@ -313,18 +294,22 @@ public class BloombergServicesJ {
 		m.put("id", item.getId());
 		m.put("name", "Start subscriptions" + item.getName());
 		// FIXME uriCallback
+//		m.put("uriCallback", "http://172.23.153.164:8080/Jobber/Subscription");
 		// Облако
-		// m.put("uriCallback", "http://192.168.100.101:8080/Jobber/Subscription");
+		//m.put("uriCallback", "http://192.168.100.101:8080/Jobber/Subscription");
 		// Облако редирект
 		m.put("uriCallback", "http://172.16.15.36:10180/Jobber/Subscription");
 		// Облако редирект
 		//m.put("uriCallback", "http://172.16.15.36:10190/Jobber/Subscription");
+		
 		m.put("securities", secs);
 
 		try {
 			String response = executeRequest(m);
-			if ("STARTED".equals(response)) {
-				startedSubscriptions.put(item, securities);
+			if (response.contains("STARTED")) {
+				log.info(response);
+			} else {
+				log.error(response);
 			}
 		} catch (Exception e) {
 			log.error("SubscriptionStart", e);
@@ -343,8 +328,10 @@ public class BloombergServicesJ {
 
 		try {
 			String response = executeRequest(m);
-			if ("STOPPED".equals(response)) {
-				startedSubscriptions.remove(item);
+			if (response.contains("STOPPED")) {
+				log.info(response);
+			} else {
+				log.error(response);
 			}
 		} catch (Exception e) {
 			log.error("SubscriptionStop", e);

@@ -25,8 +25,9 @@ public class JobServerRepository {
 	@PostConstruct
 	public void init() {
 			index = 0;
+//			add("172.23.153.164:8080");
 			add("172.16.15.36:10180");
-			add("172.16.15.36:10190");
+//			add("172.16.15.36:10190");
 	}
 
 	public Iterator<JobServer> getServers() {

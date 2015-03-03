@@ -1,13 +1,17 @@
 package ru.prbb.agent.domain;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicNameValuePair;
 
 public class JobServer {
 
@@ -29,9 +33,16 @@ public class JobServer {
 		return new HttpGet(uri);
 	}
 
-	public HttpUriRequest getUriResponse(String string) {
+	public HttpUriRequest getUriResponse(String type, String idTask, String result) {
 		HttpPost httpPost = new HttpPost(uri);
-		httpPost.setEntity(new StringEntity(string, "UTF-8"));
+		List<BasicNameValuePair> nvp = new ArrayList<>();
+		nvp.add(new BasicNameValuePair("type", type));
+		nvp.add(new BasicNameValuePair("idTask", idTask));
+		nvp.add(new BasicNameValuePair("result", result));
+		try {
+			httpPost.setEntity(new UrlEncodedFormEntity(nvp, "UTF-8"));
+		} catch (UnsupportedEncodingException ignore) {
+		}
 		return httpPost;
 	}
 

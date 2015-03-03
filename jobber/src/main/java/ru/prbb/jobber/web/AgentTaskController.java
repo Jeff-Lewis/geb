@@ -42,7 +42,7 @@ public class AgentTaskController
 			@RequestParam Long idTask,
 			@RequestParam String result)
 	{
-		log.info("POST /Agents");
+		log.info("POST /Agents: type={}", type);
 		try {
 			AgentTask task = tasks.find(idTask);
 			task.setResult(result);

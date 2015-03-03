@@ -2,7 +2,6 @@ package ru.prbb.agent.services;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +77,7 @@ public class CheckingService {
 		}
 	}
 
-	@Scheduled(fixedDelay = 5 * 1000)
+	@Scheduled(initialDelay = 2 * 1000, fixedDelay = 5 * 1000)
 	public void execute() {
 		if (httpClient == null) {
 			if (isShowError) {
@@ -110,22 +109,23 @@ public class CheckingService {
 				return;
 			}
 
+			Number idTask = (Number) request.get("idTask");
 			String type = (String) request.get("type");
 			log.info("Process task " + type);
 			
 			server.setStatus("Обрабатывается запрос " + type);
 			Object resultTask = processTask(type, request);
 			
-			Map<String, Object> result = new HashMap<>();
-			result.put("type", type);
-			result.put("idTask", request.get("idTask"));
-			result.put("result", resultTask);
+//			Map<String, Object> result = new HashMap<>();
+//			result.put("type", type);
+//			result.put("idTask", idTask);
+//			result.put("result", resultTask);
 
 			StringWriter w = new StringWriter();
-			mapper.writeValue(w, result);
+			mapper.writeValue(w, resultTask);
 
 			server.setStatus("Отправляется ответ " + type);
-			httpClient.execute(server.getUriResponse(w.toString()), responseHandler);
+			httpClient.execute(server.getUriResponse(type, idTask.toString(), w.toString()), responseHandler);
 			server.setStatus("Выполнен запрос к серверу " + type);
 		} catch (IOException e) {
 			log.error("Execute HTTP " + e.getMessage());
@@ -135,9 +135,12 @@ public class CheckingService {
 	}
 
 	private String[] toArray(Object obj) {
-		@SuppressWarnings("unchecked")
-		List<String> list = (List<String>) obj;
-		return list.toArray(new String[list.size()]);
+		if (obj != null) {
+			@SuppressWarnings("unchecked")
+			List<String> list = (List<String>) obj;
+			return list.toArray(new String[list.size()]);
+		}
+		return null;
 	}
 
 	private Object processTask(String type, Map<String, Object> request) {

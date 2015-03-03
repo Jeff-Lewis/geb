@@ -248,12 +248,14 @@ public class ScheduledServices {
 	/**
 	 * Проверка работы real-time обновлений (подписки)
 	 */
-	@Scheduled(cron = "0 */15 8-23 * * MON-FRI")
+	@Scheduled(cron = "0 0/15 8-23 * * MON-FRI")
 	public void taskSubscriptionCheck() {
 		log.info("task SubscriptionCheck");
 		try {
 			List<SendMessageItem> items = daoBloomberg.exec("{call dbo.chck_cbot_sp}");
-			daoSending.send(items);
+			if (items.size() > 0)
+				log.error(items.get(0).getText());
+			//daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
 				// всё в порядке

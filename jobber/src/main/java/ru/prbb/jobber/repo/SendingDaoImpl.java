@@ -120,42 +120,36 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 
 		List<SendingItem> result = new ArrayList<>(emails.size());
 
-		Session session = mailSessionWWI;
 		try {
-			Transport tr = session.getTransport();
-			try {
-				tr.connect(smtpServer, 25, userName, password);
+			for (String toAddress : emails) {
+				SendingItem si = new SendingItem();
+				si.setMail(toAddress);
+				si.setStatus("Отправление");
+				result.add(si);
 
-				for (String toAddress : emails) {
-					SendingItem si = new SendingItem();
-					si.setMail(toAddress);
-					si.setStatus("Отправление");
-					result.add(si);
-
-					if (toAddress.contains("prbb.ru")) {
-						si.setStatus("Отправление отменено. В отправителях домен prbb.ru");
-						continue;
-					}
-
-					try {
-						// create message
-						Message msg = new MimeMessage(session);
-						msg.setFrom(new InternetAddress(fromAddress));
-						msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
-						msg.setSubject(subject);
-						msg.setText(body);
-
-						tr.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
-						si.setStatus("Отправлено");
-					} catch (Exception e) {
-						log.error("sendMail", e);
-						si.setStatus(e.getMessage());
-					}
-
-					logEmail(toAddress, body, si.getStatus());
+				if (toAddress.contains("prbb.ru")) {
+					si.setStatus("Отправление отменено. В отправителях домен prbb.ru");
+					continue;
 				}
-			} finally {
-				tr.close();
+
+				try {
+					// create message
+					MimeMessage message = new MimeMessage(mailSessionWWI);
+					message.setFrom(new InternetAddress(fromAddress));
+					//message.setReplyTo(new Address[] { new InternetAddress(mailReplyTo) });
+					message.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
+					message.setHeader("Content-Type", "text/plain; charset='UTF-8'");
+					message.setSubject(subject);
+					message.setText(body, "UTF-8");
+					Transport.send(message);
+
+					si.setStatus("Отправлено");
+				} catch (Exception e) {
+					log.error("sendMail", e);
+					si.setStatus(e.getMessage());
+				}
+
+				logEmail(toAddress, body, si.getStatus());
 			}
 		} catch (Exception e) {
 			log.error("sendMail", e);
