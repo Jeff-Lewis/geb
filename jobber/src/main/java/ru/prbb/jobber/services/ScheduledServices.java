@@ -242,7 +242,7 @@ public class ScheduledServices {
 
 		daoBloomberg.putBondsData(securities, answer);
 		
-		taskBonds();
+		//taskBonds();
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class ScheduledServices {
 	/**
 	 * Отправка смс оповещений с котировками бондов
 	 */
-	//@Scheduled(cron = "0 0 12-19 * * MON-FRI")
+	@Scheduled(cron = "0 0 14 * * MON-FRI")
 	public void taskBonds() {
 		log.info("task Bonds");
 		try {
