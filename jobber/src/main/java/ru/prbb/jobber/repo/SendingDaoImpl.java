@@ -139,7 +139,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 					//message.setReplyTo(new Address[] { new InternetAddress(mailReplyTo) });
 					message.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
 					message.setHeader("Content-Type", "text/plain; charset='UTF-8'");
-					message.setSubject(subject);
+					message.setSubject(subject, "UTF-8");
 					message.setText(body, "UTF-8");
 					Transport.send(message);
 

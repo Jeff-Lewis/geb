@@ -36,11 +36,13 @@ public class SendingController
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public List<SendingItem> postSend(
+			@RequestParam String subject,
 			@RequestParam String text,
-			@RequestParam(value = "recp", required = false) String recPhones,
-			@RequestParam(value = "recm", required = false) String recMails)
+			@RequestParam(value = "recp") String recPhones,
+			@RequestParam(value = "recm") String recMails)
 	{
 		log.info("POST Sending: recp=({}), recm=({})", recPhones, recMails);
+		log.info("POST Sending: subject={}", subject);
 		log.info("POST Sending: text={}", text);
 		List<SendingItem> res = new ArrayList<>();
 
@@ -58,7 +60,7 @@ public class SendingController
 					}
 				}
 			}
-			res.addAll(dao.sendMail(text, mails, "info"));
+			res.addAll(dao.sendMail(text, mails, (subject != null) ? subject : "info"));
 		}
 
 		if (Utils.isNotEmpty(recPhones)) {

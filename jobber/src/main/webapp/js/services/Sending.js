@@ -106,9 +106,10 @@
 	});
 
 	function send() {
+		var _subject = new String(patternSelect.getRawValue()).trim();
+		var _text = new String(textarea.getValue()).trim();
 		var _recp = new String(receiver1.getValue()).trim();
 		var _recm = new String(receiver2.getValue()).trim();
-		var _text = new String(textarea.getValue()).trim();
 
 		if (!_recp && !_recm) {
 			App.ui.error('Не указан получатель.');
@@ -128,6 +129,7 @@
 		Ext.Ajax.request({
 			url : 'rest/Sending.do',
 			params : {
+				subject : _subject,
 				text : _text,
 				recp : _recp,
 				recm : _recm
