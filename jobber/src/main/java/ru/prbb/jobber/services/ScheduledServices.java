@@ -255,7 +255,7 @@ public class ScheduledServices {
 			List<SendMessageItem> items = daoBloomberg.exec("{call dbo.chck_cbot_sp}");
 			if (items.size() > 0)
 				log.error(items.get(0).getText());
-			//daoSending.send(items);
+			// FIXME daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
 				// всё в порядке

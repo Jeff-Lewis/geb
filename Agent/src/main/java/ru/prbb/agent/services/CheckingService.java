@@ -211,9 +211,9 @@ public class CheckingService {
 
 		if ("SubscriptionStop".equals(type)) {
 			Integer id = (Integer) request.get("id");
-			String name = (String) request.get("name");
+			String uriCallback = (String) request.get("uriCallback");
 
-			Object result = ss.stop(id, name);
+			Object result = ss.stop(id, uriCallback);
 			return result;
 		}
 

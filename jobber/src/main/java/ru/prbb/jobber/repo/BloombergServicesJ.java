@@ -280,6 +280,18 @@ public class BloombergServicesJ {
 		}
 	}
 
+	// FIXME uriCallback
+	//private String URI_CALLBACK = "http://172.23.153.164:8080/Jobber/Subscription";
+
+	// Облако
+	//private String URI_CALLBACK = "http://192.168.100.101:8080/Jobber/Subscription";
+
+	// Облако редирект
+	private String URI_CALLBACK = "http://172.16.15.36:10180/Jobber/Subscription";
+
+	// Облако редирект
+	//private String URI_CALLBACK = "http://172.16.15.36:10190/Jobber/Subscription";
+
 	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
 		if (securities == null || securities.isEmpty())
 			return;
@@ -293,14 +305,7 @@ public class BloombergServicesJ {
 		m.put("type", "SubscriptionStart");
 		m.put("id", item.getId());
 		m.put("name", "Start subscriptions" + item.getName());
-		// FIXME uriCallback
-//		m.put("uriCallback", "http://172.23.153.164:8080/Jobber/Subscription");
-		// Облако
-		//m.put("uriCallback", "http://192.168.100.101:8080/Jobber/Subscription");
-		// Облако редирект
-		m.put("uriCallback", "http://172.16.15.36:10180/Jobber/Subscription");
-		// Облако редирект
-		//m.put("uriCallback", "http://172.16.15.36:10190/Jobber/Subscription");
+		m.put("uriCallback", URI_CALLBACK);
 		
 		m.put("securities", secs);
 
@@ -322,6 +327,7 @@ public class BloombergServicesJ {
 		m.put("type", "SubscriptionStop");
 		m.put("id", item.getId());
 		m.put("name", "Stop subscriptions " + item.getName());
+		m.put("uriCallback", URI_CALLBACK);
 
 		List<NameValuePair> nvps = new ArrayList<>();
 		nvps.add(new BasicNameValuePair("id", item.getId().toString()));

@@ -50,16 +50,17 @@ public class SubscriptionService {
 	 * Зарегистрированные подписки<br>
 	 * id -> thread
 	 */
-	private final Map<Integer, SubscriptionThread> threads = new HashMap<>();
+	private final Map<ThreadId, SubscriptionThread> threads = new HashMap<>();
 
 	public String start(Integer id, String name, String[] securities, String uriCallback) {
 		synchronized (threads) {
-			SubscriptionThread thread = threads.get(id);
+			ThreadId threadId = new ThreadId(id, uriCallback);
+			SubscriptionThread thread = threads.get(threadId);
 			if (null == thread) {
-				thread = new SubscriptionThread(id, uriCallback);
+				thread = new SubscriptionThread(threadId);
 				try {
 					thread.startSession(securities);
-					threads.put(id, thread);
+					threads.put(threadId, thread);
 					return "STARTED";
 				} catch (Exception e) {
 					log.error("Start session failed", e);
@@ -71,9 +72,10 @@ public class SubscriptionService {
 		}
 	}
 
-	public String stop(Integer id, String name) {
+	public String stop(Integer id, String uriCallback) {
 		synchronized (threads) {
-			SubscriptionThread thread = threads.get(id);
+			ThreadId threadId = new ThreadId(id, uriCallback);
+			SubscriptionThread thread = threads.get(threadId);
 			if (null == thread) {
 				return "NOT FOUND";
 			} else {
@@ -103,20 +105,57 @@ public class SubscriptionService {
 		}
 	}
 
+	private class ThreadId {
+
+		private Integer id;
+		private String uriCallback;
+
+		public ThreadId(Integer id, String uriCallback) {
+			this.id = id;
+			this.uriCallback = uriCallback;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ThreadId other = (ThreadId) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (id == null) {
+				if (other.id != null)
+					return false;
+			} else if (!id.equals(other.id))
+				return false;
+			if (uriCallback == null) {
+				if (other.uriCallback != null)
+					return false;
+			} else if (!uriCallback.equals(other.uriCallback))
+				return false;
+			return true;
+		}
+
+		private SubscriptionService getOuterType() {
+			return SubscriptionService.this;
+		}
+	}
+
 	private class SubscriptionThread extends Thread implements ResponseHandler<String> {
 
-		private final Integer id;
-		private final String uriCallback;
+		private final ThreadId threadId;
 
 		private volatile boolean isRun = true;
 
 		private Session session;
 
 
-		public SubscriptionThread(Integer id, String uriCallback) {
-			super("Subscription #" + id);
-			this.id = id;
-			this.uriCallback = uriCallback;
+		public SubscriptionThread(ThreadId threadId) {
+			super("Subscription #" + threadId.id);
+			this.threadId = threadId;
 			setDaemon(true);
 		}
 
@@ -137,7 +176,7 @@ public class SubscriptionService {
 			sb.setLength(sb.length() - 1);
 			//log.info("Subscription: " + sb);
 
-			log.debug("Connecting to " + sessionOptions.getServerHost() + ":" + sessionOptions.getServerPort());
+			log.info("Connecting to " + sessionOptions.getServerHost() + ":" + sessionOptions.getServerPort());
 			session = new Session(sessionOptions);
 
 			try {
@@ -149,15 +188,16 @@ public class SubscriptionService {
 					throw new RuntimeException("Failed to open //blp/mktdata");
 				}
 
-				log.debug("Subscribing...");
 				session.subscribe(subscriptions);
-			} catch (Exception e) {
+			} catch (IOException e) {
+				throw new RuntimeException("Error starting subscription:" + e.getMessage(), e);
+			} catch (InterruptedException e) {
 				throw new RuntimeException("Error starting subscription:" + e.getMessage(), e);
 			}
 
 			start();
 
-			log.info("Start " + getName());
+			log.info("Subscribe started " + getName());
 		}
 
 		public void stopSession() {
@@ -194,11 +234,13 @@ public class SubscriptionService {
 							}
 						}
 
+						data.setLength(data.length() - 1);
+
 						List<NameValuePair> nvps = new ArrayList<>();
-						nvps.add(new BasicNameValuePair("id", id.toString()));
+						nvps.add(new BasicNameValuePair("id", threadId.id.toString()));
 						nvps.add(new BasicNameValuePair("data", data.toString()));
 
-						HttpPost httpPost = new HttpPost(uriCallback);
+						HttpPost httpPost = new HttpPost(threadId.uriCallback);
 						httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
 
 						String response = httpclient.execute(httpPost, this);
@@ -217,7 +259,7 @@ public class SubscriptionService {
 					log.error("Stop session", e);
 				}
 				log.info("Stopped " + getName());
-				threads.put(id, null);
+				threads.put(threadId, null);
 			}
 		}
 
