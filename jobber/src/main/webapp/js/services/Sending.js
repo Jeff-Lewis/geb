@@ -51,7 +51,7 @@
 		store : new Ext.data.ArrayStore({
 			autoDestroy : true,
 			fields : [ 'id', 'pattern' ],
-			data : [ [ 0, 'Аналитики' ], [ 1, 'Трейдеры' ], [ 2, 'Reading' ] ]
+			data : [ [ 0, 'Аналитики' ], [ 1, 'Трейдеры' ], [ 2, 'Reading' ], [ 3, 'fullermoney' ] ]
 		}),
 		allowBlank : false,
 		emptyText : 'Выберите шаблон рассылки',
@@ -74,6 +74,10 @@
 				case 2:
 					receiver1.setValue('');
 					receiver2.setValue('Reading');
+					break;
+				case 3:
+					receiver1.setValue('');
+					receiver2.setValue('');
 					break;
 
 				default:

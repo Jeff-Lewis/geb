@@ -108,6 +108,16 @@ public class SendingController
 					"\n" +
 					"Спасибо!";
 			break;
+		case 3:
+			text = "Fullermoney Audio доступен по ссылкам:\n" +
+					"\n" +
+					"Текущий выпуск:\n" +
+					"\n" +
+					"\n" +
+					"Предыдущий выпуск:\n" +
+					"\n" +
+					"\n";
+			break;
 
 		default:
 			text = "Текст не задан.";
