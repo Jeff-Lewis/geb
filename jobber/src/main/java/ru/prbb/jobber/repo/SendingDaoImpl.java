@@ -163,13 +163,18 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 	}
 
 	private int logEmail(String email, String text, String result) {
-		String sql = "{call dbo.iu_email_log ?, ?, ?}";
-		Query q = em.createNativeQuery(sql)
-				.setParameter(1, text)
-				.setParameter(2, email)
-				.setParameter(3, result);
-		showSql(sql, q);
-		return q.executeUpdate();
+		try {
+			String sql = "{call dbo.iu_email_log ?, ?, ?}";
+			Query q = em.createNativeQuery(sql)
+					.setParameter(1, text)
+					.setParameter(2, email)
+					.setParameter(3, result);
+			showSql(sql, q);
+			return q.executeUpdate();
+		} catch (Exception e) {
+			log.error("iu_email_log", e);
+		}
+		return 0;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -233,7 +238,15 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 			}
 		} catch (Exception e) {
 			log.error("executeHttpRequest", e);
-			throw new RuntimeException(e);
+			String status = e.getMessage();
+			List<SendingItem> result = new ArrayList<>();
+			for (String phone : phones) {
+				SendingItem item = new SendingItem();
+				item.setMail(phone);
+				item.setStatus(status);
+				result.add(item);
+			}			
+			return result;
 		}
 	}
 	
@@ -383,12 +396,17 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 	}
 
 	private int logSms(String id, String response) {
-		String sql = "{call dbo.iu_sms_log 'u', null, null, null, ?, ?}";
-		Query q = em.createNativeQuery(sql)
-				.setParameter(1, id)
-				.setParameter(2, response);
-		showSql(sql, q);
-		return q.executeUpdate();
+		try {
+			String sql = "{call dbo.iu_sms_log 'u', null, null, null, ?, ?}";
+			Query q = em.createNativeQuery(sql)
+					.setParameter(1, id)
+					.setParameter(2, response);
+			showSql(sql, q);
+			return q.executeUpdate();
+		} catch (Exception e) {
+			log.error("iu_sms_log", e);
+		}
+		return 0;
 	}
 
 	private List<SendingItem> parseConsumeOutMessageResponse(Map<String, String> map, String xml) {
@@ -435,7 +453,6 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 			}
 		} catch (Exception e) {
 			log.error("parseConsumeOutMessageResponse", e);
-			throw new RuntimeException(e);
 		}
 		return result;
 	}
