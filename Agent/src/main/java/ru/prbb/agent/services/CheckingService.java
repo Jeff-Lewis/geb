@@ -2,6 +2,7 @@ package ru.prbb.agent.services;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,8 +12,8 @@ import javax.annotation.PreDestroy;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -45,17 +46,22 @@ public class CheckingService {
 
 	private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 	
-		public String handleResponse(HttpResponse response)
-				throws ClientProtocolException, IOException {
-			StatusLine statusLine = response.getStatusLine();
-			int status = statusLine.getStatusCode();
-			if (status >= 200 && status < 300) {
-				HttpEntity entity = response.getEntity();
-				return entity != null ? EntityUtils.toString(entity) : null;
-			} else {
-				String reason = statusLine.getReasonPhrase();
-				throw new ClientProtocolException("Unexpected response status: " + status + ' ' + reason);
+		@Override
+		public String handleResponse(HttpResponse response) {
+			try {
+				StatusLine statusLine = response.getStatusLine();
+				int status = statusLine.getStatusCode();
+				if (status >= 200 && status < 300) {
+					HttpEntity entity = response.getEntity();
+					return (entity != null) ? EntityUtils.toString(entity) : "";
+				} else {
+					String reason = statusLine.getReasonPhrase();
+					log.error("Jobber response status: " + status + ' ' + reason);
+				}
+			} catch (Exception e) {
+				log.error("Jobber response exception: " + e.getMessage());
 			}
+			return "";
 		}
 	
 	};
@@ -95,7 +101,7 @@ public class CheckingService {
 			server.setStatus("Выполняется запрос к серверу");
 			String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
 
-			if (requestBody.isEmpty()) {
+			if (null == requestBody || requestBody.isEmpty()) {
 				server.setStatus("Ожидание");
 				return;
 			}
@@ -109,25 +115,22 @@ public class CheckingService {
 				return;
 			}
 
-			Number idTask = (Number) request.get("idTask");
 			String type = (String) request.get("type");
 			log.info("Process task " + type);
 			
 			server.setStatus("Обрабатывается запрос " + type);
 			Object resultTask = processTask(type, request);
 			
-//			Map<String, Object> result = new HashMap<>();
-//			result.put("type", type);
-//			result.put("idTask", idTask);
-//			result.put("result", resultTask);
-
 			StringWriter w = new StringWriter();
 			mapper.writeValue(w, resultTask);
 
+			HttpUriRequest uriRequest = server.getUriResponse(type, request.get("idTask").toString(), w.toString());
+
 			server.setStatus("Отправляется ответ " + type);
-			httpClient.execute(server.getUriResponse(type, idTask.toString(), w.toString()), responseHandler);
+			httpClient.execute(uriRequest, responseHandler);
+
 			server.setStatus("Выполнен запрос к серверу " + type);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("Execute HTTP " + e.getMessage());
 			server.setStatus(e.toString());
 		}
@@ -144,8 +147,9 @@ public class CheckingService {
 	}
 
 	private Object processTask(String type, Map<String, Object> request) {
+		String name = (String) request.get("name");
+
 		if ("executeBdsRequest".equals(type)) {
-			String name = (String) request.get("name");
 			String[] securities = toArray(request.get("securities"));
 			String[] fields = toArray(request.get("fields"));
 
@@ -154,7 +158,6 @@ public class CheckingService {
 		}
 
 		if ("executeReferenceDataRequest".equals(type)) {
-			String name = (String) request.get("name");
 			String[] securities = toArray(request.get("securities"));
 			String[] fields = toArray(request.get("fields"));
 
@@ -163,20 +166,18 @@ public class CheckingService {
 		}
 
 		if ("executeHistoricalDataRequest".equals(type)) {
-			String name = (String) request.get("name");
 			String startDate = (String) request.get("dateStart");
 			String endDate = (String) request.get("dateEnd");
 			String[] securities = toArray(request.get("securities"));
 			String[] fields = toArray(request.get("fields"));
 			String[] currencies = toArray(request.get("currencies"));
 
-			Map<String, Map<String, Map<String, String>>> result = bs.executeHistoricalDataRequest(name, startDate,
-					endDate, securities, fields, currencies);
+			Map<String, Map<String, Map<String, String>>> result = bs.executeHistoricalDataRequest(
+					name, startDate, endDate, securities, fields, currencies);
 			return result;
 		}
 
 		if ("executeAtrLoad".equals(type)) {
-			String name = (String) request.get("name");
 			String startDate = (String) request.get("dateStart");
 			String endDate = (String) request.get("dateEnd");
 			String[] securities = toArray(request.get("securities"));
@@ -185,13 +186,12 @@ public class CheckingService {
 			String period = (String) request.get("period");
 			String calendar = (String) request.get("calendar");
 
-			List<Map<String, Object>> result = bs.executeLoadAtrRequest(name, startDate, endDate, securities, maType,
-					taPeriod, period, calendar);
+			List<Map<String, Object>> result = bs.executeLoadAtrRequest(
+					name, startDate, endDate, securities, maType, taPeriod, period, calendar);
 			return result;
 		}
 
 		if ("executeBdpOverrideLoad".equals(type)) {
-			String name = (String) request.get("name");
 			String[] cursecs = toArray(request.get("cursecs"));
 			String[] currencies = toArray(request.get("currencies"));
 
@@ -201,11 +201,12 @@ public class CheckingService {
 
 		if ("SubscriptionStart".equals(type)) {
 			Integer id = (Integer) request.get("id");
-			String name = (String) request.get("name");
 			String[] securities = toArray(request.get("securities"));
 			String uriCallback = (String) request.get("uriCallback");
 
-			Object result = ss.start(id, name, securities, uriCallback);
+			Map<String, Object> result = new HashMap<>();
+			result.put("subscriptionId", ss.hashCode());
+			result.put("result", ss.start(id, name, securities, uriCallback));
 			return result;
 		}
 
@@ -213,8 +214,15 @@ public class CheckingService {
 			Integer id = (Integer) request.get("id");
 			String uriCallback = (String) request.get("uriCallback");
 
-			Object result = ss.stop(id, uriCallback);
-			return result;
+			Number subscriptionId = (Number) request.get("subscriptionId");
+			if (subscriptionId.intValue() == ss.hashCode()) {
+				Map<String, Object> result = new HashMap<>();
+				result.put("subscriptionId", httpClient.hashCode());
+				result.put("result", ss.stop(id, uriCallback));
+				return result;
+			} else {
+				return "Subscription not started";
+			}
 		}
 
 		return "Unknow " + type;

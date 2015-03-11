@@ -8,6 +8,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  * @author RBr
@@ -26,6 +27,8 @@ public class SubscriptionItem implements Serializable {
 	private String comment;
 	@Column(name = "subscription_status")
 	private String status;
+	@Transient
+	private Object subscriptionId;
 
 	public Long getId() {
 		return id;
@@ -59,6 +62,15 @@ public class SubscriptionItem implements Serializable {
 		this.status = status;
 	}
 
+	public Object getSubscriptionId() {
+		return subscriptionId;
+	}
+
+	public void setSubscriptionId(Object subscriptionId) {
+		this.subscriptionId = subscriptionId;
+	}
+
+	@Transient
 	public boolean isRunning() {
 		if ("Running".equals(status))
 			return true;
@@ -67,6 +79,7 @@ public class SubscriptionItem implements Serializable {
 		throw new RuntimeException("Unknown subscription status: " + status);
 	}
 
+	@Transient
 	public boolean isStopped() {
 		return !isRunning();
 	}
