@@ -253,9 +253,9 @@ public class ScheduledServices {
 		log.info("task SubscriptionCheck");
 		try {
 			List<SendMessageItem> items = daoBloomberg.exec("{call dbo.chck_cbot_sp}");
-			if (items.size() > 0)
-				log.error(items.get(0).getText());
-			// FIXME daoSending.send(items);
+//			if (items.size() > 0)
+//				log.error(items.get(0).getText());
+			daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
 				// всё в порядке
@@ -346,7 +346,7 @@ public class ScheduledServices {
 	public void taskFullermoneyAudio() {
 		log.info("task Fullermoney Audio");
 		try {
-			List<SendMessageItem> items = daoBloomberg.exec("{call dbo.fuller_send_sms_sp}");
+			List<SendMessageItem> items = daoBloomberg.exec("{call dbo.fuller_send_sp}");
 			daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
@@ -382,7 +382,7 @@ public class ScheduledServices {
 	public void taskAnalytics() {
 		log.info("task Analytics");
 		try {
-			List<SendMessageItem> items = daoBloomberg.exec("{call dbo.analytics_news_send_sms_sp}");
+			List<SendMessageItem> items = daoBloomberg.exec("{call dbo.analytics_news_send_sp}");
 			daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {

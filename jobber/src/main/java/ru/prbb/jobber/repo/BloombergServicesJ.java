@@ -40,9 +40,10 @@ public class BloombergServicesJ {
 	private AgentTaskService tasks;
 	private Random rnd = new Random(System.currentTimeMillis());
 
-	private String executeRequest(Map<String, Object> data) throws InterruptedException {
+	private String executeRequest(String name, Map<String, Object> data) throws InterruptedException {
 		long idTask = rnd.nextLong();
 		data.put("idTask", idTask);
+		data.put("name", name);
 		String json = serialize(data);
 		AgentTask task = new AgentTask(idTask, json);
 		tasks.add(task);
@@ -107,12 +108,11 @@ public class BloombergServicesJ {
 	public Map<String, Object> executeBdsRequest(String name, String[] securities, String[] fields) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "executeBdsRequest");
-		m.put("name", name);
 		m.put("securities", securities);
 		m.put("fields", fields);
 
 		try {
-			String response = executeRequest(m);
+			String response = executeRequest(name, m);
 			return (Map<String, Object>) deserialize(response);
 		} catch (Exception e) {
 			log.error("BdsRequest", e);
@@ -138,12 +138,11 @@ public class BloombergServicesJ {
 			String[] securities, String[] fields) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "executeReferenceDataRequest");
-		m.put("name", name);
 		m.put("securities", securities);
 		m.put("fields", fields);
 
 		try {
-			String response = executeRequest(m);
+			String response = executeRequest(name, m);
 			return (Map<String, Map<String, String>>) deserialize(response);
 		} catch (Exception e) {
 			log.error("ReferenceData", e);
@@ -172,7 +171,6 @@ public class BloombergServicesJ {
 
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "executeHistoricalDataRequest");
-		m.put("name", name);
 		m.put("dateStart", sdf.format(startDate));
 		m.put("dateEnd", sdf.format(endDate));
 		m.put("securities", securities);
@@ -180,7 +178,7 @@ public class BloombergServicesJ {
 		m.put("currencies", null);
 
 		try {
-			String response = executeRequest(m);
+			String response = executeRequest(name, m);
 			return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
 		} catch (Exception e) {
 			log.error("HistoricalDataRequest", e);
@@ -209,7 +207,6 @@ public class BloombergServicesJ {
 
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "executeHistoricalDataRequest");
-		m.put("name", name);
 		m.put("dateStart", sdf.format(startDate));
 		m.put("dateEnd", sdf.format(endDate));
 		m.put("securities", securities);
@@ -217,7 +214,7 @@ public class BloombergServicesJ {
 		m.put("currencies", currencies);
 
 		try {
-			String response = executeRequest(m);
+			String response = executeRequest(name, m);
 			return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
 		} catch (Exception e) {
 			log.error("HistoricalDataRequest", e);
@@ -237,7 +234,6 @@ public class BloombergServicesJ {
 
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "executeAtrLoad");
-		m.put("name", name);
 		m.put("dateStart", sdf.format(startDate));
 		m.put("dateEnd", sdf.format(endDate));
 		m.put("securities", securities);
@@ -247,7 +243,7 @@ public class BloombergServicesJ {
 		m.put("calendar", calendar);
 
 		try {
-			String response = executeRequest(m);
+			String response = executeRequest(name, m);
 			return (List<Map<String, Object>>) deserialize(response);
 		} catch (Exception e) {
 			log.error("LoadAtrRequest", e);
@@ -267,12 +263,11 @@ public class BloombergServicesJ {
 
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "executeBdpOverrideLoad");
-		m.put("name", name);
 		m.put("cursecs", cursecs);
 		m.put("currencies", currencies);
 
 		try {
-			String response = executeRequest(m);
+			String response = executeRequest(name, m);
 			return (Map<String, Map<String, String>>) deserialize(response);
 		} catch (Exception e) {
 			log.error("LoadBdpOverrideRequest", e);
@@ -304,13 +299,12 @@ public class BloombergServicesJ {
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "SubscriptionStart");
 		m.put("id", item.getId());
-		m.put("name", "Start subscriptions" + item.getName());
 		m.put("uriCallback", URI_CALLBACK);
 		
 		m.put("securities", secs);
 
 		try {
-			String response = executeRequest(m);
+			String response = executeRequest("Start subscriptions" + item.getName(), m);
 			if (response.contains("STARTED")) {
 				log.info(response);
 			} else {
@@ -326,14 +320,13 @@ public class BloombergServicesJ {
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "SubscriptionStop");
 		m.put("id", item.getId());
-		m.put("name", "Stop subscriptions " + item.getName());
 		m.put("uriCallback", URI_CALLBACK);
 
 		List<NameValuePair> nvps = new ArrayList<>();
 		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
 
 		try {
-			String response = executeRequest(m);
+			String response = executeRequest("Stop subscriptions " + item.getName(), m);
 			if (response.contains("STOPPED")) {
 				log.info(response);
 			} else {

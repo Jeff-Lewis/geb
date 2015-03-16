@@ -101,7 +101,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 				q.setParameter(1, security_code);
 				q.setParameter(2, last_price);
 				q.setParameter(3, last_chng);
-				showSql(sql, q);
+				//showSql(sql, q);
 				res[ri++] = q.executeUpdate();
 			} catch (Exception e) {
 				log.error("Store subscription data", e);

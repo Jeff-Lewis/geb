@@ -234,7 +234,7 @@ public class SubscriptionService {
 							}
 						}
 
-						data.setLength(data.length() - 1);
+						//data.setLength(data.length() - 1);
 
 						List<NameValuePair> nvps = new ArrayList<>();
 						nvps.add(new BasicNameValuePair("id", threadId.id.toString()));
