@@ -305,7 +305,10 @@ public class BloombergServicesJ {
 
 		try {
 			String response = executeRequest("Start subscriptions" + item.getName(), m);
-			if (response.contains("STARTED")) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> map = (Map<String, Object>) deserialize(response);
+			if (map.get("result").toString().contains("STARTED")) {
+				item.setSubscriptionId(map.get("subscriptionId"));
 				log.info(response);
 			} else {
 				log.error(response);
@@ -320,6 +323,7 @@ public class BloombergServicesJ {
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "SubscriptionStop");
 		m.put("id", item.getId());
+		m.put("subscriptionId", item.getSubscriptionId());
 		m.put("uriCallback", URI_CALLBACK);
 
 		List<NameValuePair> nvps = new ArrayList<>();
