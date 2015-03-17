@@ -4,7 +4,7 @@
 (function() {
 
 	var groupId = 0;
-	var baseUrl = 'rest/CompanyGroup/';
+	var baseUrl = 'rest/CompanyGroup/0';
 
 	var storeA = new Ext.data.JsonStore({
 		autoDestroy : true,
@@ -182,7 +182,7 @@
 
 		loadData : function(data) {
 			groupId = data.item.id;
-			baseUrl = baseUrl + groupId;
+			baseUrl = 'rest/CompanyGroup/' + groupId;
 
 			this.setTitle('Редактируем группу: ' + data.item.name);
 
