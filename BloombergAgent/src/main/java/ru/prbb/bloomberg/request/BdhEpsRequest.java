@@ -83,8 +83,8 @@ public class BdhEpsRequest implements BloombergRequest, MessageHandler {
 				}
 
 				final Element _fields = request.getElement("fields");
-				for (String p : fields) {
-					_fields.appendValue(p);
+				for (String field : fields) {
+					_fields.appendValue(field);
 				}
 
 				bs.sendRequest(request, this, null);
