@@ -9,12 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -23,9 +25,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import ru.prbb.agent.domain.SubscriptionServer;
 
 import com.bloomberglp.blpapi.CorrelationID;
 import com.bloomberglp.blpapi.Event;
@@ -46,6 +53,96 @@ public class SubscriptionService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	private final ObjectMapper mapper = new ObjectMapper();
+
+	@Autowired
+	private SubscriptionServerRepository servers;
+
+	private CloseableHttpClient httpClient;
+
+	private boolean isShowError = true;
+
+	private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+		@Override
+		public String handleResponse(HttpResponse response) {
+			try {
+				StatusLine statusLine = response.getStatusLine();
+				int status = statusLine.getStatusCode();
+				if (status >= 200 && status < 300) {
+					HttpEntity entity = response.getEntity();
+					return (entity != null) ? EntityUtils.toString(entity) : "";
+				} else {
+					String reason = statusLine.getReasonPhrase();
+					log.error("Jobber response status: " + status + ' ' + reason);
+				}
+			} catch (Exception e) {
+				log.error("Jobber response exception: " + e.getMessage());
+			}
+			return "";
+		}
+
+	};
+
+	@PostConstruct
+	public void init() {
+		log.info("Init HttpClient");
+		httpClient = HttpClients.createDefault();
+	}
+
+	@PreDestroy
+	public void done() {
+		log.info("Done HttpClient");
+		try {
+			if (httpClient != null)
+				httpClient.close();
+		} catch (IOException e) {
+			log.error("Close HttpClient", e);
+		}
+	}
+
+	@Scheduled(initialDelay = 2 * 1000, fixedDelay = 15 * 1000)
+	public void execute() {
+		if (httpClient == null) {
+			if (isShowError) {
+				isShowError = false;
+				log.error("HttpClient is null");
+			}
+			return;
+		}
+
+		SubscriptionServer server = servers.next();
+
+		log.info("Execute check {}", server);
+
+		try {
+			server.setStatus("Выполняется запрос к серверу");
+			String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
+
+			if (null == requestBody || requestBody.isEmpty()) {
+				server.setStatus("Ожидание");
+				return;
+			}
+
+			log.debug(requestBody);
+			@SuppressWarnings("unchecked")
+			Map<String, Object> request = (Map<String, Object>) mapper.readValue(requestBody, Object.class);
+
+			if (request == null) {
+				server.setStatus("Ожидание");
+				return;
+			}
+
+			log.info("Process task " + request);
+
+		} catch (Exception e) {
+			log.error("Execute HTTP " + e.getMessage());
+			server.setStatus(e.toString());
+		}
+
+	}
+	
+	
 	/**
 	 * Зарегистрированные подписки<br>
 	 * id -> thread

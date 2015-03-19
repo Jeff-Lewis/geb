@@ -31,8 +31,8 @@ import ru.prbb.jobber.services.AgentTaskService;
 /**
  * @author RBr
  */
-//@Service
-public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
+@Service
+public class BloombergServicesJActiveAgentImpl implements BloombergServicesJ {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -96,7 +96,6 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Map<String, Object> executeBdsRequest(String name, String[] securities, String[] fields) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "executeBdsRequest");
@@ -105,7 +104,9 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 
 		try {
 			String response = executeRequest(name, m);
-			return (Map<String, Object>) deserialize(response);
+			@SuppressWarnings("unchecked")
+			Map<String, Object> result = (Map<String, Object>) deserialize(response);
+			return result;
 		} catch (Exception e) {
 			log.error("BdsRequest", e);
 			throw new RuntimeException(e);
@@ -113,7 +114,6 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Map<String, Map<String, String>> executeReferenceDataRequest(String name,
 			String[] securities, String[] fields) {
 		Map<String, Object> m = new HashMap<>();
@@ -123,7 +123,10 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 
 		try {
 			String response = executeRequest(name, m);
-			return (Map<String, Map<String, String>>) deserialize(response);
+			@SuppressWarnings("unchecked")
+			Map<String, Map<String, String>> result =
+					(Map<String, Map<String, String>>) deserialize(response);
+			return result;
 		} catch (Exception e) {
 			log.error("ReferenceData", e);
 			throw new RuntimeException(e);
@@ -131,7 +134,6 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Map<String, Map<String, Map<String, String>>> executeHistoricalDataRequest(String name,
 			Date startDate, Date endDate, String[] securities, String[] fields) {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -146,7 +148,10 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 
 		try {
 			String response = executeRequest(name, m);
-			return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
+			@SuppressWarnings("unchecked")
+			Map<String, Map<String, Map<String, String>>> result =
+					(Map<String, Map<String, Map<String, String>>>) deserialize(response);
+			return result;
 		} catch (Exception e) {
 			log.error("HistoricalDataRequest", e);
 			throw new RuntimeException(e);
@@ -154,7 +159,6 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Map<String, Map<String, Map<String, String>>> executeHistoricalDataRequest(String name,
 			Date startDate, Date endDate, String[] securities, String[] fields, String[] currencies) {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -169,7 +173,10 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 
 		try {
 			String response = executeRequest(name, m);
-			return (Map<String, Map<String, Map<String, String>>>) deserialize(response);
+			@SuppressWarnings("unchecked")
+			Map<String, Map<String, Map<String, String>>> result =
+					(Map<String, Map<String, Map<String, String>>>) deserialize(response);
+			return result;
 		} catch (Exception e) {
 			log.error("HistoricalDataRequest", e);
 			throw new RuntimeException(e);
@@ -177,7 +184,6 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> executeAtrLoad(String name, Date startDate, Date endDate, String[] securities,
 			String maType, Integer taPeriod, String period, String calendar) {
 		final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -194,7 +200,10 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 
 		try {
 			String response = executeRequest(name, m);
-			return (List<Map<String, Object>>) deserialize(response);
+			@SuppressWarnings("unchecked")
+			List<Map<String, Object>> result =
+					(List<Map<String, Object>>) deserialize(response);
+			return result;
 		} catch (Exception e) {
 			log.error("LoadAtrRequest", e);
 			throw new RuntimeException(e);
@@ -202,7 +211,6 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Map<String, Map<String, String>> executeBdpOverrideLoad(String name, List<SecForJobRequest> securities) {
 		Set<String> currencies = new HashSet<>();
 		List<String> cursecs = new ArrayList<>(securities.size());
@@ -219,7 +227,10 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 
 		try {
 			String response = executeRequest(name, m);
-			return (Map<String, Map<String, String>>) deserialize(response);
+			@SuppressWarnings("unchecked")
+			Map<String, Map<String, String>> result =
+					(Map<String, Map<String, String>>) deserialize(response);
+			return result;
 		} catch (Exception e) {
 			log.error("LoadBdpOverrideRequest", e);
 			throw new RuntimeException(e);
@@ -227,22 +238,31 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 	}
 
 	// FIXME uriCallback
-	//private String URI_CALLBACK = "http://172.23.153.164:8080/Jobber/Subscription";
+	// private String URI_CALLBACK =
+	// "http://172.23.153.164:8080/Jobber/Subscription";
 
 	// Облако
-	//private String URI_CALLBACK = "http://192.168.100.101:8080/Jobber/Subscription";
+	// private String URI_CALLBACK =
+	// "http://192.168.100.101:8080/Jobber/Subscription";
 
 	// Облако редирект
 	private String URI_CALLBACK = "http://172.16.15.36:10180/Jobber/Subscription";
 
 	// Облако редирект
-	//private String URI_CALLBACK = "http://172.16.15.36:10190/Jobber/Subscription";
+	// private String URI_CALLBACK =
+	// "http://172.16.15.36:10190/Jobber/Subscription";
 
-	/* (non-Javadoc)
-	 * @see ru.prbb.jobber.repo.BloombergServices#subscriptionStart(ru.prbb.jobber.domain.SubscriptionItem, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ru.prbb.jobber.repo.BloombergServices#subscriptionStart(ru.prbb.jobber
+	 * .domain.SubscriptionItem, java.util.List)
 	 */
 	@Override
 	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
+		if (true)
+			return;
 		if (securities == null || securities.isEmpty())
 			return;
 
@@ -255,7 +275,7 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 		m.put("type", "SubscriptionStart");
 		m.put("id", item.getId());
 		m.put("uriCallback", URI_CALLBACK);
-		
+
 		m.put("securities", secs);
 
 		try {
@@ -276,6 +296,8 @@ public class BloombergServicesActiveAgentImpl implements BloombergServicesJ {
 
 	@Override
 	public void subscriptionStop(SubscriptionItem item) {
+		if (true)
+			return;
 		Map<String, Object> m = new HashMap<>();
 		m.put("type", "SubscriptionStop");
 		m.put("id", item.getId());

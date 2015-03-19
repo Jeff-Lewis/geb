@@ -2,7 +2,6 @@ package ru.prbb.agent.services;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,17 +25,20 @@ import org.springframework.stereotype.Service;
 
 import ru.prbb.agent.domain.JobServer;
 
+/**
+ * 
+ * @author ruslan
+ *
+ */
 @Service
-public class CheckingService {
+public class JobService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final ObjectMapper mapper = new ObjectMapper();
-	
+
 	@Autowired
 	private BloombergServices bs;
-	@Autowired
-	private SubscriptionService ss;
 	@Autowired
 	private JobServerRepository servers;
 
@@ -45,7 +47,7 @@ public class CheckingService {
 	private boolean isShowError = true;
 
 	private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-	
+
 		@Override
 		public String handleResponse(HttpResponse response) {
 			try {
@@ -63,7 +65,7 @@ public class CheckingService {
 			}
 			return "";
 		}
-	
+
 	};
 
 	@PostConstruct
@@ -109,22 +111,23 @@ public class CheckingService {
 			log.debug(requestBody);
 			@SuppressWarnings("unchecked")
 			Map<String, Object> request = (Map<String, Object>) mapper.readValue(requestBody, Object.class);
-			
+
 			if (request == null) {
 				server.setStatus("Ожидание");
 				return;
 			}
 
 			String type = (String) request.get("type");
-			log.info("Process task " + type);
-			
+			String idTask = (String) request.get("idTask");
+			log.info("Process task {} {}", type, idTask);
+
 			server.setStatus("Обрабатывается запрос " + type);
 			Object resultTask = processTask(type, request);
-			
+
 			StringWriter w = new StringWriter();
 			mapper.writeValue(w, resultTask);
 
-			HttpUriRequest uriRequest = server.getUriResponse(type, request.get("idTask").toString(), w.toString());
+			HttpUriRequest uriRequest = server.getUriResponse(type, idTask, w.toString());
 
 			server.setStatus("Отправляется ответ " + type);
 			httpClient.execute(uriRequest, responseHandler);
@@ -134,7 +137,6 @@ public class CheckingService {
 			log.error("Execute HTTP " + e.getMessage());
 			server.setStatus(e.toString());
 		}
-
 	}
 
 	private String[] toArray(Object obj) {
@@ -172,8 +174,8 @@ public class CheckingService {
 			String[] fields = toArray(request.get("fields"));
 			String[] currencies = toArray(request.get("currencies"));
 
-			Map<String, Map<String, Map<String, String>>> result = bs.executeHistoricalDataRequest(
-					name, startDate, endDate, securities, fields, currencies);
+			Map<String, Map<String, Map<String, String>>> result =
+					bs.executeHistoricalDataRequest(name, startDate, endDate, securities, fields, currencies);
 			return result;
 		}
 
@@ -186,8 +188,8 @@ public class CheckingService {
 			String period = (String) request.get("period");
 			String calendar = (String) request.get("calendar");
 
-			List<Map<String, Object>> result = bs.executeLoadAtrRequest(
-					name, startDate, endDate, securities, maType, taPeriod, period, calendar);
+			List<Map<String, Object>> result =
+					bs.executeLoadAtrRequest(name, startDate, endDate, securities, maType, taPeriod, period, calendar);
 			return result;
 		}
 
@@ -197,32 +199,6 @@ public class CheckingService {
 
 			Map<String, Map<String, String>> result = bs.executeBdpOverrideLoad(name, cursecs, currencies);
 			return result;
-		}
-
-		if ("SubscriptionStart".equals(type)) {
-			Integer id = (Integer) request.get("id");
-			String[] securities = toArray(request.get("securities"));
-			String uriCallback = (String) request.get("uriCallback");
-
-			Map<String, Object> result = new HashMap<>();
-			result.put("subscriptionId", ss.hashCode());
-			result.put("result", ss.start(id, name, securities, uriCallback));
-			return result;
-		}
-
-		if ("SubscriptionStop".equals(type)) {
-			Integer id = (Integer) request.get("id");
-			String uriCallback = (String) request.get("uriCallback");
-
-			Number subscriptionId = (Number) request.get("subscriptionId");
-			if (subscriptionId.intValue() == ss.hashCode()) {
-				Map<String, Object> result = new HashMap<>();
-				result.put("subscriptionId", httpClient.hashCode());
-				result.put("result", ss.stop(id, uriCallback));
-				return result;
-			} else {
-				return "Subscription not started";
-			}
 		}
 
 		return "Unknow " + type;

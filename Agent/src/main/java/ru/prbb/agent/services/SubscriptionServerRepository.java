@@ -11,14 +11,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import ru.prbb.agent.domain.JobServer;
+import ru.prbb.agent.domain.SubscriptionServer;
 
+/**
+ * 
+ * @author ruslan
+ *
+ */
 @Repository
-public class JobServerRepository {
+public class SubscriptionServerRepository {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	private final List<JobServer> servers = new ArrayList<>();
+	private final List<SubscriptionServer> servers = new ArrayList<>();
 
 	private int index;
 
@@ -30,11 +35,11 @@ public class JobServerRepository {
 			add("172.16.15.36:10190");
 	}
 
-	public Iterator<JobServer> getServers() {
+	public Iterator<SubscriptionServer> getServers() {
 		return servers.iterator();
 	}
 
-	public JobServer next() {
+	public SubscriptionServer next() {
 		if (servers.isEmpty())
 			throw new RuntimeException("Server's list is empty");
 		if (index >= servers.size())
@@ -44,7 +49,7 @@ public class JobServerRepository {
 
 	public boolean add(String host) {
 		try {
-			return servers.add(new JobServer(host));
+			return servers.add(new SubscriptionServer(host));
 		} catch (URISyntaxException e) {
 			log.error("Add " + host, e);
 		}
@@ -52,7 +57,7 @@ public class JobServerRepository {
 	}
 
 	public boolean remove(String host) {
-		for (JobServer server : servers) {
+		for (SubscriptionServer server : servers) {
 			if (host.contains(server.getHost())) {
 				return servers.remove(server);
 			}

@@ -37,8 +37,8 @@ import ru.prbb.jobber.domain.SubscriptionItem;
  * @author RBr
  * 
  */
-@Service
-public class BloombergServicesAgentImpl implements BloombergServicesJ {
+//@Service
+public class BloombergServicesJAgentImpl implements BloombergServicesJ {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
