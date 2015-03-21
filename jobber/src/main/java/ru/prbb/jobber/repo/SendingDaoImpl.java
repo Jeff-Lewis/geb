@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -36,6 +37,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,13 +50,13 @@ import ru.prbb.jobber.domain.SimpleItem;
  * @author RBr
  * 
  */
-//@Service
+@Service
 public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 
 	@Autowired
 	protected EntityManager em;
 
-	//@Resource(mappedName = "java:jboss/mail/wwi")
+	@Resource(mappedName = "java:jboss/mail/wwi")
 	private Session mailSessionWWI;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

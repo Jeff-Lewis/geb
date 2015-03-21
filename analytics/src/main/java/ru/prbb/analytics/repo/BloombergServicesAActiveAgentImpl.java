@@ -80,8 +80,8 @@ public final class BloombergServicesAActiveAgentImpl implements BloombergService
 			return m.readValue(content, Object.class);
 		} catch (Exception e) {
 			log.error("deserialize", e);
+			throw new RuntimeException(e.getMessage());
 		}
-		throw new RuntimeException("deserialize");
 	}
 
 	

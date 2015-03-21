@@ -17,6 +17,8 @@ import ru.prbb.agent.bloomberg.request.AtrLoadRequest;
 import ru.prbb.agent.bloomberg.request.BdhEpsRequest;
 import ru.prbb.agent.bloomberg.request.BdhRequest;
 import ru.prbb.agent.bloomberg.request.BdpOverrideRequest;
+import ru.prbb.agent.bloomberg.request.BdpRequest;
+import ru.prbb.agent.bloomberg.request.BdpRequestOverride;
 import ru.prbb.agent.bloomberg.request.BdpRequestOverrideQuarter;
 import ru.prbb.agent.bloomberg.request.BdsRequest;
 import ru.prbb.agent.bloomberg.request.BdsRequest.BEST_ANALYST_RECS_BULK;
@@ -58,6 +60,24 @@ public final class BloombergServices {
 
 		r.execute(name);
 
+		return r.getAnswer();
+	}
+
+	public Map<String, Map<String, String>> executeBdpRequest(String name,
+			String[] securities, String[] fields) {
+		log.info("BdpRequest:" + name);
+
+		final BdpRequest r = new BdpRequest(securities, fields);
+		r.execute(name);
+		return r.getAnswer();
+	}
+
+	public Map<String, Map<String, String>> executeBdpRequestOverride(String name,
+			String[] securities, String[] fields, String period, String override) {
+		log.info("BdpRequestOverride:" + name);
+
+		final BdpRequestOverride r = new BdpRequestOverride(securities, fields, period, override);
+		r.execute(name);
 		return r.getAnswer();
 	}
 

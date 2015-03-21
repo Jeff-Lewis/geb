@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import ru.prbb.jobber.domain.SecForJobRequest;
-import ru.prbb.jobber.domain.SecurityItem;
-import ru.prbb.jobber.domain.SubscriptionItem;
 
 public interface BloombergServicesJ {
 
@@ -80,9 +78,5 @@ public interface BloombergServicesJ {
 			String maType, Integer taPeriod, String period, String calendar);
 
 	Map<String, Map<String, String>> executeBdpOverrideLoad(String name, List<SecForJobRequest> securities);
-
-	void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities);
-
-	void subscriptionStop(SubscriptionItem item);
 
 }

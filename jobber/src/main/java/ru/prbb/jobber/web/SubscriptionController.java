@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.jobber.domain.SubscriptionItem;
 import ru.prbb.jobber.repo.SubscriptionDao;
 
 @Controller
@@ -23,6 +24,15 @@ public class SubscriptionController
 
 	@Autowired
 	private SubscriptionDao dao;
+
+
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
+	public List<SubscriptionItem> get() {
+		List<SubscriptionItem> subs = dao.getSubscriptions();
+		return subs;
+	}
+			
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody

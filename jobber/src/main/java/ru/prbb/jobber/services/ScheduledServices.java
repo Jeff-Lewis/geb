@@ -53,7 +53,7 @@ public class ScheduledServices {
 	 * Проверка статуса подписок.<br>
 	 * Запуск и остановка при его изменении.
 	 */
-	@Scheduled(cron = "0/15 * * * * *")
+	//@Scheduled(cron = "0/15 * * * * *")
 	public void subscriptionExecute() {
 		log.info("Subscription");
 
@@ -61,9 +61,9 @@ public class ScheduledServices {
 		for (SubscriptionItem subscription : list) {
 			if (subscription.isRunning()) {
 				List<SecurityItem> securities = daoSubscription.subsGetSecs(subscription.getId());
-				bs.subscriptionStart(subscription, securities);
+				//bs.subscriptionStart(subscription, securities);
 			} else {
-				bs.subscriptionStop(subscription);
+				//bs.subscriptionStop(subscription);
 			}
 		}
 	}
@@ -73,13 +73,13 @@ public class ScheduledServices {
 	 * 1. блумберг изредка сходил сума и переставал отдавать данные по тикерам избирательно
 	 * 2. обновление указателей на активный контракт для фьючей
 	 */
-	@Scheduled(cron = "30 0 3 * * *")
+	//@Scheduled(cron = "30 0 3 * * *")
 	public void subscriptionStop() {
 		log.info("Stop subscription");
 
 		List<SubscriptionItem> subscriptions = daoSubscription.getSubscriptions();
 		for (SubscriptionItem subscription : subscriptions) {
-			bs.subscriptionStop(subscription);
+			//bs.subscriptionStop(subscription);
 		}
 	}
 

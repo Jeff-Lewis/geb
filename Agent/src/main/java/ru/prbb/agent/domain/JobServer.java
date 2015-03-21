@@ -10,7 +10,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
 public class JobServer {
@@ -20,9 +19,7 @@ public class JobServer {
 	private String status = "Добавлен";
 
 	public JobServer(String host) throws URISyntaxException {
-		uri = new URIBuilder("http://" + host)
-				.setPath("/Jobber/AgentTask")
-				.build();
+		uri = new URI(host);
 	}
 
 	public String getHost() {

@@ -101,7 +101,7 @@ public class SubscriptionService {
 		}
 	}
 
-	@Scheduled(initialDelay = 2 * 1000, fixedDelay = 15 * 1000)
+	@Scheduled(fixedDelay = 5 * 1000)
 	public void execute() {
 		if (httpClient == null) {
 			if (isShowError) {
@@ -126,7 +126,7 @@ public class SubscriptionService {
 
 			log.debug(requestBody);
 			@SuppressWarnings("unchecked")
-			Map<String, Object> request = (Map<String, Object>) mapper.readValue(requestBody, Object.class);
+			List<Object> request = (List<Object>) mapper.readValue(requestBody, ArrayList.class);
 
 			if (request == null) {
 				server.setStatus("Ожидание");
@@ -139,7 +139,6 @@ public class SubscriptionService {
 			log.error("Execute HTTP " + e.getMessage());
 			server.setStatus(e.toString());
 		}
-
 	}
 	
 	

@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +22,6 @@ import org.springframework.stereotype.Service;
 
 import ru.prbb.jobber.domain.AgentTask;
 import ru.prbb.jobber.domain.SecForJobRequest;
-import ru.prbb.jobber.domain.SecurityItem;
-import ru.prbb.jobber.domain.SubscriptionItem;
 import ru.prbb.jobber.services.AgentTaskService;
 
 /**
@@ -91,8 +87,8 @@ public class BloombergServicesJActiveAgentImpl implements BloombergServicesJ {
 			return m.readValue(content, Object.class);
 		} catch (Exception e) {
 			log.error("deserialize", e);
+			throw new RuntimeException(e.getMessage());
 		}
-		throw new RuntimeException("deserialize");
 	}
 
 	@Override
@@ -236,88 +232,4 @@ public class BloombergServicesJActiveAgentImpl implements BloombergServicesJ {
 			throw new RuntimeException(e);
 		}
 	}
-
-	// FIXME uriCallback
-	// private String URI_CALLBACK =
-	// "http://172.23.153.164:8080/Jobber/Subscription";
-
-	// Облако
-	// private String URI_CALLBACK =
-	// "http://192.168.100.101:8080/Jobber/Subscription";
-
-	// Облако редирект
-	private String URI_CALLBACK = "http://172.16.15.36:10180/Jobber/Subscription";
-
-	// Облако редирект
-	// private String URI_CALLBACK =
-	// "http://172.16.15.36:10190/Jobber/Subscription";
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ru.prbb.jobber.repo.BloombergServices#subscriptionStart(ru.prbb.jobber
-	 * .domain.SubscriptionItem, java.util.List)
-	 */
-	@Override
-	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
-		if (true)
-			return;
-		if (securities == null || securities.isEmpty())
-			return;
-
-		List<String> secs = new ArrayList<>(securities.size());
-		for (SecurityItem security : securities) {
-			secs.add(security.getCode());
-		}
-
-		Map<String, Object> m = new HashMap<>();
-		m.put("type", "SubscriptionStart");
-		m.put("id", item.getId());
-		m.put("uriCallback", URI_CALLBACK);
-
-		m.put("securities", secs);
-
-		try {
-			String response = executeRequest("Start subscriptions" + item.getName(), m);
-			@SuppressWarnings("unchecked")
-			Map<String, Object> map = (Map<String, Object>) deserialize(response);
-			if (map.get("result").toString().contains("STARTED")) {
-				item.setSubscriptionId(map.get("subscriptionId"));
-				log.info(response);
-			} else {
-				log.error(response);
-			}
-		} catch (Exception e) {
-			log.error("SubscriptionStart", e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void subscriptionStop(SubscriptionItem item) {
-		if (true)
-			return;
-		Map<String, Object> m = new HashMap<>();
-		m.put("type", "SubscriptionStop");
-		m.put("id", item.getId());
-		m.put("subscriptionId", item.getSubscriptionId());
-		m.put("uriCallback", URI_CALLBACK);
-
-		List<NameValuePair> nvps = new ArrayList<>();
-		nvps.add(new BasicNameValuePair("id", item.getId().toString()));
-
-		try {
-			String response = executeRequest("Stop subscriptions " + item.getName(), m);
-			if (response.contains("STOPPED")) {
-				log.info(response);
-			} else {
-				log.error(response);
-			}
-		} catch (Exception e) {
-			log.error("SubscriptionStop", e);
-			throw new RuntimeException(e);
-		}
-	}
-
 }

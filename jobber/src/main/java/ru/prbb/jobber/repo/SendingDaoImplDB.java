@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,7 @@ import ru.prbb.jobber.domain.SendingItem;
  * @author RBr
  * 
  */
-@Service
+//@Service
 public class SendingDaoImplDB extends SendingDaoImpl
 {
 

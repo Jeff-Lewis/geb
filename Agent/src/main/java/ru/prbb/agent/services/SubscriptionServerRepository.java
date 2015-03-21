@@ -30,9 +30,9 @@ public class SubscriptionServerRepository {
 	@PostConstruct
 	public void init() {
 			index = 0;
-			add("172.23.153.164:8080");
-			add("172.16.15.36:10180");
-			add("172.16.15.36:10190");
+			add("http://172.23.153.164:8080/Jobber/Subscription");
+//			add("http://172.16.15.36:10180/Jobber/Subscription");
+//			add("http://172.16.15.36:10190/Jobber/Subscription");
 	}
 
 	public Iterator<SubscriptionServer> getServers() {

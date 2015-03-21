@@ -2,6 +2,7 @@ package ru.prbb.agent.services;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +86,7 @@ public class JobService {
 		}
 	}
 
-	@Scheduled(initialDelay = 2 * 1000, fixedDelay = 5 * 1000)
+	@Scheduled(fixedDelay = 1000)
 	public void execute() {
 		if (httpClient == null) {
 			if (isShowError) {
@@ -102,37 +103,47 @@ public class JobService {
 		try {
 			server.setStatus("Выполняется запрос к серверу");
 			String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
-
+			
 			if (null == requestBody || requestBody.isEmpty()) {
 				server.setStatus("Ожидание");
 				return;
 			}
-
+			
 			log.debug(requestBody);
 			@SuppressWarnings("unchecked")
-			Map<String, Object> request = (Map<String, Object>) mapper.readValue(requestBody, Object.class);
-
+			Map<String, Object> request = (Map<String, Object>) mapper.readValue(requestBody, HashMap.class);
+			
 			if (request == null) {
 				server.setStatus("Ожидание");
 				return;
 			}
-
+			
 			String type = (String) request.get("type");
-			String idTask = (String) request.get("idTask");
+			String idTask = request.get("idTask").toString();
 			log.info("Process task {} {}", type, idTask);
-
-			server.setStatus("Обрабатывается запрос " + type);
-			Object resultTask = processTask(type, request);
-
-			StringWriter w = new StringWriter();
-			mapper.writeValue(w, resultTask);
-
-			HttpUriRequest uriRequest = server.getUriResponse(type, idTask, w.toString());
-
-			server.setStatus("Отправляется ответ " + type);
-			httpClient.execute(uriRequest, responseHandler);
-
-			server.setStatus("Выполнен запрос к серверу " + type);
+			
+			try {
+				server.setStatus("Обрабатывается запрос " + type);
+				Object resultTask = processTask(type, request);
+				
+				StringWriter w = new StringWriter();
+				mapper.writeValue(w, resultTask);
+				
+				HttpUriRequest uriRequest = server.getUriResponse(type, idTask, w.toString());
+				
+				server.setStatus("Отправляется ответ " + type);
+				httpClient.execute(uriRequest, responseHandler);
+				
+				server.setStatus("Выполнен запрос к серверу " + type);
+			} catch (Exception e) {
+				log.error("Execute HTTP " + e.getMessage());
+				server.setStatus(e.toString());
+				
+				HttpUriRequest uriRequest = server.getUriResponse(type, idTask, e.getMessage());
+				
+				server.setStatus("Отправляется ответ " + type);
+				httpClient.execute(uriRequest, responseHandler);
+			}
 		} catch (Exception e) {
 			log.error("Execute HTTP " + e.getMessage());
 			server.setStatus(e.toString());
@@ -168,20 +179,48 @@ public class JobService {
 		}
 
 		if ("executeHistoricalDataRequest".equals(type)) {
-			String startDate = (String) request.get("dateStart");
-			String endDate = (String) request.get("dateEnd");
+			String dateStart = (String) request.get("dateStart");
+			String dateEnd = (String) request.get("dateEnd");
 			String[] securities = toArray(request.get("securities"));
 			String[] fields = toArray(request.get("fields"));
 			String[] currencies = toArray(request.get("currencies"));
 
 			Map<String, Map<String, Map<String, String>>> result =
-					bs.executeHistoricalDataRequest(name, startDate, endDate, securities, fields, currencies);
+					bs.executeHistoricalDataRequest(name, dateStart, dateEnd, securities, fields, currencies);
+			return result;
+		}
+
+		if ("executeBdhRequest".equals(type)) {
+			String dateStart = (String) request.get("dateStart");
+			String dateEnd = (String) request.get("dateEnd");
+			String period = (String) request.get("period");
+			String calendar = (String) request.get("calendar");
+			String[] securities = toArray(request.get("securities"));
+			String[] fields = toArray(request.get("fields"));
+			String[] currencies = toArray(request.get("currencies"));
+
+			Map<String, Map<String, Map<String, String>>> result =
+					bs.executeBdhRequest(name, dateStart, dateEnd, period, calendar, currencies, securities, fields);
+			return result;
+		}
+
+		if ("executeBdhEpsRequest".equals(type)) {
+			String dateStart = (String) request.get("dateStart");
+			String dateEnd = (String) request.get("dateEnd");
+			String period = (String) request.get("period");
+			String calendar = (String) request.get("calendar");
+			String[] securities = toArray(request.get("securities"));
+			String[] fields = toArray(request.get("fields"));
+			String[] currencies = toArray(request.get("currencies"));
+
+			Map<String, Map<String, Map<String, String>>> result =
+					bs.executeBdhEpsRequest(name, dateStart, dateEnd, period, calendar, currencies, securities, fields);
 			return result;
 		}
 
 		if ("executeAtrLoad".equals(type)) {
-			String startDate = (String) request.get("dateStart");
-			String endDate = (String) request.get("dateEnd");
+			String dateStart = (String) request.get("dateStart");
+			String dateEnd = (String) request.get("dateEnd");
 			String[] securities = toArray(request.get("securities"));
 			String maType = (String) request.get("maType");
 			Integer taPeriod = (Integer) request.get("taPeriod");
@@ -189,7 +228,7 @@ public class JobService {
 			String calendar = (String) request.get("calendar");
 
 			List<Map<String, Object>> result =
-					bs.executeLoadAtrRequest(name, startDate, endDate, securities, maType, taPeriod, period, calendar);
+					bs.executeLoadAtrRequest(name, dateStart, dateEnd, securities, maType, taPeriod, period, calendar);
 			return result;
 		}
 
@@ -198,6 +237,117 @@ public class JobService {
 			String[] currencies = toArray(request.get("currencies"));
 
 			Map<String, Map<String, String>> result = bs.executeBdpOverrideLoad(name, cursecs, currencies);
+			return result;
+		}
+
+		if ("executeCashFlowLoad".equals(type)) {
+			String[] _ids = toArray(request.get("ids"));
+			Map<String, Long> ids = new HashMap<>(_ids.length);
+			for (String s : _ids) {
+				String[] a = s.split(";");
+				Long id = new Long(a[0]);
+				String security = a[1];
+				ids.put(security, id);
+			}
+
+			String[] _dates = toArray(request.get("dates"));
+			Map<String, String> dates = new HashMap<>(_dates.length);
+			for (String s : _dates) {
+				String[] a = s.split(";");
+				String date = a[0];
+				String security = a[1];
+				dates.put(security, date);
+			}
+
+			List<Map<String, Object>> result = bs.executeLoadCashFlowRequest(name, ids, dates);
+			return result;
+		}
+
+		if ("executeCashFlowLoadNew".equals(type)) {
+			String[] _ids = toArray(request.get("ids"));
+			Map<String, Long> ids = new HashMap<>(_ids.length);
+			for (String s : _ids) {
+				String[] a = s.split(";");
+				Long id = new Long(a[0]);
+				String security = a[1];
+				ids.put(security, id);
+			}
+
+			String[] _dates = toArray(request.get("dates"));
+			Map<String, String> dates = new HashMap<>(_dates.length);
+			for (String s : _dates) {
+				String[] a = s.split(";");
+				String date = a[0];
+				String security = a[1];
+				dates.put(security, date);
+			}
+
+			List<Map<String, Object>> result = bs.executeLoadCashFlowRequestNew(name, ids, dates);
+			return result;
+		}
+
+		if ("executeValuesLoad".equals(type)) {
+			String[] _ids = toArray(request.get("ids"));
+			Map<String, Long> ids = new HashMap<>(_ids.length);
+			for (String s : _ids) {
+				String[] a = s.split(";");
+				Long id = new Long(a[0]);
+				String security = a[1];
+				ids.put(security, id);
+			}
+
+			List<Map<String, Object>> result = bs.executeLoadValuesRequest(name, ids);
+			return result;
+		}
+
+		if ("executeRateCouponLoad".equals(type)) {
+			String[] _ids = toArray(request.get("ids"));
+			Map<String, Long> ids = new HashMap<>(_ids.length);
+			for (String s : _ids) {
+				String[] a = s.split(";");
+				Long id = new Long(a[0]);
+				String security = a[1];
+				ids.put(security, id);
+			}
+
+			List<Map<String, Object>> result = bs.executeLoadRateCouponRequest(name, ids);
+			return result;
+		}
+
+		if ("executeBdpRequest".equals(type)) {
+			String[] securities = toArray(request.get("securities"));
+			String[] fields = toArray(request.get("fields"));
+
+			Map<String, Map<String, String>> result = bs.executeBdpRequest(name, securities, fields);
+			return result;
+		}
+
+		if ("executeBdpRequestOverride".equals(type)) {
+			String period = (String) request.get("period");
+			String over = (String) request.get("over");
+			String[] securities = toArray(request.get("securities"));
+			String[] fields = toArray(request.get("fields"));
+
+			Map<String, Map<String, String>> result =
+					bs.executeBdpRequestOverride(name, securities, fields, period, over);
+			return result;
+		}
+
+		if ("executeBdpRequestOverrideQuarter".equals(type)) {
+			String over = (String) request.get("over");
+			String[] securities = toArray(request.get("securities"));
+			String[] fields = toArray(request.get("fields"));
+			String[] currencies = toArray(request.get("currencies"));
+
+			Map<String, Map<String, Map<String, String>>> result =
+					bs.executeBdpRequestOverrideQuarter(name, securities, fields, currencies, over);
+			return result;
+		}
+
+		if ("executeFieldInfoRequest".equals(type)) {
+			String code = (String) request.get("code");
+			
+			Map<String, String> result = bs.executeFieldInfoRequest(name, code);
 			return result;
 		}
 

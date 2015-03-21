@@ -27,11 +27,8 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import ru.prbb.jobber.domain.SecForJobRequest;
-import ru.prbb.jobber.domain.SecurityItem;
-import ru.prbb.jobber.domain.SubscriptionItem;
 
 /**
  * @author RBr
@@ -252,13 +249,4 @@ public class BloombergServicesJAgentImpl implements BloombergServicesJ {
 		return (Map<String, Map<String, String>>) deserialize(response);
 	}
 
-	@Override
-	public void subscriptionStart(SubscriptionItem item, List<SecurityItem> securities) {
-		// Подписка из агента
-	}
-
-	@Override
-	public void subscriptionStop(SubscriptionItem item) {
-		// Подписка из агента
-	}
 }

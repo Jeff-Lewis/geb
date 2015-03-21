@@ -29,12 +29,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.stereotype.Service;
 
 /**
  * @author RBr
  */
-@Service
+//@Service
 public final class BloombergServicesMAgentImpl implements BloombergServicesM {
 
 	private static final Log log = LogFactory.getLog(BloombergServicesMAgentImpl.class);

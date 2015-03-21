@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.agent.domain.JobServer;
+import ru.prbb.agent.domain.SubscriptionServer;
 import ru.prbb.agent.services.JobServerRepository;
+import ru.prbb.agent.services.SubscriptionServerRepository;
 
 /**
  * @author RBr
@@ -24,7 +26,9 @@ public class AjaxController {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private JobServerRepository servers;
+	private JobServerRepository serversJ;
+	@Autowired
+	private SubscriptionServerRepository serversS;
 
 	@RequestMapping(value = "/start", method = RequestMethod.POST)
 	@ResponseBody
@@ -36,7 +40,7 @@ public class AjaxController {
 			return "{ RESULT : false, ERROR : 'host is empty' }";
 		}
 
-		servers.add(host);
+		//servers.add(host);
 
 		return "{ RESULT : true }";
 	}
@@ -51,7 +55,7 @@ public class AjaxController {
 			return "{ RESULT : false, ERROR : 'host is empty' }";
 		}
 
-		servers.remove(host);
+		//servers.remove(host);
 
 		return "{ RESULT : true }";
 	}
@@ -63,9 +67,19 @@ public class AjaxController {
 
 		StringBuilder sb = new StringBuilder();
 
-		Iterator<JobServer> it = servers.getServers();
-		while (it.hasNext()) {
-			JobServer server = it.next();
+		Iterator<JobServer> itJ = serversJ.getServers();
+		while (itJ.hasNext()) {
+			JobServer server = itJ.next();
+			sb.append("<tr><td>");
+			sb.append(server);
+			sb.append("</td><td>");
+			sb.append(server.getStatus());
+			sb.append("</td></tr>");
+		}
+
+		Iterator<SubscriptionServer> itS = serversS.getServers();
+		while (itS.hasNext()) {
+			SubscriptionServer server = itS.next();
 			sb.append("<tr><td>");
 			sb.append(server);
 			sb.append("</td><td>");
