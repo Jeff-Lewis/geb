@@ -1,26 +1,40 @@
 package ru.prbb.agent;
 
-import java.awt.SystemTray;
-
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootApplication
+@EnableScheduling
 public class ActiveAgentAppApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ActiveAgentAppApplication.class, args);
-    }
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @PostConstruct
-    public void init() {
-    	if (SystemTray.isSupported())
-    		System.out.println("SystemTray is supported");
-    	Logger log = LoggerFactory.getLogger(ActiveAgentAppApplication.class);
-    	log.info("LoggerFactory out");
+	@Bean
+	public TaskScheduler getTaskScheduler() {
+		ThreadPoolTaskScheduler bean = new ThreadPoolTaskScheduler();
+		bean.setPoolSize(10);
+		bean.setWaitForTasksToCompleteOnShutdown(true);
+		log.debug("Create " + bean.getClass().getSimpleName());
+		return bean;
+	}
+
+	@Bean
+	public ObjectMapper getObjectMapper() {
+		ObjectMapper bean = new ObjectMapper();
+		//bean.setDateFormat(new SimpleDateFormat("yyyyMMdd"));
+		log.debug("Create " + bean.getClass().getSimpleName());
+		return bean;
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(ActiveAgentAppApplication.class, args);
 	}
 }

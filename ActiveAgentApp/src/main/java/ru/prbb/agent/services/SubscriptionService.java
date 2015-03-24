@@ -4,6 +4,7 @@
 package ru.prbb.agent.services;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import ru.prbb.agent.model.SubscriptionServer;
@@ -41,6 +42,7 @@ import com.bloomberglp.blpapi.Session;
 import com.bloomberglp.blpapi.SessionOptions;
 import com.bloomberglp.blpapi.Subscription;
 import com.bloomberglp.blpapi.SubscriptionList;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Подписка блумберга
@@ -53,92 +55,99 @@ public class SubscriptionService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private SubscriptionServerRepository servers;
+	private ObjectMapper mapper;
+	@Autowired
+	private TaskScheduler scheduler;
 
-	private CloseableHttpClient httpClient;
-
-	private boolean isShowError = true;
-
-	private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-		@Override
-		public String handleResponse(HttpResponse response) {
-			try {
-				StatusLine statusLine = response.getStatusLine();
-				int status = statusLine.getStatusCode();
-				if (status >= 200 && status < 300) {
-					HttpEntity entity = response.getEntity();
-					return (entity != null) ? EntityUtils.toString(entity) : "";
-				} else {
-					String reason = statusLine.getReasonPhrase();
-					log.error("Jobber response status: " + status + ' ' + reason);
-				}
-			} catch (Exception e) {
-				log.error("Jobber response exception: " + e.getMessage());
-			}
-			return "";
-		}
-
-	};
+	private final List<SubscriptionServer> servers = new ArrayList<>();
 
 	@PostConstruct
 	public void init() {
-		log.info("Init HttpClient");
-		httpClient = HttpClients.createDefault();
+		add("172.23.153.164:8080");
+//		add("172.16.15.36:10180");
+//		add("172.16.15.36:10190");
+
+		for (SubscriptionServer server : servers) {
+			scheduler.scheduleWithFixedDelay(new CheckSubscription(server), 5000);
+		}
 	}
 
-	@PreDestroy
-	public void done() {
-		log.info("Done HttpClient");
+	private boolean add(String host) {
 		try {
-			if (httpClient != null)
-				httpClient.close();
-		} catch (IOException e) {
-			log.error("Close HttpClient", e);
+			SubscriptionServer server = new SubscriptionServer("http://" + host + "/Jobber/Subscription");
+			log.debug("Add SubsServer {}", server);
+			return servers.add(server);
+		} catch (URISyntaxException e) {
+			log.error("Add " + host, e);
 		}
+
+		return false;
 	}
 
-	@Scheduled(fixedDelay = 5 * 1000)
-	public void execute() {
-		if (httpClient == null) {
-			if (isShowError) {
-				isShowError = false;
-				log.error("HttpClient is null");
-			}
-			return;
+	private class CheckSubscription implements Runnable {
+
+		private final SubscriptionServer server;
+
+		public CheckSubscription(SubscriptionServer server) {
+			this.server = server;
 		}
 
-		SubscriptionServer server = servers.next();
+		@Override
+		public void run() {
+			try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+				log.info("Execute check Subscription {}", server);
+				server.setStatus("Выполняется запрос к серверу");
 
-		log.info("Execute check {}", server);
+				String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
 
-		try {
-			server.setStatus("Выполняется запрос к серверу");
-			String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
+				if (null == requestBody || requestBody.isEmpty()) {
+					server.setStatus("Ожидание");
+					return;
+				}
 
-			if (null == requestBody || requestBody.isEmpty()) {
-				server.setStatus("Ожидание");
-				return;
+				log.debug(requestBody);
+				@SuppressWarnings("unchecked")
+				List<Object> request = (List<Object>) mapper.readValue(requestBody, ArrayList.class);
+
+				if (request == null) {
+					server.setStatus("Ожидание");
+					return;
+				}
+
+				log.info("Process task " + request);
+
+				// TODO Auto-generated method stub
+
+			} catch (Exception e) {
+				log.error("Execute HTTP " + e.getMessage());
+				server.setStatus(e.toString());
 			}
-
-			log.debug(requestBody);
-			@SuppressWarnings("unchecked")
-			List<Object> request = (List<Object>) mapper.readValue(requestBody, ArrayList.class);
-
-			if (request == null) {
-				server.setStatus("Ожидание");
-				return;
-			}
-
-			log.info("Process task " + request);
-
-		} catch (Exception e) {
-			log.error("Execute HTTP " + e.getMessage());
-			server.setStatus(e.toString());
 		}
+
+		private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+			@Override
+			public String handleResponse(HttpResponse response) {
+				try {
+					StatusLine statusLine = response.getStatusLine();
+					int status = statusLine.getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return (entity != null) ? EntityUtils.toString(entity) : "";
+					} else {
+						String reason = statusLine.getReasonPhrase();
+						log.error("Jobber response status: " + status + ' ' + reason);
+					}
+				} catch (Exception e) {
+					log.error("Jobber response exception: " + e.getMessage());
+				}
+				return "";
+			}
+
+		};
+
 	}
-	
-	
+
 	/**
 	 * Зарегистрированные подписки<br>
 	 * id -> thread
@@ -244,7 +253,6 @@ public class SubscriptionService {
 		private volatile boolean isRun = true;
 
 		private Session session;
-
 
 		public SubscriptionThread(ThreadId threadId) {
 			super("Subscription #" + threadId.id);

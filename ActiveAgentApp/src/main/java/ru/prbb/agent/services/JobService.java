@@ -1,13 +1,13 @@
 package ru.prbb.agent.services;
 
-import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,8 +20,10 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ru.prbb.agent.model.JobServer;
 
@@ -36,116 +38,138 @@ public class JobService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private BloombergServices bs;
+	private ObjectMapper mapper;
 	@Autowired
-	private JobServerRepository servers;
+	private TaskScheduler scheduler;
 
-	private CloseableHttpClient httpClient;
-
-	private boolean isShowError = true;
-
-	private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-		@Override
-		public String handleResponse(HttpResponse response) {
-			try {
-				StatusLine statusLine = response.getStatusLine();
-				int status = statusLine.getStatusCode();
-				if (status >= 200 && status < 300) {
-					HttpEntity entity = response.getEntity();
-					return (entity != null) ? EntityUtils.toString(entity) : "";
-				} else {
-					String reason = statusLine.getReasonPhrase();
-					log.error("Jobber response status: " + status + ' ' + reason);
-				}
-			} catch (Exception e) {
-				log.error("Jobber response exception: " + e.getMessage());
-			}
-			return "";
-		}
-
-	};
+	private final List<JobServer> servers = new ArrayList<>();
 
 	@PostConstruct
 	public void init() {
-		log.info("Init HttpClient");
-		httpClient = HttpClients.createDefault();
-	}
+		String hostMy = "172.23.153.164:8080";
+		add(hostMy, "/analytics");
+		add(hostMy, "/Jobber");
+		add(hostMy, "/middleoffice");
 
-	@PreDestroy
-	public void done() {
-		log.info("Done HttpClient");
-		try {
-			if (httpClient != null)
-				httpClient.close();
-		} catch (IOException e) {
-			log.error("Close HttpClient", e);
+//		String hostWork = "172.16.15.36:10180";
+//		add(hostWork, "/analytics");
+//		add(hostWork, "/Jobber");
+//		add(hostWork, "/middleoffice");
+
+//		String hostTest = "172.16.15.36:10190";
+//		add(hostTest, "/analytics");
+//		add(hostTest, "/Jobber");
+//		add(hostTest, "/middleoffice");
+
+		
+		for (JobServer server : servers) {
+			scheduler.scheduleWithFixedDelay(new CheckAgentTask(server), 1000);
 		}
 	}
 
-	@Scheduled(fixedDelay = 1000)
-	public void execute() {
-		if (httpClient == null) {
-			if (isShowError) {
-				isShowError = false;
-				log.error("HttpClient is null");
-			}
-			return;
+	private boolean add(String host, String path) {
+		try {
+			JobServer server = new JobServer("http://" + host + path + "/AgentTask");
+			log.debug("Add JobServer {}", server);
+			return servers.add(server);
+		} catch (URISyntaxException e) {
+			log.error("Add " + host, e);
 		}
 
-		JobServer server = servers.next();
+		return false;
+	}
 
-		log.info("Execute check {}", server);
+	private class CheckAgentTask implements Runnable {
 
-		try {
-			server.setStatus("Выполняется запрос к серверу");
-			String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
-			
-			if (null == requestBody || requestBody.isEmpty()) {
-				server.setStatus("Ожидание");
-				return;
-			}
-			
-			log.debug(requestBody);
-			@SuppressWarnings("unchecked")
-			Map<String, Object> request = (Map<String, Object>) mapper.readValue(requestBody, HashMap.class);
-			
-			if (request == null) {
-				server.setStatus("Ожидание");
-				return;
-			}
-			
-			String type = (String) request.get("type");
-			String idTask = request.get("idTask").toString();
-			log.info("Process task {} {}", type, idTask);
-			
-			try {
-				server.setStatus("Обрабатывается запрос " + type);
-				Object resultTask = processTask(type, request);
+		private final JobServer server;
+
+		public CheckAgentTask(JobServer server) {
+			this.server = server;
+		}
+
+		@Override
+		public void run() {
+			try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+				log.info("Execute check Job {}", server);
+				server.setStatus("Выполняется запрос к серверу");
+
+				String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
 				
-				StringWriter w = new StringWriter();
-				mapper.writeValue(w, resultTask);
+				if (null == requestBody || requestBody.isEmpty()) {
+					server.setStatus("Ожидание");
+					return;
+				}
 				
-				HttpUriRequest uriRequest = server.getUriResponse(type, idTask, w.toString());
+				log.debug(requestBody);
+				@SuppressWarnings("unchecked")
+				Map<String, Object> request = (Map<String, Object>) mapper.readValue(requestBody, HashMap.class);
 				
-				server.setStatus("Отправляется ответ " + type);
-				httpClient.execute(uriRequest, responseHandler);
+				if (request == null) {
+					server.setStatus("Ожидание");
+					return;
+				}
 				
-				server.setStatus("Выполнен запрос к серверу " + type);
+				String type = (String) request.get("type");
+				String idTask = request.get("idTask").toString();
+				log.info("Process task {} {}", type, idTask);
+				
+				try {
+					server.setStatus("Обрабатывается запрос " + type);
+					Object resultTask = processTask(type, request);
+					
+					StringWriter w = new StringWriter();
+					mapper.writeValue(w, resultTask);
+					
+					HttpUriRequest uriRequest = server.getUriResponse(type, idTask,
+							w.toString());
+					
+					server.setStatus("Отправляется ответ " + type);
+					httpClient.execute(uriRequest, responseHandler);
+					
+					server.setStatus("Выполнен запрос к серверу " + type);
+				} catch (Exception e) {
+					log.error("Execute HTTP " + e.getMessage());
+					server.setStatus(e.toString());
+					
+					HttpUriRequest uriRequest = server.getUriResponse(type, idTask,
+							e.getMessage());
+					
+					server.setStatus("Отправляется ответ " + type);
+					httpClient.execute(uriRequest, responseHandler);
+				}
 			} catch (Exception e) {
 				log.error("Execute HTTP " + e.getMessage());
 				server.setStatus(e.toString());
-				
-				HttpUriRequest uriRequest = server.getUriResponse(type, idTask, e.getMessage());
-				
-				server.setStatus("Отправляется ответ " + type);
-				httpClient.execute(uriRequest, responseHandler);
 			}
-		} catch (Exception e) {
-			log.error("Execute HTTP " + e.getMessage());
-			server.setStatus(e.toString());
 		}
+		
+		private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+			
+			@Override
+			public String handleResponse(HttpResponse response) {
+				try {
+					StatusLine statusLine = response.getStatusLine();
+					int status = statusLine.getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return (entity != null) ? EntityUtils.toString(entity) : "";
+					} else {
+						String reason = statusLine.getReasonPhrase();
+						log.error("Jobber response status: " + status + ' '
+								+ reason);
+					}
+				} catch (Exception e) {
+					log.error("Jobber response exception: " + e.getMessage());
+				}
+				return "";
+			}
+			
+		};
+
 	}
+
+	@Autowired
+	private BloombergServices bs;
 
 	private String[] toArray(Object obj) {
 		if (obj != null) {
@@ -163,7 +187,8 @@ public class JobService {
 			String[] securities = toArray(request.get("securities"));
 			String[] fields = toArray(request.get("fields"));
 
-			Map<String, Object> result = bs.executeBdsRequest(name, securities, fields);
+			Map<String, Object> result = bs.executeBdsRequest(name, securities,
+					fields);
 			return result;
 		}
 
@@ -171,7 +196,8 @@ public class JobService {
 			String[] securities = toArray(request.get("securities"));
 			String[] fields = toArray(request.get("fields"));
 
-			Map<String, Map<String, String>> result = bs.executeReferenceDataRequest(name, securities, fields);
+			Map<String, Map<String, String>> result = bs
+					.executeReferenceDataRequest(name, securities, fields);
 			return result;
 		}
 
@@ -182,8 +208,9 @@ public class JobService {
 			String[] fields = toArray(request.get("fields"));
 			String[] currencies = toArray(request.get("currencies"));
 
-			Map<String, Map<String, Map<String, String>>> result =
-					bs.executeHistoricalDataRequest(name, dateStart, dateEnd, securities, fields, currencies);
+			Map<String, Map<String, Map<String, String>>> result = bs
+					.executeHistoricalDataRequest(name, dateStart, dateEnd,
+							securities, fields, currencies);
 			return result;
 		}
 
@@ -196,8 +223,9 @@ public class JobService {
 			String[] fields = toArray(request.get("fields"));
 			String[] currencies = toArray(request.get("currencies"));
 
-			Map<String, Map<String, Map<String, String>>> result =
-					bs.executeBdhRequest(name, dateStart, dateEnd, period, calendar, currencies, securities, fields);
+			Map<String, Map<String, Map<String, String>>> result = bs
+					.executeBdhRequest(name, dateStart, dateEnd, period,
+							calendar, currencies, securities, fields);
 			return result;
 		}
 
@@ -210,8 +238,9 @@ public class JobService {
 			String[] fields = toArray(request.get("fields"));
 			String[] currencies = toArray(request.get("currencies"));
 
-			Map<String, Map<String, Map<String, String>>> result =
-					bs.executeBdhEpsRequest(name, dateStart, dateEnd, period, calendar, currencies, securities, fields);
+			Map<String, Map<String, Map<String, String>>> result = bs
+					.executeBdhEpsRequest(name, dateStart, dateEnd, period,
+							calendar, currencies, securities, fields);
 			return result;
 		}
 
@@ -224,8 +253,9 @@ public class JobService {
 			String period = (String) request.get("period");
 			String calendar = (String) request.get("calendar");
 
-			List<Map<String, Object>> result =
-					bs.executeLoadAtrRequest(name, dateStart, dateEnd, securities, maType, taPeriod, period, calendar);
+			List<Map<String, Object>> result = bs.executeLoadAtrRequest(name,
+					dateStart, dateEnd, securities, maType, taPeriod, period,
+					calendar);
 			return result;
 		}
 
@@ -233,7 +263,8 @@ public class JobService {
 			String[] cursecs = toArray(request.get("cursecs"));
 			String[] currencies = toArray(request.get("currencies"));
 
-			Map<String, Map<String, String>> result = bs.executeBdpOverrideLoad(name, cursecs, currencies);
+			Map<String, Map<String, String>> result = bs
+					.executeBdpOverrideLoad(name, cursecs, currencies);
 			return result;
 		}
 
@@ -256,7 +287,8 @@ public class JobService {
 				dates.put(security, date);
 			}
 
-			List<Map<String, Object>> result = bs.executeLoadCashFlowRequest(name, ids, dates);
+			List<Map<String, Object>> result = bs.executeLoadCashFlowRequest(
+					name, ids, dates);
 			return result;
 		}
 
@@ -279,7 +311,8 @@ public class JobService {
 				dates.put(security, date);
 			}
 
-			List<Map<String, Object>> result = bs.executeLoadCashFlowRequestNew(name, ids, dates);
+			List<Map<String, Object>> result = bs
+					.executeLoadCashFlowRequestNew(name, ids, dates);
 			return result;
 		}
 
@@ -293,7 +326,8 @@ public class JobService {
 				ids.put(security, id);
 			}
 
-			List<Map<String, Object>> result = bs.executeLoadValuesRequest(name, ids);
+			List<Map<String, Object>> result = bs.executeLoadValuesRequest(
+					name, ids);
 			return result;
 		}
 
@@ -307,7 +341,8 @@ public class JobService {
 				ids.put(security, id);
 			}
 
-			List<Map<String, Object>> result = bs.executeLoadRateCouponRequest(name, ids);
+			List<Map<String, Object>> result = bs.executeLoadRateCouponRequest(
+					name, ids);
 			return result;
 		}
 
@@ -315,7 +350,8 @@ public class JobService {
 			String[] securities = toArray(request.get("securities"));
 			String[] fields = toArray(request.get("fields"));
 
-			Map<String, Map<String, String>> result = bs.executeBdpRequest(name, securities, fields);
+			Map<String, Map<String, String>> result = bs.executeBdpRequest(
+					name, securities, fields);
 			return result;
 		}
 
@@ -325,8 +361,9 @@ public class JobService {
 			String[] securities = toArray(request.get("securities"));
 			String[] fields = toArray(request.get("fields"));
 
-			Map<String, Map<String, String>> result =
-					bs.executeBdpRequestOverride(name, securities, fields, period, over);
+			Map<String, Map<String, String>> result = bs
+					.executeBdpRequestOverride(name, securities, fields,
+							period, over);
 			return result;
 		}
 
@@ -336,14 +373,15 @@ public class JobService {
 			String[] fields = toArray(request.get("fields"));
 			String[] currencies = toArray(request.get("currencies"));
 
-			Map<String, Map<String, Map<String, String>>> result =
-					bs.executeBdpRequestOverrideQuarter(name, securities, fields, currencies, over);
+			Map<String, Map<String, Map<String, String>>> result = bs
+					.executeBdpRequestOverrideQuarter(name, securities, fields,
+							currencies, over);
 			return result;
 		}
 
 		if ("executeFieldInfoRequest".equals(type)) {
 			String code = (String) request.get("code");
-			
+
 			Map<String, String> result = bs.executeFieldInfoRequest(name, code);
 			return result;
 		}
