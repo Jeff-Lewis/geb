@@ -13,6 +13,7 @@ import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
+import com.bloomberglp.blpapi.SessionOptions;
 
 /**
  * 
@@ -31,10 +32,10 @@ abstract class BloombergRequest {
 
 	protected boolean start(String name) {
 		try {
-			//final SessionOptions sesOpt = new SessionOptions();
-			//sesOpt.setServerHost(host);
-			//sesOpt.setServerPort(port);
-			session = new Session();
+			final SessionOptions sessionOptions = new SessionOptions();
+			sessionOptions.setServerHost("localhost");
+			sessionOptions.setServerPort(8194);
+			session = new Session(sessionOptions);
 			log.info("Start session " + name);
 			return session.start();
 		} catch (Exception e) {

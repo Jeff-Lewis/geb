@@ -4,6 +4,7 @@
 package ru.prbb.agent.services;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -68,7 +70,7 @@ public class SubscriptionService {
 //		add("172.16.15.36:10190");
 
 		for (SubscriptionServer server : servers) {
-			scheduler.scheduleWithFixedDelay(new CheckSubscription(server), 5000);
+			//scheduler.scheduleWithFixedDelay(new CheckSubscription(server), 5000);
 		}
 	}
 
@@ -95,7 +97,7 @@ public class SubscriptionService {
 		@Override
 		public void run() {
 			try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-				log.info("Execute check Subscription {}", server);
+				log.debug("Execute check Subscription {}", server);
 				server.setStatus("Выполняется запрос к серверу");
 
 				String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
@@ -115,13 +117,40 @@ public class SubscriptionService {
 				}
 
 				log.info("Process task " + request);
-
-				// TODO Auto-generated method stub
-
+				
+				try {
+					server.setStatus("Обрабатывается запрос");
+					Object resultTask = processTask(request);
+					
+					StringWriter w = new StringWriter();
+					mapper.writeValue(w, resultTask);
+					
+					HttpUriRequest uriRequest = server.getUriResponse(w.toString());
+					
+					server.setStatus("Отправляется ответ");
+					httpClient.execute(uriRequest, responseHandler);
+					
+					server.setStatus("Выполнен запрос");
+				} catch (Exception e) {
+					log.error("Execute HTTP " + e.getMessage());
+					server.setStatus(e.toString());
+					
+					HttpUriRequest uriRequest = server.getUriResponse(e.getMessage());
+					
+					server.setStatus("Отправляется ошибка");
+					httpClient.execute(uriRequest, responseHandler);
+				}
 			} catch (Exception e) {
 				log.error("Execute HTTP " + e.getMessage());
 				server.setStatus(e.toString());
 			}
+		}
+
+		private Object processTask(List<Object> request) {
+			for (Object obj : request) {
+				log.info("processTask {}", obj);
+			}
+			return "null";
 		}
 
 		private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
