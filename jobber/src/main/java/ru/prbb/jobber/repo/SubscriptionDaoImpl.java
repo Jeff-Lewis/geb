@@ -77,7 +77,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 	@SuppressWarnings("unchecked")
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<SecurityItem> subsGetSecs(Long id) {
+	public List<SecurityItem> getSubscriptionSecurities(Long id) {
 		String sql = "{call dbo.secs_in_subscription_prc ?}";
 		Query q = em.createNativeQuery(sql, SecurityItem.class)
 				.setParameter(1, id);

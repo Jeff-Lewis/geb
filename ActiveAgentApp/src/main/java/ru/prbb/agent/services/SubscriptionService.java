@@ -4,7 +4,6 @@
 package ru.prbb.agent.services;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +19,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -34,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
+import ru.prbb.agent.model.SubscriptionItem;
 import ru.prbb.agent.model.SubscriptionServer;
 
 import com.bloomberglp.blpapi.CorrelationID;
@@ -70,14 +70,14 @@ public class SubscriptionService {
 //		add("172.16.15.36:10190");
 
 		for (SubscriptionServer server : servers) {
-			//scheduler.scheduleWithFixedDelay(new CheckSubscription(server), 5000);
+			scheduler.scheduleWithFixedDelay(new CheckSubscription(server), 5000);
 		}
 	}
 
 	private boolean add(String host) {
 		try {
 			SubscriptionServer server = new SubscriptionServer("http://" + host + "/Jobber/Subscription");
-			log.debug("Add SubsServer {}", server);
+			log.info("Add SubsServer {}", server);
 			return servers.add(server);
 		} catch (URISyntaxException e) {
 			log.error("Add " + host, e);
@@ -94,10 +94,12 @@ public class SubscriptionService {
 			this.server = server;
 		}
 
+		private final List<SubscriptionItem> subs = new ArrayList<>();
+
 		@Override
 		public void run() {
 			try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-				log.debug("Execute check Subscription {}", server);
+				log.info("Execute check Subscription " + server);
 				server.setStatus("Выполняется запрос к серверу");
 
 				String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
@@ -107,7 +109,7 @@ public class SubscriptionService {
 					return;
 				}
 
-				log.debug(requestBody);
+				log.info(requestBody);
 				@SuppressWarnings("unchecked")
 				List<Object> request = (List<Object>) mapper.readValue(requestBody, ArrayList.class);
 
@@ -116,29 +118,48 @@ public class SubscriptionService {
 					return;
 				}
 
-				log.info("Process task " + request);
-				
-				try {
-					server.setStatus("Обрабатывается запрос");
-					Object resultTask = processTask(request);
-					
-					StringWriter w = new StringWriter();
-					mapper.writeValue(w, resultTask);
-					
-					HttpUriRequest uriRequest = server.getUriResponse(w.toString());
-					
-					server.setStatus("Отправляется ответ");
-					httpClient.execute(uriRequest, responseHandler);
-					
-					server.setStatus("Выполнен запрос");
-				} catch (Exception e) {
-					log.error("Execute HTTP " + e.getMessage());
-					server.setStatus(e.toString());
-					
-					HttpUriRequest uriRequest = server.getUriResponse(e.getMessage());
-					
-					server.setStatus("Отправляется ошибка");
-					httpClient.execute(uriRequest, responseHandler);
+				for (Object obj : request) {
+					@SuppressWarnings("unchecked")
+					Map<String, Object> map = (Map<String, Object>) obj;
+
+					Long id = Long.valueOf(String.valueOf(map.get("id")));
+					SubscriptionItem item = new SubscriptionItem(id);
+					item.setName(String.valueOf(map.get("name")));
+					item.setComment(String.valueOf(map.get("comment")));
+					item.setStatus(String.valueOf(map.get("status")));
+
+					int idx = subs.indexOf(item);
+					if (idx < 0) {
+						idx = 0;
+						subs.add(idx, item);
+
+						if (item.isRunning()) {
+							start(httpClient, item);
+						}
+					} else {
+						SubscriptionItem item1 = subs.get(idx);
+						item1.setName(item.getName());
+						item1.setComment(item.getComment());
+
+						if (item1.isStopped() && item.isStopped()) {
+							continue;
+						}
+
+						if (item1.isStopped() && item.isRunning()) {
+							start(httpClient, item1);
+							continue;
+						}
+
+						if (item1.isRunning() && item.isRunning()) {
+							start(httpClient, item1);
+							continue;
+						}
+
+						if (item1.isRunning() && item.isStopped()) {
+							stop(httpClient, item1);
+							continue;
+						}
+					}
 				}
 			} catch (Exception e) {
 				log.error("Execute HTTP " + e.getMessage());
@@ -146,13 +167,25 @@ public class SubscriptionService {
 			}
 		}
 
-		private Object processTask(List<Object> request) {
-			for (Object obj : request) {
-				log.info("processTask {}", obj);
+		private void start(HttpClient httpClient, SubscriptionItem item) throws Exception {
+			// TODO Auto-generated method stub
+			log.info("Get Subscription securities for {}", item.getName());
+			server.setStatus("Выполняется запрос к серверу");
+
+			String requestBody = httpClient.execute(server.getUriRequest(item.getId()), responseHandler);
+
+			if (null == requestBody || requestBody.isEmpty()) {
+				server.setStatus("Ожидание");
+				return;
 			}
-			return "null";
+			item.start();
 		}
 
+		private void stop(HttpClient httpClient, SubscriptionItem item) {
+			// TODO Auto-generated method stub
+			item.stop();
+		}
+		
 		private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
 			@Override

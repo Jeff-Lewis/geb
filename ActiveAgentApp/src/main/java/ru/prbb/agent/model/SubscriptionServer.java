@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 
 public class SubscriptionServer {
@@ -23,6 +24,12 @@ public class SubscriptionServer {
 
 	public HttpGet getUriRequest() {
 		return new HttpGet(uri);
+	}
+
+	public HttpGet getUriRequest(Long id) throws URISyntaxException {
+		String path = uri.getPath() + "/" + id;
+		URIBuilder ub = new URIBuilder(uri).setPath(path);
+		return new HttpGet(ub.build());
 	}
 
 	public HttpPost getUriResponse(String result) {
