@@ -3,6 +3,7 @@ package ru.prbb.agent.model;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -22,14 +23,26 @@ public class SubscriptionServer {
 		return uri.getHost();
 	}
 
-	public HttpGet getUriRequest() {
+	public HttpGet getUriRequestList() {
 		return new HttpGet(uri);
 	}
 
-	public HttpGet getUriRequest(Long id) throws URISyntaxException {
+	public HttpGet getUriRequestSecs(Long id) throws URISyntaxException {
+		return new HttpGet(newSecurity(id));
+	}
+
+	public HttpPost getUriRequestUpdate(Long id) throws URISyntaxException {
+		return new HttpPost(newSecurity(id));
+	}
+
+	public HttpDelete getUriRequestStop(Long id) throws URISyntaxException {
+		return new HttpDelete(newSecurity(id));
+	}
+
+	private URI newSecurity(Long id) throws URISyntaxException {
 		String path = uri.getPath() + "/" + id;
 		URIBuilder ub = new URIBuilder(uri).setPath(path);
-		return new HttpGet(ub.build());
+		return ub.build();
 	}
 
 	public HttpPost getUriResponse(String result) {

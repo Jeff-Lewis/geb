@@ -23,7 +23,6 @@ import ru.prbb.Utils;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SendMessageItem;
-import ru.prbb.jobber.domain.SubscriptionItem;
 import ru.prbb.jobber.repo.BloombergDao;
 import ru.prbb.jobber.repo.BloombergServicesJ;
 import ru.prbb.jobber.repo.SendingDao;
@@ -49,38 +48,16 @@ public class ScheduledServices {
 	@Autowired
 	private SendingDao daoSending;
 
-	/**
-	 * Проверка статуса подписок.<br>
-	 * Запуск и остановка при его изменении.
-	 */
-	//@Scheduled(cron = "0/15 * * * * *")
-	public void subscriptionExecute() {
-		log.info("Subscription");
-
-		List<SubscriptionItem> list = daoSubscription.getSubscriptions();
-		for (SubscriptionItem subscription : list) {
-			if (subscription.isRunning()) {
-				List<SecurityItem> securities = daoSubscription.subsGetSecs(subscription.getId());
-				//bs.subscriptionStart(subscription, securities);
-			} else {
-				//bs.subscriptionStop(subscription);
-			}
-		}
-	}
-
 	/*
 	 * Цель перезапуска
 	 * 1. блумберг изредка сходил сума и переставал отдавать данные по тикерам избирательно
 	 * 2. обновление указателей на активный контракт для фьючей
 	 */
-	//@Scheduled(cron = "30 0 3 * * *")
+	@Scheduled(cron = "30 0 3 * * *")
 	public void subscriptionStop() {
 		log.info("Stop subscription");
 
-		List<SubscriptionItem> subscriptions = daoSubscription.getSubscriptions();
-		for (SubscriptionItem subscription : subscriptions) {
-			//bs.subscriptionStop(subscription);
-		}
+		//bs.subscriptionStop();
 	}
 
 	@Scheduled(cron = "0 0 3 * * *")

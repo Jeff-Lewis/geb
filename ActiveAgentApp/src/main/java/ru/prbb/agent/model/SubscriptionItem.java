@@ -22,7 +22,7 @@ public class SubscriptionItem implements Serializable {
 	private String comment;
 	private String status;
 
-	private final Set<String> securities = new HashSet<>();
+	private final Set<SecurityItem> securities = new HashSet<>();
 
 	public SubscriptionItem(Long id) {
 		this.id = id;
@@ -56,7 +56,7 @@ public class SubscriptionItem implements Serializable {
 		this.status = status;
 	}
 
-	public Set<String> getSecurities() {
+	public Set<SecurityItem> getSecurities() {
 		return securities;
 	}
 
@@ -82,10 +82,7 @@ public class SubscriptionItem implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return (id == null) ? 0 : id.hashCode();
 	}
 
 	@Override

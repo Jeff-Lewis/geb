@@ -10,9 +10,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -90,7 +88,11 @@ public class JobService {
 				log.debug("Execute check Job {}", server);
 				server.setStatus("Выполняется запрос к серверу");
 
-				String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
+				String requestBody;
+				try (CloseableHttpResponse response = httpClient.execute(server.getUriRequest())) {
+					HttpEntity entity = response.getEntity();
+					requestBody = (entity != null) ? EntityUtils.toString(entity) : "";
+				}
 
 				if (null == requestBody || requestBody.isEmpty()) {
 					server.setStatus("Ожидание");
@@ -125,7 +127,10 @@ public class JobService {
 					server.setStatus("Отправляется ответ " + type);
 					log.info("Отправляется ответ " + type);
 					log.info(w.toString());
-					httpClient.execute(uriRequest, responseHandler);
+					try (CloseableHttpResponse response = httpClient.execute(uriRequest)) {
+						HttpEntity entity = response.getEntity();
+						requestBody = (entity != null) ? EntityUtils.toString(entity) : "";
+					}
 
 					server.setStatus("Выполнен запрос к серверу " + type);
 				} catch (Exception e) {
@@ -135,36 +140,16 @@ public class JobService {
 					HttpUriRequest uriRequest = server.getUriResponse(idTask, "ERROR:" + e.toString(), "null");
 
 					server.setStatus("Отправляется ошибка " + type);
-					httpClient.execute(uriRequest, responseHandler);
+					try (CloseableHttpResponse response = httpClient.execute(uriRequest)) {
+						HttpEntity entity = response.getEntity();
+						requestBody = (entity != null) ? EntityUtils.toString(entity) : "";
+					}
 				}
 			} catch (Exception e) {
 				log.error("Execute HTTP " + e.getMessage());
 				server.setStatus(e.toString());
 			}
 		}
-
-		private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-			@Override
-			public String handleResponse(HttpResponse response) {
-				try {
-					StatusLine statusLine = response.getStatusLine();
-					int status = statusLine.getStatusCode();
-					if (status >= 200 && status < 300) {
-						HttpEntity entity = response.getEntity();
-						return (entity != null) ? EntityUtils.toString(entity) : "";
-					} else {
-						String reason = statusLine.getReasonPhrase();
-						log.error("Jobber response status: " + status + ' '
-								+ reason);
-					}
-				} catch (Exception e) {
-					log.error("Jobber response exception: " + e.getMessage());
-				}
-				return "";
-			}
-
-		};
 
 	}
 

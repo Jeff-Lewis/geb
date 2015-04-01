@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -36,16 +35,17 @@ public class JobServer {
 		content.append(status).append('\n');
 		content.append(result);
 
-		HttpEntity entity;
+		HttpPost httpPost = new HttpPost(uri);
 		try {
 			byte[] bs = content.toString().getBytes("UTF-8");
-			entity = new ByteArrayEntity(bs, ContentType.APPLICATION_OCTET_STREAM);
+			ByteArrayEntity entity = new ByteArrayEntity(bs, ContentType.APPLICATION_OCTET_STREAM);
+			entity.setChunked(true);
+			httpPost.setEntity(entity);
 		} catch (UnsupportedEncodingException ignore) {
-			entity = new StringEntity(content.toString(), "UTF-8");
+			StringEntity entity = new StringEntity(content.toString(), "UTF-8");
+			httpPost.setEntity(entity);
 		}
 
-		HttpPost httpPost = new HttpPost(uri);
-		httpPost.setEntity(entity);
 		return httpPost;
 	}
 
