@@ -23,14 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ru.prbb.agent.model.JobServer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
- * 
  * @author ruslan
- *
  */
 @Service
 public class JobService {
@@ -51,17 +49,16 @@ public class JobService {
 		add(hostMy, "/Jobber");
 		add(hostMy, "/middleoffice");
 
-//		String hostWork = "172.16.15.36:10180";
-//		add(hostWork, "/analytics");
-//		add(hostWork, "/Jobber");
-//		add(hostWork, "/middleoffice");
+		String hostWork = "172.16.15.36:10180";
+		add(hostWork, "/analytics");
+		add(hostWork, "/Jobber");
+		add(hostWork, "/middleoffice");
 
-//		String hostTest = "172.16.15.36:10190";
-//		add(hostTest, "/analytics");
-//		add(hostTest, "/Jobber");
-//		add(hostTest, "/middleoffice");
+		String hostTest = "172.16.15.36:10190";
+		add(hostTest, "/analytics");
+		add(hostTest, "/Jobber");
+		add(hostTest, "/middleoffice");
 
-		
 		for (JobServer server : servers) {
 			scheduler.scheduleWithFixedDelay(new CheckAgentTask(server), 1000);
 		}
@@ -70,7 +67,7 @@ public class JobService {
 	private boolean add(String host, String path) {
 		try {
 			JobServer server = new JobServer("http://" + host + path + "/AgentTask");
-			log.debug("Add JobServer {}", server);
+			log.info("Add JobServer {}", server);
 			return servers.add(server);
 		} catch (URISyntaxException e) {
 			log.error("Add " + host, e);
@@ -90,51 +87,54 @@ public class JobService {
 		@Override
 		public void run() {
 			try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-				log.info("Execute check Job {}", server);
+				log.debug("Execute check Job {}", server);
 				server.setStatus("Выполняется запрос к серверу");
 
 				String requestBody = httpClient.execute(server.getUriRequest(), responseHandler);
-				
+
 				if (null == requestBody || requestBody.isEmpty()) {
 					server.setStatus("Ожидание");
 					return;
 				}
-				
-				log.debug(requestBody);
+
+				log.info(requestBody);
 				@SuppressWarnings("unchecked")
 				Map<String, Object> request = (Map<String, Object>) mapper.readValue(requestBody, HashMap.class);
-				
+
 				if (request == null) {
 					server.setStatus("Ожидание");
 					return;
 				}
-				
+
 				String type = (String) request.get("type");
 				String idTask = request.get("idTask").toString();
 				log.info("Process task {} {}", type, idTask);
-				
+
 				try {
 					server.setStatus("Обрабатывается запрос " + type);
+					log.info("request");
+					log.info(request.toString());
 					Object resultTask = processTask(type, request);
-					
+					log.info("resultTask");
+					log.info(resultTask.toString());
+
 					StringWriter w = new StringWriter();
 					mapper.writeValue(w, resultTask);
-					
-					HttpUriRequest uriRequest = server.getUriResponse(type, idTask,
-							w.toString());
-					
+					HttpUriRequest uriRequest = server.getUriResponse(idTask, "OK", w.toString());
+
 					server.setStatus("Отправляется ответ " + type);
+					log.info("Отправляется ответ " + type);
+					log.info(w.toString());
 					httpClient.execute(uriRequest, responseHandler);
-					
+
 					server.setStatus("Выполнен запрос к серверу " + type);
 				} catch (Exception e) {
 					log.error("Execute HTTP " + e.getMessage());
 					server.setStatus(e.toString());
-					
-					HttpUriRequest uriRequest = server.getUriResponse(type, idTask,
-							e.getMessage());
-					
-					server.setStatus("Отправляется ответ " + type);
+
+					HttpUriRequest uriRequest = server.getUriResponse(idTask, "ERROR:" + e.toString(), "null");
+
+					server.setStatus("Отправляется ошибка " + type);
 					httpClient.execute(uriRequest, responseHandler);
 				}
 			} catch (Exception e) {
@@ -142,9 +142,9 @@ public class JobService {
 				server.setStatus(e.toString());
 			}
 		}
-		
+
 		private ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-			
+
 			@Override
 			public String handleResponse(HttpResponse response) {
 				try {
@@ -163,7 +163,7 @@ public class JobService {
 				}
 				return "";
 			}
-			
+
 		};
 
 	}

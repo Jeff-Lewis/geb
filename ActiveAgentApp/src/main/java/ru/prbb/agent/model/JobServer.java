@@ -3,14 +3,14 @@ package ru.prbb.agent.model;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 
 public class JobServer {
 
@@ -30,16 +30,22 @@ public class JobServer {
 		return new HttpGet(uri);
 	}
 
-	public HttpUriRequest getUriResponse(String type, String idTask, String result) {
-		HttpPost httpPost = new HttpPost(uri);
-		List<BasicNameValuePair> nvp = new ArrayList<>();
-		nvp.add(new BasicNameValuePair("type", type));
-		nvp.add(new BasicNameValuePair("idTask", idTask));
-		nvp.add(new BasicNameValuePair("result", result));
+	public HttpUriRequest getUriResponse(String idTask, String status, String result) {
+		StringBuilder content = new StringBuilder(idTask.length() + 50 + result.length());
+		content.append(idTask).append(' ');
+		content.append(status).append('\n');
+		content.append(result);
+
+		HttpEntity entity;
 		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(nvp, "UTF-8"));
+			byte[] bs = content.toString().getBytes("UTF-8");
+			entity = new ByteArrayEntity(bs, ContentType.APPLICATION_OCTET_STREAM);
 		} catch (UnsupportedEncodingException ignore) {
+			entity = new StringEntity(content.toString(), "UTF-8");
 		}
+
+		HttpPost httpPost = new HttpPost(uri);
+		httpPost.setEntity(entity);
 		return httpPost;
 	}
 

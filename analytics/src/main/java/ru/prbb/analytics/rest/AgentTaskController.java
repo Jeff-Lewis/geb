@@ -1,12 +1,14 @@
 package ru.prbb.analytics.rest;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.analytics.domain.AgentTask;
@@ -37,16 +39,28 @@ public class AgentTaskController
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public String put(
-			@RequestParam String type,
-			@RequestParam Long idTask,
-			@RequestParam String result)
+	public String put(HttpServletRequest request)
 	{
-		log.info("POST /Agents: type={}", type);
+		log.info("POST /Agents: ");
 		try {
-			AgentTask task = tasks.find(idTask);
-			task.setResult(result);
-			return "OK";
+			byte[] bs = new byte[request.getContentLength()];
+			try (ServletInputStream is = request.getInputStream()) {
+				is.read(bs);
+			}
+			String s = new String(bs, "UTF-8");
+
+			int i1 = s.indexOf(' ');
+			int i2 = s.indexOf('\n');
+			long idTask = Long.parseLong(s.substring(0, i1));
+			String status = s.substring(i1 + 1, i2);
+			if ("OK".equals(status)) {
+				String result = s.substring(i2 + 1);
+				AgentTask task = tasks.find(idTask);
+				task.setResult(result);
+				return "OK";
+			} else {
+				return status;
+			}
 		} catch (Exception e) {
 			return "ERROR:" + e.getMessage();
 		}

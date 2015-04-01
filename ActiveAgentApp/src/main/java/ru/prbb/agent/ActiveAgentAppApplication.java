@@ -20,7 +20,7 @@ public class ActiveAgentAppApplication {
 	@Bean
 	public TaskScheduler getTaskScheduler() {
 		ThreadPoolTaskScheduler bean = new ThreadPoolTaskScheduler();
-		bean.setPoolSize(10);
+		bean.setPoolSize(15);
 		bean.setWaitForTasksToCompleteOnShutdown(true);
 		log.debug("Create " + bean.getClass().getSimpleName());
 		return bean;

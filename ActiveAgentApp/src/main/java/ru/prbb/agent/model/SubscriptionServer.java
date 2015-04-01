@@ -1,16 +1,12 @@
 package ru.prbb.agent.model;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 
 public class SubscriptionServer {
 
@@ -26,20 +22,19 @@ public class SubscriptionServer {
 		return uri.getHost();
 	}
 
-	public HttpUriRequest getUriRequest() {
+	public HttpGet getUriRequest() {
 		return new HttpGet(uri);
 	}
 
-	public HttpUriRequest getUriResponse(String type, String idTask, String result) {
+	public HttpGet getUriRequest(Long id) throws URISyntaxException {
+		String path = uri.getPath() + "/" + id;
+		URIBuilder ub = new URIBuilder(uri).setPath(path);
+		return new HttpGet(ub.build());
+	}
+
+	public HttpPost getUriResponse(String result) {
 		HttpPost httpPost = new HttpPost(uri);
-		List<BasicNameValuePair> nvp = new ArrayList<>();
-		nvp.add(new BasicNameValuePair("type", type));
-		nvp.add(new BasicNameValuePair("idTask", idTask));
-		nvp.add(new BasicNameValuePair("result", result));
-		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(nvp, "UTF-8"));
-		} catch (UnsupportedEncodingException ignore) {
-		}
+		httpPost.setEntity(new StringEntity(result, "UTF-8"));
 		return httpPost;
 	}
 

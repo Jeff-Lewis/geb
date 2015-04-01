@@ -22,7 +22,7 @@ public interface SubscriptionDao {
 	/**
 	 * Список компаний в подписке
 	 */
-	public List<SecurityItem> subsGetSecs(Long id);
+	public List<SecurityItem> getSubscriptionSecurities(Long id);
 
 	/**
 	 * Сохранить данные в БД
