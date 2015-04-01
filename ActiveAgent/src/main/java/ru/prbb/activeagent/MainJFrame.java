@@ -5,11 +5,20 @@
  */
 package ru.prbb.activeagent;
 
+import java.net.MalformedURLException;
+import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author bryhljaev
  */
 public class MainJFrame extends javax.swing.JFrame {
+
+    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
+    private final DefaultListModel<SubscriptionChecker> subscription = new DefaultListModel<>();
 
     /**
      * Creates new form MainJFrame
@@ -26,46 +35,71 @@ public class MainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        subscriptionAdd = new javax.swing.JButton();
+        subscriptionDel = new javax.swing.JButton();
+        subscriptionStart = new javax.swing.JButton();
+        subscriptionStop = new javax.swing.JButton();
+        jScrollPaneSubscription = new javax.swing.JScrollPane();
+        subscriptionList = new javax.swing.JList();
+        jobberAdd = new javax.swing.JButton();
+        jobberDel = new javax.swing.JButton();
+        jScrollPaneJobber = new javax.swing.JScrollPane();
+        jobberList = new javax.swing.JList();
+        jScrollPaneResult = new javax.swing.JScrollPane();
+        result = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Агент Bloomberg");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
-        jToggleButton1.setText("Подписка");
+        subscriptionAdd.setText("Добавить");
+        subscriptionAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subscriptionAddActionPerformed(evt);
+            }
+        });
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
+        subscriptionDel.setText("Убрать");
+        subscriptionDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subscriptionDelActionPerformed(evt);
+            }
+        });
+
+        subscriptionStart.setText("Старт");
+        subscriptionStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subscriptionStartActionPerformed(evt);
+            }
+        });
+
+        subscriptionStop.setText("Стоп");
+        subscriptionStop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                subscriptionStopActionPerformed(evt);
+            }
+        });
+
+        subscriptionList.setModel(subscription);
+        jScrollPaneSubscription.setViewportView(subscriptionList);
+
+        jobberAdd.setText("Добавить");
+
+        jobberDel.setText("Убрать");
+
+        jobberList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(jList2);
+        jScrollPaneJobber.setViewportView(jobberList);
 
-        jButton2.setText("Добавить");
-
-        jButton3.setText("Убрать");
-
-        jButton1.setText("Добавить");
-
-        jButton4.setText("Убрать");
-
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
-
-        jScrollPane3.setViewportView(jEditorPane1);
+        result.setEditable(false);
+        jScrollPaneResult.setViewportView(result);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -74,22 +108,24 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addComponent(jScrollPane3)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPaneSubscription)
+                    .addComponent(jScrollPaneResult)
+                    .addComponent(jScrollPaneJobber)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton2)
+                                .addComponent(jobberAdd)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jToggleButton1))
+                                .addComponent(jobberDel))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
+                                .addComponent(subscriptionAdd)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4)))
-                        .addGap(0, 104, Short.MAX_VALUE)))
+                                .addComponent(subscriptionDel)
+                                .addGap(18, 18, 18)
+                                .addComponent(subscriptionStart)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(subscriptionStop)))
+                        .addGap(0, 64, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -97,24 +133,82 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jToggleButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(subscriptionAdd)
+                    .addComponent(subscriptionDel)
+                    .addComponent(subscriptionStart)
+                    .addComponent(subscriptionStop))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPaneSubscription, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton4))
+                    .addComponent(jobberAdd)
+                    .addComponent(jobberDel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPaneJobber, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .addComponent(jScrollPaneResult, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        //executor.scheduleWithFixedDelay(command, initDelay, delay, TimeUnit.SECONDS);
+        try {
+            subscription.addElement(new SubscriptionChecker("172.23.153.164:8080"));
+            subscription.addElement(new SubscriptionChecker("172.16.15.36:10180"));
+            subscription.addElement(new SubscriptionChecker("172.16.15.36:10190"));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_formWindowOpened
+
+    private void subscriptionAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscriptionAddActionPerformed
+        try {
+            String host = "localhost";
+            // TODO add your handling code here:
+            subscription.addElement(new SubscriptionChecker(host));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_subscriptionAddActionPerformed
+
+    private void subscriptionDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscriptionDelActionPerformed
+        List<SubscriptionChecker> list = subscriptionList.getSelectedValuesList();
+        for (SubscriptionChecker item : list) {
+            System.out.println(item);
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_subscriptionDelActionPerformed
+
+    private void subscriptionStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscriptionStartActionPerformed
+        if (subscriptionList.isSelectionEmpty()) {
+            for (Object item : subscription.toArray()) {
+                System.out.println(item);
+            }
+        } else {
+            List list = subscriptionList.getSelectedValuesList();
+            for (Object item : list) {
+                System.out.println(item);
+            }
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_subscriptionStartActionPerformed
+
+    private void subscriptionStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subscriptionStopActionPerformed
+        if (subscriptionList.isSelectionEmpty()) {
+            for (Object item : subscription.toArray()) {
+                System.out.println(item);
+            }
+        } else {
+            List list = subscriptionList.getSelectedValuesList();
+            for (Object item : list) {
+                System.out.println(item);
+            }
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_subscriptionStopActionPerformed
 
     /**
      * @param args the command line arguments
@@ -152,16 +246,17 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JEditorPane jEditorPane1;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JScrollPane jScrollPaneJobber;
+    private javax.swing.JScrollPane jScrollPaneResult;
+    private javax.swing.JScrollPane jScrollPaneSubscription;
+    private javax.swing.JButton jobberAdd;
+    private javax.swing.JButton jobberDel;
+    private javax.swing.JList jobberList;
+    private javax.swing.JEditorPane result;
+    private javax.swing.JButton subscriptionAdd;
+    private javax.swing.JButton subscriptionDel;
+    private javax.swing.JList subscriptionList;
+    private javax.swing.JButton subscriptionStart;
+    private javax.swing.JButton subscriptionStop;
     // End of variables declaration//GEN-END:variables
 }
