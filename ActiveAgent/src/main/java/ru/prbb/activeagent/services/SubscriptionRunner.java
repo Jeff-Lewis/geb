@@ -12,10 +12,14 @@ import com.bloomberglp.blpapi.Subscription;
 import com.bloomberglp.blpapi.SubscriptionList;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.HttpEntity;
@@ -46,6 +50,7 @@ public class SubscriptionRunner implements Runnable {
     private final Set<SecurityItem> securities = new HashSet<>();
 
     private Session session;
+    private ExecutorService es;
 
     public SubscriptionRunner(URI uri, SubscriptionItem item) throws URISyntaxException {
         String path = uri.getPath() + "/" + item.getId();
@@ -91,6 +96,7 @@ public class SubscriptionRunner implements Runnable {
             logger.log(Level.SEVERE, "Subscribe stopped " + item.getName(), ex);
         }
         session = null;
+        es.shutdown();
     }
 
     public boolean isRunning() {
@@ -125,10 +131,17 @@ public class SubscriptionRunner implements Runnable {
 
             session.subscribe(newSubscrList(securities));
 
-            logger.log(Level.INFO, "Subscribe started {0}", item.getName());
+            if (es != null) {
+                es.shutdown();
+            }
+            es = Executors.newSingleThreadExecutor();
+            es.execute(this);
+
+            logger.log(Level.INFO, "Subscribe started " + item.getName() + " " + uri);
         } catch (Exception e) {
             session.stop();
             session = null;
+            logger.log(Level.SEVERE, e.getMessage());
         }
     }
 
@@ -178,7 +191,7 @@ public class SubscriptionRunner implements Runnable {
         for (Message msg : event) {
             if ("SubscriptionFailure".equals(msg.messageType().toString())) {
                 String description = msg.getElement("reason").getElementAsString("description");
-                logger.log(Level.SEVERE, "SubscriptionFailure:{0}", description);
+                logger.log(Level.SEVERE, "SubscriptionFailure:" + description);
                 continue;
             }
 
@@ -205,19 +218,24 @@ public class SubscriptionRunner implements Runnable {
             int statusCode = statusLine.getStatusCode();
             if (statusCode < 200 || statusCode >= 300) {
                 String reason = statusLine.getReasonPhrase();
-                logger.log(Level.SEVERE, "Subscription {0} response status: {1} {2}",
-                        new Object[]{item.getName(), statusCode, reason});
+                logger.log(Level.SEVERE, "Subscription " + item.getName() + " response status: " + statusCode + " " + reason);
                 return;
             }
 
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 String body = EntityUtils.toString(entity);
-                if (!"OK".equals(body)) {
+                if ("OK".equals(body)) {
+                    if (data.length() > 1) {
+                        String time = sdf.format(new Date());
+                        logger.log(Level.INFO, time + uri + " - " + body + "\n" + data);
+                    }
+                } else {
                     logger.severe(body);
                 }
             }
         }
     }
+    private SimpleDateFormat sdf = new SimpleDateFormat("MM-dd hh:mm:ss ");
 
 }

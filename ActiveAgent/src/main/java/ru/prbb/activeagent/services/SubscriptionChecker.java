@@ -46,8 +46,7 @@ public class SubscriptionChecker extends AbstractChecker {
             int statusCode = statusLine.getStatusCode();
             if (statusCode < 200 || statusCode >= 300) {
                 String reason = statusLine.getReasonPhrase();
-                logger.log(Level.SEVERE, "SubscriptionChecker response status: {0} {1}",
-                        new Object[]{statusCode, reason});
+                logger.log(Level.SEVERE, "SubscriptionChecker response status: " + statusCode + " " + reason);
                 return;
             }
 
@@ -58,7 +57,6 @@ public class SubscriptionChecker extends AbstractChecker {
         }
 
         if (null == body || body.isEmpty()) {
-            status = "Ожидание";
             return;
         }
 
@@ -69,7 +67,6 @@ public class SubscriptionChecker extends AbstractChecker {
                 });
 
         if (list == null) {
-            status = "Ожидание";
             return;
         }
 
@@ -117,6 +114,7 @@ public class SubscriptionChecker extends AbstractChecker {
     }
 
     private boolean isRunning(SubscriptionItem item) {
+        String status = item.getStatus();
         if (RUNNING.equals(status)) {
             return true;
         }
@@ -148,7 +146,6 @@ public class SubscriptionChecker extends AbstractChecker {
         }
 
         if (null == body || body.isEmpty()) {
-            status = "Ожидание";
             return;
         }
 

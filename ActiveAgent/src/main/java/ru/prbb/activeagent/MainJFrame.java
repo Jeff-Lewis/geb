@@ -61,6 +61,7 @@ public class MainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        JPanel jPanelNorth = new JPanel();
         JPanel jPanel1 = new JPanel();
         JPanel jPanel1n = new JPanel();
         JButton subscriptionAdd = new JButton();
@@ -79,7 +80,7 @@ public class MainJFrame extends javax.swing.JFrame {
         JButton jobberStop = new JButton();
         JScrollPane jScrollPaneJobber = new JScrollPane();
         jobberList = new JList();
-        JPanel jPanel3 = new JPanel();
+        JPanel jPanelCenter = new JPanel();
         JPanel jPanel3n = new JPanel();
         JButton resultClean = new JButton();
         JScrollPane jScrollPane1 = new JScrollPane();
@@ -87,13 +88,15 @@ public class MainJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Агент Bloomberg");
-        setMinimumSize(new Dimension(500, 400));
+        setMinimumSize(new Dimension(500, 300));
+        setPreferredSize(new Dimension(700, 526));
         addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent evt) {
                 formWindowOpened(evt);
             }
         });
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
+
+        jPanelNorth.setLayout(new BoxLayout(jPanelNorth, BoxLayout.PAGE_AXIS));
 
         jPanel1.setLayout(new BorderLayout());
 
@@ -141,7 +144,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jPanel1.add(jScrollPaneSubscription, BorderLayout.CENTER);
 
-        getContentPane().add(jPanel1);
+        jPanelNorth.add(jPanel1);
 
         jPanel2.setLayout(new BorderLayout());
 
@@ -189,10 +192,12 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jPanel2.add(jScrollPaneJobber, BorderLayout.CENTER);
 
-        getContentPane().add(jPanel2);
+        jPanelNorth.add(jPanel2);
 
-        jPanel3.setPreferredSize(new Dimension(500, 200));
-        jPanel3.setLayout(new BorderLayout());
+        getContentPane().add(jPanelNorth, BorderLayout.PAGE_START);
+
+        jPanelCenter.setPreferredSize(new Dimension(500, 200));
+        jPanelCenter.setLayout(new BorderLayout());
 
         jPanel3n.setLayout(new FlowLayout(FlowLayout.LEADING));
 
@@ -204,31 +209,39 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         jPanel3n.add(resultClean);
 
-        jPanel3.add(jPanel3n, BorderLayout.PAGE_START);
+        jPanelCenter.add(jPanel3n, BorderLayout.PAGE_START);
 
         result.setEditable(false);
         result.setDocument(resultDoc
         );
         jScrollPane1.setViewportView(result);
 
-        jPanel3.add(jScrollPane1, BorderLayout.CENTER);
+        jPanelCenter.add(jScrollPane1, BorderLayout.CENTER);
 
-        getContentPane().add(jPanel3);
+        getContentPane().add(jPanelCenter, BorderLayout.CENTER);
 
         setSize(new Dimension(510, 550));
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         Logger.getLogger("").addHandler(new Handler() {
+            private int count = 0;
 
             @Override
             public void publish(LogRecord record) {
                 try {
+                    if (++count > 999) {
+                        resultCleanActionPerformed(null);
+                        count = 0;
+                    }
+
                     String str = record.getMessage();
                     if (null == str) {
                         str = record.getThrown().getLocalizedMessage();
                     }
+
                     resultDoc.insertString(resultDoc.getLength(), str + '\n', null);
+
                     result.setCaretPosition(resultDoc.getLength());
                 } catch (BadLocationException ex) {
                     reportError("BadLocationException", ex, 0);
