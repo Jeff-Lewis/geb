@@ -7,13 +7,15 @@ package ru.prbb.activeagent.services;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -24,147 +26,140 @@ import static ru.prbb.activeagent.data.SubscriptionItem.RUNNING;
 import static ru.prbb.activeagent.data.SubscriptionItem.STOPPED;
 
 /**
- *
  * @author ruslan
  */
 public class SubscriptionChecker extends AbstractChecker {
 
-    private final List<SubscriptionRunner> subs = new ArrayList<>();
+	private final List<SubscriptionRunner> subs = new ArrayList<>();
 
-    public SubscriptionChecker(String host) throws URISyntaxException {
-        super("http://" + host + "/Jobber/Subscription");
-    }
+	public SubscriptionChecker(String host) throws URISyntaxException {
+		super("http://" + host + "/Jobber/Subscription");
+	}
 
-    @Override
-    protected void run(CloseableHttpClient httpClient) throws Exception {
-        String body = "";
+	private ResponseHandler<List<SubscriptionItem>> subscriptionsHandler = new ResponseHandler<List<SubscriptionItem>>() {
 
-        HttpGet request = new HttpGet(uri);
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
-            StatusLine statusLine = response.getStatusLine();
+		@Override
+		public List<SubscriptionItem> handleResponse(HttpResponse response) {
+			List<SubscriptionItem> result = Collections.emptyList();
+			try {
+				StatusLine statusLine = response.getStatusLine();
 
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode < 200 || statusCode >= 300) {
-                String reason = statusLine.getReasonPhrase();
-                logger.log(Level.SEVERE, "SubscriptionChecker response status: " + statusCode + " " + reason);
-                return;
-            }
+				int statusCode = statusLine.getStatusCode();
+				if (statusCode < 200 || statusCode >= 300) {
+					String reason = statusLine.getReasonPhrase();
+					throw new Exception("Response status: " + statusCode + " " + reason);
+				}
 
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                body = EntityUtils.toString(entity);
-            }
-        }
+				HttpEntity entity = response.getEntity();
+				if (entity != null) {
+					String body = EntityUtils.toString(entity);
 
-        if (null == body || body.isEmpty()) {
-            return;
-        }
+					List<SubscriptionItem> r = mapper.readValue(body,
+							new TypeReference<ArrayList<SubscriptionItem>>() {
+							});
+					if (r != null) {
+						result = r;
+					}
+				}
+			} catch (Exception ex) {
+				logger.log(Level.SEVERE, "SubscriptionChecker", ex);
+			}
+			return result;
+		}
+	};
 
-//        @SuppressWarnings("unchecked")
-//        List<Map<String, Object>> list = mapper.readValue(body, ArrayList.class);
-        List<SubscriptionItem> list = mapper.readValue(body,
-                new TypeReference<ArrayList<SubscriptionItem>>() {
-                });
+	@Override
+	protected int getDelaySec() {
+		return 30;
+	}
 
-        if (list == null) {
-            return;
-        }
+	@Override
+	protected void check(CloseableHttpClient httpClient) throws Exception {
+		HttpGet request = new HttpGet(uri);
+		List<SubscriptionItem> list = httpClient.execute(request, subscriptionsHandler);
 
-        for (SubscriptionItem item : list) {
-//            Long id = Long.valueOf(String.valueOf(map.get("id")));
-//            SubscriptionItem item = new SubscriptionItem(uri, id);
-//            item.setName(String.valueOf(map.get("name")));
-//            item.setComment(String.valueOf(map.get("comment")));
-//            item.setStatus(String.valueOf(map.get("status")));
+		for (SubscriptionItem item : list) {
 
-            int idx = -1;
+			int idx = -1;
 
-            for (int i = 0; i < subs.size(); ++i) {
-                SubscriptionRunner runner = subs.get(i);
-                if (runner.getId().equals(item.getId())) {
-                    idx = i;
-                    break;
-                }
-            }
+			for (int i = 0; i < subs.size(); ++i) {
+				SubscriptionRunner runner = subs.get(i);
+				if (runner.getId().equals(item.getId())) {
+					idx = i;
+					break;
+				}
+			}
 
-            if (idx >= 0) {
-                SubscriptionRunner runner = subs.get(idx);
-                runner.setName(item.getName());
-                runner.setComment(item.getComment());
+			if (idx >= 0) {
+				SubscriptionRunner runner = subs.get(idx);
+				runner.setName(item.getName());
+				runner.setComment(item.getComment());
 
-                if (runner.isStopped()) {
-                    if (isRunning(item)) {
-                        start(httpClient, runner);
-                    }
-                } else {
-                    if (isRunning(item)) {
-                        start(httpClient, runner);
-                    } else {
-                        runner.stop();
-                    }
-                }
-            } else {
-                if (isRunning(item)) {
-                    SubscriptionRunner runner = new SubscriptionRunner(uri, item);
-                    subs.add(runner);
-                    start(httpClient, runner);
-                }
-            }
-        }
-    }
+				if (runner.isStopped()) {
+					if (isRunning(item)) {
+						start(httpClient, runner);
+					}
+				} else {
+					if (isRunning(item)) {
+						start(httpClient, runner);
+					} else {
+						runner.stop();
+					}
+				}
+			} else {
+				if (isRunning(item)) {
+					SubscriptionRunner runner = new SubscriptionRunner(uri, item);
+					subs.add(runner);
+					start(httpClient, runner);
+				}
+			}
+		}
+	}
 
-    private boolean isRunning(SubscriptionItem item) {
-        String status = item.getStatus();
-        if (RUNNING.equals(status)) {
-            return true;
-        }
-        if (STOPPED.equals(status)) {
-            return false;
-        }
-        throw new RuntimeException("Unknown subscription status: " + status);
-    }
+	private boolean isRunning(SubscriptionItem item) {
+		String status = item.getStatus();
+		if (RUNNING.equals(status)) {
+			return true;
+		}
+		if (STOPPED.equals(status)) {
+			return false;
+		}
+		throw new RuntimeException("Unknown subscription status: " + status);
+	}
 
-    private void start(CloseableHttpClient httpClient, SubscriptionRunner runner) throws Exception {
-        String body = "";
+	private ResponseHandler<Set<SecurityItem>> securitiesHandler = new ResponseHandler<Set<SecurityItem>>() {
 
-        HttpGet request = new HttpGet(runner.getURI());
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
-            StatusLine statusLine = response.getStatusLine();
+		@Override
+		public Set<SecurityItem> handleResponse(HttpResponse response) {
+			Set<SecurityItem> result = Collections.emptySet();
+			try {
+				StatusLine statusLine = response.getStatusLine();
+				int statusCode = statusLine.getStatusCode();
+				if (statusCode < 200 || statusCode >= 300) {
+					String reason = statusLine.getReasonPhrase();
+					throw new Exception("Response status: " + statusCode + " " + reason);
+				}
+				HttpEntity entity = response.getEntity();
+				if (entity != null) {
+					String body = EntityUtils.toString(entity);
+					Set<SecurityItem> r = mapper.readValue(body,
+							new TypeReference<HashSet<SecurityItem>>() {
+							});
+					if (r != null) {
+						result = r;
+					}
+				}
+			} catch (Exception ex) {
+				logger.log(Level.SEVERE, "Subscription securities", ex);
+			}
+			return result;
+		}
+	};
 
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode < 200 || statusCode >= 300) {
-                String reason = statusLine.getReasonPhrase();
-                logger.log(Level.SEVERE, "SubscriptionChecker response status: {0} {1}",
-                        new Object[]{statusCode, reason});
-                return;
-            }
-
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                body = EntityUtils.toString(entity);
-            }
-        }
-
-        if (null == body || body.isEmpty()) {
-            return;
-        }
-
-//        @SuppressWarnings("unchecked")
-//        List<Map<String, Object>> list = mapper.readValue(body, ArrayList.class);
-//
-//        Set<SecurityItem> secs = new HashSet<>(list.size());
-//        for (Map<String, Object> map : list) {
-//            SecurityItem sec = new SecurityItem();
-//            sec.setId(Long.valueOf(String.valueOf(map.get("id"))));
-//            sec.setCode(String.valueOf(map.get("code")));
-//            sec.setName(String.valueOf(map.get("name")));
-//            secs.add(sec);
-//         }
-        Set<SecurityItem> secs = mapper.readValue(body,
-                new TypeReference<HashSet<SecurityItem>>() {
-                });
-
-        runner.start(secs);
-    }
+	private void start(CloseableHttpClient httpClient, SubscriptionRunner runner) throws Exception {
+		HttpGet request = new HttpGet(runner.getURI());
+		Set<SecurityItem> secs = httpClient.execute(request, securitiesHandler);
+		runner.start(secs);
+	}
 
 }

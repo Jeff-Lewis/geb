@@ -23,10 +23,11 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -38,7 +39,6 @@ import ru.prbb.activeagent.data.SubscriptionItem;
 
 /**
  * @author RBr
- *
  */
 public class SubscriptionRunner implements Runnable {
 
@@ -46,16 +46,17 @@ public class SubscriptionRunner implements Runnable {
 
     private final URI uri;
     private final SubscriptionItem item;
+    private final ExecutorService es;
 
     private final Set<SecurityItem> securities = new HashSet<>();
 
     private Session session;
-    private ExecutorService es;
 
     public SubscriptionRunner(URI uri, SubscriptionItem item) throws URISyntaxException {
         String path = uri.getPath() + "/" + item.getId();
         this.uri = new URIBuilder(uri).setPath(path).build();
         this.item = item;
+        this.es = Executors.newSingleThreadExecutor();
     }
 
     public URI getURI() {
@@ -75,6 +76,9 @@ public class SubscriptionRunner implements Runnable {
     }
 
     public void start(Set<SecurityItem> secs) throws Exception {
+        if (secs.isEmpty()) {
+            return;
+        }
         if (isRunning() && secs.equals(securities)) {
             return;
         }
@@ -87,30 +91,6 @@ public class SubscriptionRunner implements Runnable {
         } else {
             session.resubscribe(newSubscrList(securities));
         }
-    }
-
-    public void stop() {
-        try {
-            session.stop();
-        } catch (InterruptedException ex) {
-            logger.log(Level.SEVERE, "Subscribe stopped " + item.getName(), ex);
-        }
-        session = null;
-        es.shutdown();
-    }
-
-    public boolean isRunning() {
-        return session != null;
-    }
-
-    public boolean isStopped() {
-        return !isRunning();
-    }
-
-    @Override
-    public String toString() {
-        return "Subscription [id=" + item.getId() + ", name=" + item.getName()
-                + ", comment=" + item.getComment() + ", status=" + item.getStatus() + "]";
     }
 
     private void openSession() throws Exception {
@@ -131,18 +111,37 @@ public class SubscriptionRunner implements Runnable {
 
             session.subscribe(newSubscrList(securities));
 
-            if (es != null) {
-                es.shutdown();
-            }
-            es = Executors.newSingleThreadExecutor();
             es.execute(this);
 
             logger.log(Level.INFO, "Subscribe started " + item.getName() + " " + uri);
         } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage());
             session.stop();
             session = null;
-            logger.log(Level.SEVERE, e.getMessage());
         }
+    }
+
+    public void stop() {
+        try {
+            session.stop();
+        } catch (InterruptedException ex) {
+            logger.log(Level.SEVERE, "Subscribe stopped " + item.getName(), ex);
+        }
+        session = null;
+    }
+
+    public boolean isRunning() {
+        return session != null;
+    }
+
+    public boolean isStopped() {
+        return !isRunning();
+    }
+
+    @Override
+    public String toString() {
+        return "Subscription [id=" + item.getId() + ", name=" + item.getName()
+                + ", comment=" + item.getComment() + ", status=" + item.getStatus() + "]";
     }
 
     private SubscriptionList newSubscrList(Set<SecurityItem> securities) {
@@ -160,7 +159,7 @@ public class SubscriptionRunner implements Runnable {
 
     @Override
     public void run() {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        try (CloseableHttpClient httpClient = createHttpClient()) {
             while (true) {
                 Event event = session.nextEvent();
                 Event.EventType eventType = event.eventType();
@@ -178,6 +177,10 @@ public class SubscriptionRunner implements Runnable {
         }
     }
 
+    private CloseableHttpClient createHttpClient() {
+        return HttpClients.createDefault();
+    }
+
     private String getElementAsString(Message msg, String name) {
         try {
             return msg.getElementAsString(name);
@@ -188,6 +191,7 @@ public class SubscriptionRunner implements Runnable {
 
     private void processSubscription(CloseableHttpClient httpClient, Event event) throws Exception {
         StringBuilder data = new StringBuilder();
+
         for (Message msg : event) {
             if ("SubscriptionFailure".equals(msg.messageType().toString())) {
                 String description = msg.getElement("reason").getElementAsString("description");
@@ -205,37 +209,48 @@ public class SubscriptionRunner implements Runnable {
             }
         }
 
-        List<NameValuePair> nvps = new ArrayList<>();
-        nvps.add(new BasicNameValuePair("data", data.toString()));
+        if (data.length() > 1) {
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("data", data.toString()));
 
-        HttpPost httpPost = new HttpPost(uri);
-        httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
-        //httpPost.setEntity(new StringEntity(data.toString(), "UTF-8"));
+            HttpPost httpPost = new HttpPost(uri);
+            httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+            //httpPost.setEntity(new StringEntity(data.toString(), "UTF-8"));
 
-        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-            StatusLine statusLine = response.getStatusLine();
-
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode < 200 || statusCode >= 300) {
-                String reason = statusLine.getReasonPhrase();
-                logger.log(Level.SEVERE, "Subscription " + item.getName() + " response status: " + statusCode + " " + reason);
-                return;
-            }
-
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                String body = EntityUtils.toString(entity);
-                if ("OK".equals(body)) {
-                    if (data.length() > 1) {
-                        String time = sdf.format(new Date());
-                        logger.log(Level.INFO, time + uri + " - " + body + "\n" + data);
-                    }
-                } else {
-                    logger.severe(body);
+            String response = httpClient.execute(httpPost, updateHandler);
+            if ("OK".equals(response)) {
+                String time = sdf.format(new Date());
+                logger.log(Level.INFO, time + uri + " - " + response + "\n" + data);
+            } else {
+                if (!response.isEmpty()) {
+                    logger.severe(response);
                 }
             }
         }
     }
+
+    private ResponseHandler<String> updateHandler = new ResponseHandler<String>() {
+
+        @Override
+        public String handleResponse(HttpResponse response) {
+            try {
+                StatusLine statusLine = response.getStatusLine();
+                int statusCode = statusLine.getStatusCode();
+                if (statusCode < 200 || statusCode >= 300) {
+                    String reason = statusLine.getReasonPhrase();
+                    throw new Exception("Response status: " + statusCode + " " + reason);
+                }
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    return EntityUtils.toString(entity);
+                }
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, "Update subscription " + item.getName(), ex);
+            }
+            return "";
+        }
+    };
+
     private SimpleDateFormat sdf = new SimpleDateFormat("MM-dd hh:mm:ss ");
 
 }

@@ -13,6 +13,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,49 +27,51 @@ abstract class AbstractChecker implements Runnable {
     protected final Logger logger = Logger.getLogger(getClass().getName());
 
     protected final URI uri;
-    protected final ScheduledExecutorService exec;
     protected final ObjectMapper mapper;
 
-    protected ScheduledFuture ft;
-    protected String status = "stop";
+    private final ScheduledExecutorService exec;
+    private ScheduledFuture<?> ft;
+	private boolean isRun;
 
     protected AbstractChecker(String host) throws URISyntaxException {
         uri = new URI(host);
-        exec = Executors.newSingleThreadScheduledExecutor();
         mapper = new ObjectMapper();
         //mapper.setDateFormat(new SimpleDateFormat("yyyyMMdd"));
+        exec = Executors.newSingleThreadScheduledExecutor();
     }
 
     @Override
     public String toString() {
-        return uri + "   [ " + status + "]";
+        String status = (ft == null) ? "stop" : isRun ? "work" : "wait";
+		return "[ " + status + " ]   " + uri;
     }
 
     public void start() {
         if (ft == null) {
-            ft = exec.scheduleWithFixedDelay(this, 0, 5, TimeUnit.SECONDS);
-            status = "wait";
+            ft = exec.scheduleWithFixedDelay(this, 0, getDelaySec(), TimeUnit.SECONDS);
         }
     }
 
-    public void stop() {
-        exec.shutdown();
-        ft = null;
-        status = "stop";
-    }
+	public void stop() {
+        if (ft != null) {
+        	ft.cancel(false);
+        	ft = null;
+        }
+	}
 
     @Override
     public void run() {
-        status = "work";
+    	isRun = true;
         try (CloseableHttpClient httpClient = createHttpClient()) {
-            run(httpClient);
+            check(httpClient);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
-        status = "wait";
+    	isRun = false;
     }
 
-    protected abstract void run(CloseableHttpClient httpClient) throws Exception;
+    protected abstract int getDelaySec();
+    protected abstract void check(CloseableHttpClient httpClient) throws Exception;
 
     private CloseableHttpClient createHttpClient() {
         return HttpClients.createDefault();

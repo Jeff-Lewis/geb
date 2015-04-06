@@ -5,8 +5,6 @@
  */
 package ru.prbb.activeagent;
 
-import ru.prbb.activeagent.services.JobberChecker;
-import ru.prbb.activeagent.services.SubscriptionChecker;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -20,6 +18,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -32,12 +31,16 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
+import ru.prbb.activeagent.services.JobberChecker;
+import ru.prbb.activeagent.services.SubscriptionChecker;
 
 /**
  *
  * @author bryhljaev
  */
 public class MainJFrame extends javax.swing.JFrame {
+
+    private static final long serialVersionUID = 1L;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -86,13 +89,16 @@ public class MainJFrame extends javax.swing.JFrame {
         JScrollPane jScrollPane1 = new JScrollPane();
         result = new JEditorPane();
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Агент Bloomberg");
         setMinimumSize(new Dimension(500, 300));
         setPreferredSize(new Dimension(700, 526));
         addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent evt) {
                 formWindowOpened(evt);
+            }
+            public void windowClosing(WindowEvent evt) {
+                formWindowClosing(evt);
             }
         });
 
@@ -227,6 +233,10 @@ public class MainJFrame extends javax.swing.JFrame {
         Logger.getLogger("").addHandler(new Handler() {
             private int count = 0;
 
+            {
+                setFormatter(new SimpleFormatter());
+            }
+
             @Override
             public void publish(LogRecord record) {
                 try {
@@ -235,10 +245,7 @@ public class MainJFrame extends javax.swing.JFrame {
                         count = 0;
                     }
 
-                    String str = record.getMessage();
-                    if (null == str) {
-                        str = record.getThrown().getLocalizedMessage();
-                    }
+                    String str = getFormatter().format(record);
 
                     resultDoc.insertString(resultDoc.getLength(), str + '\n', null);
 
@@ -264,6 +271,7 @@ public class MainJFrame extends javax.swing.JFrame {
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
+
         try {
             String hostMy = "172.23.153.164:8080";
             jobber.addElement(new JobberChecker(hostMy, "/analytics"));
@@ -287,6 +295,16 @@ public class MainJFrame extends javax.swing.JFrame {
             jobber.addElement(new JobberChecker(hostTest, "/middleoffice"));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
+        }
+
+        for (int i = 0; i < subscription.getSize(); i++) {
+            SubscriptionChecker item = subscription.get(i);
+            item.start();
+        }
+
+        for (int i = 0; i < jobber.getSize(); i++) {
+            JobberChecker item = jobber.get(i);
+            //item.start();
         }
     }//GEN-LAST:event_formWindowOpened
 
@@ -426,6 +444,12 @@ public class MainJFrame extends javax.swing.JFrame {
             logger.log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_resultCleanActionPerformed
+
+    private void formWindowClosing(WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (showYesNoDialog("Остановить Агента?")) {
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
