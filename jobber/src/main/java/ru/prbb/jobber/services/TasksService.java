@@ -1,9 +1,8 @@
 package ru.prbb.jobber.services;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -28,16 +27,18 @@ public class TasksService {
 
 	private final Random random = new Random(System.currentTimeMillis());
 
-	private Map<TaskItem, TaskData> tasks = Collections.synchronizedMap(
-			new HashMap<TaskItem, TaskData>());
+	private List<TaskData> tasks = Collections.synchronizedList(
+			new ArrayList<TaskData>());
 
 	public TaskItem getTask() {
-		for (Entry<TaskItem, TaskData> entry : tasks.entrySet()) {
-			TaskData data = entry.getValue();
+		for (TaskData data : tasks) {
 			synchronized (data) {
 				if (TaskData.Status.READY == data.getStatus()) {
 					data.setStatus(TaskData.Status.WAIT);
-					return entry.getKey();
+					TaskItem task = new TaskItem();
+					task.setId(data.getId());
+					task.setType(data.getType());
+					return task;
 				}
 			}
 		}
@@ -45,22 +46,22 @@ public class TasksService {
 	}
 
 	public TaskData getTaskData(Long id) {
-		for (Entry<TaskItem, TaskData> entry : tasks.entrySet()) {
-			if (id.equals(entry.getKey().getId())) {
-				TaskData data = entry.getValue();
-				if (TaskData.Status.WAIT == data.getStatus()) {
-					data.setStatus(TaskData.Status.WORK);
-					return data;
+		for (TaskData data : tasks) {
+			if (id.equals(data.getId())) {
+				synchronized (data) {
+					if (TaskData.Status.WAIT == data.getStatus()) {
+						data.setStatus(TaskData.Status.WORK);
+						return data;
+					}
 				}
 			}
 		}
-		return new TaskData(EMPTY_TASK.getType());
+		return null;
 	}
 
 	public void updateTaskData(Long id, String str) {
-		for (Entry<TaskItem, TaskData> entry : tasks.entrySet()) {
-			if (id.equals(entry.getKey().getId())) {
-				TaskData data = entry.getValue();
+		for (TaskData data : tasks) {
+			if (id.equals(data.getId())) {
 				if (TaskData.Status.WORK == data.getStatus()) {
 					data.update(str);
 				}
@@ -69,11 +70,9 @@ public class TasksService {
 	}
 
 	public void execute(TaskData data) throws InterruptedException {
-		TaskItem task = new TaskItem();
-		task.setId(random.nextLong());
-		task.setType(data.getClass().getSimpleName());
-
-		tasks.put(task, data);
+		data.setId(random.nextLong());
+		data.setStatus(TaskData.Status.READY);
+		tasks.add(data);
 
 		synchronized (data) {
 			for (int iter = 120, c = 0; c < iter; ++c) {
@@ -82,13 +81,18 @@ public class TasksService {
 				} catch (InterruptedException ignore) {
 				}
 
+				if (TaskData.Status.WAIT == data.getStatus() && ((c % 10) == 9)) {
+					data.setStatus(TaskData.Status.READY);
+					break;
+				}
+
 				if (TaskData.Status.WORK == data.getStatus()) {
 					iter = 1200;
 					continue;
 				}
 
 				if (TaskData.Status.DONE == data.getStatus()) {
-					tasks.remove(task);
+					tasks.remove(data);
 					return;
 				}
 			}

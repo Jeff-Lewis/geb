@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -299,7 +300,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         for (int i = 0; i < subscription.getSize(); i++) {
             SubscriptionChecker item = subscription.get(i);
-            item.start();
+            //item.start();
         }
 
         for (int i = 0; i < jobber.getSize(); i++) {

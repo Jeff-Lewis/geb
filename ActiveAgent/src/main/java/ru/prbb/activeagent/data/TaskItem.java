@@ -47,4 +47,9 @@ public class TaskItem implements Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "TaskItem [type=" + type + ", id=" + id + "]";
+	}
+
 }

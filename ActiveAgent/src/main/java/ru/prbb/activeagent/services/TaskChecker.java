@@ -5,7 +5,7 @@
  */
 package ru.prbb.activeagent.services;
 
-import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 
@@ -14,6 +14,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.type.TypeReference;
@@ -88,8 +91,30 @@ public class TaskChecker extends AbstractChecker {
 		}
 	};
 
+	private ResponseHandler<String> taskDoneHandler = new ResponseHandler<String>() {
+
+		@Override
+		public String handleResponse(HttpResponse response) {
+			try {
+				StatusLine statusLine = response.getStatusLine();
+				int statusCode = statusLine.getStatusCode();
+				if (statusCode < 200 || statusCode >= 300) {
+					String reason = statusLine.getReasonPhrase();
+					throw new Exception("Response status: " + statusCode + " " + reason);
+				}
+				HttpEntity entity = response.getEntity();
+				if (entity != null) {
+					return EntityUtils.toString(entity);
+				}
+			} catch (Exception ex) {
+				logger.log(Level.SEVERE, "JobberChecker", ex);
+			}
+			return "";
+		}
+	};
+
 	@Override
-	protected void check(CloseableHttpClient httpClient) throws IOException {
+	protected void check(CloseableHttpClient httpClient) throws Exception {
 		HttpGet requestId = new HttpGet(uri);
 		TaskItem task = httpClient.execute(requestId, taskHandler);
 
@@ -99,7 +124,10 @@ public class TaskChecker extends AbstractChecker {
 
 		logger.log(Level.INFO, "Process task {0}", task);
 
-		HttpGet requestData = new HttpGet(uri);
+        String path = uri.getPath() + "/" + task.getId();
+		URI uriTask = new URIBuilder(uri).setPath(path).build();
+
+		HttpGet requestData = new HttpGet(uriTask);
 		String taskData = httpClient.execute(requestData, taskDataHandler);
 
 		if (taskData.isEmpty()) {
@@ -107,6 +135,12 @@ public class TaskChecker extends AbstractChecker {
 		}
 
 		logger.log(Level.INFO, "Task data {0}", taskData);
+		
+		// TODO execute task
+
+		HttpPost requestDone = new HttpPost(uriTask);
+		requestDone.setEntity(new StringEntity("DONE"));
+		String taskDone = httpClient.execute(requestDone, taskDoneHandler);
 	}
 
 }

@@ -1,5 +1,7 @@
 package ru.prbb.analytics.rest;
 
+import java.io.BufferedReader;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -37,45 +39,26 @@ public class TasksController
 	public TaskData getData(
 			@PathVariable Long id)
 	{
+		log.info("GET TaskData id={}", id);
 		return tasks.getTaskData(id);
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
 	@ResponseBody
-	public String put(HttpServletRequest request)
+	public String put(HttpServletRequest request,
+			@PathVariable Long id)
 	{
-		return "ERROR:Deprecated";
-//		log.info("POST /Agents: ");
-//		try {
-//			byte[] bs = new byte[request.getContentLength()];
-//			try (ServletInputStream is = request.getInputStream()) {
-//				is.read(bs);
-//			}
-//			String s = new String(bs, "UTF-8");
-//
-//			log.info("ContentType=" + request.getContentType());
-//			log.info("ContentLength=" + request.getContentLength());
-//
-//			int i1 = s.indexOf(' ');
-//			int i2 = s.indexOf('\n');
-//			long idTask = Long.parseLong(s.substring(0, i1));
-//			String status = s.substring(i1 + 1, i2);
-//
-//			log.info("idTask=" + idTask);
-//			log.info("status=" + status);
-//
-//			if ("OK".equals(status)) {
-//				String result = s.substring(i2 + 1);
-//
-//				AgentTask task = tasks.find(idTask);
-//				task.setResult(result);
-//				return "OK";
-//			} else {
-//				return status;
-//			}
-//		} catch (Exception e) {
-//			return "ERROR:" + e.getMessage();
-//		}
+		try {
+			String str;
+			try (BufferedReader r = request.getReader()) {
+				str = r.readLine();
+			}
+			log.info("PUT UpdateTaskData id={}, {}", id, str);
+			tasks.updateTaskData(id, str);
+		} catch (Exception e) {
+			return "ERROR:" + e.getMessage();
+		}
+		return "";
 	}
 
 }

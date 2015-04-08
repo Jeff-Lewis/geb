@@ -10,6 +10,7 @@ import com.bloomberglp.blpapi.Session;
 import com.bloomberglp.blpapi.SessionOptions;
 import com.bloomberglp.blpapi.Subscription;
 import com.bloomberglp.blpapi.SubscriptionList;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -51,6 +52,7 @@ public class SubscriptionRunner implements Runnable {
     private final Set<SecurityItem> securities = new HashSet<>();
 
     private Session session;
+    private SubscriptionList subscriptions;
 
     public SubscriptionRunner(URI uri, SubscriptionItem item) throws URISyntaxException {
         String path = uri.getPath() + "/" + item.getId();
@@ -122,8 +124,19 @@ public class SubscriptionRunner implements Runnable {
     }
 
     public void stop() {
+    	logger.info(uri + " Stop " + item.getName());
+    	isRun = false;
         try {
-            session.stop();
+        	if (subscriptions != null) {
+				session.unsubscribe(subscriptions);
+			}
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Subscribe stopped " + item.getName(), ex);
+        }
+        try {
+            if (session != null) {
+				session.stop();
+			}
         } catch (InterruptedException ex) {
             logger.log(Level.SEVERE, "Subscribe stopped " + item.getName(), ex);
         }
@@ -145,7 +158,7 @@ public class SubscriptionRunner implements Runnable {
     }
 
     private SubscriptionList newSubscrList(Set<SecurityItem> securities) {
-        SubscriptionList subscriptions = new SubscriptionList();
+		subscriptions = new SubscriptionList();
         for (SecurityItem securityItem : securities) {
             String code = securityItem.getCode();
 
@@ -157,10 +170,13 @@ public class SubscriptionRunner implements Runnable {
         return subscriptions;
     }
 
+    private boolean isRun;
+
     @Override
     public void run() {
         try (CloseableHttpClient httpClient = createHttpClient()) {
-            while (true) {
+        	isRun = true;
+            while (isRun) {
                 Event event = session.nextEvent();
                 Event.EventType eventType = event.eventType();
                 switch (eventType.intValue()) {

@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -20,6 +21,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.type.TypeReference;
+
 import ru.prbb.activeagent.data.SecurityItem;
 import ru.prbb.activeagent.data.SubscriptionItem;
 import static ru.prbb.activeagent.data.SubscriptionItem.RUNNING;
@@ -162,4 +164,12 @@ public class SubscriptionChecker extends AbstractChecker {
 		runner.start(secs);
 	}
 
+	@Override
+	public void stop() {
+		super.stop();
+
+		for (SubscriptionRunner sub : subs) {
+			sub.stop();
+		}
+	}
 }
