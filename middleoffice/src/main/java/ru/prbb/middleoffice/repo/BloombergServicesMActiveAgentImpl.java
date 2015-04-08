@@ -25,7 +25,7 @@ import ru.prbb.middleoffice.services.AgentTaskService;
 /**
  * @author RBr
  */
-@Service
+//@Service
 public class BloombergServicesMActiveAgentImpl implements BloombergServicesM {
 
 	private Logger log = LoggerFactory.getLogger(getClass());

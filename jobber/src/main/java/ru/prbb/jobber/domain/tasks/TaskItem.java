@@ -1,8 +1,8 @@
-package ru.prbb.activeagent.data;
+package ru.prbb.jobber.domain.tasks;
 
 import java.io.Serializable;
 
-public class JobberTask implements Serializable {
+public class TaskItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -38,7 +38,7 @@ public class JobberTask implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		JobberTask other = (JobberTask) obj;
+		TaskItem other = (TaskItem) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

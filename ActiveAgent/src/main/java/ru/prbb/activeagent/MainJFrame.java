@@ -31,7 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
-import ru.prbb.activeagent.services.JobberChecker;
+import ru.prbb.activeagent.services.TaskChecker;
 import ru.prbb.activeagent.services.SubscriptionChecker;
 
 /**
@@ -45,7 +45,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     private final DefaultListModel<SubscriptionChecker> subscription = new DefaultListModel<>();
-    private final DefaultListModel<JobberChecker> jobber = new DefaultListModel<>();
+    private final DefaultListModel<TaskChecker> jobber = new DefaultListModel<>();
     private final PlainDocument resultDoc = new PlainDocument();
 
     /**
@@ -274,25 +274,25 @@ public class MainJFrame extends javax.swing.JFrame {
 
         try {
             String hostMy = "172.23.153.164:8080";
-            jobber.addElement(new JobberChecker(hostMy, "/analytics"));
-            jobber.addElement(new JobberChecker(hostMy, "/Jobber"));
-            jobber.addElement(new JobberChecker(hostMy, "/middleoffice"));
+            jobber.addElement(new TaskChecker(hostMy, "/analytics"));
+            jobber.addElement(new TaskChecker(hostMy, "/Jobber"));
+            jobber.addElement(new TaskChecker(hostMy, "/middleoffice"));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
         try {
             String hostWork = "172.16.15.36:10180";
-            jobber.addElement(new JobberChecker(hostWork, "/analytics"));
-            jobber.addElement(new JobberChecker(hostWork, "/Jobber"));
-            jobber.addElement(new JobberChecker(hostWork, "/middleoffice"));
+            jobber.addElement(new TaskChecker(hostWork, "/analytics"));
+            jobber.addElement(new TaskChecker(hostWork, "/Jobber"));
+            jobber.addElement(new TaskChecker(hostWork, "/middleoffice"));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
         try {
             String hostTest = "172.16.15.36:10190";
-            jobber.addElement(new JobberChecker(hostTest, "/analytics"));
-            jobber.addElement(new JobberChecker(hostTest, "/Jobber"));
-            jobber.addElement(new JobberChecker(hostTest, "/middleoffice"));
+            jobber.addElement(new TaskChecker(hostTest, "/analytics"));
+            jobber.addElement(new TaskChecker(hostTest, "/Jobber"));
+            jobber.addElement(new TaskChecker(hostTest, "/middleoffice"));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
@@ -303,7 +303,7 @@ public class MainJFrame extends javax.swing.JFrame {
         }
 
         for (int i = 0; i < jobber.getSize(); i++) {
-            JobberChecker item = jobber.get(i);
+            TaskChecker item = jobber.get(i);
             //item.start();
         }
     }//GEN-LAST:event_formWindowOpened
@@ -377,7 +377,7 @@ public class MainJFrame extends javax.swing.JFrame {
             String host = "localhost";
             String servlet = "";
             // TODO add your handling code here:
-            jobber.addElement(new JobberChecker(host, servlet));
+            jobber.addElement(new TaskChecker(host, servlet));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
@@ -385,8 +385,8 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jobberDelActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jobberDelActionPerformed
         try {
-            List<JobberChecker> list = jobberList.getSelectedValuesList();
-            for (JobberChecker item : list) {
+            List<TaskChecker> list = jobberList.getSelectedValuesList();
+            for (TaskChecker item : list) {
                 item.stop();
                 jobber.removeElement(item);
             }
@@ -399,15 +399,15 @@ public class MainJFrame extends javax.swing.JFrame {
         try {
             if (jobberList.isSelectionEmpty()) {
                 if (showYesNoDialog("Запустить все Jobber?")) {
-                    Enumeration<JobberChecker> items = jobber.elements();
+                    Enumeration<TaskChecker> items = jobber.elements();
                     while (items.hasMoreElements()) {
-                        JobberChecker item = items.nextElement();
+                        TaskChecker item = items.nextElement();
                         item.start();
                     }
                 }
             } else {
-                List<JobberChecker> list = jobberList.getSelectedValuesList();
-                for (JobberChecker item : list) {
+                List<TaskChecker> list = jobberList.getSelectedValuesList();
+                for (TaskChecker item : list) {
                     item.start();
                 }
             }
@@ -420,14 +420,14 @@ public class MainJFrame extends javax.swing.JFrame {
     private void jobberStopActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jobberStopActionPerformed
         try {
             if (jobberList.isSelectionEmpty()) {
-                Enumeration<JobberChecker> items = jobber.elements();
+                Enumeration<TaskChecker> items = jobber.elements();
                 while (items.hasMoreElements()) {
-                    JobberChecker item = items.nextElement();
+                    TaskChecker item = items.nextElement();
                     item.stop();
                 }
             } else {
-                List<JobberChecker> list = jobberList.getSelectedValuesList();
-                for (JobberChecker item : list) {
+                List<TaskChecker> list = jobberList.getSelectedValuesList();
+                for (TaskChecker item : list) {
                     item.stop();
                 }
             }

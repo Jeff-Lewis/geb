@@ -20,7 +20,7 @@ import ru.prbb.analytics.services.AgentTaskService;
 /**
  * @author RBr
  */
-@Service
+//@Service
 public final class BloombergServicesAActiveAgentImpl implements BloombergServicesA {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
