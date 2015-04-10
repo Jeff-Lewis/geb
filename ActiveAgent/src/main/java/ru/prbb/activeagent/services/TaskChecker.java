@@ -7,6 +7,8 @@ package ru.prbb.activeagent.services;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.http.HttpEntity;
@@ -22,6 +24,22 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
+import ru.prbb.activeagent.executors.TaskAtrLoadExecutor;
+import ru.prbb.activeagent.executors.TaskBdhEpsExecutor;
+import ru.prbb.activeagent.executors.TaskBdhExecutor;
+import ru.prbb.activeagent.executors.TaskBdpExecutor;
+import ru.prbb.activeagent.executors.TaskBdpOverrideExecutor;
+import ru.prbb.activeagent.executors.TaskBdpOverrideLoadExecutor;
+import ru.prbb.activeagent.executors.TaskBdsExecutor;
+import ru.prbb.activeagent.executors.TaskCashFlowLoadExecutor;
+import ru.prbb.activeagent.executors.TaskCashFlowLoadNewExecutor;
+import ru.prbb.activeagent.executors.TaskExecutor;
+import ru.prbb.activeagent.executors.TaskFieldInfoExecutor;
+import ru.prbb.activeagent.executors.TaskHistoricalDataExecutor;
+import ru.prbb.activeagent.executors.TaskRateCouponLoadExecutor;
+import ru.prbb.activeagent.executors.TaskReferenceDataExecutor;
+import ru.prbb.activeagent.executors.TaskBdpOverrideQuarterExecutor;
+import ru.prbb.activeagent.executors.TaskValuesLoadExecutor;
 
 /**
  * @author ruslan
@@ -124,7 +142,7 @@ public class TaskChecker extends AbstractChecker {
 
 		logger.log(Level.INFO, "Process task {0}", task);
 
-        String path = uri.getPath() + "/" + task.getId();
+		String path = uri.getPath() + "/" + task.getId();
 		URI uriTask = new URIBuilder(uri).setPath(path).build();
 
 		HttpGet requestData = new HttpGet(uriTask);
@@ -135,12 +153,46 @@ public class TaskChecker extends AbstractChecker {
 		}
 
 		logger.log(Level.INFO, "Task data {0}", taskData);
-		
-		// TODO execute task
+
+		TaskExecutor taskExecutor = null;
+		String type = task.getType();
+		for (TaskExecutor executor : executors) {
+			if (type.equals(executor.getType())) {
+				taskExecutor = executor.getClass().newInstance();
+				break;
+			}
+		}
+
+		try {
+			taskExecutor.execute(task, taskData);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+		}
 
 		HttpPost requestDone = new HttpPost(uriTask);
 		requestDone.setEntity(new StringEntity("DONE"));
 		String taskDone = httpClient.execute(requestDone, taskDoneHandler);
+		taskDone.isEmpty();
+	}
+
+	private final List<TaskExecutor> executors = new ArrayList<>(16);
+
+	{
+		executors.add(new TaskAtrLoadExecutor());
+		executors.add(new TaskBdhEpsExecutor());
+		executors.add(new TaskBdhExecutor());
+		executors.add(new TaskBdpExecutor());
+		executors.add(new TaskBdpOverrideExecutor());
+		executors.add(new TaskBdpOverrideLoadExecutor());
+		executors.add(new TaskBdsExecutor());
+		executors.add(new TaskCashFlowLoadExecutor());
+		executors.add(new TaskCashFlowLoadNewExecutor());
+		executors.add(new TaskFieldInfoExecutor());
+		executors.add(new TaskHistoricalDataExecutor());
+		executors.add(new TaskRateCouponLoadExecutor());
+		executors.add(new TaskReferenceDataExecutor());
+		executors.add(new TaskBdpOverrideQuarterExecutor());
+		executors.add(new TaskValuesLoadExecutor());
 	}
 
 }
