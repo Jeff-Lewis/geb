@@ -1,5 +1,6 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,16 +8,16 @@ import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
 import ru.prbb.activeagent.tasks.TaskBdpRequest;
-import ru.prbb.activeagent.tasks.TaskData;
 
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskBdpExecutor extends TaskExecutor {
+
+	private TaskBdpRequest taskData;
 
 	public TaskBdpExecutor() {
 		super(TaskBdpRequest.class.getSimpleName());
@@ -24,19 +25,15 @@ public class TaskBdpExecutor extends TaskExecutor {
 
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
-		TaskBdpRequest taskData = mapper.readValue(data,
+		taskData = mapper.readValue(data,
 				new TypeReference<TaskBdpRequest>() {
 				});
 
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
-
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/refdata")) {
-				Service service = session.getService("//blp/refdata");
+			String serviceUri = "//blp/refdata";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
 				final Request request = service.createRequest("ReferenceDataRequest");
 
@@ -50,7 +47,9 @@ public class TaskBdpExecutor extends TaskExecutor {
 					_fields.appendValue(field);
 				}
 
-				sendRequest(taskData, session, request);
+				sendRequest(session, request);
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
@@ -58,8 +57,8 @@ public class TaskBdpExecutor extends TaskExecutor {
 	}
 
 	@Override
-	protected void processMessage(TaskData data, Message msg) {
-		TaskBdpRequest taskData = (TaskBdpRequest) data;
+	protected void processMessage(Message msg) {
+		Map<String, Map<String, String>> answer = new HashMap<>();
 
 		final Element arraySecurityData = msg.getElement("securityData");
 		final int numItems = arraySecurityData.numValues();
@@ -85,11 +84,21 @@ public class TaskBdpExecutor extends TaskExecutor {
 						values.put(field, value);
 					} catch (Exception e) {
 						logger.severe(e.getMessage());
+						sendError(e.getMessage());
 					}
 				}
 			}
-			// TODO answer.put(security, values);
+			answer.put(security, values);
 		}
+
+		send(answer);
 	}
 
+	private void send(Map<String, Map<String, String>> answer) {
+		try {
+			send(mapper.writeValueAsString(answer));
+		} catch (Exception e) {
+			sendError(e.getMessage());
+		}
+	}
 }

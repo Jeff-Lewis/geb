@@ -1,5 +1,6 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,14 +8,12 @@ import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
 import ru.prbb.activeagent.tasks.TaskBdhEpsRequest;
-import ru.prbb.activeagent.tasks.TaskData;
 
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskBdhEpsExecutor extends TaskExecutor {
 
@@ -24,20 +23,16 @@ public class TaskBdhEpsExecutor extends TaskExecutor {
 
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
-		TaskBdhEpsRequest taskData = mapper.readValue(data,
+		taskData = mapper.readValue(data,
 				new TypeReference<TaskBdhEpsRequest>() {
 				});
-		
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
 
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/refdata")) {
-				Service service =  session.getService("//blp/refdata");
-				
+			String serviceUri = "//blp/refdata";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
+
 				for (String crncy : taskData.getCurrencies()) {
 					Request request = service.createRequest("HistoricalDataRequest");
 					request.set("periodicitySelection", taskData.getPeriod());
@@ -47,7 +42,7 @@ public class TaskBdhEpsExecutor extends TaskExecutor {
 					request.set("currency", currency = crncy);
 					request.set("returnEids", "true");
 					request.set("returnRelativeDate", "true");
-					
+
 					final Element _securities = request.getElement("securities");
 					for (String security : taskData.getSecurities()) {
 						final int p = security.indexOf("|");
@@ -55,27 +50,28 @@ public class TaskBdhEpsExecutor extends TaskExecutor {
 							_securities.appendValue(security.substring(0, p));
 						}
 					}
-					
+
 					final Element _fields = request.getElement("fields");
 					for (String p : taskData.getFields()) {
 						_fields.appendValue(p);
 					}
-					
-					sendRequest(taskData, session, request);
+
+					sendRequest(session, request);
 				}
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
 		}
-		
+
 	}
 
 	private String currency;
+	private TaskBdhEpsRequest taskData;
 
 	@Override
-	protected void processMessage(TaskData data, Message msg) {
-		TaskBdhEpsRequest taskData = (TaskBdhEpsRequest) data;
-
+	protected void processMessage(Message msg) {
 		final Element sd = msg.getElement("securityData");
 
 		final String security = sd.getElementAsString("security");
@@ -87,7 +83,7 @@ public class TaskBdhEpsExecutor extends TaskExecutor {
 			final Element fieldData = arrayFieldData.getValueAsElement(i);
 
 			final String date = fieldData.getElementAsString("date");
-			final String relative_date = getElementAsString(fieldData, "RELATIVE_DATE");
+			final String relative_date = fieldData.getElementAsString("RELATIVE_DATE");
 			final Map<String, String> values = new HashMap<>();
 			datevalues.put(date, values);
 
@@ -99,11 +95,23 @@ public class TaskBdhEpsExecutor extends TaskExecutor {
 						values.put(field, value);
 					} catch (Exception e) {
 						logger.severe(e.getMessage());
+						sendError(e.getMessage());
 					}
 				}
 			}
 		}
 
-		// TODO answer.put(security + '|' + currency, datevalues);
+		send(currency + security, datevalues);
+	}
+
+	private void send(String security, Map<String, Map<String, String>> datevalues) {
+		try {
+			StringBuilder sb = new StringBuilder();
+			sb.append(security).append('\n');
+			sb.append(mapper.writeValueAsString(datevalues));
+			send(sb.toString());
+		} catch (Exception e) {
+			sendError(e.getMessage());
+		}
 	}
 }

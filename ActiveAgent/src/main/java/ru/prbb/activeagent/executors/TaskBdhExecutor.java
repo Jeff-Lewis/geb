@@ -1,5 +1,6 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,14 +8,12 @@ import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
 import ru.prbb.activeagent.tasks.TaskBdhRequest;
-import ru.prbb.activeagent.tasks.TaskData;
 
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskBdhExecutor extends TaskExecutor {
 
@@ -24,22 +23,18 @@ public class TaskBdhExecutor extends TaskExecutor {
 
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
-		TaskBdhRequest taskData = mapper.readValue(data,
+		taskData = mapper.readValue(data,
 				new TypeReference<TaskBdhRequest>() {
 				});
 
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
-
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/refdata")) {
-				Service service = session.getService("//blp/refdata");
+			String serviceUri = "//blp/refdata";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
-				for (final String crncy : taskData.getCurrencies()) {
-					final Request request = service.createRequest("HistoricalDataRequest");
+				for (String crncy : taskData.getCurrencies()) {
+					Request request = service.createRequest("HistoricalDataRequest");
 					request.set("periodicitySelection", taskData.getPeriod());
 					request.set("periodicityAdjustment", taskData.getCalendar());
 					request.set("startDate", taskData.getDateStart());
@@ -48,9 +43,8 @@ public class TaskBdhExecutor extends TaskExecutor {
 
 					final Element _securities = request.getElement("securities");
 					for (String security : taskData.getSecurities()) {
-						final int p = security.indexOf("|");
-						if (security.substring(p + 1).equals(crncy)) {
-							_securities.appendValue(security.substring(0, p));
+						if (security.startsWith(crncy)) {
+							_securities.appendValue(security.substring(crncy.length()));
 						}
 					}
 
@@ -59,8 +53,10 @@ public class TaskBdhExecutor extends TaskExecutor {
 						_fields.appendValue(field);
 					}
 
-					sendRequest(taskData, session, request);
+					sendRequest(session, request);
 				}
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
@@ -69,11 +65,10 @@ public class TaskBdhExecutor extends TaskExecutor {
 	}
 
 	private String currency;
+	private TaskBdhRequest taskData;
 
 	@Override
-	protected void processMessage(TaskData data, Message msg) {
-		TaskBdhRequest taskData = (TaskBdhRequest) data;
-
+	protected void processMessage(Message msg) {
 		final Element sd = msg.getElement("securityData");
 
 		final String security = sd.getElementAsString("security");
@@ -96,12 +91,23 @@ public class TaskBdhExecutor extends TaskExecutor {
 						values.put(field, value);
 					} catch (Exception e) {
 						logger.severe(e.getMessage());
+						sendError(e.getMessage());
 					}
 				}
 			}
 		}
 
-		// TODO answer.put(security + '|' + currency, datevalues);
+		send(currency + security, datevalues);
 	}
 
+	private void send(String security, Map<String, Map<String, String>> datevalues) {
+		try {
+			StringBuilder sb = new StringBuilder();
+			sb.append(security).append('\n');
+			sb.append(mapper.writeValueAsString(datevalues));
+			send(sb.toString());
+		} catch (Exception e) {
+			sendError(e.getMessage());
+		}
+	}
 }

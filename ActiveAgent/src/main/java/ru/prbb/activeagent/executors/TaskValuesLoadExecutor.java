@@ -1,12 +1,14 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
-import ru.prbb.activeagent.tasks.TaskData;
 import ru.prbb.activeagent.tasks.TaskValuesLoad;
 
 import com.bloomberglp.blpapi.Element;
@@ -14,7 +16,6 @@ import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskValuesLoadExecutor extends TaskExecutor {
 
@@ -36,15 +37,11 @@ public class TaskValuesLoadExecutor extends TaskExecutor {
 			ids.put(name, id);
 		}
 
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
-
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/refdata")) {
-				Service service = session.getService("//blp/refdata");
+			String serviceUri = "//blp/refdata";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
 				final Request request = service.createRequest("ReferenceDataRequest");
 
@@ -56,7 +53,9 @@ public class TaskValuesLoadExecutor extends TaskExecutor {
 				final Element _fields = request.getElement("fields");
 				_fields.appendValue("Factor_Schedule");
 
-				sendRequest(taskData, session, request);
+				sendRequest(session, request);
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
@@ -66,13 +65,15 @@ public class TaskValuesLoadExecutor extends TaskExecutor {
 	private final Map<String, Long> ids = new HashMap<>();
 
 	@Override
-	protected void processMessage(TaskData data, Message msg) {
+	protected void processMessage(Message msg) {
+		List<Map<String, String>> answer = new ArrayList<>();
+
 		final Element sdArray = msg.getElement("securityData");
 		for (int i = 0; i < sdArray.numValues(); ++i) {
 			final Element sd = sdArray.getValueAsElement(i);
 
 			final String security = sd.getElementAsString("security");
-			final Long id = ids.get(security);
+			final String id = ids.get(security).toString();
 			logger.fine(security + ", id:" + id);
 
 			if (sd.hasElement("securityError")) {
@@ -88,18 +89,28 @@ public class TaskValuesLoadExecutor extends TaskExecutor {
 				final Element fs = fsArray.getValueAsElement(j);
 
 				final String date = fs.getElementAsString("Payment Date");
-				final Double value = fs.getElementAsFloat64("Factor");
+				final String value = fs.getElementAsString("Factor");
 
 				logger.fine("id:" + id + ", date:" + date + ", value:" + value);
 
-				final Map<String, Object> map = new HashMap<>();
-				// TODO answer.add(map);
+				final Map<String, String> map = new HashMap<>();
 				map.put("id_sec", id);
 				map.put("security", security);
 				map.put("date", date);
 				map.put("value", value);
+
+				answer.add(map);
 			}
 		}
+
+		send(answer);
 	}
 
+	private void send(List<Map<String, String>> answer) {
+		try {
+			send(mapper.writeValueAsString(answer));
+		} catch (Exception e) {
+			sendError(e.getMessage());
+		}
+	}
 }

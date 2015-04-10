@@ -1,40 +1,114 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import ru.prbb.activeagent.data.TaskItem;
 
 import com.bloomberglp.blpapi.CorrelationID;
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Event;
+import com.bloomberglp.blpapi.Event.EventType.Constants;
 import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.Event.EventType.Constants;
-
-import ru.prbb.activeagent.data.TaskItem;
-import ru.prbb.activeagent.tasks.TaskData;
+import com.bloomberglp.blpapi.SessionOptions;
 
 public abstract class TaskExecutor {
 
-    protected final Logger logger = Logger.getLogger(getClass().getName());
+	protected final Logger logger = Logger.getLogger(getClass().getName());
 
 	private final String type;
-    protected final ObjectMapper mapper;
+	protected final ObjectMapper mapper;
+
+	private URI uriTask;
+	private CloseableHttpClient httpClient;
 
 	protected TaskExecutor(String type) {
 		this.type = type;
-        mapper = new ObjectMapper();
+		mapper = new ObjectMapper();
+	}
+
+	protected Session startSession() throws IOException, InterruptedException {
+		final SessionOptions sesOpt = new SessionOptions();
+		sesOpt.setServerHost("localhost");
+		sesOpt.setServerPort(8194);
+
+		Session session = new Session(sesOpt);
+
+		if (session.start()) {
+			return session;
+		}
+
+		throw new IOException("Unable to start bloomberg session for " + sesOpt.getServerHost());
 	}
 
 	public String getType() {
 		return type;
 	}
 
+	public void setUri(URI uriTask) {
+		this.uriTask = uriTask;
+	}
+
+	public void setHttpClient(CloseableHttpClient httpClient) {
+		this.httpClient = httpClient;
+	}
+
+	public String sendError(String message) {
+		return send("ERROR:" + message);
+	}
+
+	public String send(String data) {
+		try {
+			HttpPost requestDone = new HttpPost(uriTask);
+			requestDone.setEntity(new StringEntity(data));
+			String taskDone = httpClient.execute(requestDone, taskDoneHandler);
+			return taskDone;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Send data " + data, e);
+		}
+		return "";
+	}
+
+	private ResponseHandler<String> taskDoneHandler = new ResponseHandler<String>() {
+
+		@Override
+		public String handleResponse(HttpResponse response) {
+			try {
+				StatusLine statusLine = response.getStatusLine();
+				int statusCode = statusLine.getStatusCode();
+				if (statusCode < 200 || statusCode >= 300) {
+					String reason = statusLine.getReasonPhrase();
+					throw new Exception("Response status: " + statusCode + " " + reason);
+				}
+				HttpEntity entity = response.getEntity();
+				if (entity != null) {
+					return EntityUtils.toString(entity);
+				}
+			} catch (Exception ex) {
+				logger.log(Level.SEVERE, "JobberChecker", ex);
+			}
+			return "";
+		}
+	};
+
 	public abstract void execute(TaskItem task, String data) throws Exception;
 
-	protected void sendRequest(TaskData data, Session session, Request request) throws Exception {
-		session.sendRequest(request, new CorrelationID(data));
+	protected void sendRequest(Session session, Request request) throws Exception {
+		session.sendRequest(request, new CorrelationID());
 
 		boolean continueToLoop = true;
 		while (continueToLoop) {
@@ -51,7 +125,7 @@ public abstract class TaskExecutor {
 						throw new RuntimeException(re.getElementAsString("message"));
 					}
 
-					processMessage(data, message);
+					processMessage(message);
 				}
 				break;
 			default:
@@ -60,14 +134,6 @@ public abstract class TaskExecutor {
 		}
 	}
 
-	protected abstract void processMessage(TaskData data, Message message);
-
-	protected static String getElementAsString(Element element, String name) {
-		try {
-			return element.getElementAsString(name);
-		} catch (Exception e) {
-			return "";
-		}
-	}
+	protected abstract void processMessage(Message message);
 
 }

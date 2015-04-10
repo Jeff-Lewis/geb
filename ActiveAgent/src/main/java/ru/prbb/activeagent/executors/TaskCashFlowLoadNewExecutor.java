@@ -1,22 +1,23 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
 import ru.prbb.activeagent.tasks.TaskCashFlowLoadNew;
-import ru.prbb.activeagent.tasks.TaskData;
 
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskCashFlowLoadNewExecutor extends TaskExecutor {
 
@@ -38,10 +39,6 @@ public class TaskCashFlowLoadNewExecutor extends TaskExecutor {
 		cYear10.set(Calendar.DAY_OF_MONTH, 1);
 		String dateStartYear = new SimpleDateFormat("yyyyMMdd").format(cYear10.getTime());
 
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
-
 		for (String s : taskData.getIds()) {
 			final int p = s.indexOf(';');
 			final Long id = new Long(s.substring(0, p));
@@ -60,11 +57,11 @@ public class TaskCashFlowLoadNewExecutor extends TaskExecutor {
 			dates.put(name, date);
 		}
 
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/refdata")) {
-				Service service = session.getService("//blp/refdata");
+			String serviceUri = "//blp/refdata";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
 				final Request request = service.createRequest("ReferenceDataRequest");
 
@@ -81,7 +78,9 @@ public class TaskCashFlowLoadNewExecutor extends TaskExecutor {
 				overrid.setElement("fieldId", "USER_LOCAL_TRADE_DATE");
 				overrid.setElement("value", dateStartYear);
 
-				sendRequest(taskData, session, request);
+				sendRequest(session, request);
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
@@ -91,13 +90,15 @@ public class TaskCashFlowLoadNewExecutor extends TaskExecutor {
 	private final Map<String, Long> ids = new HashMap<>();
 
 	@Override
-	protected void processMessage(TaskData data, Message msg) {
+	protected void processMessage(Message msg) {
+		List<Map<String, String>> answer = new ArrayList<>();
+
 		final Element sdArray = msg.getElement("securityData");
 		for (int i = 0; i < sdArray.numValues(); ++i) {
 			final Element sd = sdArray.getValueAsElement(i);
 
 			final String security = sd.getElementAsString("security");
-			final Long id = ids.get(security);
+			final String id = ids.get(security).toString();
 			logger.fine(security + ", id:" + id);
 
 			if (sd.hasElement("securityError")) {
@@ -113,20 +114,30 @@ public class TaskCashFlowLoadNewExecutor extends TaskExecutor {
 				final Element fs = fsArray.getValueAsElement(j);
 
 				final String date = fs.getElementAsString("Payment Date");
-				final Double value = fs.getElementAsFloat64("Coupon Amount");
-				final Double value2 = fs.getElementAsFloat64("Principal Amount");
+				final String value = fs.getElementAsString("Coupon Amount");
+				final String value2 = fs.getElementAsString("Principal Amount");
 
 				logger.fine("id:" + id + ", date:" + date + ", value:" + value + ", value2:" + value2);
 
-				final Map<String, Object> map = new HashMap<>();
-				// TODO answer.add(map);
+				final Map<String, String> map = new HashMap<>();
 				map.put("id_sec", id);
 				map.put("security", security);
 				map.put("date", date);
 				map.put("value", value);
 				map.put("value2", value2);
+
+				answer.add(map);
 			}
 		}
+
+		send(answer);
 	}
 
+	private void send(List<Map<String, String>> answer) {
+		try {
+			send(mapper.writeValueAsString(answer));
+		} catch (Exception e) {
+			sendError(e.getMessage());
+		}
+	}
 }

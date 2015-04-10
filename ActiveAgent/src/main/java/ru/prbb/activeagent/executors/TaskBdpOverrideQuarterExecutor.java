@@ -1,12 +1,12 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
-import ru.prbb.activeagent.tasks.TaskData;
 import ru.prbb.activeagent.tasks.TaskRequestOverrideQuarter;
 
 import com.bloomberglp.blpapi.Element;
@@ -14,7 +14,6 @@ import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 
@@ -24,19 +23,15 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
-		TaskRequestOverrideQuarter taskData = mapper.readValue(data,
+		taskData = mapper.readValue(data,
 				new TypeReference<TaskRequestOverrideQuarter>() {
 				});
 
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
-
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/refdata")) {
-				Service service = session.getService("//blp/refdata");
+			String serviceUri = "//blp/refdata";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
 				for (String crncy : taskData.getCurrencies()) {
 
@@ -74,9 +69,11 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 							overrideDataSource.setElement("value", override);
 						}
 
-						sendRequest(taskData, session, request);
+						sendRequest(session, request);
 					}
 				}
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
@@ -84,10 +81,12 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 	}
 
 	private String period;
+	private TaskRequestOverrideQuarter taskData;
 
 	@Override
-	protected void processMessage(TaskData data, Message msg) {
-		TaskRequestOverrideQuarter taskData = (TaskRequestOverrideQuarter) data;
+	protected void processMessage(Message msg) {
+		Map<String, Map<String, Map<String, String>>> answer = new HashMap<>();
+
 		final Element arraySecurityData = msg.getElement("securityData");
 		final int numItems = arraySecurityData.numValues();
 		for (int i = 0; i < numItems; ++i) {
@@ -95,8 +94,6 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 
 			final String security = securityData.getElementAsString("security");
 
-			// TODO answer
-			Map<String, Map<String, Map<String, String>>> answer = null;
 			Map<String, Map<String, String>> pv;
 			if (answer.containsKey(security)) {
 				pv = answer.get(security);
@@ -122,10 +119,20 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 						values.put(field, value);
 					} catch (Exception e) {
 						logger.severe(e.getMessage());
+						sendError(e.getMessage());
 					}
 				}
 			}
 		}
+
+		send(answer);
 	}
 
+	private void send(Map<String, Map<String, Map<String, String>>> answer) {
+		try {
+			send(mapper.writeValueAsString(answer));
+		} catch (Exception e) {
+			sendError(e.getMessage());
+		}
+	}
 }

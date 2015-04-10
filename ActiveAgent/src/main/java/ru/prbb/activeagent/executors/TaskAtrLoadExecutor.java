@@ -1,23 +1,19 @@
 package ru.prbb.activeagent.executors;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
 import ru.prbb.activeagent.tasks.TaskAtrLoad;
-import ru.prbb.activeagent.tasks.TaskData;
 
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 /**
  * Загрузка ATR
@@ -39,81 +35,85 @@ public class TaskAtrLoadExecutor extends TaskExecutor {
 		TaskAtrLoad taskData = mapper.readValue(data,
 				new TypeReference<TaskAtrLoad>() {
 				});
-		
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
 
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/tasvc")) {
-				Service service = session.getService("//blp/tasvc");
+			String serviceUri = "//blp/tasvc";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
 				for (String security : taskData.getSecurities()) {
 					Request request = service.createRequest("studyRequest");
-					
+
 					Element priceSource = request.getElement("priceSource");
 					// set security name
 					priceSource.setElement("securityName", security);
-					
+
 					Element dataRange = priceSource.getElement("dataRange");
 					dataRange.setChoice("historical");
-					
+
 					// set historical price data
 					Element historical = dataRange.getElement("historical");
 					historical.setElement("startDate", taskData.getDateStart()); // set study start date
 					historical.setElement("endDate", taskData.getDateEnd()); // set study start date
-					
+
 					// DMI study example - set study attributes
 					Element studyAttributes = request.getElement("studyAttributes");
 					studyAttributes.setChoice("atrStudyAttributes");
-					
+
 					Element dmiStudy = studyAttributes.getElement("atrStudyAttributes");
 					dmiStudy.setElement("maType", taskData.getMaType());
 					dmiStudy.setElement("period", taskData.getTaPeriod());
 					dmiStudy.setElement("priceSourceHigh", DS_HIGH_CODE);
 					dmiStudy.setElement("priceSourceLow", DS_LOW_CODE);
 					dmiStudy.setElement("priceSourceClose", DS_CLOSE_CODE);
-					
-					sendRequest(taskData, session, request);
+
+					sendRequest(session, request);
 				}
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
 		}
 	}
 
-	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
 	@Override
-	protected void processMessage(TaskData data, Message sr) {
-		final String security = sr.getElementAsString("securityName");
+	protected void processMessage(Message sr) {
+		String security = sr.getElementAsString("securityName");
+
+		logger.info("security:" + security);
 
 		if (sr.hasElement("studyError")) {
-			final String message = sr.getElement("studyError").getElementAsString("message");
+			String message = sr.getElement("studyError").getElementAsString("message");
+			logger.info(message);
+			sendError(message);
 			return;
 		}
 
-		final Map<Date, Double> map = new HashMap<>();
+		List<String> list = new ArrayList<>();
 
-		final Element sdArray = sr.getElement("studyData");
+		Element sdArray = sr.getElement("studyData");
 		for (int j = 0; j < sdArray.numValues(); ++j) {
-			final Element sd = sdArray.getValueAsElement(j);
+			Element sd = sdArray.getValueAsElement(j);
 
-			final String date = sd.getElementAsString("date");
-			final Double value = sd.getElementAsFloat64("ATR");
+			String date = sd.getElementAsString("date");
+			String value = sd.getElementAsString("ATR");
 
-			// log.info("security:" + security + ", date:" + date + ", value:" + value);
+			logger.info("- date:" + date + ", value:" + value);
 
-			try {
-				final java.sql.Date date_time = new java.sql.Date(sdf.parse(date).getTime());
-				map.put(date_time, value);
-			} catch (ParseException e) {
-				logger.severe(e.getMessage());
-			}
+			list.add(date + ";" + value);
 		}
 
-		// TODO answer.put(security, map);
+		send(security, list);
+	}
+
+	private void send(String security, List<String> list) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(security).append('\n');
+		for (String s : list) {
+			sb.append(s).append('\n');
+		}
+		send(sb.toString());
 	}
 }

@@ -1,9 +1,12 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
-import ru.prbb.activeagent.tasks.TaskData;
 import ru.prbb.activeagent.tasks.TaskFieldInfoRequest;
 
 import com.bloomberglp.blpapi.Element;
@@ -11,7 +14,6 @@ import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskFieldInfoExecutor extends TaskExecutor {
 
@@ -25,21 +27,19 @@ public class TaskFieldInfoExecutor extends TaskExecutor {
 				new TypeReference<TaskFieldInfoRequest>() {
 				});
 
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
-
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/apiflds")) {
-				Service service = session.getService("//blp/apiflds");
+			String serviceUri = "//blp/apiflds";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
 				final Request request = service.createRequest("FieldInfoRequest");
 				request.append("id", taskData.getCode());
 				request.set("returnFieldDocumentation", false);
-				
-				sendRequest(taskData, session, request);
+
+				sendRequest(session, request);
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
@@ -47,7 +47,7 @@ public class TaskFieldInfoExecutor extends TaskExecutor {
 	}
 
 	@Override
-	protected void processMessage(TaskData data, Message msg) {
+	protected void processMessage(Message msg) {
 		final Element fields = msg.getElement("fieldData");
 		final int numElements = fields.numValues();
 		for (int i = 0; i < numElements; i++) {
@@ -60,17 +60,26 @@ public class TaskFieldInfoExecutor extends TaskExecutor {
 
 				logger.fine("fldId=" + id + ", fldMnemonic=" + mnemonic + ", fldDesc=" + description);
 
-				// TODO answer
-				//answer.put("BLM_ID", id);
-				//answer.put("NAME", description);
-				//answer.put("CODE", mnemonic);
+				Map<String, String> map = new HashMap<>();
+				map.put("BLM_ID", id);
+				map.put("NAME", description);
+				map.put("CODE", mnemonic);
+				send(map);
 			} else {
 				final Element fieldError = field.getElement("fieldError");
 				final String message = fieldError.getElementAsString("message");
 				logger.fine("ERROR: " + id + " - " + message);
+				sendError(id + " - " + message);
 			}
 
 		}
 	}
 
+	private void send(Map<String, String> answer) {
+		try {
+			send(mapper.writeValueAsString(answer));
+		} catch (Exception e) {
+			sendError(e.getMessage());
+		}
+	}
 }

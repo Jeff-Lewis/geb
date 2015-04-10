@@ -16,9 +16,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.type.TypeReference;
@@ -30,6 +28,7 @@ import ru.prbb.activeagent.executors.TaskBdhExecutor;
 import ru.prbb.activeagent.executors.TaskBdpExecutor;
 import ru.prbb.activeagent.executors.TaskBdpOverrideExecutor;
 import ru.prbb.activeagent.executors.TaskBdpOverrideLoadExecutor;
+import ru.prbb.activeagent.executors.TaskBdpOverrideQuarterExecutor;
 import ru.prbb.activeagent.executors.TaskBdsExecutor;
 import ru.prbb.activeagent.executors.TaskCashFlowLoadExecutor;
 import ru.prbb.activeagent.executors.TaskCashFlowLoadNewExecutor;
@@ -38,7 +37,6 @@ import ru.prbb.activeagent.executors.TaskFieldInfoExecutor;
 import ru.prbb.activeagent.executors.TaskHistoricalDataExecutor;
 import ru.prbb.activeagent.executors.TaskRateCouponLoadExecutor;
 import ru.prbb.activeagent.executors.TaskReferenceDataExecutor;
-import ru.prbb.activeagent.executors.TaskBdpOverrideQuarterExecutor;
 import ru.prbb.activeagent.executors.TaskValuesLoadExecutor;
 
 /**
@@ -109,28 +107,6 @@ public class TaskChecker extends AbstractChecker {
 		}
 	};
 
-	private ResponseHandler<String> taskDoneHandler = new ResponseHandler<String>() {
-
-		@Override
-		public String handleResponse(HttpResponse response) {
-			try {
-				StatusLine statusLine = response.getStatusLine();
-				int statusCode = statusLine.getStatusCode();
-				if (statusCode < 200 || statusCode >= 300) {
-					String reason = statusLine.getReasonPhrase();
-					throw new Exception("Response status: " + statusCode + " " + reason);
-				}
-				HttpEntity entity = response.getEntity();
-				if (entity != null) {
-					return EntityUtils.toString(entity);
-				}
-			} catch (Exception ex) {
-				logger.log(Level.SEVERE, "JobberChecker", ex);
-			}
-			return "";
-		}
-	};
-
 	@Override
 	protected void check(CloseableHttpClient httpClient) throws Exception {
 		HttpGet requestId = new HttpGet(uri);
@@ -159,6 +135,8 @@ public class TaskChecker extends AbstractChecker {
 		for (TaskExecutor executor : executors) {
 			if (type.equals(executor.getType())) {
 				taskExecutor = executor.getClass().newInstance();
+				taskExecutor.setUri(uriTask);
+				taskExecutor.setHttpClient(httpClient);
 				break;
 			}
 		}
@@ -166,13 +144,10 @@ public class TaskChecker extends AbstractChecker {
 		try {
 			taskExecutor.execute(task, taskData);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			taskExecutor.sendError(e.getMessage());
 		}
 
-		HttpPost requestDone = new HttpPost(uriTask);
-		requestDone.setEntity(new StringEntity("DONE"));
-		String taskDone = httpClient.execute(requestDone, taskDoneHandler);
-		taskDone.isEmpty();
+		taskExecutor.send("DONE");
 	}
 
 	private final List<TaskExecutor> executors = new ArrayList<>(16);

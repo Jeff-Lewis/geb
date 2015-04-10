@@ -11,7 +11,6 @@ import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
 import ru.prbb.activeagent.tasks.TaskBdsRequest;
-import ru.prbb.activeagent.tasks.TaskData;
 
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
@@ -28,7 +27,7 @@ public class TaskBdsExecutor extends TaskExecutor {
 
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
-		TaskBdsRequest taskData = mapper.readValue(data,
+		taskData = mapper.readValue(data,
 				new TypeReference<TaskBdsRequest>() {
 				});
 
@@ -49,22 +48,22 @@ public class TaskBdsExecutor extends TaskExecutor {
 				for (String security : taskData.getSecurities()) {
 					_securities.appendValue(security);
 				}
-				
+
 				Element _fields = request.getElement("fields");
 				for (String field : taskData.getFields()) {
 					_fields.appendValue(field);
 				}
-				
-				sendRequest(taskData, session, request);
-				
+
+				sendRequest(session, request);
+
 				if (!peers.isEmpty()) {
 					request = service.createRequest("ReferenceDataRequest");
-					
+
 					final Element securitiesP = request.getElement("securities");
 					for (String peer : peers) {
 						securitiesP.appendValue(peer + " Equity");
 					}
-					
+
 					final Element fieldsP = request.getElement("fields");
 					fieldsP.appendValue("CUR_MKT_CAP");
 					fieldsP.appendValue("OPER_ROE");
@@ -73,8 +72,8 @@ public class TaskBdsExecutor extends TaskExecutor {
 					fieldsP.appendValue("INDUSTRY_subGROUP");
 					fieldsP.appendValue("INDUSTRY_GROUP");
 					fieldsP.appendValue("EBITDA");
-					
-					sendRequest(taskData, session, request);
+
+					sendRequest(session, request);
 				}
 			}
 		} finally {
@@ -86,7 +85,7 @@ public class TaskBdsExecutor extends TaskExecutor {
 	private final Set<String> peers = new HashSet<String>();
 
 	@Override
-	protected void processMessage(TaskData data, Message message) {
+	protected void processMessage(Message message) {
 		if (message.correlationID().isObject()) {
 			Element ReferenceDataResponse = message.asElement();
 			if (ReferenceDataResponse.hasElement("responseError")) {
@@ -109,8 +108,6 @@ public class TaskBdsExecutor extends TaskExecutor {
 			}
 			return;
 		}
-
-		TaskBdsRequest taskData = (TaskBdsRequest) data;
 
 		Element ReferenceDataResponse = message.asElement();
 		Element securityDataArray = ReferenceDataResponse.getElement("securityData");
@@ -191,13 +188,13 @@ public class TaskBdsExecutor extends TaskExecutor {
 
 		public PeerData(String sec, Element fieldData) {
 			this.sec = sec;
-			this.cur_mkt_cap = getElementAsString(fieldData, "CUR_MKT_CAP");
-			this.oper_roe = getElementAsString(fieldData, "OPER_ROE");
-			this.bs_tot_liab2 = getElementAsString(fieldData, "BS_TOT_LIAB2");
-			this.pe_ration = getElementAsString(fieldData, "PE_RATIO");
-			this.ebitda = getElementAsString(fieldData, "EBITDA");
-			this.group = getElementAsString(fieldData, "INDUSTRY_GROUP");
-			this.sub = getElementAsString(fieldData, "INDUSTRY_subGROUP");
+			this.cur_mkt_cap = fieldData.getElementAsString("CUR_MKT_CAP");
+			this.oper_roe = fieldData.getElementAsString("OPER_ROE");
+			this.bs_tot_liab2 = fieldData.getElementAsString("BS_TOT_LIAB2");
+			this.pe_ration = fieldData.getElementAsString("PE_RATIO");
+			this.ebitda = fieldData.getElementAsString("EBITDA");
+			this.group = fieldData.getElementAsString("INDUSTRY_GROUP");
+			this.sub = fieldData.getElementAsString("INDUSTRY_subGROUP");
 		}
 	}
 
@@ -278,5 +275,7 @@ public class TaskBdsExecutor extends TaskExecutor {
 	 * security -> [ peer ]
 	 */
 	private final Map<String, List<String>> peerTicker = new HashMap<>();
+
+	private TaskBdsRequest taskData;
 
 }

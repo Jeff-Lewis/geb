@@ -1,12 +1,12 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
-import ru.prbb.activeagent.tasks.TaskData;
 import ru.prbb.activeagent.tasks.TaskReferenceDataRequest;
 
 import com.bloomberglp.blpapi.Element;
@@ -14,9 +14,10 @@ import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskReferenceDataExecutor extends TaskExecutor {
+
+	private TaskReferenceDataRequest taskData;
 
 	public TaskReferenceDataExecutor() {
 		super(TaskReferenceDataRequest.class.getSimpleName());
@@ -24,19 +25,15 @@ public class TaskReferenceDataExecutor extends TaskExecutor {
 
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
-		TaskReferenceDataRequest taskData = mapper.readValue(data,
+		taskData = mapper.readValue(data,
 				new TypeReference<TaskReferenceDataRequest>() {
 				});
 
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
-
-		Session session = new Session(sesOpt);
-		session.start();
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/refdata")) {
-				Service service = session.getService("//blp/refdata");
+			String serviceUri = "//blp/refdata";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
 				final Request request = service.createRequest("ReferenceDataRequest");
 
@@ -60,7 +57,9 @@ public class TaskReferenceDataExecutor extends TaskExecutor {
 					}
 				}
 
-				sendRequest(taskData, session, request);
+				sendRequest(session, request);
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();
@@ -68,8 +67,9 @@ public class TaskReferenceDataExecutor extends TaskExecutor {
 	}
 
 	@Override
-	protected void processMessage(TaskData data, Message msg) {
-		TaskReferenceDataRequest taskData = (TaskReferenceDataRequest) data;
+	protected void processMessage(Message msg) {
+		Map<String, Map<String, String>> answer = new HashMap<String, Map<String, String>>();
+
 		final Element element = msg.asElement();
 		final Element securityDataArray = element.getElement("securityData");
 		final int numItems = securityDataArray.numValues();
@@ -80,7 +80,7 @@ public class TaskReferenceDataExecutor extends TaskExecutor {
 			logger.fine(security);
 
 			final Map<String, String> values = new HashMap<>();
-			// TODO answer.put(security, values);
+			answer.put(security, values);
 
 			if (securityData.hasElement("securityError")) {
 				final Element securityError = securityData.getElement("securityError");
@@ -90,12 +90,21 @@ public class TaskReferenceDataExecutor extends TaskExecutor {
 				final Element fieldData = securityData.getElement("fieldData");
 				for (String field : taskData.getFields()) {
 					if (fieldData.hasElement(field)) {
-						final String value = getElementAsString(fieldData, field);
+						final String value = fieldData.getElementAsString(field);
 						values.put(field, value);
 					}
 				}
 			}
 		}
+
+		send(answer);
 	}
 
+	private void send(Map<String, Map<String, String>> answer) {
+		try {
+			send(mapper.writeValueAsString(answer));
+		} catch (Exception e) {
+			sendError(e.getMessage());
+		}
+	}
 }
