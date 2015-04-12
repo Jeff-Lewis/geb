@@ -1,6 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-import java.util.Map;
 
 public class TaskBdsRequest extends TaskData {
 
@@ -27,11 +26,6 @@ public class TaskBdsRequest extends TaskData {
 
 	public void setFields(String[] fields) {
 		this.fields = fields;
-	}
-
-	public Map<String, Object> getResult() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

@@ -1,7 +1,6 @@
 package ru.prbb.middleoffice.rest.loading;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.Utils;
+import ru.prbb.middleoffice.domain.AtrLoadDataItem;
 import ru.prbb.middleoffice.domain.ResultData;
 import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
@@ -51,7 +51,7 @@ public class LoadATRController
 		log.info("POST LoadATR: {}", securities);
 		log.info("POST LoadATR: typeMA={}, periodTA={}, period={}, calendar={}, dateStart={}, dateEnd={}",
 				Utils.toArray(typeMA, periodTA, period, calendar, dateStart, dateEnd));
-		List<Map<String, Object>> answer =
+		List<AtrLoadDataItem> answer =
 				bs.executeAtrLoad(Utils.parseDate(dateStart), Utils.parseDate(dateEnd),
 						securities, typeMA, periodTA, period, calendar);
 

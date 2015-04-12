@@ -109,11 +109,11 @@ public class TaskAtrLoadExecutor extends TaskExecutor {
 	}
 
 	private void send(String security, List<String> list) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(security).append('\n');
-		for (String s : list) {
-			sb.append(s).append('\n');
+		list.add(0, security);
+		try {
+			send(mapper.writeValueAsString(list));
+		} catch (Exception e) {
+			sendError(e.getMessage());
 		}
-		send(sb.toString());
 	}
 }

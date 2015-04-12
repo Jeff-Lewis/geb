@@ -49,7 +49,7 @@ public class LoadValuesController
 			ids.put(name, id);
 		}
 
-		List<Map<String, Object>> answer = bs.executeValuesLoad(ids);
+		List<Map<String, String>> answer = bs.executeValuesLoad(ids);
 
 		return new ResultData(dao.execute(answer));
 	}

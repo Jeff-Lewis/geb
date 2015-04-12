@@ -1,6 +1,10 @@
 package ru.prbb.analytics.domain.tasks;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import org.codehaus.jackson.type.TypeReference;
 
 public class TaskBdhRequest extends TaskData {
 
@@ -13,6 +17,8 @@ public class TaskBdhRequest extends TaskData {
 	private String[] currencies;
 	private String[] securities;
 	private String[] fields;
+
+	private transient final Map<String, Map<String, Map<String, String>>> result = new HashMap<>();
 
 	public TaskBdhRequest(String name) {
 		super(name);
@@ -75,8 +81,33 @@ public class TaskBdhRequest extends TaskData {
 	}
 
 	public Map<String, Map<String, Map<String, String>>> getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		return result;
 	}
 
+	@Override
+	protected void handleData(String data) throws Exception {
+		int p = data.indexOf('\n');
+		String security = data.substring(0, p);
+		Map<String, Map<String, String>> datevalues = mapper.readValue(data.substring(p + 1),
+				new TypeReference<HashMap<String, HashMap<String, String>>>() {
+				});
+
+		Map<String, Map<String, String>> datevaluesRes = result.get(security);
+		if (datevaluesRes != null) {
+			for (Entry<String, Map<String, String>> entry : datevalues.entrySet()) {
+				String date = entry.getKey();
+				Map<String, String> values = entry.getValue();
+				
+				Map<String, String> valuesRes = datevaluesRes.get(date);
+				
+				if (valuesRes != null) {
+					valuesRes.putAll(values);
+				} else {
+					datevaluesRes.put(date, values);
+				}
+			}
+		} else {
+			result.put(security, datevalues);
+		}
+	}
 }

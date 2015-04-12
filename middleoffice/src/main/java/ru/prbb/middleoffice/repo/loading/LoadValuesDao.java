@@ -20,7 +20,7 @@ public interface LoadValuesDao {
 	 * @param answer
 	 * @return
 	 */
-	List<Map<String, Object>> execute(List<Map<String, Object>> answer);
+	List<Map<String, String>> execute(List<Map<String, String>> answer);
 
 	/**
 	 * @return

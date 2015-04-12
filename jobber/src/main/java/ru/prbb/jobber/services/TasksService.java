@@ -59,7 +59,7 @@ public class TasksService {
 		return null;
 	}
 
-	public void updateTaskData(Long id, String str) {
+	public void updateTaskData(Long id, String str) throws Exception {
 		for (TaskData data : tasks) {
 			if (id.equals(data.getId())) {
 				if (TaskData.Status.WORK == data.getStatus()) {

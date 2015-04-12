@@ -1,8 +1,7 @@
 package ru.prbb.activeagent.tasks;
 
-import java.util.Map;
 
-public class TaskRequestOverrideQuarter extends TaskData {
+public class TaskBdpRequestOverrideQuarter extends TaskData {
 
 	private static final long serialVersionUID = 1L;
 
@@ -11,7 +10,7 @@ public class TaskRequestOverrideQuarter extends TaskData {
 	private String[] fields;
 	private String[] currencies;
 
-	public TaskRequestOverrideQuarter(String name) {
+	public TaskBdpRequestOverrideQuarter(String name) {
 		super(name);
 	}
 
@@ -45,11 +44,6 @@ public class TaskRequestOverrideQuarter extends TaskData {
 
 	public void setCurrencies(String[] currencies) {
 		this.currencies = currencies;
-	}
-
-	public Map<String, Map<String, Map<String, String>>> getResult() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

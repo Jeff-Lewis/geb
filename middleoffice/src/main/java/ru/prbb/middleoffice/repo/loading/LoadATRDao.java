@@ -4,8 +4,8 @@
 package ru.prbb.middleoffice.repo.loading;
 
 import java.util.List;
-import java.util.Map;
 
+import ru.prbb.middleoffice.domain.AtrLoadDataItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 
 /**
@@ -26,7 +26,7 @@ public interface LoadATRDao {
 	 * @param calendar
 	 * @return
 	 */
-	List<Map<String, Object>> execute(List<Map<String, Object>> answer,
+	List<AtrLoadDataItem> execute(List<AtrLoadDataItem> answer,
 			String typeMA, Integer periodTA, String period, String calendar);
 
 	/**

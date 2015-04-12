@@ -53,7 +53,7 @@ public class LoadCashFlowController
 			dates.put(name, date);
 		}
 
-		List<Map<String, Object>> answer = bs.executeCashFlowLoad(ids, dates);
+		List<Map<String, String>> answer = bs.executeCashFlowLoad(ids, dates);
 
 		return new ResultData(dao.execute(answer));
 	}
@@ -77,7 +77,7 @@ public class LoadCashFlowController
 			dates.put(name, date);
 		}
 
-		List<Map<String, Object>> answer = bs.executeCashFlowLoadNew(ids, dates);
+		List<Map<String, String>> answer = bs.executeCashFlowLoadNew(ids, dates);
 
 		return new ResultData(dao.execute(answer));
 	}

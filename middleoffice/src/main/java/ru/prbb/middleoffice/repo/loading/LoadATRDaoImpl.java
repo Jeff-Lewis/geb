@@ -3,10 +3,7 @@
  */
 package ru.prbb.middleoffice.repo.loading;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -17,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
+import ru.prbb.middleoffice.domain.AtrLoadDataItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.BaseDaoImpl;
 
@@ -34,35 +32,13 @@ public class LoadATRDaoImpl extends BaseDaoImpl implements LoadATRDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public List<Map<String, Object>> execute(List<Map<String, Object>> answer,
+	public List<AtrLoadDataItem> execute(List<AtrLoadDataItem> answer,
 			String maType, Integer taPeriod, String period, String calendar) {
-		List<AtrData> data = new ArrayList<>(answer.size());
-		for (Map<String, Object> item : answer) {
-			String security = item.get("security").toString();
-			String date = (String) item.get("date");
-			double value = Double.parseDouble(item.get("value").toString());
-
-			data.add(new AtrData(security, Utils.parseDate(date), value));
-		}
-		putAtr(data, taPeriod, maType, period, calendar);
-
+		putAtr(answer, taPeriod, maType, period, calendar);
 		return answer;
 	}
 
-	private class AtrData {
-
-		public final String security;
-		public final Date date_time;
-		public final double atr_value;
-
-		public AtrData(String security, Date date_time, Double atr_value) {
-			this.security = security;
-			this.date_time = date_time;
-			this.atr_value = atr_value;
-		}
-	}
-
-	private void putAtr(final List<AtrData> items,
+	private void putAtr(List<AtrLoadDataItem> items,
 			int atr_period, String algorithm, String period, String calendar) {
 		String sql = "{call dbo.mo_WebSet_putATR_sp ?, ?, ?, ?, ?,?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
@@ -73,10 +49,10 @@ public class LoadATRDaoImpl extends BaseDaoImpl implements LoadATRDao
 		q.setParameter(8, "PX_LAST");
 		q.setParameter(9, period);
 		q.setParameter(10, calendar);
-		for (AtrData item : items) {
-			q.setParameter(1, item.security);
-			q.setParameter(2, item.date_time);
-			q.setParameter(3, item.atr_value);
+		for (AtrLoadDataItem item : items) {
+			q.setParameter(1, item.getSecurity());
+			q.setParameter(2, Utils.parseDate(item.getDate()));
+			q.setParameter(3, Double.parseDouble(item.getValue()));
 			storeSql(sql, q);
 			executeUpdate(q, sql);
 		}

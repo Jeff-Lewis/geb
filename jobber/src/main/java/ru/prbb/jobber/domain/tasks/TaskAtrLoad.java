@@ -1,7 +1,11 @@
 package ru.prbb.jobber.domain.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import org.codehaus.jackson.type.TypeReference;
+
+import ru.prbb.jobber.domain.AtrLoadDataItem;
 
 public class TaskAtrLoad extends TaskData {
 
@@ -14,6 +18,8 @@ public class TaskAtrLoad extends TaskData {
 	private Integer taPeriod;
 	private String period;
 	private String calendar;
+
+	private transient final List<AtrLoadDataItem> result = new ArrayList<>();
 
 	public TaskAtrLoad(String name) {
 		super(name);
@@ -75,9 +81,38 @@ public class TaskAtrLoad extends TaskData {
 		this.calendar = calendar;
 	}
 
-	public List<Map<String, Object>> getResult() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * [ { security, date, value } ]
+	 */
+	public List<AtrLoadDataItem> getResult() {
+		return result;
 	}
 
+	@Override
+	protected void handleData(String data) throws Exception {
+		List<String> answer = mapper.readValue(data,
+				new TypeReference<ArrayList<String>>() {
+				});
+
+		if (answer.size() < 2) {
+			throw new Exception(data);
+		}
+
+		String security = answer.get(0);
+
+		for (int i = 1; i < answer.size(); i++) {
+			String line = answer.get(i);
+
+			int p = line.indexOf(';');
+			String date = line.substring(0, p);
+			String value = line.substring(p + 1);
+
+			AtrLoadDataItem item = new AtrLoadDataItem();
+			item.setSecurity(security);
+			item.setDate(date);
+			item.setValue(value);
+
+			result.add(item);
+		}
+	}
 }

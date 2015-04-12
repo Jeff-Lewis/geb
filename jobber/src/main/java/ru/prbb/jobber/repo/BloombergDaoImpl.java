@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.prbb.Utils;
+import ru.prbb.jobber.domain.AtrLoadDataItem;
 import ru.prbb.jobber.domain.OverrideData;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
@@ -270,14 +271,14 @@ public class BloombergDaoImpl implements BloombergDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void putAtrData(String[] securities, List<Map<String, Object>> answer) {
+	public void putAtrData(String[] securities, List<AtrLoadDataItem> answer) {
 		String sql = "{call dbo.mo_WebSet_putATR_sp ?, ?, ?, 7, 'Exponential', 'PX_HIGH', 'PX_LOW', 'PX_LAST', 'DAILY', 'CALENDAR'}";
 		Query q = em.createNativeQuery(sql);
-		for (Map<String, Object> item : answer) {
+		for (AtrLoadDataItem item : answer) {
 			try {
-				q.setParameter(1, Utils.toString(item.get("security")));
-				q.setParameter(2, Utils.parseDate(item.get("date").toString()));
-				q.setParameter(3, Utils.toDouble(item.get("value")));
+				q.setParameter(1, Utils.toString(item.getSecurity()));
+				q.setParameter(2, Utils.parseDate(item.getDate()));
+				q.setParameter(3, Utils.toDouble(item.getValue()));
 				showSql(sql, q);
 				q.executeUpdate();
 			} catch (Exception e) {

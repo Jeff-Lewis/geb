@@ -7,7 +7,7 @@ import java.util.Map;
 import org.codehaus.jackson.type.TypeReference;
 
 import ru.prbb.activeagent.data.TaskItem;
-import ru.prbb.activeagent.tasks.TaskRequestOverrideQuarter;
+import ru.prbb.activeagent.tasks.TaskBdpRequestOverrideQuarter;
 
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
@@ -18,13 +18,13 @@ import com.bloomberglp.blpapi.Session;
 public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 
 	public TaskBdpOverrideQuarterExecutor() {
-		super(TaskRequestOverrideQuarter.class.getSimpleName());
+		super(TaskBdpRequestOverrideQuarter.class.getSimpleName());
 	}
 
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
 		taskData = mapper.readValue(data,
-				new TypeReference<TaskRequestOverrideQuarter>() {
+				new TypeReference<TaskBdpRequestOverrideQuarter>() {
 				});
 
 		Session session = startSession();
@@ -81,7 +81,7 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 	}
 
 	private String period;
-	private TaskRequestOverrideQuarter taskData;
+	private TaskBdpRequestOverrideQuarter taskData;
 
 	@Override
 	protected void processMessage(Message msg) {

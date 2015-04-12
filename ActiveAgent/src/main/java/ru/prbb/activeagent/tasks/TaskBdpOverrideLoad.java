@@ -1,6 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-import java.util.Map;
 
 public class TaskBdpOverrideLoad extends TaskData {
 
@@ -27,11 +26,6 @@ public class TaskBdpOverrideLoad extends TaskData {
 
 	public void setCurrencies(String[] currencies) {
 		this.currencies = currencies;
-	}
-
-	public Map<String, Map<String, String>> getResult() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

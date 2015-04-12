@@ -34,12 +34,12 @@ public class LoadValuesDaoImpl extends BaseDaoImpl implements LoadValuesDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public List<Map<String, Object>> execute(List<Map<String, Object>> answer) {
+	public List<Map<String, String>> execute(List<Map<String, String>> answer) {
 		List<SecDateValueData> data = new ArrayList<>(answer.size());
-		for (Map<String, Object> item : answer) {
-			long id = Long.parseLong(item.get("id_sec").toString());
-			String date = (String) item.get("date");
-			double value = Double.parseDouble(item.get("value").toString());
+		for (Map<String, String> item : answer) {
+			long id = Long.parseLong(item.get("id_sec"));
+			String date = item.get("date");
+			double value = Double.parseDouble(item.get("value"));
 
 			data.add(new SecDateValueData(id, Utils.parseDate(date), value));
 		}

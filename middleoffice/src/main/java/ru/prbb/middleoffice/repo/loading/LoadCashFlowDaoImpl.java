@@ -34,13 +34,13 @@ public class LoadCashFlowDaoImpl extends BaseDaoImpl implements LoadCashFlowDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public List<Map<String, Object>> execute(List<Map<String, Object>> answer) {
+	public List<Map<String, String>> execute(List<Map<String, String>> answer) {
 		List<SecurityCashFlowData> data = new ArrayList<>(answer.size());
-		for (Map<String, Object> item : answer) {
-			long id = Long.parseLong(item.get("id_sec").toString());
-			String date = (String) item.get("date");
-			double value = Double.parseDouble(item.get("value").toString());
-			double value2 = Double.parseDouble(item.get("value2").toString());
+		for (Map<String, String> item : answer) {
+			long id = Long.parseLong(item.get("id_sec"));
+			String date = item.get("date");
+			double value = Double.parseDouble(item.get("value"));
+			double value2 = Double.parseDouble(item.get("value2"));
 
 			data.add(new SecurityCashFlowData(id, Utils.parseDate(date), value, value2));
 		}

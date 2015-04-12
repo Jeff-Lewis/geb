@@ -17,7 +17,7 @@ import ru.prbb.analytics.domain.tasks.TaskBdpRequestOverride;
 import ru.prbb.analytics.domain.tasks.TaskBdsRequest;
 import ru.prbb.analytics.domain.tasks.TaskFieldInfoRequest;
 import ru.prbb.analytics.domain.tasks.TaskReferenceDataRequest;
-import ru.prbb.analytics.domain.tasks.TaskRequestOverrideQuarter;
+import ru.prbb.analytics.domain.tasks.TaskBdpRequestOverrideQuarter;
 import ru.prbb.analytics.services.TasksService;
 
 /**
@@ -91,7 +91,7 @@ public final class BloombergServicesATasksImpl implements BloombergServicesA {
 	public Map<String, Map<String, Map<String, String>>> executeBdpRequestOverrideQuarter(String name,
 			String[] securities, String[] fields, String[] currencies, String over) {
 		try {
-			TaskRequestOverrideQuarter task = new TaskRequestOverrideQuarter(name);
+			TaskBdpRequestOverrideQuarter task = new TaskBdpRequestOverrideQuarter(name);
 			task.setOver(over);
 			task.setSecurities(securities);
 			task.setFields(fields);
@@ -177,7 +177,7 @@ public final class BloombergServicesATasksImpl implements BloombergServicesA {
 	}
 
 	@Override
-	public Map<String, Object> executeFieldInfoRequest(String name, String code) {
+	public Map<String, String> executeFieldInfoRequest(String name, String code) {
 		try {
 			TaskFieldInfoRequest task = new TaskFieldInfoRequest(name);
 			task.setCode(code);

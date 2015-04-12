@@ -116,6 +116,6 @@ public interface BloombergServicesA {
 	 * @return
 	 * @throws Exception
 	 */
-	Map<String, Object> executeFieldInfoRequest(String name, String code);
+	Map<String, String> executeFieldInfoRequest(String name, String code);
 
 }

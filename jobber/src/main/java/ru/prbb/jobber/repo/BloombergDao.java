@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
+import ru.prbb.jobber.domain.AtrLoadDataItem;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SendMessageItem;
@@ -37,7 +38,7 @@ public interface BloombergDao {
 
 	public List<String> getSecForAtr();
 
-	public void putAtrData(String[] securities, List<Map<String, Object>> answer);
+	public void putAtrData(String[] securities, List<AtrLoadDataItem> answer);
 
 	public void putOverrideData(List<SecForJobRequest> securities, Map<String, Map<String, String>> answer);
 

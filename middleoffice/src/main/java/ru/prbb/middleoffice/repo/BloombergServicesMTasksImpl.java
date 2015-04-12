@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.prbb.middleoffice.domain.AtrLoadDataItem;
 import ru.prbb.middleoffice.domain.tasks.TaskAtrLoad;
 import ru.prbb.middleoffice.domain.tasks.TaskCashFlowLoad;
 import ru.prbb.middleoffice.domain.tasks.TaskCashFlowLoadNew;
@@ -74,7 +75,7 @@ public class BloombergServicesMTasksImpl implements BloombergServicesM {
 	}
 
 	@Override
-	public List<Map<String, Object>> executeCashFlowLoad(Map<String, Long> _ids, Map<String, String> _dates) {
+	public List<Map<String, String>> executeCashFlowLoad(Map<String, Long> _ids, Map<String, String> _dates) {
 		List<String> ids = new ArrayList<>(_ids.size());
 		for (Entry<String, Long> entry : _ids.entrySet()) {
 			Long id = entry.getValue();
@@ -104,7 +105,7 @@ public class BloombergServicesMTasksImpl implements BloombergServicesM {
 	}
 
 	@Override
-	public List<Map<String, Object>> executeCashFlowLoadNew(Map<String, Long> _ids, Map<String, String> _dates) {
+	public List<Map<String, String>> executeCashFlowLoadNew(Map<String, Long> _ids, Map<String, String> _dates) {
 		List<String> ids = new ArrayList<>(_ids.size());
 		for (Entry<String, Long> entry : _ids.entrySet()) {
 			Long id = entry.getValue();
@@ -134,7 +135,7 @@ public class BloombergServicesMTasksImpl implements BloombergServicesM {
 	}
 
 	@Override
-	public List<Map<String, Object>> executeValuesLoad(Map<String, Long> _ids) {
+	public List<Map<String, String>> executeValuesLoad(Map<String, Long> _ids) {
 		List<String> ids = new ArrayList<>(_ids.size());
 		for (Entry<String, Long> entry : _ids.entrySet()) {
 			Long id = entry.getValue();
@@ -178,7 +179,7 @@ public class BloombergServicesMTasksImpl implements BloombergServicesM {
 	}
 
 	@Override
-	public List<Map<String, Object>> executeAtrLoad(Date startDate, Date endDate, String[] securities,
+	public List<AtrLoadDataItem> executeAtrLoad(Date startDate, Date endDate, String[] securities,
 			String maType, Integer taPeriod, String period, String calendar) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");

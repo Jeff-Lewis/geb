@@ -2,7 +2,9 @@ package ru.prbb.jobber.domain.tasks;
 
 import java.io.Serializable;
 
-public class TaskData implements Serializable {
+import org.codehaus.jackson.map.ObjectMapper;
+
+public abstract class TaskData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -12,6 +14,8 @@ public class TaskData implements Serializable {
 		WORK,
 		DONE
 	}
+
+	protected transient ObjectMapper mapper = new ObjectMapper();
 
 	private transient Status status;
 
@@ -46,13 +50,16 @@ public class TaskData implements Serializable {
 		return name;
 	}
 
-	public void update(String str) {
-		if ("DONE".equals(str)) {
+	public void update(String data) throws Exception {
+		if ("DONE".equals(data)) {
 			status = Status.DONE;
 			return;
 		}
-		
+
+		handleData(data);
 	}
+
+	protected abstract void handleData(String data) throws Exception;
 
 	@Override
 	public int hashCode() {

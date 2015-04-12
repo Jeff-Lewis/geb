@@ -1,8 +1,9 @@
 package ru.prbb.analytics.domain.tasks;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class TaskRequestOverrideQuarter extends TaskData {
+public class TaskBdpRequestOverrideQuarter extends TaskData {
 
 	private static final long serialVersionUID = 1L;
 
@@ -11,7 +12,9 @@ public class TaskRequestOverrideQuarter extends TaskData {
 	private String[] fields;
 	private String[] currencies;
 
-	public TaskRequestOverrideQuarter(String name) {
+	private transient final Map<String, Map<String, Map<String, String>>> result = new HashMap<>();
+
+	public TaskBdpRequestOverrideQuarter(String name) {
 		super(name);
 	}
 
@@ -48,8 +51,12 @@ public class TaskRequestOverrideQuarter extends TaskData {
 	}
 
 	public Map<String, Map<String, Map<String, String>>> getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		return result;
 	}
 
+	@Override
+	protected void handleData(String data) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }

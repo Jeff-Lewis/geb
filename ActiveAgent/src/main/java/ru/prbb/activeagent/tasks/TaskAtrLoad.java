@@ -1,7 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-import java.util.List;
-import java.util.Map;
 
 public class TaskAtrLoad extends TaskData {
 
@@ -73,11 +71,6 @@ public class TaskAtrLoad extends TaskData {
 
 	public void setCalendar(String calendar) {
 		this.calendar = calendar;
-	}
-
-	public List<Map<String, Object>> getResult() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

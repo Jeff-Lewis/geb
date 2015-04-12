@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import ru.prbb.middleoffice.domain.AtrLoadDataItem;
+
 public interface BloombergServicesM {
 
 	/**
@@ -52,7 +54,7 @@ public interface BloombergServicesM {
 	 * @return
 	 * @throws Exception
 	 */
-	List<Map<String, Object>> executeCashFlowLoad(Map<String, Long> ids, Map<String, String> dates);
+	List<Map<String, String>> executeCashFlowLoad(Map<String, Long> ids, Map<String, String> dates);
 
 	/**
 	 * Загрузка дат погашений
@@ -64,7 +66,7 @@ public interface BloombergServicesM {
 	 * @return
 	 * @throws Exception
 	 */
-	List<Map<String, Object>> executeCashFlowLoadNew(Map<String, Long> ids, Map<String, String> dates);
+	List<Map<String, String>> executeCashFlowLoadNew(Map<String, Long> ids, Map<String, String> dates);
 
 	/**
 	 * Загрузка номинала
@@ -73,7 +75,7 @@ public interface BloombergServicesM {
 	 * @return
 	 * @throws Exception
 	 */
-	List<Map<String, Object>> executeValuesLoad(Map<String, Long> ids);
+	List<Map<String, String>> executeValuesLoad(Map<String, Long> ids);
 
 	/**
 	 * Загрузка ставки по купонам
@@ -89,7 +91,7 @@ public interface BloombergServicesM {
 	 * 
 	 * @throws Exception
 	 */
-	List<Map<String, Object>> executeAtrLoad(Date startDate, Date endDate, String[] securities,
+	List<AtrLoadDataItem> executeAtrLoad(Date startDate, Date endDate, String[] securities,
 			String maType, Integer taPeriod, String period, String calendar);
 
 }

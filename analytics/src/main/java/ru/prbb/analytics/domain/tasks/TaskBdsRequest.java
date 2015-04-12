@@ -34,4 +34,9 @@ public class TaskBdsRequest extends TaskData {
 		return null;
 	}
 
+	@Override
+	protected void handleData(String data) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }

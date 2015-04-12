@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import ru.prbb.jobber.domain.AtrLoadDataItem;
 import ru.prbb.jobber.domain.SecForJobRequest;
 
 public interface BloombergServicesJ {
@@ -74,7 +75,7 @@ public interface BloombergServicesJ {
 	 * 
 	 * @throws Exception
 	 */
-	List<Map<String, Object>> executeAtrLoad(String name, Date startDate, Date endDate, String[] securities,
+	List<AtrLoadDataItem> executeAtrLoad(String name, Date startDate, Date endDate, String[] securities,
 			String maType, Integer taPeriod, String period, String calendar);
 
 	Map<String, Map<String, String>> executeBdpOverrideLoad(String name, List<SecForJobRequest> securities);

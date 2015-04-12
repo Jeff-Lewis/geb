@@ -1,6 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-import java.util.Map;
 
 public class TaskFieldInfoRequest extends TaskData {
 
@@ -18,11 +17,6 @@ public class TaskFieldInfoRequest extends TaskData {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public Map<String, Object> getResult() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

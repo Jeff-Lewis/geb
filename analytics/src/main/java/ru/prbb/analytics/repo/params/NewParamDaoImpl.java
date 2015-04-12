@@ -47,11 +47,11 @@ public class NewParamDaoImpl extends BaseDaoImpl implements NewParamDao
 			log.error("setup:" + code, e);
 		}
 		if (null == res) {
-			Map<String, Object> answer = bs.executeFieldInfoRequest("Ввод нового параметра", code);
+			Map<String, String> answer = bs.executeFieldInfoRequest("Ввод нового параметра", code);
 			res = new NewParamItem();
-			res.setCode(answer.get("CODE").toString());
-			res.setBlmId(answer.get("BLM_ID").toString());
-			res.setName(answer.get("NAME").toString());
+			res.setCode(answer.get("CODE"));
+			res.setBlmId(answer.get("BLM_ID"));
+			res.setName(answer.get("NAME"));
 		}
 		return res;
 	}

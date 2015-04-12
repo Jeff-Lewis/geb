@@ -20,6 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import ru.prbb.Utils;
+import ru.prbb.jobber.domain.AtrLoadDataItem;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.SecurityItem;
 import ru.prbb.jobber.domain.SendMessageItem;
@@ -142,7 +143,7 @@ public class ScheduledServices {
 
 		String[] securities = toArray(daoBloomberg.getSecForAtr());
 
-		List<Map<String, Object>> answer =
+		List<AtrLoadDataItem> answer =
 				bs.executeAtrLoad("Jobber/Atr", date, date, securities,
 						"Exponential", 7, "DAILY", "CALENDAR");
 

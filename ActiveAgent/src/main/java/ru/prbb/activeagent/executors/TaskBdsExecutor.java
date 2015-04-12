@@ -1,5 +1,6 @@
 package ru.prbb.activeagent.executors;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +18,6 @@ import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Service;
 import com.bloomberglp.blpapi.Session;
-import com.bloomberglp.blpapi.SessionOptions;
 
 public class TaskBdsExecutor extends TaskExecutor {
 
@@ -31,16 +31,11 @@ public class TaskBdsExecutor extends TaskExecutor {
 				new TypeReference<TaskBdsRequest>() {
 				});
 
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
-
-		Session session = new Session(sesOpt);
-		session.start();
-		// TODO Auto-generated method stub
+		Session session = startSession();
 		try {
-			if (session.openService("//blp/refdata")) {
-				Service service = session.getService("//blp/refdata");
+			String serviceUri = "//blp/refdata";
+			if (session.openService(serviceUri)) {
+				Service service = session.getService(serviceUri);
 
 				Request request = service.createRequest("ReferenceDataRequest");
 
@@ -75,6 +70,8 @@ public class TaskBdsExecutor extends TaskExecutor {
 
 					sendRequest(session, request);
 				}
+			} else {
+				throw new IOException("Unable to open service " + serviceUri);
 			}
 		} finally {
 			session.stop();

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ru.prbb.jobber.domain.AtrLoadDataItem;
 import ru.prbb.jobber.domain.SecForJobRequest;
 import ru.prbb.jobber.domain.tasks.TaskAtrLoad;
 import ru.prbb.jobber.domain.tasks.TaskBdpOverrideLoad;
@@ -112,7 +113,7 @@ public class BloombergServicesJTasksImpl implements BloombergServicesJ {
 	}
 
 	@Override
-	public List<Map<String, Object>> executeAtrLoad(String name, Date startDate, Date endDate, String[] securities,
+	public List<AtrLoadDataItem> executeAtrLoad(String name, Date startDate, Date endDate, String[] securities,
 			String maType, Integer taPeriod, String period, String calendar) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");

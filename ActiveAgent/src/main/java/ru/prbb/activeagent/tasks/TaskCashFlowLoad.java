@@ -1,7 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-import java.util.List;
-import java.util.Map;
 
 public class TaskCashFlowLoad extends TaskData {
 
@@ -28,11 +26,6 @@ public class TaskCashFlowLoad extends TaskData {
 
 	public void setDates(String[] dates) {
 		this.dates = dates;
-	}
-
-	public List<Map<String, Object>> getResult() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
