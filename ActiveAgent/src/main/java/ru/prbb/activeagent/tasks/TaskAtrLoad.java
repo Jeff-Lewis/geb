@@ -1,6 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-
 public class TaskAtrLoad extends TaskData {
 
 	private static final long serialVersionUID = 1L;
@@ -12,10 +11,6 @@ public class TaskAtrLoad extends TaskData {
 	private Integer taPeriod;
 	private String period;
 	private String calendar;
-
-	public TaskAtrLoad(String name) {
-		super(name);
-	}
 
 	public String getDateStart() {
 		return dateStart;

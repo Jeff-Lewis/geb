@@ -7,10 +7,6 @@ public class TaskValuesLoad extends TaskData {
 
 	private String[] ids;
 
-	public TaskValuesLoad(String name) {
-		super(name);
-	}
-
 	public String[] getIds() {
 		return ids;
 	}

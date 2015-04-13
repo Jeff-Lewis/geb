@@ -1,16 +1,11 @@
 package ru.prbb.activeagent.tasks;
 
-
 public class TaskCashFlowLoad extends TaskData {
 
 	private static final long serialVersionUID = 1L;
 
 	private String[] ids;
 	private String[] dates;
-
-	public TaskCashFlowLoad(String name) {
-		super(name);
-	}
 
 	public String[] getIds() {
 		return ids;

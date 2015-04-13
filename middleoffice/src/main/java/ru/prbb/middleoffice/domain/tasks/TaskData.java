@@ -26,6 +26,12 @@ public abstract class TaskData implements Serializable {
 		this.name = name;
 	}
 
+	public void setResult(Object result) {
+	}
+
+	public void setType(String type) {
+	}
+
 	public String getType() {
 		return getClass().getSimpleName();
 	}
@@ -54,6 +60,10 @@ public abstract class TaskData implements Serializable {
 		if ("DONE".equals(data)) {
 			status = Status.DONE;
 			return;
+		}
+
+		if (data.startsWith("ERROR:")) {
+			throw new Exception(data.substring(6));
 		}
 
 		handleData(data);

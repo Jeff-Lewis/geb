@@ -1,6 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-
 public class TaskBdhEpsRequest extends TaskData {
 
 	private static final long serialVersionUID = 1L;
@@ -12,10 +11,6 @@ public class TaskBdhEpsRequest extends TaskData {
 	private String[] currencies;
 	private String[] securities;
 	private String[] fields;
-
-	public TaskBdhEpsRequest(String name) {
-		super(name);
-	}
 
 	public String getDateStart() {
 		return dateStart;

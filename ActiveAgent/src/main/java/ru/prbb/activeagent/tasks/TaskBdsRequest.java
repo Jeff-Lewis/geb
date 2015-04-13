@@ -1,16 +1,11 @@
 package ru.prbb.activeagent.tasks;
 
-
 public class TaskBdsRequest extends TaskData {
 
 	private static final long serialVersionUID = 1L;
 
 	private String[] securities;
 	private String[] fields;
-
-	public TaskBdsRequest(String name) {
-		super(name);
-	}
 
 	public String[] getSecurities() {
 		return securities;

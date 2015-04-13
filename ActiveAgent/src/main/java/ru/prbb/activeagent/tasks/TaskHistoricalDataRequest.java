@@ -1,6 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-
 public class TaskHistoricalDataRequest extends TaskData {
 
 	private static final long serialVersionUID = 1L;
@@ -10,10 +9,6 @@ public class TaskHistoricalDataRequest extends TaskData {
 	private String[] securities;
 	private String[] fields;
 	private String[] currencies;
-
-	public TaskHistoricalDataRequest(String name) {
-		super(name);
-	}
 
 	public String getDateStart() {
 		return dateStart;

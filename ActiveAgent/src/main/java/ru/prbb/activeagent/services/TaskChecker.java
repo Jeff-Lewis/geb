@@ -144,7 +144,9 @@ public class TaskChecker extends AbstractChecker {
 		try {
 			taskExecutor.execute(task, taskData);
 		} catch (Exception e) {
-			taskExecutor.sendError(e.getMessage());
+			String message = e.getMessage();
+			logger.severe(message);
+			taskExecutor.sendError(message);
 		}
 
 		taskExecutor.send("DONE");
@@ -159,6 +161,7 @@ public class TaskChecker extends AbstractChecker {
 		executors.add(new TaskBdpExecutor());
 		executors.add(new TaskBdpOverrideExecutor());
 		executors.add(new TaskBdpOverrideLoadExecutor());
+		executors.add(new TaskBdpOverrideQuarterExecutor());
 		executors.add(new TaskBdsExecutor());
 		executors.add(new TaskCashFlowLoadExecutor());
 		executors.add(new TaskCashFlowLoadNewExecutor());
@@ -166,7 +169,6 @@ public class TaskChecker extends AbstractChecker {
 		executors.add(new TaskHistoricalDataExecutor());
 		executors.add(new TaskRateCouponLoadExecutor());
 		executors.add(new TaskReferenceDataExecutor());
-		executors.add(new TaskBdpOverrideQuarterExecutor());
 		executors.add(new TaskValuesLoadExecutor());
 	}
 

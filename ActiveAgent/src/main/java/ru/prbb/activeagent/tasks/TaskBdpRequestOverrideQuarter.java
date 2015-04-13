@@ -1,6 +1,5 @@
 package ru.prbb.activeagent.tasks;
 
-
 public class TaskBdpRequestOverrideQuarter extends TaskData {
 
 	private static final long serialVersionUID = 1L;
@@ -9,10 +8,6 @@ public class TaskBdpRequestOverrideQuarter extends TaskData {
 	private String[] securities;
 	private String[] fields;
 	private String[] currencies;
-
-	public TaskBdpRequestOverrideQuarter(String name) {
-		super(name);
-	}
 
 	public String getOver() {
 		return over;

@@ -18,8 +18,10 @@ public class TaskData implements Serializable {
 	private Long id;
 	private String name;
 
-	public TaskData(String name) {
-		this.name = name;
+	public void setResult(Object result) {
+	}
+
+	public void setType(String type) {
 	}
 
 	public String getType() {
@@ -46,10 +48,19 @@ public class TaskData implements Serializable {
 		return name;
 	}
 
-	public void update(String str) {
-		if ("DONE".equals(str)) {
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void update(String data) throws Exception {
+		if ("DONE".equals(data)) {
 			status = Status.DONE;
 			return;
+		}
+
+		if (data.startsWith("ERROR:")) {
+			throw new Exception(data.substring(6));
 		}
 
 	}
