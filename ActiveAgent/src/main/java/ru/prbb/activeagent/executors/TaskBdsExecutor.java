@@ -117,7 +117,7 @@ public class TaskBdsExecutor extends TaskExecutor {
 					peersData.add(data);
 				}
 			}
-			result.put("Peers", peersData);
+			result.put("PEERS", peersData);
 		} else {
 			Element securityDataArray = ReferenceDataResponse.getElement("securityData");
 			for (int i = 0; i < securityDataArray.numValues(); ++i) {
@@ -212,7 +212,7 @@ public class TaskBdsExecutor extends TaskExecutor {
 
 						Map<String, List<String>> peerTicker = new HashMap<>();
 						peerTicker.put(security, values);
-						result.put("PeerTicker", peerTicker);
+						result.put("BLOOMBERG_PEERS", peerTicker);
 					}
 				}
 			}
