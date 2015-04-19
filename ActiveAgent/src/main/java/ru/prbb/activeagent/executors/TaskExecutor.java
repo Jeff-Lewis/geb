@@ -108,7 +108,11 @@ public abstract class TaskExecutor {
 	public abstract void execute(TaskItem task, String data) throws Exception;
 
 	protected void sendRequest(Session session, Request request) throws Exception {
-		session.sendRequest(request, new CorrelationID());
+		sendRequest(session, request, new CorrelationID());
+	}
+
+	protected void sendRequest(Session session, Request request, CorrelationID correlationId) throws Exception {
+		session.sendRequest(request, correlationId);
 
 		boolean continueToLoop = true;
 		while (continueToLoop) {
