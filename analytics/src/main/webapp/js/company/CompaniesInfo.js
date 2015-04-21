@@ -1202,6 +1202,17 @@
 		    files.proxy.setUrl(url, true);
 		    files.reload();
 
+		    var rendererNumber = App.util.Renderer.number(2);
+
+		    data.item.px_last = rendererNumber(data.item.px_last);
+		    
+		    data.item.peCurrent = rendererNumber(data.item.peCurrent);
+		    
+		    data.item.methodOld = rendererNumber(data.item.methodOld);
+		    data.item.methodNew = rendererNumber(data.item.methodNew);
+		    data.item.consensus = rendererNumber(data.item.consensus);
+		    data.item.roe = rendererNumber(data.item.roe);
+
 		    leftInfoForm.getForm().setValues(data.item);
 		    rightInfoForm1.getForm().setValues(data.item);
 		    rightInfoForm2.getForm().setValues(data.item);
