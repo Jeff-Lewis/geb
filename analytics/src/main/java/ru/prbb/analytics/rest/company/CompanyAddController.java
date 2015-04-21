@@ -140,18 +140,18 @@ public class CompanyAddController
 
 				if ("Quarterly and Annual".equals(period)) {
 					qaCurrencies.add(item.crncy);
-					qaCode_crncy.add(item.name + '|' + item.crncy);
+					qaCode_crncy.add(item.crncy + item.name);
 					text += " Квартальный";
 				}
 
 				if ("Semi-Annual and Annual".equals(period)) {
 					saCurrencies.add(item.crncy);
-					saCode_crncy.add(item.name + '|' + item.crncy);
+					saCode_crncy.add(item.crncy + item.name);
 					text += " Полугодовой";
 				}
 
 				aCurrencies.add(item.crncy);
-				aCode_crncy.add(item.name + '|' + item.crncy);
+				aCode_crncy.add(item.crncy + item.name);
 				text += " Годовой";
 			} else {
 				text += " нет";
@@ -163,16 +163,17 @@ public class CompanyAddController
 		if (!aCode_crncy.isEmpty()) {
 			try {
 				String[] securities = toArray(aCode_crncy);
-				reqBDHdao.execute(securities,
-						bs.executeBdhRequest("Добавление компаний BDH YEARLY",
-								dateStartYear, dateEnd, "YEARLY", "CALENDAR",
-								toArray(aCurrencies), securities, toArray(
-										"EQY_WEIGHTED_AVG_PX",
-										"BOOK_VAL_PER_SH",
-										"IS_AVG_NUM_SH_FOR_EPS",
-										"IS_COMP_EPS_ADJUSTED",
-										"OPER_ROE",
-										"RETENTION_RATIO")));
+				String[] currencies = toArray(aCurrencies);
+				Map<String, Map<String, Map<String, String>>> answer = bs.executeBdhRequest("Добавление компаний BDH YEARLY",
+						dateStartYear, dateEnd, "YEARLY", "CALENDAR",
+						currencies, securities, toArray(
+								"EQY_WEIGHTED_AVG_PX",
+								"BOOK_VAL_PER_SH",
+								"IS_AVG_NUM_SH_FOR_EPS",
+								"IS_COMP_EPS_ADJUSTED",
+								"OPER_ROE",
+								"RETENTION_RATIO"));
+				reqBDHdao.execute(securities, currencies, answer);
 			} catch (Exception e) {
 				info.put("BDH YEARLY", new StringBuilder("Запрос BDH YEARLY:").append(e.getMessage()));
 			}
@@ -180,16 +181,17 @@ public class CompanyAddController
 		if (!aCode_crncy.isEmpty()) {
 			try {
 				String[] securities = toArray(aCode_crncy);
-				reqBDHdao.execute(securities,
-						bs.executeBdhRequest("Добавление компаний ",
-								dateStartDay, dateEnd, "DAILY", "CALENDAR",
-								toArray(aCurrencies), securities, toArray(
-										"EQY_WEIGHTED_AVG_PX",
-										"TOT_BUY_REC",
-										"TOT_HOLD_REC",
-										"TOT_SELL_REC",
-										"PX_LAST",
-										"PX_VOLUME")));
+				String[] currencies = toArray(aCurrencies);
+				Map<String, Map<String, Map<String, String>>> answer = bs.executeBdhRequest("Добавление компаний ",
+						dateStartDay, dateEnd, "DAILY", "CALENDAR",
+						currencies, securities, toArray(
+								"EQY_WEIGHTED_AVG_PX",
+								"TOT_BUY_REC",
+								"TOT_HOLD_REC",
+								"TOT_SELL_REC",
+								"PX_LAST",
+								"PX_VOLUME"));
+				reqBDHdao.execute(securities, currencies, answer);
 			} catch (Exception e) {
 				info.put("BDH DAILY", new StringBuilder("Запрос BDH DAILY:").append(e.getMessage()));
 			}
@@ -198,48 +200,50 @@ public class CompanyAddController
 		// Запрос BDH EPS
 		try {
 			String[] securities = toArray(aCode_crncy);
-			reqBDHEPSdao.execute(securities,
-					bs.executeBdhEpsRequest("Добавление компаний BDH EPS YEARLY",
-							dateStartYear, dateEnd, "YEARLY", "CALENDAR",
-							toArray(aCurrencies), securities, toArray(
-									"BEST_EBITDA",
-									"EBITDA",
-									"NET_REV",
-									"IS_EPS",
-									"EQY_DPS",
-									"IS_COMP_EPS_ADJUSTED",
-									"IS_BASIC_EPS_CONT_OPS",
-									"IS_DIL_EPS_CONT_OPS",
-									"SALES_REV_TURN",
-									"IS_AVG_NUM_SH_FOR_EPS",
-									"OPER_ROE",
-									"PROF_MARGIN",
-									"OPER_MARGIN",
-									"EQY_DVD_YLD_IND")));
+			String[] currencies = toArray(aCurrencies);
+			Map<String, Map<String, Map<String, String>>> answer = bs.executeBdhEpsRequest("Добавление компаний BDH EPS YEARLY",
+					dateStartYear, dateEnd, "YEARLY", "CALENDAR",
+					currencies, securities, toArray(
+							"BEST_EBITDA",
+							"EBITDA",
+							"NET_REV",
+							"IS_EPS",
+							"EQY_DPS",
+							"IS_COMP_EPS_ADJUSTED",
+							"IS_BASIC_EPS_CONT_OPS",
+							"IS_DIL_EPS_CONT_OPS",
+							"SALES_REV_TURN",
+							"IS_AVG_NUM_SH_FOR_EPS",
+							"OPER_ROE",
+							"PROF_MARGIN",
+							"OPER_MARGIN",
+							"EQY_DVD_YLD_IND"));
+			reqBDHEPSdao.execute(securities, currencies, answer);
 		} catch (Exception e) {
 			info.put("BDH EPS YEARLY", new StringBuilder("Запрос BDH EPS YEARLY:").append(e.getMessage()));
 		}
 		if (!qaCode_crncy.isEmpty()) {
 			try {
 				String[] securities = toArray(qaCode_crncy);
-				reqBDHEPSdao.execute(securities,
-						bs.executeBdhEpsRequest("Добавление компаний BDH EPS QUARTERLY",
-								dateStartYear, dateEnd, "QUARTERLY", "CALENDAR",
-								toArray(qaCurrencies), securities, toArray(
-										"BEST_EBITDA",
-										"EBITDA",
-										"NET_REV",
-										"IS_EPS",
-										"EQY_DPS",
-										"IS_COMP_EPS_ADJUSTED",
-										"IS_BASIC_EPS_CONT_OPS",
-										"IS_DIL_EPS_CONT_OPS",
-										"SALES_REV_TURN",
-										"IS_AVG_NUM_SH_FOR_EPS",
-										"OPER_ROE",
-										"PROF_MARGIN",
-										"OPER_MARGIN",
-										"EQY_DVD_YLD_IND")));
+				String[] currencies = toArray(qaCurrencies);
+				Map<String, Map<String, Map<String, String>>> answer = bs.executeBdhEpsRequest("Добавление компаний BDH EPS QUARTERLY",
+						dateStartYear, dateEnd, "QUARTERLY", "CALENDAR",
+						currencies, securities, toArray(
+								"BEST_EBITDA",
+								"EBITDA",
+								"NET_REV",
+								"IS_EPS",
+								"EQY_DPS",
+								"IS_COMP_EPS_ADJUSTED",
+								"IS_BASIC_EPS_CONT_OPS",
+								"IS_DIL_EPS_CONT_OPS",
+								"SALES_REV_TURN",
+								"IS_AVG_NUM_SH_FOR_EPS",
+								"OPER_ROE",
+								"PROF_MARGIN",
+								"OPER_MARGIN",
+								"EQY_DVD_YLD_IND"));
+				reqBDHEPSdao.execute(securities, currencies, answer);
 			} catch (Exception e) {
 				info.put("BDH EPS QUARTERLY",
 						new StringBuilder("Запрос BDH EPS QUARTERLY:").append(e.getMessage()));
@@ -248,24 +252,25 @@ public class CompanyAddController
 		if (!saCode_crncy.isEmpty()) {
 			try {
 				String[] securities = toArray(saCode_crncy);
-				reqBDHEPSdao.execute(securities,
-						bs.executeBdhEpsRequest("Добавление компаний BDH EPS SEMI_ANNUALLY",
-								dateStartYear, dateEnd, "SEMI_ANNUALLY", "CALENDAR",
-								toArray(saCurrencies), securities, toArray(
-										"BEST_EBITDA",
-										"EBITDA",
-										"NET_REV",
-										"IS_EPS",
-										"EQY_DPS",
-										"IS_COMP_EPS_ADJUSTED",
-										"IS_BASIC_EPS_CONT_OPS",
-										"IS_DIL_EPS_CONT_OPS",
-										"SALES_REV_TURN",
-										"IS_AVG_NUM_SH_FOR_EPS",
-										"OPER_ROE",
-										"PROF_MARGIN",
-										"OPER_MARGIN",
-										"EQY_DVD_YLD_IND")));
+				String[] currencies = toArray(saCurrencies);
+				Map<String, Map<String, Map<String, String>>> answer = bs.executeBdhEpsRequest("Добавление компаний BDH EPS SEMI_ANNUALLY",
+						dateStartYear, dateEnd, "SEMI_ANNUALLY", "CALENDAR",
+						currencies, securities, toArray(
+								"BEST_EBITDA",
+								"EBITDA",
+								"NET_REV",
+								"IS_EPS",
+								"EQY_DPS",
+								"IS_COMP_EPS_ADJUSTED",
+								"IS_BASIC_EPS_CONT_OPS",
+								"IS_DIL_EPS_CONT_OPS",
+								"SALES_REV_TURN",
+								"IS_AVG_NUM_SH_FOR_EPS",
+								"OPER_ROE",
+								"PROF_MARGIN",
+								"OPER_MARGIN",
+								"EQY_DVD_YLD_IND"));
+				reqBDHEPSdao.execute(securities, currencies, answer);
 			} catch (Exception e) {
 				info.put("BDH EPS SEMI_ANNUALLY",
 						new StringBuilder("Запрос BDH EPS SEMI_ANNUALLY:").append(e.getMessage()));
@@ -274,24 +279,24 @@ public class CompanyAddController
 
 		// Запрос BDP
 		try {
-			reqBDPdao.execute(codes,
-					bs.executeBdpRequest("Добавление компаний BDP", codes, toArray(
-							"ANNOUNCEMENT_DT",
-							"BEST_EPS_GAAP",
-							"BEST_EPS_GAAP_1WK_CHG",
-							"BEST_EPS_GAAP_3MO_CHG",
-							"BEST_EPS_GAAP_4WK_CHG",
-							"BS_TOT_LIAB2",
-							"EBITDA",
-							"EQY_DVD_YLD_IND",
-							"EQY_RAW_BETA",
-							"EQY_WEIGHTED_AVG_PX",
-							"HIGH_52WEEK",
-							"LOW_52WEEK",
-							"OPER_ROE",
-							"PE_RATIO",
-							"PX_LAST",
-							"PX_VOLUME")));
+			Map<String, Map<String, String>> answer = bs.executeBdpRequest("Добавление компаний BDP", codes, toArray(
+					"ANNOUNCEMENT_DT",
+					"BEST_EPS_GAAP",
+					"BEST_EPS_GAAP_1WK_CHG",
+					"BEST_EPS_GAAP_3MO_CHG",
+					"BEST_EPS_GAAP_4WK_CHG",
+					"BS_TOT_LIAB2",
+					"EBITDA",
+					"EQY_DVD_YLD_IND",
+					"EQY_RAW_BETA",
+					"EQY_WEIGHTED_AVG_PX",
+					"HIGH_52WEEK",
+					"LOW_52WEEK",
+					"OPER_ROE",
+					"PE_RATIO",
+					"PX_LAST",
+					"PX_VOLUME"));
+			reqBDPdao.execute(codes, answer);
 		} catch (Exception e) {
 			info.put("BDP", new StringBuilder("Запрос BDP:").append(e.getMessage()));
 		}
@@ -299,19 +304,20 @@ public class CompanyAddController
 		// Запрос BDP override
 		try {
 			String[] securities = toArray(aCode_crncy);
+			String[] currencies = toArray(aCurrencies);
 			String over = "BST";
-			reqBDPOVRdao.execute(securities, over,
-					bs.executeBdpRequestOverrideQuarter("Добавление компаний BDP override",
-							securities, toArray("BEST_EPS_GAAP", "BEST_BPS"), toArray(aCurrencies), over));
+			Map<String, Map<String, Map<String, String>>> answer = bs.executeBdpRequestOverrideQuarter("Добавление компаний BDP override",
+					securities, toArray("BEST_EPS_GAAP", "BEST_BPS"), currencies, over);
+			reqBDPOVRdao.execute(securities, currencies, over, answer);
 		} catch (Exception e) {
 			info.put("", new StringBuilder("Запрос BDP over:").append(e.getMessage()));
 		}
 
 		// Запрос BDS
 		try {
-			reqBDSdao.execute(codes,
-					bs.executeBdsRequest("Добавление компаний BDS", codes,
-							toArray("BLOOMBERG_PEERS", "BEST_ANALYST_RECS_BULK")));
+			Map<String, Object> answer = bs.executeBdsRequest("Добавление компаний BDS", codes,
+					toArray("BLOOMBERG_PEERS", "BEST_ANALYST_RECS_BULK"));
+			reqBDSdao.execute(codes, answer);
 		} catch (Exception e) {
 			info.put("BDS", new StringBuilder("Запрос BDS:").append(e.getMessage()));
 		}
