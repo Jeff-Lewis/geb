@@ -18,9 +18,10 @@ public interface RequestBDHepsDao {
 
 	/**
 	 * @param securities
+	 * @param currencies 
 	 * @param answer
 	 */
-	void execute(String[] securities, Map<String, Map<String, Map<String, String>>> answer);
+	void execute(String[] securities, String[] currencies, Map<String, Map<String, Map<String, String>>> answer);
 
 	/**
 	 * @param query 

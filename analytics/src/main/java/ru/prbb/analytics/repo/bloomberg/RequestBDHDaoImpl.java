@@ -34,13 +34,18 @@ public class RequestBDHDaoImpl extends BaseDaoImpl implements RequestBDHDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void execute(String[] securities, Map<String, Map<String, Map<String, String>>> answer) {
+	public void execute(String[] securities, String[] currencies, Map<String, Map<String, Map<String, String>>> answer) {
 		final List<HistData> data = new ArrayList<>();
 		for (String security : securities) {
 			Map<String, Map<String, String>> datevalues = answer.get(security);
 			if (null == datevalues)
 				continue;
-			security = security.substring(0, security.indexOf('|'));
+			for (String currency : currencies) {
+				if (security.startsWith(currency)) {
+					security = security.substring(currency.length());
+					break;
+				}
+			}
 			for (Entry<String, Map<String, String>> dateentry : datevalues.entrySet()) {
 				String date = dateentry.getKey();
 				Map<String, String> values = dateentry.getValue();

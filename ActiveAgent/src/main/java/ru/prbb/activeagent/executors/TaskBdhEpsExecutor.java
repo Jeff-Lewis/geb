@@ -45,9 +45,8 @@ public class TaskBdhEpsExecutor extends TaskExecutor {
 
 					final Element _securities = request.getElement("securities");
 					for (String security : taskData.getSecurities()) {
-						final int p = security.indexOf("|");
-						if (security.substring(p + 1).equals(crncy)) {
-							_securities.appendValue(security.substring(0, p));
+						if (security.startsWith(crncy)) {
+							_securities.appendValue(security.substring(crncy.length()));
 						}
 					}
 
@@ -107,7 +106,7 @@ public class TaskBdhEpsExecutor extends TaskExecutor {
 	private void send(String security, Map<String, Map<String, String>> datevalues) {
 		try {
 			StringBuilder sb = new StringBuilder();
-			sb.append(security).append('\n');
+			sb.append(security).append('\t');
 			sb.append(mapper.writeValueAsString(datevalues));
 			send(sb.toString());
 		} catch (Exception e) {

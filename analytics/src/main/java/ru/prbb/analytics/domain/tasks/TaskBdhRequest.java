@@ -86,7 +86,7 @@ public class TaskBdhRequest extends TaskData {
 
 	@Override
 	protected void handleData(String data) throws Exception {
-		int p = data.indexOf('\n');
+		int p = data.indexOf('\t');
 		String security = data.substring(0, p);
 		Map<String, Map<String, String>> datevalues = mapper.readValue(data.substring(p + 1),
 				new TypeReference<HashMap<String, HashMap<String, String>>>() {

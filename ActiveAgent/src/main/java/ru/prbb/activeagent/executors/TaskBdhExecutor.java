@@ -103,7 +103,7 @@ public class TaskBdhExecutor extends TaskExecutor {
 	private void send(String security, Map<String, Map<String, String>> datevalues) {
 		try {
 			StringBuilder sb = new StringBuilder();
-			sb.append(security).append('\n');
+			sb.append(security).append('\t');
 			sb.append(mapper.writeValueAsString(datevalues));
 			send(sb.toString());
 		} catch (Exception e) {

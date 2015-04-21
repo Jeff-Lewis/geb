@@ -63,7 +63,7 @@ public class RequestBDHController
 		Map<String, Map<String, Map<String, String>>> answer =
 				bs.executeBdhRequest("BDH запрос", dateStart, dateEnd, period, calendar,
 						_currency.toArray(new String[_currency.size()]), security, params);
-		dao.execute(security, answer);
+		dao.execute(security, currency, answer);
 		return Result.SUCCESS;
 	}
 

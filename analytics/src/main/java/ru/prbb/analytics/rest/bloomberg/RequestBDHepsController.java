@@ -63,7 +63,7 @@ public class RequestBDHepsController
 		Map<String, Map<String, Map<String, String>>> answer =
 				bs.executeBdhEpsRequest("BDH запрос с EPS", dateStart, dateEnd, period, calendar,
 						_currency.toArray(new String[_currency.size()]), security, params);
-		dao.execute(security, answer);
+		dao.execute(security, currency, answer);
 		return Result.SUCCESS;
 	}
 

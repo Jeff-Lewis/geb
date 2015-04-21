@@ -191,8 +191,7 @@
 		var ids = [];
 		var idc = [];
 		smCodes.each(function(item) {
-			ids.push(item.data.security_code + '|'
-					+ item.data.calculation_crncy);
+			ids.push(item.data.calculation_crncy + item.data.security_code);
 			idc.push(item.data.calculation_crncy);
 			return true;
 		});
