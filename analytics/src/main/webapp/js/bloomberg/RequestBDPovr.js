@@ -156,9 +156,10 @@
 		}
 
 		var ids = [];
+		var cur = [];
 		smCodes.each(function(item) {
-			ids.push(item.data.security_code + '|'
-					+ item.data.calculation_crncy);
+			ids.push(item.data.calculation_crncy + item.data.security_code);
+			cur.push(item.data.calculation_crncy);
 			return true;
 		});
 
@@ -172,6 +173,7 @@
 			url : 'rest/RequestBDPovr.do',
 			params : {
 				security : ids,
+				currency : cur,
 				params : idsp,
 				over : overSelect.getValue(),
 				period : Ext.getCmp(_period).getValue()
@@ -204,8 +206,7 @@
 		var ids = [];
 		var cur = [];
 		smCodes.each(function(item) {
-			ids.push(item.data.security_code + '|'
-					+ item.data.calculation_crncy);
+			ids.push(item.data.calculation_crncy + item.data.security_code);
 			cur.push(item.data.calculation_crncy);
 			return true;
 		});

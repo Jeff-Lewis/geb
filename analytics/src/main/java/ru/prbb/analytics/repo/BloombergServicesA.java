@@ -45,7 +45,7 @@ public interface BloombergServicesA {
 	 * @throws Exception
 	 */
 	Map<String, Map<String, Map<String, String>>> executeBdpRequestOverride(String name,
-			String[] securities, String[] fields, String period, String over);
+			String[] securities, String[] fields, String[] currencies, String period, String over);
 
 	/**
 	 * BDP с override-quarter

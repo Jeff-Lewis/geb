@@ -9,6 +9,7 @@ import org.codehaus.jackson.type.TypeReference;
 import ru.prbb.activeagent.data.TaskItem;
 import ru.prbb.activeagent.tasks.TaskBdpRequestOverrideQuarter;
 
+import com.bloomberglp.blpapi.CorrelationID;
 import com.bloomberglp.blpapi.Element;
 import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
@@ -20,6 +21,8 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 	public TaskBdpOverrideQuarterExecutor() {
 		super(TaskBdpRequestOverrideQuarter.class.getSimpleName());
 	}
+
+	private TaskBdpRequestOverrideQuarter taskData;
 
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
@@ -40,10 +43,9 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 						final Request request = service.createRequest("ReferenceDataRequest");
 
 						final Element _securities = request.getElement("securities");
-						for (String s : taskData.getSecurities()) {
-							final int p = s.indexOf('|');
-							if (crncy.equals(s.substring(p + 1))) {
-								_securities.appendValue(s.substring(0, p));
+						for (String security : taskData.getSecurities()) {
+							if (security.startsWith(crncy)) {
+								_securities.appendValue(security.substring(crncy.length()));
 							}
 						}
 
@@ -56,7 +58,7 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 
 						final Element overridePeriod = overrides.appendElement();
 						overridePeriod.setElement("fieldId", "BEST_FPERIOD_OVERRIDE");
-						overridePeriod.setElement("value", period = quarter);
+						overridePeriod.setElement("value", quarter);
 
 						final Element overrideCrncy = overrides.appendElement();
 						overrideCrncy.setElement("fieldId", "EQY_FUND_CRNCY");
@@ -69,7 +71,7 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 							overrideDataSource.setElement("value", override);
 						}
 
-						sendRequest(session, request);
+						sendRequest(session, request, new CorrelationID(new RequestData(crncy, quarter)));
 					}
 				}
 			} else {
@@ -80,19 +82,30 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 		}
 	}
 
-	private String period;
-	private TaskBdpRequestOverrideQuarter taskData;
+	private class RequestData {
+
+		String crncy;
+		String period;
+
+		RequestData(String crncy, String period) {
+			this.crncy = crncy;
+			this.period = period;
+		}
+		
+	}
 
 	@Override
 	protected void processMessage(Message msg) {
 		Map<String, Map<String, Map<String, String>>> answer = new HashMap<>();
+
+		RequestData rd = (RequestData) msg.correlationID().object();
 
 		final Element arraySecurityData = msg.getElement("securityData");
 		final int numItems = arraySecurityData.numValues();
 		for (int i = 0; i < numItems; ++i) {
 			final Element securityData = arraySecurityData.getValueAsElement(i);
 
-			final String security = securityData.getElementAsString("security");
+			final String security = rd.crncy + securityData.getElementAsString("security");
 
 			Map<String, Map<String, String>> pv;
 			if (answer.containsKey(security)) {
@@ -102,7 +115,7 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 				answer.put(security, pv);
 			}
 			final Map<String, String> values = new HashMap<>();
-			pv.put(period, values);
+			pv.put(rd.period, values);
 
 			if (securityData.hasElement("securityError")) {
 				final String value = securityData.getElementAsString("securityError");

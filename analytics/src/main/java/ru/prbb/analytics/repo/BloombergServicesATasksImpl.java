@@ -70,13 +70,14 @@ public final class BloombergServicesATasksImpl implements BloombergServicesA {
 
 	@Override
 	public Map<String, Map<String, Map<String, String>>> executeBdpRequestOverride(String name,
-			String[] securities, String[] fields, String period, String over) {
+			String[] securities, String[] fields, String[] currencies, String period, String over) {
 		try {
 			TaskBdpRequestOverride task = new TaskBdpRequestOverride(name);
 			task.setPeriod(period);
 			task.setOver(over);
 			task.setSecurities(securities);
 			task.setFields(fields);
+			task.setCurrencies(currencies);
 
 			tasks.execute(task);
 

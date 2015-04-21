@@ -8,6 +8,7 @@ public class TaskBdpRequestOverride extends TaskData {
 	private String over;
 	private String[] securities;
 	private String[] fields;
+	private String[] currencies;
 
 	public String getPeriod() {
 		return period;
@@ -41,7 +42,12 @@ public class TaskBdpRequestOverride extends TaskData {
 		this.fields = fields;
 	}
 
+	public String[] getCurrencies() {
+		return currencies;
+	}
+
 	public void setCurrencies(String[] currencies) {
+		this.currencies = currencies;
 	}
 
 }

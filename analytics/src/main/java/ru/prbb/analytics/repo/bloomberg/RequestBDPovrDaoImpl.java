@@ -35,10 +35,15 @@ public class RequestBDPovrDaoImpl extends BaseDaoImpl implements RequestBDPovrDa
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public void execute(String[] securities, String over, Map<String, Map<String, Map<String, String>>> answer) {
+	public void execute(String[] securities, String[] currencies, String over, Map<String, Map<String, Map<String, String>>> answer) {
 		final List<OverrideData> data = new ArrayList<>();
 		for (String security : securities) {
-			security = security.substring(0, security.indexOf('|'));
+			for (String currency : currencies) {
+				if (security.startsWith(currency)) {
+					security = security.substring(currency.length());
+					break;
+				}
+			}
 			Map<String, Map<String, String>> periodvalues = answer.get(security);
 			if (null == periodvalues)
 				continue;

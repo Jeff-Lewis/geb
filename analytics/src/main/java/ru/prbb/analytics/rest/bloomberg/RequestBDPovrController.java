@@ -44,15 +44,17 @@ public class RequestBDPovrController
 	@ResponseBody
 	public Result postExecute(
 			@RequestParam String[] security,
+			@RequestParam String[] currency,
 			@RequestParam String[] params,
 			@RequestParam String over,
 			@RequestParam String period)
 	{
 		log.info("POST RequestBDP: security={}", (Object) security);
 		log.info("POST RequestBDP: over={}, period={}, params={}", Utils.asArray(over, period, (Object) params));
+		log.info("POST RequestBDP: currency={}", (Object) currency);
 		Map<String, Map<String, Map<String, String>>> answer =
-				bs.executeBdpRequestOverride("BDP с override", security, params, period, over);
-		dao.execute(security, over, answer);
+				bs.executeBdpRequestOverride("BDP с override", security, params, currency, period, over);
+		dao.execute(security, currency, over, answer);
 		return Result.SUCCESS;
 	}
 
@@ -64,14 +66,14 @@ public class RequestBDPovrController
 			@RequestParam String over,
 			@RequestParam String[] currency)
 	{
-		log.info("POST RequestBDP: security={}", (Object) security);
-		log.info("POST RequestBDP: over={}, params={}", over, (Object) params);
-		log.info("POST RequestBDP: currency={}", (Object) currency);
+		log.info("POST RequestBDP/Quarter: security={}", (Object) security);
+		log.info("POST RequestBDP/Quarter: over={}, params={}", over, (Object) params);
+		log.info("POST RequestBDP/Quarter: currency={}", (Object) currency);
 		Set<String> _currency = new HashSet<String>(Arrays.asList(currency));
 		Map<String, Map<String, Map<String, String>>> answer =
 				bs.executeBdpRequestOverrideQuarter("BDP с override-quarter", security, params,
 						_currency.toArray(new String[_currency.size()]), over);
-		dao.execute(security, over, answer);
+		dao.execute(security, currency, over, answer);
 		return Result.SUCCESS;
 	}
 

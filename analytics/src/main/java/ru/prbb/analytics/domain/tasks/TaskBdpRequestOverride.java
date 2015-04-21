@@ -2,6 +2,9 @@ package ru.prbb.analytics.domain.tasks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import org.codehaus.jackson.type.TypeReference;
 
 public class TaskBdpRequestOverride extends TaskData {
 
@@ -11,7 +14,11 @@ public class TaskBdpRequestOverride extends TaskData {
 	private String over;
 	private String[] securities;
 	private String[] fields;
+	private String[] currencies;
 
+	/**
+	 * security -> [ period -> [ { field, value } ] ]
+	 */
 	private transient final Map<String, Map<String, Map<String, String>>> result = new HashMap<>();
 
 	public TaskBdpRequestOverride(String name) {
@@ -50,13 +57,47 @@ public class TaskBdpRequestOverride extends TaskData {
 		this.fields = fields;
 	}
 
+	public String[] getCurrencies() {
+		return currencies;
+	}
+
+	public void setCurrencies(String[] currencies) {
+		this.currencies = currencies;
+	}
+
+	/**
+	 * @return security -> [ period -> [ { field, value } ] ]
+	 */
 	public Map<String, Map<String, Map<String, String>>> getResult() {
 		return result;
 	}
 
 	@Override
 	protected void handleData(String data) throws Exception {
-		// TODO Auto-generated method stub
-		
+		Map<String, Map<String, Map<String, String>>> answer = mapper.readValue(data,
+				new TypeReference<HashMap<String, HashMap<String, HashMap<String, String>>>>() {
+				});
+
+		for (Entry<String, Map<String, Map<String, String>>> entry : answer.entrySet()) {
+			String security = entry.getKey();
+			Map<String, Map<String, String>> periodvalues = entry.getValue();
+
+			Map<String, Map<String, String>> periodvaluesRes = result.get(security);
+
+			if (periodvaluesRes != null) {
+				for (Entry<String, Map<String, String>> entry2 : periodvalues.entrySet()) {
+					String period = entry2.getKey();
+					Map<String, String> values = entry2.getValue();
+					Map<String, String> valuesRes = periodvaluesRes.get(period);
+					if (valuesRes != null) {
+						valuesRes.putAll(values);
+					} else {
+						periodvaluesRes.put(period, values);
+					}
+				}
+			} else {
+				result.put(security, periodvalues);
+			}
+		}
 	}
 }
