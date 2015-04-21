@@ -9,9 +9,21 @@ public abstract class TaskData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum Status {
+		/**
+		 * Задача поставлена в очередь
+		 */
 		READY,
+		/**
+		 * Задача принята к обработке
+		 */
 		WAIT,
+		/**
+		 * Задача выполняется
+		 */
 		WORK,
+		/**
+		 * Задача выполнена
+		 */
 		DONE
 	}
 

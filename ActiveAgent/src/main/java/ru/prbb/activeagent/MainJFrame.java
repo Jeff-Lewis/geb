@@ -24,6 +24,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -87,6 +88,8 @@ public class MainJFrame extends javax.swing.JFrame {
         JPanel jPanelCenter = new JPanel();
         JPanel jPanel3n = new JPanel();
         JButton resultClean = new JButton();
+        Box.Filler filler3 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
+        resultAutoscroll = new JCheckBox();
         JScrollPane jScrollPane1 = new JScrollPane();
         result = new JEditorPane();
 
@@ -215,6 +218,11 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
         jPanel3n.add(resultClean);
+        jPanel3n.add(filler3);
+
+        resultAutoscroll.setSelected(true);
+        resultAutoscroll.setText("Следить за сообщениями");
+        jPanel3n.add(resultAutoscroll);
 
         jPanelCenter.add(jPanel3n, BorderLayout.PAGE_START);
 
@@ -250,7 +258,9 @@ public class MainJFrame extends javax.swing.JFrame {
 
                     resultDoc.insertString(resultDoc.getLength(), str + '\n', null);
 
-                    result.setCaretPosition(resultDoc.getLength());
+                    if (resultAutoscroll.isSelected()) {
+                        result.setCaretPosition(resultDoc.getLength());
+                    }
                 } catch (BadLocationException ex) {
                     reportError("BadLocationException", ex, 0);
                 }
@@ -485,6 +495,7 @@ public class MainJFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JList jobberList;
     private JEditorPane result;
+    private JCheckBox resultAutoscroll;
     private JList subscriptionList;
     // End of variables declaration//GEN-END:variables
 

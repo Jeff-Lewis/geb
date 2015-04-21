@@ -32,14 +32,12 @@ public class TasksService {
 
 	public TaskItem getTask() {
 		for (TaskData data : tasks) {
-			synchronized (data) {
-				if (TaskData.Status.READY == data.getStatus()) {
-					data.setStatus(TaskData.Status.WAIT);
-					TaskItem task = new TaskItem();
-					task.setId(data.getId());
-					task.setType(data.getType());
-					return task;
-				}
+			if (TaskData.Status.READY == data.getStatus()) {
+				data.setStatus(TaskData.Status.WAIT);
+				TaskItem task = new TaskItem();
+				task.setId(data.getId());
+				task.setType(data.getType());
+				return task;
 			}
 		}
 		return EMPTY_TASK;
@@ -48,11 +46,9 @@ public class TasksService {
 	public TaskData getTaskData(Long id) {
 		for (TaskData data : tasks) {
 			if (id.equals(data.getId())) {
-				synchronized (data) {
-					if (TaskData.Status.WAIT == data.getStatus()) {
-						data.setStatus(TaskData.Status.WORK);
-						return data;
-					}
+				if (TaskData.Status.WAIT == data.getStatus()) {
+					data.setStatus(TaskData.Status.WORK);
+					return data;
 				}
 			}
 		}
@@ -64,39 +60,52 @@ public class TasksService {
 			if (id.equals(data.getId())) {
 				if (TaskData.Status.WORK == data.getStatus()) {
 					data.update(str);
+					data.notify();
 				}
 			}
 		}
 	}
 
 	public void execute(TaskData data) throws InterruptedException {
+		log.info(data.getName());
+		
 		data.setId(random.nextLong());
 		data.setStatus(TaskData.Status.READY);
+		
 		tasks.add(data);
 
-		synchronized (data) {
-			for (int iter = 120, c = 0; c < iter; ++c) {
+		try {
+			for (int iter = 120, r = 0, c = 0; c < iter; ++c) {
 				try {
-					data.wait(1000);
+					synchronized (data) {
+						data.wait(1000);
+					}
 				} catch (InterruptedException ignore) {
 				}
 
-				if (TaskData.Status.WAIT == data.getStatus() && ((c % 10) == 9)) {
-					data.setStatus(TaskData.Status.READY);
-					break;
-				}
-
-				if (TaskData.Status.WORK == data.getStatus()) {
+				switch (data.getStatus()) {
+				case WORK:
 					iter = 1200;
-					continue;
-				}
-
-				if (TaskData.Status.DONE == data.getStatus()) {
-					tasks.remove(data);
+					break;
+					
+				case DONE:
 					return;
+					
+				case WAIT:
+					if ((c - r) > 10) {
+						data.setStatus(TaskData.Status.READY);
+						r = c = 0;
+					}
+					break;
+					
+				default:
+					r = c;
 				}
 			}
+			
+			throw new InterruptedException("Task execute timeout");
+		} finally {
+			tasks.remove(data);
 		}
-		throw new InterruptedException("Task execute timeout");
 	}
 }
