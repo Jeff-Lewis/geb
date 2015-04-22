@@ -717,7 +717,8 @@
 		Ext.Ajax.request({
 		    url : 'rest/CompanyAdd/Bloom.do',
 		    params : {
-			    codes : Ext.getCmp(_bloomCode).getValue()
+			    codes : Ext.getCmp(_bloomCode).getValue(),
+			    period : leftInfoForm.getForm().findField('period').getValue()
 		    },
 		    timeout : 10 * 60 * 1000, // 10 min
 		    waitMsg : 'Загрузка Bloomberg...',

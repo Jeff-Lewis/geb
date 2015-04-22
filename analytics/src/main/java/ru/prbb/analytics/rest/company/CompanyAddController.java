@@ -77,7 +77,8 @@ public class CompanyAddController
 	@RequestMapping(value = "/Bloom", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
 	public ResultData addBloom(
-			@RequestParam String[] codes)
+			@RequestParam String[] codes,
+			@RequestParam(required = false, defaultValue = "") String period)
 	{
 		log.info("POST CompanyAdd/Bloom: codes={}", (Object) codes);
 		final Map<String, StringBuilder> info = new HashMap<>();
@@ -85,8 +86,29 @@ public class CompanyAddController
 			info.put(code, new StringBuilder("Загрузка: "));
 		}
 
-		Map<String, String> periodicity = dao.createPeriodicity(info, codes,
-				bs.executeReferenceDataRequest("CompanyAdd", codes, new String[] { "PRIMARY_PERIODICITY" }));
+		Map<String, String> periodicity;
+		if (period == null || period.isEmpty()) {
+			Map<String, Map<String, String>> answer =
+					bs.executeReferenceDataRequest("CompanyAdd", codes,
+							new String[] { "PRIMARY_PERIODICITY" });
+			periodicity = dao.createPeriodicity(info, codes, answer);
+		} else {
+			switch (period) {
+			case "QUARTERLY":
+				period = "Quarterly and Annual";
+				break;
+			case "SEMI_ANNUALLY":
+				period = "Semi-Annual and Annual";
+				break;
+			default:
+				period = "";
+			}
+
+			periodicity = new HashMap<>(codes.length, 1);
+			for (String code : codes) {
+				periodicity.put(code, period);
+			}
+		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Utils.LOCALE);
 /*
@@ -136,15 +158,15 @@ public class CompanyAddController
 				по нему можно понять как компания отчитывается.
 				соотвественно это нужно учитывать в запросах bdh с eps
 				 */
-				String period = periodicity.get(item.code);
+				String cp = periodicity.get(item.code);
 
-				if ("Quarterly and Annual".equals(period)) {
+				if ("Quarterly and Annual".equals(cp)) {
 					qaCurrencies.add(item.crncy);
 					qaCode_crncy.add(item.crncy + item.name);
 					text += " Квартальный";
 				}
 
-				if ("Semi-Annual and Annual".equals(period)) {
+				if ("Semi-Annual and Annual".equals(cp)) {
 					saCurrencies.add(item.crncy);
 					saCode_crncy.add(item.crncy + item.name);
 					text += " Полугодовой";
