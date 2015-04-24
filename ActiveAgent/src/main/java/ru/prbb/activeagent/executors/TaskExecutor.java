@@ -140,4 +140,11 @@ public abstract class TaskExecutor {
 
 	protected abstract void processMessage(Message message);
 
+	protected String getElementAsString(Element fs, String name) {
+		try {
+			return fs.getElementAsString(name);
+		} catch (Exception ignore) {
+		}
+		return "";
+	}
 }

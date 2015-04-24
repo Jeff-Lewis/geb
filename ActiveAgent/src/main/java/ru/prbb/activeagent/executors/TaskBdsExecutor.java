@@ -107,13 +107,13 @@ public class TaskBdsExecutor extends TaskExecutor {
 
 					Map<String, String> data = new HashMap<>(8, 1);
 					data.put("sec", security);
-					data.put("cur_mkt_cap", fieldData.getElementAsString("CUR_MKT_CAP"));
-					data.put("oper_roe", fieldData.getElementAsString("OPER_ROE"));
-					data.put("bs_tot_liab2", fieldData.getElementAsString("BS_TOT_LIAB2"));
-					data.put("pe_ration", fieldData.getElementAsString("PE_RATIO"));
-					data.put("ebitda", fieldData.getElementAsString("EBITDA"));
-					data.put("group", fieldData.getElementAsString("INDUSTRY_GROUP"));
-					data.put("sub", fieldData.getElementAsString("INDUSTRY_subGROUP"));
+					data.put("cur_mkt_cap", getElementAsString(fieldData, "CUR_MKT_CAP"));
+					data.put("oper_roe", getElementAsString(fieldData, "OPER_ROE"));
+					data.put("bs_tot_liab2", getElementAsString(fieldData, "BS_TOT_LIAB2"));
+					data.put("pe_ration", getElementAsString(fieldData, "PE_RATIO"));
+					data.put("ebitda", getElementAsString(fieldData, "EBITDA"));
+					data.put("group", getElementAsString(fieldData, "INDUSTRY_GROUP"));
+					data.put("sub", getElementAsString(fieldData, "INDUSTRY_subGROUP"));
 					peersData.add(data);
 				}
 			}
