@@ -26,6 +26,8 @@ public class TaskBdsExecutor extends TaskExecutor {
 		super(TaskBdsRequest.class.getSimpleName());
 	}
 
+	private TaskBdsRequest taskData;
+
 	@Override
 	public void execute(TaskItem task, String data) throws Exception {
 		taskData = mapper.readValue(data,
@@ -50,7 +52,7 @@ public class TaskBdsExecutor extends TaskExecutor {
 					_fields.appendValue(field);
 				}
 
-				sendRequest(session, request);
+				sendRequest(session, request, new CorrelationID(0));
 
 				if (!peers.isEmpty()) {
 					request = service.createRequest("ReferenceDataRequest");
@@ -87,133 +89,155 @@ public class TaskBdsExecutor extends TaskExecutor {
 		Map<String, Object> result = new HashMap<>();
 
 		Element ReferenceDataResponse = message.asElement();
+		if (ReferenceDataResponse.hasElement("responseError")) {
+			logger.severe("*****ResponceError*****");
+		}
 
-		if (message.correlationID().isValue()) {
-			if (ReferenceDataResponse.hasElement("responseError")) {
-				logger.severe("*****ResponceError*****");
+		Element securityDataArray = ReferenceDataResponse.getElement("securityData");
+		for (int i = 0; i < securityDataArray.numValues(); ++i) {
+			Element securityData = securityDataArray.getValueAsElement(i);
+
+			if (securityData.hasElement("securityError")) {
+				logger.severe("SecurityError:" + securityData.getElement("securityError"));
+				continue;
 			}
-			Element securityDataArray = ReferenceDataResponse.getElement("securityData");
-			int numItems = securityDataArray.numValues();
 
-			List<Map<String, String>> peersData = new ArrayList<>();
+			String security = securityData.getElementAsString("security");
 
-			for (int i = 0; i < numItems; ++i) {
-				Element securityData = securityDataArray.getValueAsElement(i);
-				String security = securityData.getElementAsString("security");
-				if (securityData.hasElement("securityError")) {
-					logger.severe("SecurityError:" + securityData.getElement("securityError"));
+			if (message.correlationID().value() == 1) {
+				Element fieldData = securityData.getElement("fieldData");
+
+				List<Map<String, String>> peersData = new ArrayList<>();
+
+				Map<String, String> data = new HashMap<>(8, 1);
+				data.put("sec", security);
+				data.put("cur_mkt_cap", getElementAsString(fieldData, "CUR_MKT_CAP"));
+				data.put("oper_roe", getElementAsString(fieldData, "OPER_ROE"));
+				data.put("bs_tot_liab2", getElementAsString(fieldData, "BS_TOT_LIAB2"));
+				data.put("pe_ration", getElementAsString(fieldData, "PE_RATIO"));
+				data.put("ebitda", getElementAsString(fieldData, "EBITDA"));
+				data.put("group", getElementAsString(fieldData, "INDUSTRY_GROUP"));
+				data.put("sub", getElementAsString(fieldData, "INDUSTRY_subGROUP"));
+				peersData.add(data);
+
+				Object obj = result.get("PEERS");
+				if (obj != null) {
+					((List<Map<String, String>>) obj).addAll(peersData);
 				} else {
-					Element fieldData = securityData.getElement("fieldData");
-
-					Map<String, String> data = new HashMap<>(8, 1);
-					data.put("sec", security);
-					data.put("cur_mkt_cap", getElementAsString(fieldData, "CUR_MKT_CAP"));
-					data.put("oper_roe", getElementAsString(fieldData, "OPER_ROE"));
-					data.put("bs_tot_liab2", getElementAsString(fieldData, "BS_TOT_LIAB2"));
-					data.put("pe_ration", getElementAsString(fieldData, "PE_RATIO"));
-					data.put("ebitda", getElementAsString(fieldData, "EBITDA"));
-					data.put("group", getElementAsString(fieldData, "INDUSTRY_GROUP"));
-					data.put("sub", getElementAsString(fieldData, "INDUSTRY_subGROUP"));
-					peersData.add(data);
+					result.put("PEERS", peersData);
 				}
+				continue;
 			}
-			result.put("PEERS", peersData);
-		} else {
-			Element securityDataArray = ReferenceDataResponse.getElement("securityData");
-			for (int i = 0; i < securityDataArray.numValues(); ++i) {
-				final Element securityData = securityDataArray.getValueAsElement(i);
 
-				final String security = securityData.getElementAsString("security");
+			final Element fieldData = securityData.getElement("fieldData");
+			for (String p : taskData.getFields()) {
+				if (p.equals("BEST_ANALYST_RECS_BULK")) {
+					List<Map<String, String>> values = new ArrayList<>();
 
-				if (securityData.hasElement("securityError")) {
-					logger.severe("SecurityError:" + securityData.getElement("securityError"));
+					final Element best_anal_recs_bulk = fieldData.getElement("BEST_ANALYST_RECS_BULK");
+					for (int m = 0; m < best_anal_recs_bulk.numValues(); m++) {
+						final Element e = best_anal_recs_bulk.getValueAsElement(m);
+						Map<String, String> data = new HashMap<>(12, 1);
+						data.put("firm", e.getElementAsString("Firm Name"));
+						data.put("analyst", e.getElementAsString("Analyst"));
+						data.put("recom", e.getElementAsString("Recommendation"));
+						data.put("rating", e.getElementAsString("Rating"));
+						data.put("action_code", e.getElementAsString("Action Code"));
+						data.put("target_price", e.getElementAsString("Target Price"));
+						data.put("period", e.getElementAsString("Period"));
+						data.put("date", e.getElementAsString("Date"));
+						data.put("barr", e.getElementAsString("BARR"));
+						data.put("year_return", e.getElementAsString("1 Year Return"));
+						values.add(data);
+					}
+
+					Map<String, List<Map<String, String>>> bestAnalyst = new HashMap<>();
+					bestAnalyst.put(security, values);
+
+					Object obj = result.get("BEST_ANALYST_RECS_BULK");
+					if (obj != null) {
+						((Map<String, List<Map<String, String>>>) obj).putAll(bestAnalyst);
+					} else {
+						result.put("BEST_ANALYST_RECS_BULK", bestAnalyst);
+					}
 					continue;
 				}
 
-				final Element fieldData = securityData.getElement("fieldData");
+				if (p.equals("EARN_ANN_DT_TIME_HIST_WITH_EPS")) {
+					Element element = fieldData.getElement("EARN_ANN_DT_TIME_HIST_WITH_EPS");
 
-				for (String p : taskData.getFields()) {
-					if (p.equals("BEST_ANALYST_RECS_BULK")) {
-						List<Map<String, String>> values = new ArrayList<>();
+					List<Map<String, String>> values = new ArrayList<>();
 
-						final Element best_anal_recs_bulk = fieldData.getElement("BEST_ANALYST_RECS_BULK");
-						for (int m = 0; m < best_anal_recs_bulk.numValues(); m++) {
-							final Element e = best_anal_recs_bulk.getValueAsElement(m);
-							Map<String, String> data = new HashMap<>(12, 1);
-							data.put("firm", e.getElementAsString("Firm Name"));
-							data.put("analyst", e.getElementAsString("Analyst"));
-							data.put("recom", e.getElementAsString("Recommendation"));
-							data.put("rating", e.getElementAsString("Rating"));
-							data.put("action_code", e.getElementAsString("Action Code"));
-							data.put("target_price", e.getElementAsString("Target Price"));
-							data.put("period", e.getElementAsString("Period"));
-							data.put("date", e.getElementAsString("Date"));
-							data.put("barr", e.getElementAsString("BARR"));
-							data.put("year_return", e.getElementAsString("1 Year Return"));
-							values.add(data);
-						}
-
-						Map<String, List<Map<String, String>>> bestAnalyst = new HashMap<>();
-						bestAnalyst.put(security, values);
-						result.put("BEST_ANALYST_RECS_BULK", bestAnalyst);
+					for (int t = 0; t < element.numValues(); t++) {
+						final Element e = element.getValueAsElement(t);
+						Map<String, String> data = new HashMap<>(8, 1);
+						data.put("year_period", e.getElementAsString("Year/Period"));
+						data.put("announsment_date", e.getElementAsString("Announcement Date"));
+						data.put("announsment_time", e.getElementAsString("Announcement Time"));
+						data.put("earnings_EPS", e.getElementAsString("Earnings EPS"));
+						data.put("comparable_EPS", e.getElementAsString("Comparable EPS"));
+						data.put("estimate_EPS", e.getElementAsString("Estimate EPS"));
+						values.add(data);
 					}
 
-					if (p.equals("EARN_ANN_DT_TIME_HIST_WITH_EPS")) {
-						Element element = fieldData.getElement("EARN_ANN_DT_TIME_HIST_WITH_EPS");
+					Map<String, List<Map<String, String>>> earnHistWithEps = new HashMap<>();
+					earnHistWithEps.put(security, values);
 
-						List<Map<String, String>> values = new ArrayList<>();
-
-						for (int t = 0; t < element.numValues(); t++) {
-							final Element e = element.getValueAsElement(t);
-							Map<String, String> data = new HashMap<>(8, 1);
-							data.put("year_period", e.getElementAsString("Year/Period"));
-							data.put("announsment_date", e.getElementAsString("Announcement Date"));
-							data.put("announsment_time", e.getElementAsString("Announcement Time"));
-							data.put("earnings_EPS", e.getElementAsString("Earnings EPS"));
-							data.put("comparable_EPS", e.getElementAsString("Comparable EPS"));
-							data.put("estimate_EPS", e.getElementAsString("Estimate EPS"));
-							values.add(data);
-						}
-
-						Map<String, List<Map<String, String>>> earnHistWithEps = new HashMap<>();
-						earnHistWithEps.put(security, values);
+					Object obj = result.get("EARN_ANN_DT_TIME_HIST_WITH_EPS");
+					if (obj != null) {
+						((Map<String, List<Map<String, String>>>) obj).putAll(earnHistWithEps);
+					} else {
 						result.put("EARN_ANN_DT_TIME_HIST_WITH_EPS", earnHistWithEps);
 					}
+					continue;
+				}
 
-					if (p.equals("ERN_ANN_DT_AND_PER")) {
-						final List<Map<String, String>> values = new ArrayList<>();
+				if (p.equals("ERN_ANN_DT_AND_PER")) {
+					final List<Map<String, String>> values = new ArrayList<>();
 
-						final Element element = fieldData.getElement("ERN_ANN_DT_AND_PER");
-						final int ernItems = element.numValues();
-						for (int j = 0; j < ernItems; ++j) {
-							final Element e = element.getValueAsElement(j);
-							Map<String, String> data = new HashMap<>();
-							data.put("ead", e.getElementAsString("Earnings Announcement Date"));
-							data.put("eyap", e.getElementAsString("Earnings Year and Period"));
-							values.add(data);
-						}
+					final Element element = fieldData.getElement("ERN_ANN_DT_AND_PER");
+					final int ernItems = element.numValues();
+					for (int j = 0; j < ernItems; ++j) {
+						final Element e = element.getValueAsElement(j);
+						Map<String, String> data = new HashMap<>();
+						data.put("ead", e.getElementAsString("Earnings Announcement Date"));
+						data.put("eyap", e.getElementAsString("Earnings Year and Period"));
+						values.add(data);
+					}
 
-						Map<String, List<Map<String, String>>> ernAnnDTandPer = new HashMap<>();
-						ernAnnDTandPer.put(security, values);
+					Map<String, List<Map<String, String>>> ernAnnDTandPer = new HashMap<>();
+					ernAnnDTandPer.put(security, values);
+
+					Object obj = result.get("ERN_ANN_DT_AND_PER");
+					if (obj != null) {
+						((Map<String, List<Map<String, String>>>) obj).putAll(ernAnnDTandPer);
+					} else {
 						result.put("ERN_ANN_DT_AND_PER", ernAnnDTandPer);
 					}
+					continue;
+				}
 
-					if (p.equals("BLOOMBERG_PEERS")) {
-						final List<String> values = new ArrayList<String>();
+				if (p.equals("BLOOMBERG_PEERS")) {
+					final List<String> values = new ArrayList<String>();
 
-						final Element blm_peers = fieldData.getElement("BLOOMBERG_PEERS");
-						for (int j = 0; j < blm_peers.numValues(); ++j) {
-							final Element e = blm_peers.getValueAsElement(j);
-							final String peer = e.getElementAsString("Peer Ticker");
-							values.add(peer);
+					final Element blm_peers = fieldData.getElement("BLOOMBERG_PEERS");
+					for (int j = 0; j < blm_peers.numValues(); ++j) {
+						final Element e = blm_peers.getValueAsElement(j);
+						final String peer = e.getElementAsString("Peer Ticker");
+						values.add(peer);
 
-							peers.add(peer);
-						}
+						peers.add(peer);
+					}
 
-						Map<String, List<String>> peerTicker = new HashMap<>();
-						peerTicker.put(security, values);
+					Map<String, List<String>> peerTicker = new HashMap<>();
+					peerTicker.put(security, values);
+					Object obj = result.get("BLOOMBERG_PEERS");
+					if (obj != null) {
+						((Map<String, List<String>>) obj).putAll(peerTicker);
+					} else {
 						result.put("BLOOMBERG_PEERS", peerTicker);
 					}
+					continue;
 				}
 			}
 		}
@@ -228,7 +252,5 @@ public class TaskBdsExecutor extends TaskExecutor {
 			sendError(e.getMessage());
 		}
 	}
-
-	private TaskBdsRequest taskData;
 
 }

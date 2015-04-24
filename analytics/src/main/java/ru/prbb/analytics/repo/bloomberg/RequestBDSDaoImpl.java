@@ -39,104 +39,115 @@ public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 		@SuppressWarnings("unchecked")
 		Map<String, List<Map<String, String>>> ba =
 				(Map<String, List<Map<String, String>>>) answer.get("BEST_ANALYST_RECS_BULK");
-		for (String security : securities) {
-			List<Map<String, String>> items = ba.get(security);
-			if (null == items) {
-				continue;
-			}
-			final List<AnalysData> data = new ArrayList<>(items.size());
-			for (Map<String, String> item : items) {
-				String firm = item.get("firm");
-				String analyst = item.get("analyst");
-				String recom = item.get("recom");
-				String rating = item.get("rating");
-				String action_code = item.get("action_code");
-				String target_price = item.get("target_price");
-				String period = item.get("period");
-				String date = item.get("date");
-				String barr = item.get("barr");
-				String year_return = item.get("year_return");
+		if (ba != null) {
+			for (String security : securities) {
+				List<Map<String, String>> items = ba.get(security);
+				if (null == items) {
+					continue;
+				}
+				final List<AnalysData> data = new ArrayList<>(items.size());
+				for (Map<String, String> item : items) {
+					String firm = item.get("firm");
+					String analyst = item.get("analyst");
+					String recom = item.get("recom");
+					String rating = item.get("rating");
+					String action_code = item.get("action_code");
+					String target_price = item.get("target_price");
+					String period = item.get("period");
+					String date = item.get("date");
+					String barr = item.get("barr");
+					String year_return = item.get("year_return");
 
-				data.add(new AnalysData(security, firm, analyst, recom, rating, action_code,
-						target_price, period, date, barr, year_return));
+					data.add(new AnalysData(security, firm, analyst, recom,
+							rating, action_code, target_price, period, date,
+							barr, year_return));
+				}
+				putAnalysData(data);
 			}
-			putAnalysData(data);
 		}
 
 		@SuppressWarnings("unchecked")
 		Map<String, List<Map<String, String>>> ehwe =
 				(Map<String, List<Map<String, String>>>) answer.get("EARN_ANN_DT_TIME_HIST_WITH_EPS");
-		for (String security : securities) {
-			List<Map<String, String>> items = ehwe.get(security);
-			if (null == items) {
-				continue;
-			}
-			final List<EarnsEpsData> data = new ArrayList<>(items.size());
-			for (Map<String, String> item : items) {
-				String year_period = item.get("year_period");
-				String announsment_date = item.get("announsment_date");
-				String announsment_time = item.get("announsment_time");
-				String earnings_EPS = item.get("earnings_EPS");
-				String comparable_EPS = item.get("comparable_EPS");
-				String estimate_EPS = item.get("estimate_EPS");
+		if (ehwe != null) {
+			for (String security : securities) {
+				List<Map<String, String>> items = ehwe.get(security);
+				if (null == items) {
+					continue;
+				}
+				final List<EarnsEpsData> data = new ArrayList<>(items.size());
+				for (Map<String, String> item : items) {
+					String year_period = item.get("year_period");
+					String announsment_date = item.get("announsment_date");
+					String announsment_time = item.get("announsment_time");
+					String earnings_EPS = item.get("earnings_EPS");
+					String comparable_EPS = item.get("comparable_EPS");
+					String estimate_EPS = item.get("estimate_EPS");
 
-				data.add(new EarnsEpsData(security, year_period, announsment_date,
-						announsment_time, earnings_EPS, comparable_EPS, estimate_EPS));
+					data.add(new EarnsEpsData(security, year_period,
+							announsment_date, announsment_time, earnings_EPS,
+							comparable_EPS, estimate_EPS));
+				}
+				putEarnsEps(data);
 			}
-			putEarnsEps(data);
 		}
 
 		@SuppressWarnings("unchecked")
 		Map<String, List<Map<String, String>>> eap =
 				(Map<String, List<Map<String, String>>>) answer.get("ERN_ANN_DT_AND_PER");
-		for (String security : securities) {
-			List<Map<String, String>> items = eap.get(security);
-			if (null == items) {
-				continue;
+		if (eap != null) {
+			for (String security : securities) {
+				List<Map<String, String>> items = eap.get(security);
+				if (null == items) {
+					continue;
+				}
+				final List<EarnsData> data = new ArrayList<>(items.size());
+				for (Map<String, String> item : items) {
+					String ead = item.get("ead");
+					String eyap = item.get("eyap");
+					data.add(new EarnsData(security, ead, eyap));
+				}
+				putEarnsData(data);
 			}
-			final List<EarnsData> data = new ArrayList<>(items.size());
-			for (Map<String, String> item : items) {
-				String ead = item.get("ead");
-				String eyap = item.get("eyap");
-				data.add(new EarnsData(security, ead, eyap));
-			}
-			putEarnsData(data);
 		}
 
 		@SuppressWarnings("unchecked")
 		Map<String, List<String>> pt =
 				(Map<String, List<String>>) answer.get("PeerTicker");
-		for (String security : securities) {
-			List<String> items = pt.get(security);
-			if (null == items) {
-				continue;
+		if (pt != null) {
+			for (String security : securities) {
+				List<String> items = pt.get(security);
+				if (null == items) {
+					continue;
+				}
+				final List<PeersData> data = new ArrayList<>(items.size());
+				for (String peer : items) {
+					final PeersData d = new PeersData(security, peer);
+					data.add(d);
+				}
+				putPeersProc(data);
 			}
-			final List<PeersData> data = new ArrayList<>(items.size());
-			for (String peer : items) {
-				final PeersData d = new PeersData(security, peer);
-				data.add(d);
-			}
-			putPeersProc(data);
 		}
 
-		String key = answer.containsKey("Peers") ? "Peers" : "PeersData";
 		@SuppressWarnings("unchecked")
-		List<Map<String, Object>> pd = (List<Map<String, Object>>) answer.get(key);
-		final List<PeersDescData> pdData = new ArrayList<>(pd.size());
-		for (Map<String, Object> peer : pd) {
-			String security = (String) peer.get("sec");
-			Double cur_mkt_cap = (Double) peer.get("cur_mkt_cap");
-			Double pe_ratio = (Double) peer.get("pe_ration");
-			Double oper_roe = (Double) peer.get("oper_roe");
-			Double bs_tot_liab2 = (Double) peer.get("bs_tot_liab2");
-			Double ebitda = (Double) peer.get("ebitda");
-			String ind_grp = (String) peer.get("group");
-			String ind_sgrp = (String) peer.get("sub");
+		List<Map<String, Object>> pd = (List<Map<String, Object>>) answer.get("PEERS");
+		if (pd != null) {
+			final List<PeersDescData> pdData = new ArrayList<>(pd.size());
+			for (Map<String, Object> peer : pd) {
+				String security = (String) peer.get("sec");
+				Double cur_mkt_cap = (Double) peer.get("cur_mkt_cap");
+				Double pe_ratio = (Double) peer.get("pe_ration");
+				Double oper_roe = (Double) peer.get("oper_roe");
+				Double bs_tot_liab2 = (Double) peer.get("bs_tot_liab2");
+				Double ebitda = (Double) peer.get("ebitda");
+				String ind_grp = (String) peer.get("group");
+				String ind_sgrp = (String) peer.get("sub");
 
-			pdData.add(new PeersDescData(security, cur_mkt_cap, oper_roe, bs_tot_liab2,
-					pe_ratio, ebitda, ind_grp, ind_sgrp));
+				pdData.add(new PeersDescData(security, cur_mkt_cap, oper_roe,
+						bs_tot_liab2, pe_ratio, ebitda, ind_grp, ind_sgrp));
+			}
+			putPeersData(pdData);
 		}
-		putPeersData(pdData);
 	}
 
 	private class AnalysData {
