@@ -15,6 +15,9 @@ import java.util.Locale;
 
 import javax.persistence.Column;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.prbb.analytics.domain.SimpleItem;
 
 /**
@@ -22,8 +25,15 @@ import ru.prbb.analytics.domain.SimpleItem;
  * 
  */
 public class Utils {
+	
+	private static Logger log = LoggerFactory.getLogger(Utils.class);
 
 	public static final Locale LOCALE = new Locale("RU", "ru");
+
+	public static boolean isDebug() {
+		String s = System.getenv("JAVA_DEBUG");
+		return s != null ? Boolean.parseBoolean(s) : false;
+	}
 
 	/**
 	 * Проверить строку на содержимое
@@ -163,17 +173,36 @@ public class Utils {
 	}
 
 	/**
-	 * Приведение к типу BigDecimal
+	 * Приведение к типу Number
 	 * 
 	 * @param object
 	 *            объект из БД
-	 * @return BigDecimal
+	 * @return Number
 	 */
-	public static BigDecimal toDouble(Object object) {
-		if (null != object) {
-			return (BigDecimal) object;
+	public static Number toNumber(Object object) {
+		if (object instanceof Number) {
+			return (Number) object;
+		}
+		if (object != null) {
+			try {
+				String str = object.toString();
+				return str.isEmpty() ? null : new BigDecimal(str);
+			} catch (NumberFormatException e) {
+				log.error("toNumber:'{}'", object, e);
+			}
 		}
 		return null;
+	}
+
+	/**
+	 * Приведение к типу Double
+	 * 
+	 * @param object
+	 *            объект из БД
+	 * @return Number
+	 */
+	public static Number toDouble(Object object) {
+		return toNumber(object);
 	}
 
 	/**
@@ -184,8 +213,9 @@ public class Utils {
 	 * @return Long
 	 */
 	public static Long toLong(Object object) {
-		if (null != object) {
-			return ((BigDecimal) object).longValue();
+		Number number = toNumber(object);
+		if (null != number) {
+			return number.longValue();
 		}
 		return null;
 	}
@@ -195,13 +225,10 @@ public class Utils {
 	 * 
 	 * @param object
 	 *            объект из БД
-	 * @return Integer
+	 * @return Number
 	 */
-	public static Integer toInteger(Object object) {
-		if (null != object) {
-			return (Integer) object;
-		}
-		return null;
+	public static Number toInteger(Object object) {
+		return toNumber(object);
 	}
 
 	/**
@@ -209,13 +236,10 @@ public class Utils {
 	 * 
 	 * @param object
 	 *            объект из БД
-	 * @return Byte
+	 * @return Number
 	 */
-	public static Byte toByte(Object object) {
-		if (null != object) {
-			return (Byte) object;
-		}
-		return null;
+	public static Number toByte(Object object) {
+		return toNumber(object);
 	}
 
 	/**

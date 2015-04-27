@@ -190,9 +190,10 @@ public class Utils {
 		}
 		if (object != null) {
 			try {
-				return new BigDecimal(object.toString());
+				String str = object.toString();
+				return str.isEmpty() ? null : new BigDecimal(str);
 			} catch (NumberFormatException e) {
-				log.error("toNumber:" + object, e);
+				log.error("toNumber:'{}'", object, e);
 			}
 		}
 		return null;

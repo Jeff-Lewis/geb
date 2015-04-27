@@ -4,7 +4,6 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * @author RBr
@@ -17,11 +16,11 @@ public class ViewModelPriceItem implements Serializable {
 	private String company_short_name;
 	private String firm_name;
 	private String bloomberg_code;
-	private Integer firm_rating;
-	private BigDecimal target_price;
+	private Number firm_rating;
+	private Number target_price;
 	private String price_date;
 	private String price_period;
-	private Integer TR;
+	private Number TR;
 
 	/**
 	 * @return the equity_fund_ticker
@@ -86,7 +85,7 @@ public class ViewModelPriceItem implements Serializable {
 	/**
 	 * @return the firm_rating
 	 */
-	public Integer getFirm_rating() {
+	public Number getFirm_rating() {
 		return firm_rating;
 	}
 
@@ -94,14 +93,14 @@ public class ViewModelPriceItem implements Serializable {
 	 * @param firm_rating
 	 *            the firm_rating to set
 	 */
-	public void setFirm_rating(Integer firm_rating) {
+	public void setFirm_rating(Number firm_rating) {
 		this.firm_rating = firm_rating;
 	}
 
 	/**
 	 * @return the target_price
 	 */
-	public BigDecimal getTarget_price() {
+	public Number getTarget_price() {
 		return target_price;
 	}
 
@@ -109,7 +108,7 @@ public class ViewModelPriceItem implements Serializable {
 	 * @param target_price
 	 *            the target_price to set
 	 */
-	public void setTarget_price(BigDecimal target_price) {
+	public void setTarget_price(Number target_price) {
 		this.target_price = target_price;
 	}
 
@@ -146,7 +145,7 @@ public class ViewModelPriceItem implements Serializable {
 	/**
 	 * @return the tR
 	 */
-	public Integer getTR() {
+	public Number getTR() {
 		return TR;
 	}
 
@@ -154,7 +153,7 @@ public class ViewModelPriceItem implements Serializable {
 	 * @param tR
 	 *            the tR to set
 	 */
-	public void setTR(Integer tR) {
+	public void setTR(Number tR) {
 		TR = tR;
 	}
 }

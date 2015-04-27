@@ -22,7 +22,7 @@ public class CouponItem implements Serializable {
 	private String account;
 	private String currency;
 	private Date record_date;
-	private Integer quantity;
+	private Number quantity;
 	private Number coupon_per_share;
 	private Date receive_date;
 	private Number real_coupon_per_share;
@@ -106,11 +106,11 @@ public class CouponItem implements Serializable {
 		this.record_date = record_date;
 	}
 
-	public Integer getQuantity() {
+	public Number getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(Number quantity) {
 		this.quantity = quantity;
 	}
 

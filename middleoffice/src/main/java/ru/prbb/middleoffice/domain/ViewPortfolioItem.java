@@ -4,7 +4,6 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * @author RBr
@@ -18,16 +17,16 @@ public class ViewPortfolioItem implements Serializable {
 	private String fund;
 	private String security_code;
 	private String short_name;
-	private Integer batch;
+	private Number batch;
 	private String usd_funding;
 	private String currency;
-	private Integer quantity;
-	private BigDecimal avg_price;
-	private BigDecimal last_price;
-	private BigDecimal nkd;
-	private BigDecimal position;
-	private BigDecimal position_rep_date;
-	private BigDecimal revaluation;
+	private Number quantity;
+	private Number avg_price;
+	private Number last_price;
+	private Number nkd;
+	private Number position;
+	private Number position_rep_date;
+	private Number revaluation;
 
 	/**
 	 * @return the report_date
@@ -107,7 +106,7 @@ public class ViewPortfolioItem implements Serializable {
 	/**
 	 * @return the batch
 	 */
-	public Integer getBatch() {
+	public Number getBatch() {
 		return batch;
 	}
 
@@ -115,7 +114,7 @@ public class ViewPortfolioItem implements Serializable {
 	 * @param batch
 	 *            the batch to set
 	 */
-	public void setBatch(Integer batch) {
+	public void setBatch(Number batch) {
 		this.batch = batch;
 	}
 
@@ -152,7 +151,7 @@ public class ViewPortfolioItem implements Serializable {
 	/**
 	 * @return the quantity
 	 */
-	public Integer getQuantity() {
+	public Number getQuantity() {
 		return quantity;
 	}
 
@@ -160,14 +159,14 @@ public class ViewPortfolioItem implements Serializable {
 	 * @param quantity
 	 *            the quantity to set
 	 */
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(Number quantity) {
 		this.quantity = quantity;
 	}
 
 	/**
 	 * @return the avg_price
 	 */
-	public BigDecimal getAvg_price() {
+	public Number getAvg_price() {
 		return avg_price;
 	}
 
@@ -175,14 +174,14 @@ public class ViewPortfolioItem implements Serializable {
 	 * @param avg_price
 	 *            the avg_price to set
 	 */
-	public void setAvg_price(BigDecimal avg_price) {
+	public void setAvg_price(Number avg_price) {
 		this.avg_price = avg_price;
 	}
 
 	/**
 	 * @return the last_price
 	 */
-	public BigDecimal getLast_price() {
+	public Number getLast_price() {
 		return last_price;
 	}
 
@@ -190,14 +189,14 @@ public class ViewPortfolioItem implements Serializable {
 	 * @param last_price
 	 *            the last_price to set
 	 */
-	public void setLast_price(BigDecimal last_price) {
+	public void setLast_price(Number last_price) {
 		this.last_price = last_price;
 	}
 
 	/**
 	 * @return the nkd
 	 */
-	public BigDecimal getNkd() {
+	public Number getNkd() {
 		return nkd;
 	}
 
@@ -205,14 +204,14 @@ public class ViewPortfolioItem implements Serializable {
 	 * @param nkd
 	 *            the nkd to set
 	 */
-	public void setNkd(BigDecimal nkd) {
+	public void setNkd(Number nkd) {
 		this.nkd = nkd;
 	}
 
 	/**
 	 * @return the position
 	 */
-	public BigDecimal getPosition() {
+	public Number getPosition() {
 		return position;
 	}
 
@@ -220,14 +219,14 @@ public class ViewPortfolioItem implements Serializable {
 	 * @param position
 	 *            the position to set
 	 */
-	public void setPosition(BigDecimal position) {
+	public void setPosition(Number position) {
 		this.position = position;
 	}
 
 	/**
 	 * @return the position_rep_date
 	 */
-	public BigDecimal getPosition_rep_date() {
+	public Number getPosition_rep_date() {
 		return position_rep_date;
 	}
 
@@ -235,14 +234,14 @@ public class ViewPortfolioItem implements Serializable {
 	 * @param position_rep_date
 	 *            the position_rep_date to set
 	 */
-	public void setPosition_rep_date(BigDecimal position_rep_date) {
+	public void setPosition_rep_date(Number position_rep_date) {
 		this.position_rep_date = position_rep_date;
 	}
 
 	/**
 	 * @return the revaluation
 	 */
-	public BigDecimal getRevaluation() {
+	public Number getRevaluation() {
 		return revaluation;
 	}
 
@@ -250,7 +249,7 @@ public class ViewPortfolioItem implements Serializable {
 	 * @param revaluation
 	 *            the revaluation to set
 	 */
-	public void setRevaluation(BigDecimal revaluation) {
+	public void setRevaluation(Number revaluation) {
 		this.revaluation = revaluation;
 	}
 }

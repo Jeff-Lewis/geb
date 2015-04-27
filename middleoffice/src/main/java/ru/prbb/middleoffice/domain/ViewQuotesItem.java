@@ -4,7 +4,6 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 
@@ -26,9 +25,9 @@ public class ViewQuotesItem implements Serializable {
 	@Column(name = "QuoteDate")
 	private String quoteDate;
 	@Column(name = "Price")
-	private BigDecimal price;
+	private Number price;
 	@Column(name = "Closeprice")
-	private BigDecimal closeprice;
+	private Number closeprice;
 
 	/**
 	 * @return the id_sec
@@ -108,7 +107,7 @@ public class ViewQuotesItem implements Serializable {
 	/**
 	 * @return the price
 	 */
-	public BigDecimal getPrice() {
+	public Number getPrice() {
 		return price;
 	}
 
@@ -116,14 +115,14 @@ public class ViewQuotesItem implements Serializable {
 	 * @param price
 	 *            the price to set
 	 */
-	public void setPrice(BigDecimal price) {
+	public void setPrice(Number price) {
 		this.price = price;
 	}
 
 	/**
 	 * @return the closeprice
 	 */
-	public BigDecimal getCloseprice() {
+	public Number getCloseprice() {
 		return closeprice;
 	}
 
@@ -131,7 +130,7 @@ public class ViewQuotesItem implements Serializable {
 	 * @param closeprice
 	 *            the closeprice to set
 	 */
-	public void setCloseprice(BigDecimal closeprice) {
+	public void setCloseprice(Number closeprice) {
 		this.closeprice = closeprice;
 	}
 }

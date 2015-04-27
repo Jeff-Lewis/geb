@@ -13,7 +13,7 @@ public class HolidaysWeekItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String country;
-	private Integer day_week;
+	private Number day_week;
 	private String start;
 	private String stop;
 
@@ -35,7 +35,7 @@ public class HolidaysWeekItem implements Serializable {
 	/**
 	 * @return the day_week
 	 */
-	public Integer getDay_week() {
+	public Number getDay_week() {
 		return day_week;
 	}
 
@@ -43,7 +43,7 @@ public class HolidaysWeekItem implements Serializable {
 	 * @param day_week
 	 *            the day_week to set
 	 */
-	public void setDay_week(Integer day_week) {
+	public void setDay_week(Number day_week) {
 		this.day_week = day_week;
 	}
 

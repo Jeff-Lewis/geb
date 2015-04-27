@@ -4,7 +4,6 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,9 +37,9 @@ public class CompaniesItem implements Serializable {
 	@Column(name = "Группа в сводной")
 	private String svod_grp;
 	@Column(name = "Koef Upside")
-	private BigDecimal koefUpside;
+	private Number koefUpside;
 	@Column(name = "Koef Upside н.м.")
-	private BigDecimal koefUpsideNM;
+	private Number koefUpsideNM;
 	@Column(name = "Периодичность отчетности")
 	private String period;
 	@Column(name = "EPS")
@@ -62,17 +61,17 @@ public class CompaniesItem implements Serializable {
 	@Column(name = "eqy_fund_crncy")
 	private String currencyReport;
 	@Column(name = "px_last")
-	private BigDecimal px_last;
+	private Number px_last;
 	@Column(name = "peCurrent")
-	private BigDecimal peCurrent;
+	private Number peCurrent;
 	@Column(name = "methodOld")
-	private BigDecimal methodOld;
+	private Number methodOld;
 	@Column(name = "methodNew")
-	private BigDecimal methodNew;
+	private Number methodNew;
 	@Column(name = "consensus")
-	private BigDecimal consensus;
+	private Number consensus;
 	@Column(name = "roe")
-	private BigDecimal roe;
+	private Number roe;
 
 	public Long getId_sec() {
 		return id_sec;
@@ -146,19 +145,19 @@ public class CompaniesItem implements Serializable {
 		this.svod_grp = svod_grp;
 	}
 
-	public BigDecimal getKoefUpside() {
+	public Number getKoefUpside() {
 		return koefUpside;
 	}
 
-	public void setKoefUpside(BigDecimal koefUpside) {
+	public void setKoefUpside(Number koefUpside) {
 		this.koefUpside = koefUpside;
 	}
 
-	public BigDecimal getKoefUpsideNM() {
+	public Number getKoefUpsideNM() {
 		return koefUpsideNM;
 	}
 
-	public void setKoefUpsideNM(BigDecimal koefUpsideNM) {
+	public void setKoefUpsideNM(Number koefUpsideNM) {
 		this.koefUpsideNM = koefUpsideNM;
 	}
 
@@ -242,51 +241,51 @@ public class CompaniesItem implements Serializable {
 		this.currencyReport = currencyReport;
 	}
 
-	public BigDecimal getPx_last() {
+	public Number getPx_last() {
 		return px_last;
 	}
 
-	public void setPx_last(BigDecimal px_last) {
+	public void setPx_last(Number px_last) {
 		this.px_last = px_last;
 	}
 
-	public BigDecimal getPeCurrent() {
+	public Number getPeCurrent() {
 		return peCurrent;
 	}
 
-	public void setPeCurrent(BigDecimal peCurrent) {
+	public void setPeCurrent(Number peCurrent) {
 		this.peCurrent = peCurrent;
 	}
 
-	public BigDecimal getMethodOld() {
+	public Number getMethodOld() {
 		return methodOld;
 	}
 
-	public void setMethodOld(BigDecimal methodOld) {
+	public void setMethodOld(Number methodOld) {
 		this.methodOld = methodOld;
 	}
 
-	public BigDecimal getMethodNew() {
+	public Number getMethodNew() {
 		return methodNew;
 	}
 
-	public void setMethodNew(BigDecimal methodNew) {
+	public void setMethodNew(Number methodNew) {
 		this.methodNew = methodNew;
 	}
 
-	public BigDecimal getConsensus() {
+	public Number getConsensus() {
 		return consensus;
 	}
 
-	public void setConsensus(BigDecimal consensus) {
+	public void setConsensus(Number consensus) {
 		this.consensus = consensus;
 	}
 
-	public BigDecimal getRoe() {
+	public Number getRoe() {
 		return roe;
 	}
 
-	public void setRoe(BigDecimal roe) {
+	public void setRoe(Number roe) {
 		this.roe = roe;
 	}
 

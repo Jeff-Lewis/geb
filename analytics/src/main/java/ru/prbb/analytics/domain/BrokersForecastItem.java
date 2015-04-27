@@ -4,7 +4,6 @@
 package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,14 +22,14 @@ public class BrokersForecastItem implements Serializable {
 	private String short_name;
 	private String pivot_group;
 	private String broker;
-	private BigDecimal EPS1Q;
-	private BigDecimal EPS2Q;
-	private BigDecimal EPS3Q;
-	private BigDecimal EPS4Q;
-	private BigDecimal EPS1CY;
-	private BigDecimal EPS2CY;
-	private BigDecimal TargetConsensus12m;
-	private BigDecimal TargetConsensus;
+	private Number EPS1Q;
+	private Number EPS2Q;
+	private Number EPS3Q;
+	private Number EPS4Q;
+	private Number EPS1CY;
+	private Number EPS2CY;
+	private Number TargetConsensus12m;
+	private Number TargetConsensus;
 	private String recommendation;
 	private String period;
 	private String target_date;
@@ -115,7 +114,7 @@ public class BrokersForecastItem implements Serializable {
 	/**
 	 * @return the ePS1Q
 	 */
-	public BigDecimal getEPS1Q() {
+	public Number getEPS1Q() {
 		return EPS1Q;
 	}
 
@@ -123,14 +122,14 @@ public class BrokersForecastItem implements Serializable {
 	 * @param ePS1Q
 	 *            the ePS1Q to set
 	 */
-	public void setEPS1Q(BigDecimal ePS1Q) {
+	public void setEPS1Q(Number ePS1Q) {
 		EPS1Q = ePS1Q;
 	}
 
 	/**
 	 * @return the ePS2Q
 	 */
-	public BigDecimal getEPS2Q() {
+	public Number getEPS2Q() {
 		return EPS2Q;
 	}
 
@@ -138,14 +137,14 @@ public class BrokersForecastItem implements Serializable {
 	 * @param ePS2Q
 	 *            the ePS2Q to set
 	 */
-	public void setEPS2Q(BigDecimal ePS2Q) {
+	public void setEPS2Q(Number ePS2Q) {
 		EPS2Q = ePS2Q;
 	}
 
 	/**
 	 * @return the ePS3Q
 	 */
-	public BigDecimal getEPS3Q() {
+	public Number getEPS3Q() {
 		return EPS3Q;
 	}
 
@@ -153,14 +152,14 @@ public class BrokersForecastItem implements Serializable {
 	 * @param ePS3Q
 	 *            the ePS3Q to set
 	 */
-	public void setEPS3Q(BigDecimal ePS3Q) {
+	public void setEPS3Q(Number ePS3Q) {
 		EPS3Q = ePS3Q;
 	}
 
 	/**
 	 * @return the ePS4Q
 	 */
-	public BigDecimal getEPS4Q() {
+	public Number getEPS4Q() {
 		return EPS4Q;
 	}
 
@@ -168,14 +167,14 @@ public class BrokersForecastItem implements Serializable {
 	 * @param ePS4Q
 	 *            the ePS4Q to set
 	 */
-	public void setEPS4Q(BigDecimal ePS4Q) {
+	public void setEPS4Q(Number ePS4Q) {
 		EPS4Q = ePS4Q;
 	}
 
 	/**
 	 * @return the ePS1CY
 	 */
-	public BigDecimal getEPS1CY() {
+	public Number getEPS1CY() {
 		return EPS1CY;
 	}
 
@@ -183,14 +182,14 @@ public class BrokersForecastItem implements Serializable {
 	 * @param ePS1CY
 	 *            the ePS1CY to set
 	 */
-	public void setEPS1CY(BigDecimal ePS1CY) {
+	public void setEPS1CY(Number ePS1CY) {
 		EPS1CY = ePS1CY;
 	}
 
 	/**
 	 * @return the ePS2CY
 	 */
-	public BigDecimal getEPS2CY() {
+	public Number getEPS2CY() {
 		return EPS2CY;
 	}
 
@@ -198,14 +197,14 @@ public class BrokersForecastItem implements Serializable {
 	 * @param ePS2CY
 	 *            the ePS2CY to set
 	 */
-	public void setEPS2CY(BigDecimal ePS2CY) {
+	public void setEPS2CY(Number ePS2CY) {
 		EPS2CY = ePS2CY;
 	}
 
 	/**
 	 * @return the targetConsensus12m
 	 */
-	public BigDecimal getTargetConsensus12m() {
+	public Number getTargetConsensus12m() {
 		return TargetConsensus12m;
 	}
 
@@ -213,14 +212,14 @@ public class BrokersForecastItem implements Serializable {
 	 * @param targetConsensus12m
 	 *            the targetConsensus12m to set
 	 */
-	public void setTargetConsensus12m(BigDecimal targetConsensus12m) {
+	public void setTargetConsensus12m(Number targetConsensus12m) {
 		TargetConsensus12m = targetConsensus12m;
 	}
 
 	/**
 	 * @return the targetConsensus
 	 */
-	public BigDecimal getTargetConsensus() {
+	public Number getTargetConsensus() {
 		return TargetConsensus;
 	}
 
@@ -228,7 +227,7 @@ public class BrokersForecastItem implements Serializable {
 	 * @param targetConsensus
 	 *            the targetConsensus to set
 	 */
-	public void setTargetConsensus(BigDecimal targetConsensus) {
+	public void setTargetConsensus(Number targetConsensus) {
 		TargetConsensus = targetConsensus;
 	}
 

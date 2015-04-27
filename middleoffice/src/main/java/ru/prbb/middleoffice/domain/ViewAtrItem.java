@@ -16,7 +16,7 @@ public class ViewAtrItem implements Serializable {
 	private Long id_sec;
 	private String security_code;
 	private String date_time;
-	private BigDecimal ATR;
+	private Number ATR;
 	private String atr_period;
 	private String algorithm;
 	private String ds_high_code;
@@ -74,7 +74,7 @@ public class ViewAtrItem implements Serializable {
 	/**
 	 * @return the aTR
 	 */
-	public BigDecimal getATR() {
+	public Number getATR() {
 		return ATR;
 	}
 
@@ -82,7 +82,7 @@ public class ViewAtrItem implements Serializable {
 	 * @param atr
 	 *            the aTR to set
 	 */
-	public void setATR(BigDecimal atr) {
+	public void setATR(Number atr) {
 		ATR = atr;
 	}
 

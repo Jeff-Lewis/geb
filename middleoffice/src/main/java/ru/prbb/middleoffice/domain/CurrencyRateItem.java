@@ -4,7 +4,6 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * Курсы валют
@@ -17,10 +16,10 @@ public class CurrencyRateItem implements Serializable {
 
 	private String dated;
 	private String code;
-	private Integer scale;
+	private Number scale;
 	private String iso;
 	private String name;
-	private BigDecimal rate;
+	private Number rate;
 
 	/**
 	 * @return the dated
@@ -55,7 +54,7 @@ public class CurrencyRateItem implements Serializable {
 	/**
 	 * @return the scale
 	 */
-	public Integer getScale() {
+	public Number getScale() {
 		return scale;
 	}
 
@@ -63,7 +62,7 @@ public class CurrencyRateItem implements Serializable {
 	 * @param scale
 	 *            the scale to set
 	 */
-	public void setScale(Integer scale) {
+	public void setScale(Number scale) {
 		this.scale = scale;
 	}
 
@@ -100,7 +99,7 @@ public class CurrencyRateItem implements Serializable {
 	/**
 	 * @return the rate
 	 */
-	public BigDecimal getRate() {
+	public Number getRate() {
 		return rate;
 	}
 
@@ -108,7 +107,7 @@ public class CurrencyRateItem implements Serializable {
 	 * @param rate
 	 *            the rate to set
 	 */
-	public void setRate(BigDecimal rate) {
+	public void setRate(Number rate) {
 		this.rate = rate;
 	}
 }

@@ -17,8 +17,8 @@ public class HolidaysItem implements Serializable {
 	private String name;
 	private String time_start;
 	private String time_stop;
-	private Byte sms;
-	private Byte portfolio;
+	private Number sms;
+	private Number portfolio;
 
 	/**
 	 * @return the country
@@ -98,7 +98,7 @@ public class HolidaysItem implements Serializable {
 	/**
 	 * @return the sms
 	 */
-	public Byte getSms() {
+	public Number getSms() {
 		return sms;
 	}
 
@@ -106,14 +106,14 @@ public class HolidaysItem implements Serializable {
 	 * @param sms
 	 *            the sms to set
 	 */
-	public void setSms(Byte sms) {
+	public void setSms(Number sms) {
 		this.sms = sms;
 	}
 
 	/**
 	 * @return the portfolio
 	 */
-	public Byte getPortfolio() {
+	public Number getPortfolio() {
 		return portfolio;
 	}
 
@@ -121,7 +121,7 @@ public class HolidaysItem implements Serializable {
 	 * @param portfolio
 	 *            the portfolio to set
 	 */
-	public void setPortfolio(Byte portfolio) {
+	public void setPortfolio(Number portfolio) {
 		this.portfolio = portfolio;
 	}
 }

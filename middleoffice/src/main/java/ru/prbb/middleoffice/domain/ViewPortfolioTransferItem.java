@@ -4,7 +4,6 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * @author RBr
@@ -18,10 +17,10 @@ public class ViewPortfolioTransferItem implements Serializable {
 	private String client;
 	private String fund;
 	private String security_code;
-	private Integer batch;
-	private Integer quantity;
-	private BigDecimal avg_price;
-	private BigDecimal avg_price_usd;
+	private Number batch;
+	private Number quantity;
+	private Number avg_price;
+	private Number avg_price_usd;
 	private String currency;
 
 	public Long getId() {
@@ -64,35 +63,35 @@ public class ViewPortfolioTransferItem implements Serializable {
 		this.security_code = security_code;
 	}
 
-	public Integer getBatch() {
+	public Number getBatch() {
 		return batch;
 	}
 
-	public void setBatch(Integer batch) {
+	public void setBatch(Number batch) {
 		this.batch = batch;
 	}
 
-	public Integer getQuantity() {
+	public Number getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(Number quantity) {
 		this.quantity = quantity;
 	}
 
-	public BigDecimal getAvg_price() {
+	public Number getAvg_price() {
 		return avg_price;
 	}
 
-	public void setAvg_price(BigDecimal avg_price) {
+	public void setAvg_price(Number avg_price) {
 		this.avg_price = avg_price;
 	}
 
-	public BigDecimal getAvg_price_usd() {
+	public Number getAvg_price_usd() {
 		return avg_price_usd;
 	}
 
-	public void setAvg_price_usd(BigDecimal avg_price_usd) {
+	public void setAvg_price_usd(Number avg_price_usd) {
 		this.avg_price_usd = avg_price_usd;
 	}
 
