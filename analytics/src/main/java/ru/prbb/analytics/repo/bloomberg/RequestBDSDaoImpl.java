@@ -113,7 +113,7 @@ public class RequestBDSDaoImpl extends BaseDaoImpl implements RequestBDSDao
 
 		@SuppressWarnings("unchecked")
 		Map<String, List<String>> pt =
-				(Map<String, List<String>>) answer.get("PeerTicker");
+				(Map<String, List<String>>) answer.get("BLOOMBERG_PEERS");
 		if (pt != null) {
 			for (String security : securities) {
 				List<String> items = pt.get(security);

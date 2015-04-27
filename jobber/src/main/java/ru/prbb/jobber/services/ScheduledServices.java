@@ -88,7 +88,7 @@ public class ScheduledServices {
 
 		@SuppressWarnings("unchecked")
 		Map<String, List<String>> pt =
-				(Map<String, List<String>>) answer.get("PeerTicker");
+				(Map<String, List<String>>) answer.get("BLOOMBERG_PEERS");
 
 		daoBloomberg.putPeersProc(_securities, pt);
 	}
