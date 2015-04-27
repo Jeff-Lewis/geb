@@ -67,11 +67,14 @@ public class TaskBdsRequest extends TaskData {
 	private void handleBestAnalyst(Map<String, List<Map<String, String>>> answer) {
 		Object a = result.get(BEST_ANALYST_RECS_BULK);
 		if (a != null) {
-			Map<String, List<Map<String, String>>> bestAnalyst = (Map<String, List<Map<String, String>>>) a;
-			for (Entry<String, List<Map<String, String>>> entry : answer.entrySet()) {
-				String security = entry.getKey();
-				List<Map<String,String>> values = entry.getValue();
-				bestAnalyst.put(security, values);
+			if (answer != null) {
+				Map<String, List<Map<String, String>>> bestAnalyst = (Map<String, List<Map<String, String>>>) a;
+				for (Entry<String, List<Map<String, String>>> entry : answer
+						.entrySet()) {
+					String security = entry.getKey();
+					List<Map<String, String>> values = entry.getValue();
+					bestAnalyst.put(security, values);
+				}
 			}
 		} else {
 			result.put(BEST_ANALYST_RECS_BULK, answer);
@@ -81,11 +84,14 @@ public class TaskBdsRequest extends TaskData {
 	private void handleEarnEPS(Map<String, List<Map<String, String>>> answer) {
 		Object a = result.get(EARN_ANN_DT_TIME_HIST_WITH_EPS);
 		if (a != null) {
-			Map<String, List<Map<String, String>>> earnHistWithEps = (Map<String, List<Map<String, String>>>) a;
-			for (Entry<String, List<Map<String, String>>> entry : answer.entrySet()) {
-				String security = entry.getKey();
-				List<Map<String,String>> values = entry.getValue();
-				earnHistWithEps.put(security, values);
+			if (answer != null) {
+				Map<String, List<Map<String, String>>> earnHistWithEps = (Map<String, List<Map<String, String>>>) a;
+				for (Entry<String, List<Map<String, String>>> entry : answer
+						.entrySet()) {
+					String security = entry.getKey();
+					List<Map<String, String>> values = entry.getValue();
+					earnHistWithEps.put(security, values);
+				}
 			}
 		} else {
 			result.put(EARN_ANN_DT_TIME_HIST_WITH_EPS, answer);
@@ -95,11 +101,14 @@ public class TaskBdsRequest extends TaskData {
 	private void handleErn(Map<String, List<Map<String, String>>> answer) {
 		Object a = result.get(ERN_ANN_DT_AND_PER);
 		if (a != null) {
-			Map<String, List<Map<String, String>>> ernAnnDTandPer = (Map<String, List<Map<String, String>>>) a;
-			for (Entry<String, List<Map<String, String>>> entry : answer.entrySet()) {
-				String security = entry.getKey();
-				List<Map<String,String>> values = entry.getValue();
-				ernAnnDTandPer.put(security, values);
+			if (answer != null) {
+				Map<String, List<Map<String, String>>> ernAnnDTandPer = (Map<String, List<Map<String, String>>>) a;
+				for (Entry<String, List<Map<String, String>>> entry : answer
+						.entrySet()) {
+					String security = entry.getKey();
+					List<Map<String, String>> values = entry.getValue();
+					ernAnnDTandPer.put(security, values);
+				}
 			}
 		} else {
 			result.put(ERN_ANN_DT_AND_PER, answer);
@@ -109,11 +118,13 @@ public class TaskBdsRequest extends TaskData {
 	private void handleBloombergPeers(Map<String, List<String>> answer) {
 		Object a = result.get(BLOOMBERG_PEERS);
 		if (a != null) {
-			Map<String, List<String>> peerTicker = (Map<String, List<String>>) a;
-			for (Entry<String, List<String>> entry : answer.entrySet()) {
-				String security = entry.getKey();
-				List<String> values = entry.getValue();
-				peerTicker.put(security, values);
+			if (answer != null) {
+				Map<String, List<String>> peerTicker = (Map<String, List<String>>) a;
+				for (Entry<String, List<String>> entry : answer.entrySet()) {
+					String security = entry.getKey();
+					List<String> values = entry.getValue();
+					peerTicker.put(security, values);
+				}
 			}
 		} else {
 			result.put(BLOOMBERG_PEERS, answer);
@@ -123,8 +134,10 @@ public class TaskBdsRequest extends TaskData {
 	private void handlePeers(List<Map<String, Object>> answer) {
 		Object a = result.get(PEERS);
 		if (a != null) {
-			List<Map<String, Object>> peersData = (List<Map<String, Object>>) a;
-			peersData.addAll(answer);
+			if (answer != null) {
+				List<Map<String, Object>> peersData = (List<Map<String, Object>>) a;
+				peersData.addAll(answer);
+			}
 		} else {
 			result.put(PEERS, answer);
 		}

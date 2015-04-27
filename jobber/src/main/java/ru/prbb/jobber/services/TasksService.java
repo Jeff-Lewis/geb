@@ -60,7 +60,7 @@ public class TasksService {
 			if (id.equals(data.getId())) {
 				if (TaskData.Status.WORK == data.getStatus()) {
 					data.update(str);
-					data.notify();
+					//data.notify();
 				}
 			}
 		}

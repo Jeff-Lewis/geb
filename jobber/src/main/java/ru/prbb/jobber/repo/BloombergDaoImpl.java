@@ -67,7 +67,7 @@ public class BloombergDaoImpl implements BloombergDao
 			}
 
 			String msg = res.toString();
-			log.debug(msg);
+			log.info(msg);
 		} catch (Exception e) {
 			log.error("showSql", e);
 		}
