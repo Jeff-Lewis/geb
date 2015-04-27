@@ -77,7 +77,7 @@ public class ScheduledServices {
 		Map<String, Object> answer = bs.executeBdsRequest("Jobber/BDS", _securities, fields);
 
 		@SuppressWarnings("unchecked")
-		List<Map<String, Object>> pd = ((List<Map<String, Object>>) answer.get("Peers"));
+		List<Map<String, Object>> pd = ((List<Map<String, Object>>) answer.get("PEERS"));
 		daoBloomberg.putPeersData(pd);
 
 		@SuppressWarnings("unchecked")

@@ -15,7 +15,7 @@ public interface BloombergServicesJ {
 	 * @param name
 	 * @param securities
 	 * @param fields
-	 * @return [Peers, EARN_ANN_DT_TIME_HIST_WITH_EPS, ERN_ANN_DT_AND_PER,
+	 * @return [PEERS, EARN_ANN_DT_TIME_HIST_WITH_EPS, ERN_ANN_DT_AND_PER,
 	 *         BLOOMBERG_PEERS, BEST_ANALYST_RECS_BULK]
 	 */
 	Map<String, Object> executeBdsRequest(String name, String[] securities, String[] fields);

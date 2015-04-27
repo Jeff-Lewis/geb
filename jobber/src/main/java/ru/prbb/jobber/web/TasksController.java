@@ -53,7 +53,7 @@ public class TasksController
 			try (BufferedReader r = request.getReader()) {
 				str = r.readLine();
 			}
-			log.info("PUT UpdateTaskData id={}, {}", id, str);
+			//log.info("PUT UpdateTaskData id={}, {}", id, str);
 			tasks.updateTaskData(id, str);
 		} catch (Exception e) {
 			return "ERROR:" + e.getMessage();
