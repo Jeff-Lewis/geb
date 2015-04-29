@@ -33,6 +33,8 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 	private EntityManager em;
 
 	private void showSql(String sql, Query q) {
+		if (sql != null)
+			return;
 		try {
 			StringBuilder res = new StringBuilder(sql);
 			if (!q.getParameters().isEmpty()) {
@@ -70,7 +72,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 	public List<SubscriptionItem> getSubscriptions() {
 		String sql = "{call dbo.output_subscriptions_prc}";
 		Query q = em.createNativeQuery(sql, SubscriptionItem.class);
-		//showSql(sql, q);
+		showSql(sql, q);
 		return q.getResultList();
 	}
 
@@ -81,34 +83,21 @@ public class SubscriptionDaoImpl implements SubscriptionDao
 		String sql = "{call dbo.secs_in_subscription_prc ?}";
 		Query q = em.createNativeQuery(sql, SecurityItem.class)
 				.setParameter(1, id);
-		//showSql(sql, q);
+		showSql(sql, q);
 		return q.getResultList();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public int[] subsUpdate(List<String[]> data) {
+	public int subsUpdate(String security_code, String last_price, String last_chng) {
 		String sql = "{call dbo.upd_sect_subs_proc ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
 
-		int ri = 0;
-		int[] res = new int[data.size()];
-		for (String[] arr : data) {
-			try {
-				String security_code = arr[0];
-				String last_price = arr[1];
-				String last_chng = arr[2];
-				q.setParameter(1, security_code);
-				q.setParameter(2, last_price);
-				q.setParameter(3, last_chng);
-				//showSql(sql, q);
-				res[ri++] = q.executeUpdate();
-			} catch (Exception e) {
-				log.error("Store subscription data", e);
-			}
-		}
-
-		return res;
+		q.setParameter(1, security_code);
+		q.setParameter(2, last_price);
+		q.setParameter(3, last_chng);
+		showSql(sql, q);
+		return q.executeUpdate();
 	}
 
 }

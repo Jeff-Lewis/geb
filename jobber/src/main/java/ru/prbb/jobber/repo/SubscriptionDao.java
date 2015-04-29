@@ -26,10 +26,7 @@ public interface SubscriptionDao {
 
 	/**
 	 * Сохранить данные в БД
-	 * 
-	 * @param data
-	 *            [ {security_code, last_price, last_chng} ]
 	 */
-	public int[] subsUpdate(List<String[]> data);
+	public int subsUpdate(String security_code, String last_price, String last_chng);
 
 }

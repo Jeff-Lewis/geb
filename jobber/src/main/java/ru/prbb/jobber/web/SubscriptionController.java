@@ -51,21 +51,30 @@ public class SubscriptionController
 	{
 		//log.debug("POST /Subscription id={}: data={}", id, data);
 
-		String[] lines = data.split("\n");
-		List<String[]> result = new ArrayList<>(lines.length);
-		for (String line : lines) {
-			if (!line.isEmpty()) {
-				String[] arr = line.split("\t");
-				if (arr.length != 3) {
-					log.error("Data line:" + line);
-				} else {
-					result.add(arr);
+		try {
+			String[] lines = data.split("\n");
+			List<String[]> result = new ArrayList<>(lines.length);
+			for (String line : lines) {
+				if (!line.isEmpty()) {
+					String[] arr = line.split("\t");
+					if (arr.length != 3) {
+						log.error("Data line:" + line);
+					} else {
+						result.add(arr);
+					}
 				}
 			}
-		}
-
-		try {
-			dao.subsUpdate(result);
+			
+			for (String[] arr : result) {
+				try {
+					String security_code = arr[0];
+					String last_price = arr[1];
+					String last_chng = arr[2];
+					dao.subsUpdate(security_code, last_price, last_chng);
+				} catch (Exception e) {
+					log.error("Store subscription data", e);
+				}
+			}
 			return "OK";
 		} catch (Exception e) {
 			log.error("Subscription update", e);

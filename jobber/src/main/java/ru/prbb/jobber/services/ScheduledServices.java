@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.persistence.PersistenceException;
@@ -71,26 +72,59 @@ public class ScheduledServices {
 			SecForJobRequest security = securities.get(i);
 			_securities[i] = security.code;
 		}
-		
+
 		String[] fields = { "BEST_ANALYST_RECS_BULK", "BLOOMBERG_PEERS" };
 
 		Map<String, Object> answer = bs.executeBdsRequest("Jobber/BDS", _securities, fields);
 
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> pd = ((List<Map<String, Object>>) answer.get("PEERS"));
-		daoBloomberg.putPeersData(pd);
+		for (Map<String, Object> data : pd) {
+			try {
+				daoBloomberg.putPeersData(data);
+			} catch (Exception e) {
+				log.error("putPeersData " + data, e);
+			}
+		}
 
 		@SuppressWarnings("unchecked")
 		Map<String, List<Map<String, String>>> ba =
 				(Map<String, List<Map<String, String>>>) answer.get("BEST_ANALYST_RECS_BULK");
 
-		daoBloomberg.putAnalysData(_securities, ba);
+		for (String security : _securities) {
+			List<Map<String, String>> datas = ba.get(security);
+			if (null == datas) {
+				log.warn("no datas for " + security);
+				continue;
+			}
+			for (Map<String, String> data : datas) {
+				try {
+					daoBloomberg.putAnalysData(security, data);
+				} catch (Exception e) {
+					log.error("putAnalysData " + data, e);
+				}
+			}
+		}
 
 		@SuppressWarnings("unchecked")
 		Map<String, List<String>> pt =
 				(Map<String, List<String>>) answer.get("BLOOMBERG_PEERS");
 
-		daoBloomberg.putPeersProc(_securities, pt);
+		for (String security : _securities) {
+			List<String> datas = pt.get(security);
+			if (null == datas) {
+				log.warn("no datas for " + security);
+				continue;
+			}
+			for (String data : datas) {
+				try {
+					data += " Equity";
+					daoBloomberg.putPeersProc(security, data);
+				} catch (Exception e) {
+					log.error("putPeersProc " + data, e);
+				}
+			}
+		}
 	}
 
 	@Scheduled(cron = "0 15 4 * * *")
@@ -107,7 +141,18 @@ public class ScheduledServices {
 				bs.executeReferenceDataRequest("Jobber/Update securities", _securities,
 						toArray("SECURITY_NAME", "NAME", "SHORT_NAME", "FUT_FIRST_TRADE_DT", "LAST_TRADEABLE_DT"));
 
-		daoBloomberg.putUpdatesFutures(securities, answer);
+		for (SecurityItem security : securities) {
+			Map<String, String> data = answer.get(security.getCode());
+			if (null == data) {
+				log.warn("no data for " + security);
+				continue;
+			}
+			try {
+				daoBloomberg.putUpdatesFutures(security.getId(), data);
+			} catch (Exception e) {
+				log.error("putUpdatesFutures " + data, e);
+			}
+		}
 	}
 
 	// @Scheduled(cron = "0 55 4 * * *")
@@ -124,7 +169,6 @@ public class ScheduledServices {
 		log.info("task QuotesLoad");
 
 		Date date = yesterday();
-		String _date = Utils.createDateFormatYMD().format(date);
 
 		String[] securities = toArray(daoBloomberg.getSecForQuotes());
 
@@ -132,7 +176,22 @@ public class ScheduledServices {
 				bs.executeHistoricalDataRequest("Jobber/Quotes", date, date,
 						securities, toArray("PX_LAST"));
 
-		daoBloomberg.putQuotes(_date, securities, answer);
+		for (String security : securities) {
+			Map<String, Map<String, String>> datas = answer.get(security);
+			if (null == datas) {
+				log.warn("no datas for " + security);
+				continue;
+			}
+			for (Entry<String, Map<String, String>> entry : datas.entrySet()) {
+				String _date = entry.getKey();
+				Map<String, String> data = entry.getValue();
+				try {
+					daoBloomberg.putQuotes(_date, security, Utils.toDouble(data.get("PX_LAST")));
+				} catch (Exception e) {
+					log.error("putQuotes " + data, e);
+				}
+			}
+		}
 	}
 
 	@Scheduled(cron = "0 10 5 * * *")
@@ -147,19 +206,40 @@ public class ScheduledServices {
 				bs.executeAtrLoad("Jobber/Atr", date, date, securities,
 						"Exponential", 7, "DAILY", "CALENDAR");
 
-		daoBloomberg.putAtrData(securities, answer);
+		for (AtrLoadDataItem item : answer) {
+			try {
+				daoBloomberg.putAtrData(item);
+			} catch (Exception e) {
+				log.error("putAtrData " + item, e);
+			}
+		}
 	}
 
 	@Scheduled(cron = "0 0 6 * * *")
 	public void taskBdpOverrideLoad() {
 		log.info("task BdpOverrideLoad");
-		
+
 		List<SecForJobRequest> securities = daoBloomberg.getLoadEstimatesPeersData();
 
 		Map<String, Map<String, String>> answer =
 				bs.executeBdpOverrideLoad("Jobber/BDP override", securities);
 
-		daoBloomberg.putOverrideData(securities, answer);
+		for (SecForJobRequest security : securities) {
+			final Map<String, String> values = answer.get(security.code);
+			if (null == values) {
+				log.warn("no values for " + security.code);
+				continue;
+			}
+			for (Entry<String, String> entry : values.entrySet()) {
+				String period = entry.getKey();
+				String value = entry.getValue();
+				try {
+					daoBloomberg.putOverrideData(security.code, value, period);
+				} catch (Exception e) {
+					log.error("putOverrideData " + security.code + ", " + period + "=" + value, e);
+				}
+			}
+		}
 	}
 
 	@Scheduled(cron = "0 0 7 * * *")
@@ -191,8 +271,34 @@ public class ScheduledServices {
 		Map<String, Map<String, Map<String, String>>> answer =
 				bs.executeHistoricalDataRequest("Jobber/HistData", date, date, cursec, fields, currencies);
 
-		String _date = Utils.createDateFormatYMD().format(date);
-		daoBloomberg.putHistParamsData(_date, currencies, cursec, answer);
+		String strDate = Utils.createDateFormatYMD().format(date);
+		java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+		for (String currency : currencies) {
+			for (String cs : cursec) {
+				if (cs.startsWith(currency)) {
+					final String security = cs.substring(currency.length());
+
+					final Map<String, String> values = answer.get(cs).get(strDate);
+					if (null == values) {
+						log.warn("no values for " + security);
+						continue;
+					}
+
+					for (String field : fields) {
+						if (values.containsKey(field)) {
+							String value = values.get(field);
+							try {
+								daoBloomberg.putHistParamsData(security, field, sqlDate, value, currency);
+							} catch (Exception e) {
+								log.error("putHistParamsData " + values, e);
+							}
+						}
+					}
+
+				}
+			}
+		}
 	}
 
 	@Scheduled(cron = "0 0 8 * * *")
@@ -204,7 +310,20 @@ public class ScheduledServices {
 		Map<String, Map<String, String>> answer =
 				bs.executeReferenceDataRequest("Jobber/Currency", securities, toArray("PX_LAST", "QUOTE_FACTOR"));
 
-		daoBloomberg.putCurrencyData(securities, answer);
+		for (String security : securities) {
+			Map<String, String> data = answer.get(security);
+			if (null == data) {
+				log.warn("no data for " + security);
+				continue;
+			}
+			try {
+				Integer quoteFactor = Utils.parseDouble(data.get("QUOTE_FACTOR")).intValue();
+				Number pxLast = Utils.parseDouble(data.get("PX_LAST"));
+				daoBloomberg.putCurrencyData(security, quoteFactor, pxLast);;
+			} catch (Exception e) {
+				log.error("putCurrencyData " + data, e);
+			}
+		}
 	}
 
 	@Scheduled(cron = "0 59 11-18 * * *")
@@ -218,8 +337,19 @@ public class ScheduledServices {
 		Map<String, Map<String, String>> answer =
 				bs.executeReferenceDataRequest("Jobber/Bonds", securities, fields);
 
-		daoBloomberg.putBondsData(securities, answer);
-		
+		for (String security : securities) {
+			Map<String, String> data = answer.get(security);
+			if (null == data) {
+				log.warn("no data for " + security);
+				continue;
+			}
+			try {
+				daoBloomberg.putBondsData(security, fields, data);
+			} catch (Exception e) {
+				log.error("putBondsData " + data, e);
+			}
+		}
+
 		//taskBonds();
 	}
 
@@ -236,7 +366,7 @@ public class ScheduledServices {
 			daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
-				// всё в порядке
+				log.info("Subscription is active");
 			} else {
 				throw e;
 			}
@@ -254,9 +384,9 @@ public class ScheduledServices {
 			daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
-				log.info("task Subscription: No data");
+				log.info("task Jobbers: done");
 			} else {
-				log.error("task Subscription", e);
+				log.error("task Jobbers", e);
 			}
 		}
 	}
@@ -273,9 +403,9 @@ public class ScheduledServices {
 			daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
-				log.info("task Subscription: No data");
+				log.info("task Quotes: done");
 			} else {
-				log.error("task Subscription", e);
+				log.error("task Quotes", e);
 			}
 		}
 	}
@@ -291,9 +421,9 @@ public class ScheduledServices {
 			daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
-				log.info("task Subscription: No data");
+				log.info("task Bonds: done");
 			} else {
-				log.error("task Subscription", e);
+				log.error("task Bonds", e);
 			}
 		}
 	}
@@ -309,9 +439,9 @@ public class ScheduledServices {
 			daoSending.send(items);
 		} catch (PersistenceException e) {
 			if (e.getMessage().contains("JZ0R2: No result set for this query")) {
-				log.info("task Subscription: No data");
+				log.info("task QuotesRus: done");
 			} else {
-				log.error("task Subscription", e);
+				log.error("task QuotesRus", e);
 			}
 		}
 	}
