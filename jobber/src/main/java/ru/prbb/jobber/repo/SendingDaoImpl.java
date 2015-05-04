@@ -170,7 +170,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 					.setParameter(2, email)
 					.setParameter(3, result);
 			showSql(sql, q);
-			return q.executeUpdate();
+			return 0;// FIXME q.executeUpdate();
 		} catch (Exception e) {
 			log.error("iu_email_log", e);
 		}
@@ -402,7 +402,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 					.setParameter(1, id)
 					.setParameter(2, response);
 			showSql(sql, q);
-			return q.executeUpdate();
+			return 0;// FIXME q.executeUpdate();
 		} catch (Exception e) {
 			log.error("iu_sms_log", e);
 		}
