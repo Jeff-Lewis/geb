@@ -63,6 +63,7 @@ public class ScheduledServices {
 	}
 
 	@Scheduled(cron = "0 0 3 * * *")
+	@Description("Jobber/BDS")
 	public void taskBdsLoad() {
 		log.info("task BdsLoad");
 
@@ -84,6 +85,14 @@ public class ScheduledServices {
 				daoBloomberg.putPeersData(data);
 			} catch (Exception e) {
 				log.error("putPeersData " + data, e);
+				Object res = "empty";
+				try {
+					res = daoBloomberg.putPeersDataTest(data);
+				} catch (Exception e1) {
+					log.error("putPeersDataTest " + data, e1);
+				}
+				log.info("putPeersDataTest data={}", data);
+				log.info("putPeersDataTest  res={}", res);
 			}
 		}
 
@@ -125,9 +134,12 @@ public class ScheduledServices {
 				}
 			}
 		}
+
+		log.info("task BdsLoad done");
 	}
 
 	@Scheduled(cron = "0 15 4 * * *")
+	@Description("Jobber/Update securities")
 	public void taskFuturesLoad() {
 		log.info("task FuturesLoad");
 
@@ -153,9 +165,12 @@ public class ScheduledServices {
 				log.error("putUpdatesFutures " + data, e);
 			}
 		}
+
+		log.info("task FuturesLoad done");
 	}
 
 	// @Scheduled(cron = "0 55 4 * * *")
+	@Description("QuotesPortfolio")
 	private void taskQuotesPortfolio() {
 		log.info("task QuotesPortfolio");
 
@@ -163,6 +178,7 @@ public class ScheduledServices {
 	}
 
 	@Scheduled(cron = "0 0 5 * * *")
+	@Description("Jobber/Quotes")
 	public void taskQuotesLoad() {
 		taskQuotesPortfolio();
 
@@ -192,9 +208,12 @@ public class ScheduledServices {
 				}
 			}
 		}
+
+		log.info("task QuotesLoad done");
 	}
 
 	@Scheduled(cron = "0 10 5 * * *")
+	@Description("Jobber/Atr load")
 	public void taskAtrLoad() {
 		log.info("task AtrLoad");
 
@@ -203,7 +222,7 @@ public class ScheduledServices {
 		String[] securities = toArray(daoBloomberg.getSecForAtr());
 
 		List<AtrLoadDataItem> answer =
-				bs.executeAtrLoad("Jobber/Atr", date, date, securities,
+				bs.executeAtrLoad("Jobber/Atr load", date, date, securities,
 						"Exponential", 7, "DAILY", "CALENDAR");
 
 		for (AtrLoadDataItem item : answer) {
@@ -213,9 +232,12 @@ public class ScheduledServices {
 				log.error("putAtrData " + item, e);
 			}
 		}
+
+		log.info("task AtrLoad done");
 	}
 
 	@Scheduled(cron = "0 0 6 * * *")
+	@Description("Jobber/BDP override")
 	public void taskBdpOverrideLoad() {
 		log.info("task BdpOverrideLoad");
 
@@ -240,9 +262,12 @@ public class ScheduledServices {
 				}
 			}
 		}
+
+		log.info("task BdpOverrideLoad done");
 	}
 
 	@Scheduled(cron = "0 0 7 * * *")
+	@Description("Jobber/HistData")
 	public void taskHistDataLoad() {
 		log.info("task HistDataLoad");
 
@@ -299,9 +324,12 @@ public class ScheduledServices {
 				}
 			}
 		}
+
+		log.info("task HistDataLoad done");
 	}
 
 	@Scheduled(cron = "0 0 8 * * *")
+	@Description("Jobber/Currency")
 	public void taskCurrenciesDataLoad() {
 		log.info("task CurrenciesDataLoad");
 
@@ -317,16 +345,19 @@ public class ScheduledServices {
 				continue;
 			}
 			try {
-				Integer quoteFactor = Utils.parseDouble(data.get("QUOTE_FACTOR")).intValue();
-				Number pxLast = Utils.parseDouble(data.get("PX_LAST"));
+				Integer quoteFactor = Utils.parseNumber(data.get("QUOTE_FACTOR")).intValue();
+				Number pxLast = Utils.parseNumber(data.get("PX_LAST"));
 				daoBloomberg.putCurrencyData(security, quoteFactor, pxLast);;
 			} catch (Exception e) {
 				log.error("putCurrencyData " + data, e);
 			}
 		}
+
+		log.info("task CurrenciesDataLoad done");
 	}
 
-	@Scheduled(cron = "0 59 11-18 * * *")
+	//@Scheduled(cron = "0 59 11-18 * * *")
+	@Description("Jobber/Bonds")
 	public void taskBondsLoad() {
 		log.info("task BondsLoad");
 
@@ -357,6 +388,7 @@ public class ScheduledServices {
 	 * Проверка работы real-time обновлений (подписки)
 	 */
 	@Scheduled(cron = "0 0/15 8-23 * * MON-FRI")
+	@Description("Проверка работы real-time обновлений (подписки)")
 	public void taskSubscriptionCheck() {
 		log.info("task SubscriptionCheck");
 		try {
@@ -377,6 +409,7 @@ public class ScheduledServices {
 	 * Проверка результатов ночных загрузок
 	 */
 	@Scheduled(cron = "0 0 10 * * MON-FRI")
+	@Description("Проверка результатов ночных загрузок")
 	public void taskJobbers() {
 		log.info("task Jobbers");
 		try {
@@ -396,6 +429,7 @@ public class ScheduledServices {
 	 * Пн.-Пт., с 10:00 каждые 30 минут на протяжении 15 часов 15 минут
 	 */
 	@Scheduled(cron = "0 0/30 0,10-23 * * MON-FRI")
+	@Description("Рассылка котировок")
 	public void taskQuotes() {
 		log.info("task Quotes");
 		try {
@@ -413,7 +447,8 @@ public class ScheduledServices {
 	/**
 	 * Отправка смс оповещений с котировками бондов
 	 */
-	@Scheduled(cron = "0 0 14 * * MON-FRI")
+	//@Scheduled(cron = "0 0 14 * * MON-FRI")
+	@Description("Отправка смс оповещений с котировками бондов")
 	public void taskBonds() {
 		log.info("task Bonds");
 		try {
@@ -432,6 +467,7 @@ public class ScheduledServices {
 	 * Отправка E-mail оповещений с котировками по России
 	 */
 	@Scheduled(cron = "0 0/30 * * * *")
+	@Description("Отправка E-mail оповещений с котировками по России")
 	public void taskQuotesRus() {
 		log.info("task QuotesRus");
 		try {
@@ -451,6 +487,7 @@ public class ScheduledServices {
 	 * Вт.-Сб.
 	 */
 	@Scheduled(cron = "0 30 12 * * TUE-SAT")
+	@Description("Рассылка ссылок на Fullermoney Audio")
 	public void taskFullermoneyAudio() {
 		log.info("task Fullermoney Audio");
 		try {
@@ -469,6 +506,7 @@ public class ScheduledServices {
 	 * Отправка смс оповещений с котировками по США
 	 */
 	@Scheduled(cron = "0 50 18 * * *")
+	@Description("Отправка смс оповещений с котировками по США")
 	public void taskQuotesUsa() {
 		log.info("task QuotesUsa");
 		try {
@@ -487,6 +525,7 @@ public class ScheduledServices {
 	 * Рассылка SMS со ссылкой на ежедневный выпуск сводной
 	 */
 	@Scheduled(cron = "0 0 20 * * MON-FRI")
+	@Description("Рассылка SMS со ссылкой на ежедневный выпуск сводной")
 	public void taskAnalytics() {
 		log.info("task Analytics");
 		try {

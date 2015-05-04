@@ -6,7 +6,7 @@
  * Ночные задачи
  */
 var jobberTasks = {
-	title : 'Ночные задачи',
+	title : 'Закачка из Блума',
 	icon : 'images/grid.png',
 	items : [ {
 		text : '03:00 BdsLoad',
@@ -107,6 +107,11 @@ var services = {
     title : 'Сервис',
     icon : 'images/30.png',
     items : [ {
+		text : 'Список заданий',
+		handler : function() {
+			showPanel('JobberTasks');
+        }
+	}, {
         text : 'Агенты БЛУМБЕРГа',
         icon : 'images/users.png',
         handler : function() {
@@ -184,7 +189,7 @@ function createMenuItems() {
 		};
 	}
 
-	return [ _createMenuGroup(jobberTasks), _createMenuGroup(messageTasks), _createMenuGroup(services), _createMenuGroup(logs) ];
+	return [ _createMenuGroup(services), _createMenuGroup(logs), _createMenuGroup(jobberTasks), _createMenuGroup(messageTasks) ];
 }
 
 /**

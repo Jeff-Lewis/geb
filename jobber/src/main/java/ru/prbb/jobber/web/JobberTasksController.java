@@ -1,12 +1,20 @@
 package ru.prbb.jobber.web;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.jobber.domain.JobberTaskItem;
+import ru.prbb.jobber.services.Description;
 import ru.prbb.jobber.services.ScheduledServices;
 
 /**
@@ -23,6 +31,31 @@ public class JobberTasksController {
 	@Autowired
 	private ScheduledServices tasks;
 
+	@RequestMapping
+	@ResponseBody
+	public List<JobberTaskItem> list() {
+		Method[] methods = tasks.getClass().getMethods();
+		List<JobberTaskItem> list = new ArrayList<>(methods.length);
+		for (Method method : methods) {
+			String name = method.getName();
+			if (name.startsWith("task")) {
+				JobberTaskItem item = new JobberTaskItem();
+				item.setName(name);
+
+				Description d = method.getAnnotation(Description.class);
+				item.setDescription((d != null) ? d.value() : null);
+
+				Scheduled s = method.getAnnotation(Scheduled.class);
+				item.setCron((s != null) ? s.cron() : "-");
+
+				item.setEnabled((s != null) ? Boolean.TRUE : Boolean.FALSE);
+
+				list.add(item);
+			}
+		}
+		return list;
+	}
+	
 	@RequestMapping(value = "/LoadBds")
 	public String taskLoadBds(Model model) {
 		log.info("web LoadBds");
