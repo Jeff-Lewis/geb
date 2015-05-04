@@ -129,10 +129,10 @@ public class Utils {
 	 * @param s
 	 * @return null для пустой строки
 	 */
-	public static BigDecimal parseDouble(String s) {
+	public static Number parseNumber(String s) {
 		if (isNotEmpty(s)) {
 			try {
-				return new BigDecimal(s);
+				return new Float(s);
 			} catch (NumberFormatException e) {
 				log.error("parseDouble:" + s, e);
 			}
@@ -195,6 +195,21 @@ public class Utils {
 			} catch (NumberFormatException e) {
 				log.error("toNumber:'{}'", object, e);
 			}
+		}
+		return null;
+	}
+
+	/**
+	 * Приведение к типу Float
+	 * 
+	 * @param object
+	 *            объект из БД
+	 * @return Number
+	 */
+	public static Number toFloat(Object object) {
+		Number number = toNumber(object);
+		if (null != number) {
+			return number.floatValue();
 		}
 		return null;
 	}

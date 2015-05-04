@@ -127,6 +127,32 @@ public class Utils {
 	}
 
 	/**
+	 * Подготовить число для записи в БД<br>
+	 * <code>
+	 * <ul>
+	 * <li>null -> null
+	 * <li>"" -> null
+	 * <li>" " -> null
+	 * <li>"n" -> n
+	 * <li>"error" -> null
+	 * </ul>
+	 * </code>
+	 * 
+	 * @param s
+	 * @return null для пустой строки
+	 */
+	public static Number parseNumber(String s) {
+		if (isNotEmpty(s)) {
+			try {
+				return new Float(s);
+			} catch (NumberFormatException e) {
+				log.error("parseDouble:" + s, e);
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Декодирует строку даты для SQL
 	 * 
 	 * @param date

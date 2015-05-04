@@ -96,15 +96,32 @@ public class BloombergDaoImpl implements BloombergDao
 		String sql = "{call dbo.put_blmpeers_descr_proc ?, ?, ?, ?, ?, ?, ?, ?}";
 		Query q = em.createNativeQuery(sql);
 		q.setParameter(1, Utils.toString(data.get("sec")));
-		q.setParameter(2, Utils.toDouble(data.get("cur_mkt_cap")));
-		q.setParameter(3, Utils.toDouble(data.get("oper_roe")));
-		q.setParameter(4, Utils.toDouble(data.get("bs_tot_liab2")));
-		q.setParameter(5, Utils.toDouble(data.get("pe_ration")));
-		q.setParameter(6, Utils.toDouble(data.get("ebitda")));
+		q.setParameter(2, Utils.toFloat(data.get("cur_mkt_cap")));
+		q.setParameter(3, Utils.toFloat(data.get("oper_roe")));
+		q.setParameter(4, Utils.toFloat(data.get("bs_tot_liab2")));
+		q.setParameter(5, Utils.toFloat(data.get("pe_ration")));
+		q.setParameter(6, Utils.toFloat(data.get("ebitda")));
 		q.setParameter(7, Utils.toString(data.get("group")));
 		q.setParameter(8, Utils.toString(data.get("sub")));
 		showSql(sql, q);
 		q.executeUpdate();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public Object putPeersDataTest(Map<String, Object> data) {
+		String sql = "{call dbo.put_blmpeers_descr_test ?, ?, ?, ?, ?, ?, ?, ?}";
+		Query q = em.createNativeQuery(sql);
+		q.setParameter(1, Utils.toString(data.get("sec")));
+		q.setParameter(2, Utils.toFloat(data.get("cur_mkt_cap")));
+		q.setParameter(3, Utils.toFloat(data.get("oper_roe")));
+		q.setParameter(4, Utils.toFloat(data.get("bs_tot_liab2")));
+		q.setParameter(5, Utils.toFloat(data.get("pe_ration")));
+		q.setParameter(6, Utils.toFloat(data.get("ebitda")));
+		q.setParameter(7, Utils.toString(data.get("group")));
+		q.setParameter(8, Utils.toString(data.get("sub")));
+		showSql(sql, q);
+		return q.getSingleResult();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -217,7 +234,7 @@ public class BloombergDaoImpl implements BloombergDao
 		Query q = em.createNativeQuery(sql);
 		q.setParameter(1, Utils.toString(item.getSecurity()));
 		q.setParameter(2, Utils.parseDate(item.getDate()));
-		q.setParameter(3, Utils.toDouble(item.getValue()));
+		q.setParameter(3, Utils.toFloat(item.getValue()));
 		showSql(sql, q);
 		q.executeUpdate();
 	}

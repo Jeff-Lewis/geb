@@ -21,6 +21,8 @@ public interface BloombergDao {
 	public List<SecForJobRequest> getLoadEstimatesPeersData();
 
 	public void putPeersData(Map<String, Object> answer);
+	
+	public Object putPeersDataTest(Map<String, Object> data);
 
 	public void putAnalysData(String security, Map<String, String> data);
 
