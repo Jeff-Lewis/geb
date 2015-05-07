@@ -9,11 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import ru.prbb.jobber.domain.JobberTaskItem;
+import ru.prbb.jobber.domain.Result;
+import ru.prbb.jobber.domain.ResultData;
+import ru.prbb.jobber.repo.ParametersDao;
 import ru.prbb.jobber.services.Description;
 import ru.prbb.jobber.services.ScheduledServices;
 
@@ -29,9 +33,12 @@ public class JobberTasksController {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
+	private ParametersDao parameters;
+
+	@Autowired
 	private ScheduledServices tasks;
 
-	@RequestMapping
+	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public List<JobberTaskItem> list() {
 		Method[] methods = tasks.getClass().getMethods();
@@ -43,129 +50,171 @@ public class JobberTasksController {
 				item.setName(name);
 
 				Description d = method.getAnnotation(Description.class);
-				item.setDescription((d != null) ? d.value() : null);
+				item.setParameter((d != null) ? d.parameter() : null);
+				item.setDescription((d != null) ? d.comment() : null);
 
 				Scheduled s = method.getAnnotation(Scheduled.class);
 				item.setCron((s != null) ? s.cron() : "-");
 
-				item.setEnabled((s != null) ? Boolean.TRUE : Boolean.FALSE);
+				if (s != null) {
+					boolean taskDisabled = tasks.isTaskDisabled(item.getParameter());
+					item.setEnabled(!taskDisabled);
+				} else {
+					item.setEnabled(Boolean.FALSE);
+				}
 
 				list.add(item);
 			}
 		}
 		return list;
 	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	public ResultData update(
+			@RequestParam String action,
+			@RequestParam String task) {
+		log.info("update task: {} {}", action, task);
+
+		switch (action.toLowerCase()) {
+		case "start":
+			parameters.delValue(task);
+			break;
+
+		case "stop":
+			parameters.setValue(task, "disabled");
+			break;
+		}
+
+		return new ResultData(list());
+	}
 	
-	@RequestMapping(value = "/LoadBds")
-	public String taskLoadBds(Model model) {
+	@RequestMapping(value = "/taskBdsLoad")
+	@ResponseBody
+	public Result taskLoadBds() {
 		log.info("web LoadBds");
 		tasks.taskBdsLoad();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/LoadFutures")
-	public String taskLoadFutures(Model model) {
+	@RequestMapping(value = "/taskFuturesLoad")
+	@ResponseBody
+	public Result taskLoadFutures() {
 		log.info("web LoadFutures");
 		tasks.taskFuturesLoad();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/LoadQuotes")
-	public String taskLoadQuotes(Model model) {
+	@RequestMapping(value = "/taskQuotesLoad")
+	@ResponseBody
+	public Result taskLoadQuotes() {
 		log.info("web LoadQuotes");
 		tasks.taskQuotesLoad();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/LoadAtr")
-	public String taskLoadAtr(Model model) {
+	@RequestMapping(value = "/taskAtrLoad")
+	@ResponseBody
+	public Result taskLoadAtr() {
 		log.info("web LoadAtr");
 		tasks.taskAtrLoad();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/LoadBdpOverride")
-	public String taskLoadBdpOverride(Model model) {
+	@RequestMapping(value = "/taskBdpOverrideLoad")
+	@ResponseBody
+	public Result taskLoadBdpOverride() {
 		log.info("web LoadBdpOverride");
 		tasks.taskBdpOverrideLoad();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/LoadHistData")
-	public String taskLoadHistData(Model model) {
+	@RequestMapping(value = "/taskHistDataLoad")
+	@ResponseBody
+	public Result taskLoadHistData() {
 		log.info("web LoadHistData");
 		tasks.taskHistDataLoad();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/LoadCurrenciesData")
-	public String taskLoadCurrenciesData(Model model) {
+	@RequestMapping(value = "/taskCurrenciesDataLoad")
+	@ResponseBody
+	public Result taskLoadCurrenciesData() {
 		log.info("web LoadCurrenciesData");
 		tasks.taskCurrenciesDataLoad();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/LoadBonds")
-	public String taskLoadBonds(Model model) {
+	@RequestMapping(value = "/taskBondsLoad")
+	@ResponseBody
+	public Result taskLoadBonds() {
 		log.info("web LoadBonds");
 		tasks.taskBondsLoad();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/MsgSubscription")
-	public String taskMsgSubscription() {
+	@RequestMapping(value = "/taskSubscriptionCheck")
+	@ResponseBody
+	public Result taskMsgSubscription() {
 		log.info("web MsgSubscription");
 		tasks.taskSubscriptionCheck();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/MsgJobbers")
-	public String taskMsgJobbers() {
+	@RequestMapping(value = "/taskJobbers")
+	@ResponseBody
+	public Result taskMsgJobbers() {
 		log.info("web MsgJobbers");
 		tasks.taskJobbers();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/MsgQuotes")
-	public String taskMsgQuotes() {
+	@RequestMapping(value = "/taskQuotes")
+	@ResponseBody
+	public Result taskMsgQuotes() {
 		log.info("web MsgQuotes");
 		tasks.taskQuotes();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/MsgBonds")
-	public String taskMsgBonds() {
+	@RequestMapping(value = "/taskBonds")
+	@ResponseBody
+	public Result taskMsgBonds() {
 		log.info("web MsgBonds");
 		tasks.taskBonds();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/MsgQuotesRus")
-	public String taskMsgQuotesRus() {
+	@RequestMapping(value = "/taskQuotesRus")
+	@ResponseBody
+	public Result taskMsgQuotesRus() {
 		log.info("web MsgQuotesRus");
 		tasks.taskQuotesRus();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/MsgFullermoneyAudio")
-	public String taskMsgFullermoneyAudio() {
+	@RequestMapping(value = "/taskFullermoneyAudio")
+	@ResponseBody
+	public Result taskMsgFullermoneyAudio() {
 		log.info("web MsgFullermoneyAudio");
 		tasks.taskFullermoneyAudio();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/MsgQuotesUsa")
-	public String taskMsgQuotesUsa() {
+	@RequestMapping(value = "/taskQuotesUsa")
+	@ResponseBody
+	public Result taskMsgQuotesUsa() {
 		log.info("web MsgQuotesUsa");
 		tasks.taskQuotesUsa();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/MsgAnalytics")
-	public String taskMsgAnalytics() {
+	@RequestMapping(value = "/taskAnalytics")
+	@ResponseBody
+	public Result taskMsgAnalytics() {
 		log.info("web MsgAnalytics");
 		tasks.taskAnalytics();
-		return "redirect:/";
+		return Result.SUCCESS;
 	}
 
 }

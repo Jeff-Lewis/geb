@@ -8,6 +8,7 @@ public class JobberTaskItem implements Serializable {
 
 	private String name;
 	private String cron;
+	private String parameter;
 	private String description;
 	private Boolean enabled;
 
@@ -33,6 +34,14 @@ public class JobberTaskItem implements Serializable {
 
 	public void setCron(String cron) {
 		this.cron = cron;
+	}
+
+	public String getParameter() {
+		return parameter;
+	}
+
+	public void setParameter(String parameter) {
+		this.parameter = parameter;
 	}
 
 	public String getDescription() {

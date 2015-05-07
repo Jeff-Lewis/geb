@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Description {
 
-	String value();
+	String comment();
+
+	String parameter();
 
 }

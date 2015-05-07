@@ -3,104 +3,6 @@
  */
 
 /**
- * Ночные задачи
- */
-var jobberTasks = {
-	title : 'Закачка из Блума',
-	icon : 'images/grid.png',
-	items : [ {
-		text : '03:00 BdsLoad',
-		handler : function() {
-			window.location = 'JobberTasks/LoadBds';
-        }
-	}, {
-		text : '04:15 FuturesLoad',
-		handler : function() {
-			window.location = 'JobberTasks/LoadFutures';
-        }
-	}, {
-		text : '05:00 QuotesLoad',
-		handler : function() {
-			window.location = 'JobberTasks/LoadQuotes';
-        }
-	}, {
-		text : '05:10 AtrLoad',
-		handler : function() {
-			window.location = 'JobberTasks/LoadAtr';
-        }
-	}, {
-		text : '06:00 BdpOverrideLoad',
-		handler : function() {
-			window.location = 'JobberTasks/LoadBdpOverride';
-        }
-	}, {
-		text : '07:00 HistDataLoad',
-		handler : function() {
-			window.location = 'JobberTasks/LoadHistData';
-        }
-	}, {
-		text : '08:00 CurrenciesDataLoad',
-		handler : function() {
-			window.location = 'JobberTasks/LoadCurrenciesData';
-        }
-	}, {
-		text : '11-19 BondsLoad',
-		handler : function() {
-			window.location = 'JobberTasks/LoadBonds';
-        }
-	} ]
-};
-
-/**
- * 
- */
-var messageTasks = {
-		title : 'Отправка сообщений',
-		icon : 'images/grid.png',
-		items : [ {
-			text : '0 */15 8-23 * * MON-FRI<br>Проверка работы real-time обновлений',
-			handler : function() {
-				window.location = 'JobberTasks/MsgSubscription';
-	        }
-		}, {
-			text : '0 0 10 * * MON-FRI<br>Проверка результатов ночных загрузок',
-			handler : function() {
-				window.location = 'JobberTasks/MsgJobbers';
-	        }
-		}, {
-			text : '0 0,30 0,10-23 * * MON-FRI<br>Рассылка котировок',
-			handler : function() {
-				window.location = 'JobberTasks/MsgQuotes';
-	        }
-		}, {
-			text : '0 0 12-19 * * MON-FRI<br>Рассылка СМС с котировками бондов',
-			handler : function() {
-				window.location = 'JobberTasks/MsgBonds';
-	        }
-		}, {
-			text : '0 0,30 * * * ?<br>Рассылка E-mail с котировками по России',
-			handler : function() {
-				window.location = 'JobberTasks/MsgQuotesRus';
-	        }
-		}, {
-			text : '0 30 12 * * TUE-SAT<br>Рассылка ссылок на Fullermoney Audio',
-			handler : function() {
-				window.location = 'JobberTasks/MsgFullermoneyAudio';
-	        }
-		}, {
-			text : '0 50 18 * * ?<br>Рассылка СМС с котировками по США',
-			handler : function() {
-				window.location = 'JobberTasks/MsgQuotesUsa';
-	        }
-		}, {
-			text : '0 0 20 * * MON-FRI<br>Рассылка СМС со ссылкой на ежедневный выпуск сводной',
-			handler : function() {
-				window.location = 'JobberTasks/MsgAnalytics';
-	        }
-		} ]
-};
-
-/**
  * Сервис
  */
 var services = {
@@ -189,7 +91,7 @@ function createMenuItems() {
 		};
 	}
 
-	return [ _createMenuGroup(services), _createMenuGroup(logs), _createMenuGroup(jobberTasks), _createMenuGroup(messageTasks) ];
+	return [ _createMenuGroup(services), _createMenuGroup(logs) ];
 }
 
 /**
