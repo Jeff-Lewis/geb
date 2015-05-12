@@ -7,7 +7,7 @@
  */
 var services = {
     title : 'Сервис',
-    icon : 'images/30.png',
+    icon : 'images/grid.png',
     items : [ {
 		text : 'Список заданий',
 		handler : function() {
@@ -15,7 +15,6 @@ var services = {
         }
 	}, {
         text : 'Агенты БЛУМБЕРГа',
-        icon : 'images/users.png',
         handler : function() {
 	        showPanel('services/ViewAgents');
         }
@@ -38,6 +37,7 @@ var services = {
         }
     }, {
 		text : 'Справочник пользователей',
+	    icon : 'images/30.png',
 		handler : function() {
 			showPanel('services/Users');
 		}
@@ -49,7 +49,7 @@ var services = {
  */
 var logs = {
 		title : 'Журнализация',
-		icon : 'images/user-plus.png',
+		icon : 'images/grid.png',
 		items : [ {
 			text : 'Журнал отправки сообщений',
 			handler : function() {

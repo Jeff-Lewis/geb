@@ -103,7 +103,7 @@
 			text : 'Выключить',
 			handler : stop
 		}, ' ', {
-			text : 'Выпольнить',
+			text : 'Выполнить',
 			handler : exec
 		} ],
 
