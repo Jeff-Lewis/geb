@@ -9,7 +9,7 @@
 		fields : [ 'mail', 'status' ]
 	});
 
-	var receiver1 = new Ext.form.ComboBox({
+	var receiverSMS = new Ext.form.ComboBox({
 		fieldLabel : 'Кому SMS',
 		emptyText : 'Введите фамилию сотрудника',
 		displayField : 'name',
@@ -26,7 +26,7 @@
 		hideTrigger : true
 	});
 
-	var receiver2 = new Ext.form.ComboBox({
+	var receiverEMail = new Ext.form.ComboBox({
 		fieldLabel : 'Кому E-Mail',
 		emptyText : 'Введите E-Mail',
 		displayField : 'name',
@@ -64,20 +64,20 @@
 
 				switch (id) {
 				case 0:
-					receiver1.setValue('news');
-					receiver2.setValue('news_digr@prbb.ru');
+					receiverSMS.setValue('news');
+					receiverEMail.setValue('news');
 					break;
 				case 1:
-					receiver1.setValue('');
-					receiver2.setValue('');
+					receiverSMS.setValue('');
+					receiverEMail.setValue('');
 					break;
 				case 2:
-					receiver1.setValue('');
-					receiver2.setValue('Reading');
+					receiverSMS.setValue('');
+					receiverEMail.setValue('Reading');
 					break;
 				case 3:
-					receiver1.setValue('');
-					receiver2.setValue('');
+					receiverSMS.setValue('');
+					receiverEMail.setValue('');
 					break;
 
 				default:
@@ -112,8 +112,8 @@
 	function send() {
 		var _subject = new String(patternSelect.getRawValue()).trim();
 		var _text = new String(textarea.getValue()).trim();
-		var _recp = new String(receiver1.getValue()).trim();
-		var _recm = new String(receiver2.getValue()).trim();
+		var _recp = new String(receiverSMS.getValue()).trim();
+		var _recm = new String(receiverEMail.getValue()).trim();
 
 		if (!_recp && !_recm) {
 			App.ui.error('Не указан получатель.');
@@ -170,7 +170,7 @@
 				width : 500
 			},
 
-			items : [ receiver1, receiver2, patternSelect, textarea, {
+			items : [ receiverSMS, receiverEMail, patternSelect, textarea, {
 				xtype : 'button',
 				text : 'Отправить',
 				handler : send
