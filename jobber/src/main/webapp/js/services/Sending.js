@@ -51,7 +51,7 @@
 		store : new Ext.data.ArrayStore({
 			autoDestroy : true,
 			fields : [ 'id', 'pattern' ],
-			data : [ [ 0, 'Аналитики' ], [ 1, 'Трейдеры' ], [ 2, 'Reading' ], [ 3, 'fullermoney' ] ]
+			data : [ [ 0, 'News' ], [ 1, 'Трейдеры' ], [ 2, 'Reading' ], [ 3, 'fullermoney' ] ]
 		}),
 		allowBlank : false,
 		emptyText : 'Выберите шаблон рассылки',
