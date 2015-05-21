@@ -12,8 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -33,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
+
 import ru.prbb.activeagent.services.TaskChecker;
 import ru.prbb.activeagent.services.SubscriptionChecker;
 
@@ -50,10 +56,14 @@ public class MainJFrame extends javax.swing.JFrame {
     private final DefaultListModel<TaskChecker> jobber = new DefaultListModel<>();
     private final PlainDocument resultDoc = new PlainDocument();
 
+    private final File ActiveAgentProperties;
+    private final Properties properties = new Properties();
+
     /**
      * Creates new form MainJFrame
      */
     public MainJFrame() {
+    	ActiveAgentProperties = new File("ActiveAgent.properties");
         initComponents();
     }
 
@@ -150,6 +160,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jPanel1.add(jPanel1n, BorderLayout.PAGE_START);
 
         subscriptionList.setModel(subscription);
+        subscriptionList.setVisibleRowCount(4);
         jScrollPaneSubscription.setViewportView(subscriptionList);
 
         jPanel1.add(jScrollPaneSubscription, BorderLayout.CENTER);
@@ -198,6 +209,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jPanel2.add(jPanel2n, BorderLayout.PAGE_START);
 
         jobberList.setModel(jobber);
+        jobberList.setVisibleRowCount(10);
         jScrollPaneJobber.setViewportView(jobberList);
 
         jPanel2.add(jScrollPaneJobber, BorderLayout.CENTER);
@@ -235,7 +247,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         getContentPane().add(jPanelCenter, BorderLayout.CENTER);
 
-        setSize(new Dimension(510, 550));
+        setSize(new Dimension(810, 830));
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -275,6 +287,14 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
+		try {
+			if (ActiveAgentProperties.canRead()) {
+				properties.loadFromXML(new FileInputStream(ActiveAgentProperties));
+			}
+		} catch (IOException ex) {
+            logger.log(Level.SEVERE, "Load properties from " + ActiveAgentProperties, ex);
+		}
+
         try {
             subscription.addElement(new SubscriptionChecker("172.23.153.164:8080"));
             subscription.addElement(new SubscriptionChecker("172.16.15.36:10180"));
@@ -310,12 +330,18 @@ public class MainJFrame extends javax.swing.JFrame {
 
         for (int i = 0; i < subscription.getSize(); i++) {
             SubscriptionChecker item = subscription.get(i);
-            //item.start();
+            String property = "subscription." + item.getUri();
+			if (properties.containsKey(property)) {
+				item.start();
+			}
         }
 
         for (int i = 0; i < jobber.getSize(); i++) {
             TaskChecker item = jobber.get(i);
-            //item.start();
+            String property = "jobber." + item.getUri();
+			if (properties.containsKey(property)) {
+				item.start();
+			}
         }
     }//GEN-LAST:event_formWindowOpened
 
@@ -349,12 +375,16 @@ public class MainJFrame extends javax.swing.JFrame {
                     while (items.hasMoreElements()) {
                         SubscriptionChecker item = items.nextElement();
                         item.start();
+                        String property = "subscription." + item.getUri();
+                        setProperty(property, true);
                     }
                 }
             } else {
                 List<SubscriptionChecker> list = subscriptionList.getSelectedValuesList();
                 for (SubscriptionChecker item : list) {
                     item.start();
+                    String property = "subscription." + item.getUri();
+                    setProperty(property, true);
                 }
             }
         } catch (Exception ex) {
@@ -370,11 +400,15 @@ public class MainJFrame extends javax.swing.JFrame {
                 while (items.hasMoreElements()) {
                     SubscriptionChecker item = items.nextElement();
                     item.stop();
+                    String property = "subscription." + item.getUri();
+                    setProperty(property, false);
                 }
             } else {
                 List<SubscriptionChecker> list = subscriptionList.getSelectedValuesList();
                 for (SubscriptionChecker item : list) {
                     item.stop();
+                    String property = "subscription." + item.getUri();
+                    setProperty(property, false);
                 }
             }
         } catch (Exception ex) {
@@ -414,12 +448,16 @@ public class MainJFrame extends javax.swing.JFrame {
                     while (items.hasMoreElements()) {
                         TaskChecker item = items.nextElement();
                         item.start();
+                        String property = "jobber." + item.getUri();
+                        setProperty(property, true);
                     }
                 }
             } else {
                 List<TaskChecker> list = jobberList.getSelectedValuesList();
                 for (TaskChecker item : list) {
                     item.start();
+                    String property = "jobber." + item.getUri();
+                    setProperty(property, true);
                 }
             }
         } catch (Exception ex) {
@@ -435,11 +473,15 @@ public class MainJFrame extends javax.swing.JFrame {
                 while (items.hasMoreElements()) {
                     TaskChecker item = items.nextElement();
                     item.stop();
+                    String property = "jobber." + item.getUri();
+                    setProperty(property, false);
                 }
             } else {
                 List<TaskChecker> list = jobberList.getSelectedValuesList();
                 for (TaskChecker item : list) {
                     item.stop();
+                    String property = "jobber." + item.getUri();
+                    setProperty(property, false);
                 }
             }
         } catch (Exception ex) {
@@ -448,7 +490,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jobberList.clearSelection();
     }//GEN-LAST:event_jobberStopActionPerformed
 
-    private void resultCleanActionPerformed(ActionEvent evt) {//GEN-FIRST:event_resultCleanActionPerformed
+	private void resultCleanActionPerformed(ActionEvent evt) {//GEN-FIRST:event_resultCleanActionPerformed
         try {
             resultDoc.remove(0, resultDoc.getLength());
         } catch (BadLocationException ex) {
@@ -503,4 +545,18 @@ public class MainJFrame extends javax.swing.JFrame {
         int r = JOptionPane.showOptionDialog(rootPane, message, getTitle(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         return (r == JOptionPane.YES_OPTION);
     }
+
+    private void setProperty(String property, boolean value) {
+		if (value) {
+			properties.setProperty(property, "работает");
+		} else {
+			properties.remove(property);
+		}
+		try {
+			properties.storeToXML(new FileOutputStream(ActiveAgentProperties), "Запущенные задания");
+		} catch (IOException ex) {
+            logger.log(Level.SEVERE, "Store properties to " + ActiveAgentProperties, ex);
+		}
+	}
+
 }
