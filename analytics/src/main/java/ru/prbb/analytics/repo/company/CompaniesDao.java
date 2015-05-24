@@ -37,7 +37,7 @@ public interface CompaniesDao {
 	 * @param id
 	 * @return
 	 */
-	List<CompaniesQuarterItem> findQuarters(Long id);
+	List<CompaniesQuarterItem> findQuarters(Long id, Number idCalendar);
 
 	int delQuarters(Long id, String code, String period, Date date, String currency);
 
@@ -45,7 +45,7 @@ public interface CompaniesDao {
 	 * @param id
 	 * @return
 	 */
-	List<CompaniesYearItem> findYears(Long id);
+	List<CompaniesYearItem> findYears(Long id, Number idCalendar);
 
 	int delYears(Long id, String code, String period, Date date, String currency);
 
@@ -90,6 +90,12 @@ public interface CompaniesDao {
 	 * @return
 	 */
 	List<SimpleItem> findComboEps(String query);
+
+	/**
+	 * @param query
+	 * @return
+	 */
+	List<SimpleItem> findComboCalendar(String query);
 
 	/**
 	 * @param query

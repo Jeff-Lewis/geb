@@ -130,10 +130,11 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<CompaniesQuarterItem> findQuarters(Long id) {
-		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 21, ?}";
+	public List<CompaniesQuarterItem> findQuarters(Long id, Number idCalendar) {
+		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 21, ?, ?}";
 		Query q = em.createNativeQuery(sql)
-				.setParameter(1, id);
+				.setParameter(1, id)
+				.setParameter(2, idCalendar);
 		@SuppressWarnings("unchecked")
 		List<Object[]> list = getResultList(q, sql);
 		List<CompaniesQuarterItem> res = new ArrayList<>(list.size());
@@ -198,10 +199,11 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<CompaniesYearItem> findYears(Long id) {
-		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 22, ?}";
+	public List<CompaniesYearItem> findYears(Long id, Number idCalendar) {
+		String sql = "{call dbo.anca_WebGet_EquityInfo_sp 22, ?, ?}";
 		Query q = em.createNativeQuery(sql)
-				.setParameter(1, id);
+				.setParameter(1, id)
+				.setParameter(2, idCalendar);
 		@SuppressWarnings("unchecked")
 		List<Object[]> list = getResultList(q, sql);
 		List<CompaniesYearItem> res = new ArrayList<>(list.size());
@@ -355,6 +357,22 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 	@Override
 	public List<SimpleItem> findComboEps(String query) {
 		String sql = "select id, name from dbo.anca_WebGet_ajaxEPSparams_v";
+		Query q;
+		if (Utils.isEmpty(query)) {
+			q = em.createNativeQuery(sql, SimpleItem.class);
+		} else {
+			sql += " where lower(name) like ?";
+			q = em.createNativeQuery(sql, SimpleItem.class)
+					.setParameter(1, query.toLowerCase() + '%');
+		}
+		return getResultList(q, sql);
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SimpleItem> findComboCalendar(String query) {
+		String sql = "select calendar_id as id, name from calendar_type";
 		Query q;
 		if (Utils.isEmpty(query)) {
 			q = em.createNativeQuery(sql, SimpleItem.class);

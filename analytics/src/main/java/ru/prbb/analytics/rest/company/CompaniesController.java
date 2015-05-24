@@ -171,13 +171,14 @@ public class CompaniesController
 		return dao.findVarException(id);
 	}
 
-	@RequestMapping(value = "/{id}/Quarters", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/{id}/Quarters", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
 	public List<CompaniesQuarterItem> getQuarters(
-			@PathVariable("id") Long id)
+			@PathVariable("id") Long id,
+			@RequestParam(required = false, defaultValue = "2") Integer idCalendar)
 	{
-		log.info("GET Companies/Quarters: id={}", id);
-		return dao.findQuarters(id);
+		log.info("GET Companies/Quarters: id={}, idCalendar={}", id, idCalendar);
+		return dao.findQuarters(id, idCalendar);
 	}
 
 	@RequestMapping(value = "/{id}/Quarters", method = RequestMethod.DELETE, produces = "application/json")
@@ -195,13 +196,14 @@ public class CompaniesController
 		return Result.SUCCESS;
 	}
 
-	@RequestMapping(value = "/{id}/Years", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/{id}/Years", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
 	public List<CompaniesYearItem> getYears(
-			@PathVariable("id") Long id)
+			@PathVariable("id") Long id,
+			@RequestParam(required = false, defaultValue = "2") Integer idCalendar)
 	{
-		log.info("GET Companies/Years: id={}", id);
-		return dao.findYears(id);
+		log.info("GET Companies/Years: id={}, idCalendar={}", id, idCalendar);
+		return dao.findYears(id, idCalendar);
 	}
 
 	@RequestMapping(value = "/{id}/Years", method = RequestMethod.DELETE, produces = "application/json")
@@ -367,6 +369,15 @@ public class CompaniesController
 	{
 		log.info("COMBO Companies: Eps='{}'", query);
 		return dao.findComboEps(query);
+	}
+
+	@RequestMapping(value = "/Calendar", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
+	@ResponseBody
+	public List<SimpleItem> comboCalendar(
+			@RequestParam(required = false) String query)
+	{
+		log.info("COMBO Companies: Calendar='{}'", query);
+		return dao.findComboCalendar(query);
 	}
 
 	@RequestMapping(value = "/Variables", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

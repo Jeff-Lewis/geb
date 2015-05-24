@@ -15,6 +15,7 @@
 	var _koef_1 = Ext.id();
 	var _period = Ext.id();
 	var _eps = Ext.id();
+	var _calendar = Ext.id();
 
 	var exStore = new Ext.data.JsonStore({
 	    autoDestroy : true,
@@ -858,8 +859,46 @@
 	            }
 	        }),
 	        loadingText : 'Поиск...',
-	        minChars : 2,
-	        triggerAction : 'all'
+	        triggerAction : 'all',
+	        editable : true
+	    }, {
+	        id : _calendar,
+	        fieldLabel : 'Calendar',
+	        name : 'calendar',
+	        xtype : 'combo',
+	        displayField : 'name',
+	        valueField : 'id',
+	        store : new Ext.data.JsonStore({
+	            autoDestroy : true,
+	            url : 'rest/Companies/Calendar.do',
+	            // root : 'info',
+	            fields : [ 'id', 'name' ],
+	            sortInfo : {
+		            field : 'name'
+	            }
+	        }),
+	        loadingText : 'Поиск...',
+	        triggerAction : 'all',
+	        editable : false,
+	        listeners : {
+				select : function(combo, record) {
+					var id = combo.getValue();
+					switch (id) {
+					case 2: // Calendar
+					case 3: // Fiscal
+						var options = {
+							params : {
+								idCalendar : id
+							}
+						};
+						quarters.reload(options);
+						years.reload(options);
+						break;
+					default:
+					    App.ui.error('Разрешены значения: Calendar и Fiscal.');
+					}
+				}
+			}
 	    }, {
 	        fieldLabel : 'Валюта торгов CRNCY',
 	        name : 'currencyTrade'
