@@ -38,7 +38,10 @@ public class TaskBdpOverrideQuarterExecutor extends TaskExecutor {
 
 				for (String crncy : taskData.getCurrencies()) {
 
-					final String idq[] = { "1CQ", "2CQ", "3CQ", "4CQ", "1CS", "2CS", "1CY", "2CY" };
+					//Calendar
+					//final String idq[] = { "1CQ", "2CQ", "3CQ", "4CQ", "1CS", "2CS", "1CY", "2CY" };
+					//Fiscal
+					final String idq[] = { "1FQ", "2FQ", "3FQ", "4FQ", "1FS", "2FS", "1FY", "2FY" };
 					for (final String quarter : idq) {
 						final Request request = service.createRequest("ReferenceDataRequest");
 

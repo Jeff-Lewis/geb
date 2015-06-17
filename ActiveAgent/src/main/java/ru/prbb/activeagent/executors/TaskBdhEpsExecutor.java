@@ -40,8 +40,8 @@ public class TaskBdhEpsExecutor extends TaskExecutor {
 					request.set("startDate", taskData.getDateStart());
 					request.set("endDate", taskData.getDateEnd());
 					request.set("currency", currency = crncy);
-					request.set("returnEids", "true");
-					request.set("returnRelativeDate", "true");
+					//request.set("returnEids", "true");
+					//request.set("returnRelativeDate", "true");
 
 					final Element _securities = request.getElement("securities");
 					for (String security : taskData.getSecurities()) {

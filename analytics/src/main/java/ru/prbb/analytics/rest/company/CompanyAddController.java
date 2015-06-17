@@ -184,11 +184,15 @@ public class CompanyAddController
 		// Запросы BDH
 		if (!aCode_crncy.isEmpty()) {
 			try {
+				//String calendar = "CALENDAR";
+				String calendar = "FISCAL";
+
 				String[] securities = toArray(aCode_crncy);
 				String[] currencies = toArray(aCurrencies);
 				Map<String, Map<String, Map<String, String>>> answer = bs.executeBdhRequest("Добавление компаний BDH YEARLY",
-						dateStartYear, dateEnd, "YEARLY", "CALENDAR",
+						dateStartYear, dateEnd, "YEARLY", calendar,
 						currencies, securities, toArray(
+//								"IS_COMP_EPS_ADJUSTED"));
 								"EQY_WEIGHTED_AVG_PX",
 								"BOOK_VAL_PER_SH",
 								"IS_AVG_NUM_SH_FOR_EPS",
@@ -221,10 +225,13 @@ public class CompanyAddController
 
 		// Запрос BDH EPS
 		try {
+			//String calendar = "CALENDAR";
+			String calendar = "FISCAL";
+
 			String[] securities = toArray(aCode_crncy);
 			String[] currencies = toArray(aCurrencies);
 			Map<String, Map<String, Map<String, String>>> answer = bs.executeBdhEpsRequest("Добавление компаний BDH EPS YEARLY",
-					dateStartYear, dateEnd, "YEARLY", "CALENDAR",
+					dateStartYear, dateEnd, "YEARLY", calendar,
 					currencies, securities, toArray(
 							"BEST_EBITDA",
 							"EBITDA",
