@@ -32,27 +32,6 @@ public class BuildEPSDaoImpl extends BaseDaoImpl implements BuildEPSDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public List<BuildEPSItem> calculate(Long[] ids) {
-		final List<BuildEPSItem> res = new ArrayList<>();
-		String sql = "{call dbo.main_create_eps_proc ?}";
-		Query q = em.createNativeQuery(sql);
-		for (Long id : ids) {
-			try {
-				q.setParameter(1, id);
-				Object[] arr = (Object[]) getSingleResult(q, sql);
-				BuildEPSItem item = createItem(arr);
-				res.add(item);
-			} catch (Exception e) {
-				BuildEPSItem item = new BuildEPSItem();
-				item.setSecurity_code(id.toString());
-				res.add(item);
-			}
-		}
-		return res;
-	}
-
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
 	public BuildEPSItem calculate(Long id) {
 		String sql = "{call dbo.main_create_eps_proc ?}";
 		Query q = em.createNativeQuery(sql)

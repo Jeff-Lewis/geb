@@ -16,12 +16,6 @@ import ru.prbb.analytics.domain.BuildEPSItem;
 public interface BuildEPSDao {
 
 	/**
-	 * @param ids
-	 * @return
-	 */
-	List<BuildEPSItem> calculate(Long[] ids);
-
-	/**
 	 * @param id
 	 * @return
 	 */
