@@ -40,7 +40,11 @@ abstract class AbstractChecker implements Runnable {
         exec = Executors.newSingleThreadScheduledExecutor();
     }
 
-    @Override
+	public URI getUri() {
+		return uri;
+	}
+
+	@Override
     public String toString() {
         String status = (ft == null) ? "stop" : isRun ? "work" : "wait";
 		return "[ " + status + " ]   " + uri;

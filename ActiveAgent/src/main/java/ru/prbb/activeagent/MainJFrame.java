@@ -132,7 +132,6 @@ public class MainJFrame extends javax.swing.JFrame {
         jPanel1n.add(subscriptionAdd);
 
         subscriptionDel.setText("Убрать");
-        subscriptionDel.setEnabled(false);
         subscriptionDel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 subscriptionDelActionPerformed(evt);
@@ -181,7 +180,6 @@ public class MainJFrame extends javax.swing.JFrame {
         jPanel2n.add(jobberAdd);
 
         jobberDel.setText("Убрать");
-        jobberDel.setEnabled(false);
         jobberDel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 jobberDelActionPerformed(evt);
@@ -295,35 +293,30 @@ public class MainJFrame extends javax.swing.JFrame {
             logger.log(Level.SEVERE, "Load properties from " + ActiveAgentProperties, ex);
 		}
 
-        try {
-            subscription.addElement(new SubscriptionChecker("172.23.153.164:8080"));
-            subscription.addElement(new SubscriptionChecker("172.16.15.36:10180"));
-            subscription.addElement(new SubscriptionChecker("172.16.15.36:10190"));
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
-
-        try {
+        /*try {
             String hostMy = "172.23.153.164:8080";
             jobber.addElement(new TaskChecker(hostMy, "/analytics"));
             jobber.addElement(new TaskChecker(hostMy, "/Jobber"));
             jobber.addElement(new TaskChecker(hostMy, "/middleoffice"));
+            subscription.addElement(new SubscriptionChecker(hostMy));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
-        }
+        }*/
         try {
-            String hostWork = "172.16.15.36:10180";
+            String hostWork = "192.168.100.101:8080";
             jobber.addElement(new TaskChecker(hostWork, "/analytics"));
             jobber.addElement(new TaskChecker(hostWork, "/Jobber"));
             jobber.addElement(new TaskChecker(hostWork, "/middleoffice"));
+            subscription.addElement(new SubscriptionChecker(hostWork));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
         try {
-            String hostTest = "172.16.15.36:10190";
+            String hostTest = "192.168.101.101:8080";
             jobber.addElement(new TaskChecker(hostTest, "/analytics"));
             jobber.addElement(new TaskChecker(hostTest, "/Jobber"));
             jobber.addElement(new TaskChecker(hostTest, "/middleoffice"));
+            subscription.addElement(new SubscriptionChecker(hostTest));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }

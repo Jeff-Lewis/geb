@@ -86,7 +86,6 @@
                 <Component class="javax.swing.JButton" name="subscriptionDel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="&#x423;&#x431;&#x440;&#x430;&#x442;&#x44c;"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="subscriptionDelActionPerformed"/>
@@ -209,7 +208,6 @@
                 <Component class="javax.swing.JButton" name="jobberDel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="&#x423;&#x431;&#x440;&#x430;&#x442;&#x44c;"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jobberDelActionPerformed"/>
