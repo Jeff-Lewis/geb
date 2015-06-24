@@ -701,7 +701,7 @@
 		    method : 'DELETE',
 		    url : 'rest/Companies/' + id_sec + '/HistData.do',
 		    timeout : 1000000000,
-		    waitMsg : 'Расчёт модели.',
+		    waitMsg : 'Удаление данных...',
 		    success : function(xhr) {
 			    var answer = Ext.decode(xhr.responseText);
 			    if (answer.success) {
@@ -719,7 +719,7 @@
 		    url : 'rest/CompanyAdd/Bloom.do',
 		    params : {
 			    codes : Ext.getCmp(_bloomCode).getValue(),
-			    period : leftInfoForm.getForm().findField('period').getValue()
+			    period : Ext.getCmp(_period).getValue()
 		    },
 		    timeout : 10 * 60 * 1000, // 10 min
 		    waitMsg : 'Загрузка Bloomberg...',
@@ -727,7 +727,7 @@
 			    var answer = Ext.decode(xhr.responseText);
 			    if (answer.success) {
 				    App.ui.message('Данные загружены.');
-				    // data.loadData(answer.item);
+				    refresh(id_sec);
 			    }
 		    },
 		    failure : function() {
@@ -877,6 +877,7 @@
 		            field : 'name'
 	            }
 	        }),
+	        value : 'CALENDAR',
 	        loadingText : 'Поиск...',
 	        triggerAction : 'all',
 	        editable : false,
@@ -896,6 +897,7 @@
 						break;
 					default:
 					    App.ui.error('Разрешены значения: Calendar и Fiscal.');
+						combo.clearValue();
 					}
 				}
 			}
@@ -1186,7 +1188,7 @@
 	    items : [ {
 	        xtype : 'panel',
 	        baseCls : 'x-plain',
-	        height : 450,
+	        height : 470,
 	        layout : 'border',
 
 	        items : [ leftInfoForm, {
