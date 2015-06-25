@@ -71,7 +71,6 @@ public class RequestBDHDaoImpl extends BaseDaoImpl implements RequestBDHDao
 			q.setParameter(6, d.curncy);
 			q.setParameter(7, d.calendar);
 			storeSql(sql, q);
-			storeSql(sql, q);
 			executeUpdate(q, sql);
 		}
 	}
