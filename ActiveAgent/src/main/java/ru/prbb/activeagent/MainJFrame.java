@@ -50,20 +50,22 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String IS_DEBUG_INFO = "ActiveAgent.isDebugInfo";
+
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     private final DefaultListModel<SubscriptionChecker> subscription = new DefaultListModel<>();
     private final DefaultListModel<TaskChecker> jobber = new DefaultListModel<>();
     private final PlainDocument resultDoc = new PlainDocument();
 
-    private final File ActiveAgentProperties;
+    private final File propertiesFile;
     private final Properties properties = new Properties();
 
     /**
      * Creates new form MainJFrame
      */
     public MainJFrame() {
-    	ActiveAgentProperties = new File("ActiveAgent.properties");
+    	propertiesFile = new File("ActiveAgent.properties");
         initComponents();
     }
 
@@ -100,6 +102,8 @@ public class MainJFrame extends javax.swing.JFrame {
         JButton resultClean = new JButton();
         Box.Filler filler3 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
         resultAutoscroll = new JCheckBox();
+        Box.Filler filler4 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
+        isDebugInfo = new JCheckBox();
         JScrollPane jScrollPane1 = new JScrollPane();
         result = new JEditorPane();
 
@@ -123,7 +127,6 @@ public class MainJFrame extends javax.swing.JFrame {
         jPanel1n.setLayout(new FlowLayout(FlowLayout.LEADING));
 
         subscriptionAdd.setText("Добавить");
-        subscriptionAdd.setEnabled(false);
         subscriptionAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 subscriptionAddActionPerformed(evt);
@@ -171,7 +174,6 @@ public class MainJFrame extends javax.swing.JFrame {
         jPanel2n.setLayout(new FlowLayout(FlowLayout.LEADING));
 
         jobberAdd.setText("Добавить");
-        jobberAdd.setEnabled(false);
         jobberAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 jobberAddActionPerformed(evt);
@@ -233,6 +235,15 @@ public class MainJFrame extends javax.swing.JFrame {
         resultAutoscroll.setSelected(true);
         resultAutoscroll.setText("Следить за сообщениями");
         jPanel3n.add(resultAutoscroll);
+        jPanel3n.add(filler4);
+
+        isDebugInfo.setText("Подробные сообщения");
+        isDebugInfo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                isDebugInfoActionPerformed(evt);
+            }
+        });
+        jPanel3n.add(isDebugInfo);
 
         jPanelCenter.add(jPanel3n, BorderLayout.PAGE_START);
 
@@ -286,40 +297,26 @@ public class MainJFrame extends javax.swing.JFrame {
         });
 
 		try {
-			if (ActiveAgentProperties.canRead()) {
-				properties.loadFromXML(new FileInputStream(ActiveAgentProperties));
+			if (propertiesFile.canRead()) {
+				properties.loadFromXML(new FileInputStream(propertiesFile));
 			}
 		} catch (IOException ex) {
-            logger.log(Level.SEVERE, "Load properties from " + ActiveAgentProperties, ex);
+            logger.log(Level.SEVERE, "Load properties from " + propertiesFile, ex);
 		}
 
-        /*try {
-            String hostMy = "172.23.153.164:8080";
-            jobber.addElement(new TaskChecker(hostMy, "/analytics"));
-            jobber.addElement(new TaskChecker(hostMy, "/Jobber"));
-            jobber.addElement(new TaskChecker(hostMy, "/middleoffice"));
-            subscription.addElement(new SubscriptionChecker(hostMy));
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }*/
-        try {
-            String hostWork = "192.168.100.101:8080";
-            jobber.addElement(new TaskChecker(hostWork, "/analytics"));
-            jobber.addElement(new TaskChecker(hostWork, "/Jobber"));
-            jobber.addElement(new TaskChecker(hostWork, "/middleoffice"));
-            subscription.addElement(new SubscriptionChecker(hostWork));
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
-        try {
-            String hostTest = "192.168.101.101:8080";
-            jobber.addElement(new TaskChecker(hostTest, "/analytics"));
-            jobber.addElement(new TaskChecker(hostTest, "/Jobber"));
-            jobber.addElement(new TaskChecker(hostTest, "/middleoffice"));
-            subscription.addElement(new SubscriptionChecker(hostTest));
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
+        /*
+        String hostMy = "172.23.153.164:8080";
+        addTaskChecker(hostMy);
+        addSubscriptionChecker(hostMy);
+        */
+
+        String hostWork = "192.168.100.101:8080";
+        addTaskChecker(hostWork);
+        addSubscriptionChecker(hostWork);
+
+        String hostTest = "192.168.101.101:8080";
+        addTaskChecker(hostTest);
+        addSubscriptionChecker(hostTest);
 
         for (int i = 0; i < subscription.getSize(); i++) {
             SubscriptionChecker item = subscription.get(i);
@@ -340,9 +337,9 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void subscriptionAddActionPerformed(ActionEvent evt) {//GEN-FIRST:event_subscriptionAddActionPerformed
         try {
-            String host = "localhost";
-            // TODO add your handling code here:
-            subscription.addElement(new SubscriptionChecker(host));
+            String host = JOptionPane.showInputDialog("Адрес сервера для подписки", "localhost:8080");
+            if (host != null)
+                addSubscriptionChecker(host);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
@@ -354,6 +351,8 @@ public class MainJFrame extends javax.swing.JFrame {
             for (SubscriptionChecker item : list) {
                 item.stop();
                 subscription.removeElement(item);
+                String property = "subscription." + item.getUri();
+                setProperty(property, false);
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -412,10 +411,9 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void jobberAddActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jobberAddActionPerformed
         try {
-            String host = "localhost";
-            String servlet = "";
-            // TODO add your handling code here:
-            jobber.addElement(new TaskChecker(host, servlet));
+            String host = JOptionPane.showInputDialog("Адрес сервера для заданий", "localhost:8080");
+            if (host != null)
+                addTaskChecker(host);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
@@ -427,6 +425,8 @@ public class MainJFrame extends javax.swing.JFrame {
             for (TaskChecker item : list) {
                 item.stop();
                 jobber.removeElement(item);
+                String property = "jobber." + item.getUri();
+                setProperty(property, false);
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -497,6 +497,10 @@ public class MainJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void isDebugInfoActionPerformed(ActionEvent evt) {//GEN-FIRST:event_isDebugInfoActionPerformed
+        System.setProperty(IS_DEBUG_INFO, String.valueOf(isDebugInfo.isSelected()));
+    }//GEN-LAST:event_isDebugInfoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -528,6 +532,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private JCheckBox isDebugInfo;
     private JList jobberList;
     private JEditorPane result;
     private JCheckBox resultAutoscroll;
@@ -546,10 +551,27 @@ public class MainJFrame extends javax.swing.JFrame {
 			properties.remove(property);
 		}
 		try {
-			properties.storeToXML(new FileOutputStream(ActiveAgentProperties), "Запущенные задания");
+			properties.storeToXML(new FileOutputStream(propertiesFile), "Запущенные задания");
 		} catch (IOException ex) {
-            logger.log(Level.SEVERE, "Store properties to " + ActiveAgentProperties, ex);
+            logger.log(Level.SEVERE, "Store properties to " + propertiesFile, ex);
 		}
 	}
 
+    private void addTaskChecker(String host) {
+        try {
+            jobber.addElement(new TaskChecker(host, "/analytics"));
+            jobber.addElement(new TaskChecker(host, "/Jobber"));
+            jobber.addElement(new TaskChecker(host, "/middleoffice"));
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addSubscriptionChecker(String host) {
+        try {
+            subscription.addElement(new SubscriptionChecker(host));
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
+    }
 }
