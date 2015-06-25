@@ -28,6 +28,8 @@ public class CompaniesYearItem implements Serializable {
 	private Number is_eps;
 	@Column(name = "IS_COMP_EPS_ADJUSTED")
 	private Number is_comp_eps_adjusted;
+	@Column(name = "IS_COMP_EPS_EXCL_STOCK_COMP")
+	private Number is_comp_eps_excl_stock_comp;
 	@Column(name = "IS_BASIC_EPS_CONT_OPS")
 	private Number is_basic_eps_cont_ops;
 	@Column(name = "IS_DIL_EPS_CONT_OPS")
@@ -117,6 +119,14 @@ public class CompaniesYearItem implements Serializable {
 
 	public void setIs_comp_eps_adjusted(Number is_comp_eps_adjusted) {
 		this.is_comp_eps_adjusted = is_comp_eps_adjusted;
+	}
+
+	public Number getIs_comp_eps_excl_stock_comp() {
+		return is_comp_eps_excl_stock_comp;
+	}
+
+	public void setIs_comp_eps_excl_stock_comp(Number is_comp_eps_excl_stock_comp) {
+		this.is_comp_eps_excl_stock_comp = is_comp_eps_excl_stock_comp;
 	}
 
 	public Number getIs_basic_eps_cont_ops() {

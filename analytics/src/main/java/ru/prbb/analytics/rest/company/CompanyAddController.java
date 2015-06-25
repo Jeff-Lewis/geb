@@ -193,6 +193,7 @@ public class CompanyAddController
 								"BOOK_VAL_PER_SH",
 								"IS_AVG_NUM_SH_FOR_EPS",
 								"IS_COMP_EPS_ADJUSTED",
+								"IS_COMP_EPS_EXCL_STOCK_COMP",
 								"OPER_ROE",
 								"RETENTION_RATIO"));
 				reqBDHdao.execute(securities, currencies, answer);
@@ -232,6 +233,7 @@ public class CompanyAddController
 							"IS_EPS",
 							"EQY_DPS",
 							"IS_COMP_EPS_ADJUSTED",
+							"IS_COMP_EPS_EXCL_STOCK_COMP",
 							"IS_BASIC_EPS_CONT_OPS",
 							"IS_DIL_EPS_CONT_OPS",
 							"SALES_REV_TURN",
@@ -257,6 +259,7 @@ public class CompanyAddController
 								"IS_EPS",
 								"EQY_DPS",
 								"IS_COMP_EPS_ADJUSTED",
+								"IS_COMP_EPS_EXCL_STOCK_COMP",
 								"IS_BASIC_EPS_CONT_OPS",
 								"IS_DIL_EPS_CONT_OPS",
 								"SALES_REV_TURN",
@@ -284,6 +287,7 @@ public class CompanyAddController
 								"IS_EPS",
 								"EQY_DPS",
 								"IS_COMP_EPS_ADJUSTED",
+								"IS_COMP_EPS_EXCL_STOCK_COMP",
 								"IS_BASIC_EPS_CONT_OPS",
 								"IS_DIL_EPS_CONT_OPS",
 								"SALES_REV_TURN",

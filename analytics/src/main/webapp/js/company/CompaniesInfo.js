@@ -90,7 +90,7 @@
 	    url : 'rest/Companies/0/Quarters.do',
 	    // root : 'info1',
 	    fields : [ 'security_code', 'period', 'date', 'currency', 'eps', 'is_eps',
-	            'is_comp_eps_adjusted', 'is_basic_eps_cont_ops', 'is_dil_eps_cont_ops', 'ebitda',
+	            'is_comp_eps_adjusted', 'is_comp_eps_excl_stock_comp', 'is_basic_eps_cont_ops', 'is_dil_eps_cont_ops', 'ebitda',
 	            'best_ebitda', 'sales_rev_turn', 'net_rev', 'prof_margin', 'oper_margin', 'oper_roe',
 	            'eqy_dps', 'eqy_dvd_yld_ind' ],
 	    listeners : App.ui.listenersJsonStore()
@@ -173,6 +173,11 @@
 	    }, {
 	        header : 'IS_COMP_EPS_ADJUSTED',
 	        dataIndex : 'is_comp_eps_adjusted',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'IS_COMP_EPS_EXCL_STOCK_COMP',
+	        dataIndex : 'is_comp_eps_excl_stock_comp',
 	        align : 'right',
 	        renderer : App.util.Renderer.number(2)
 	    }, {
@@ -265,7 +270,7 @@
 	    url : 'rest/Companies/0/Years.do',
 	    // root : 'info2',
 	    fields : [ 'security_code', 'period', 'date', 'currency', 'eps', 'is_eps',
-	            'is_comp_eps_adjusted', 'is_basic_eps_cont_ops', 'is_dil_eps_cont_ops', 'ebitda',
+	            'is_comp_eps_adjusted', 'is_comp_eps_excl_stock_comp', 'is_basic_eps_cont_ops', 'is_dil_eps_cont_ops', 'ebitda',
 	            'best_ebitda', 'sales_rev_turn', 'net_rev', 'oper_margin', 'prof_margin', 'oper_roe',
 	            'retention_ratio', 'eqy_dps', 'eqy_dvd_yld_ind', 'is_avg_num_sh_for_eps',
 	            'book_val_per_sh', 'eqy_weighted_avg_px', 'eqy_weighted_avg_px_adr',
@@ -350,6 +355,11 @@
 	    }, {
 	        header : 'IS_COMP_EPS_ADJUSTED',
 	        dataIndex : 'is_comp_eps_adjusted',
+	        align : 'right',
+	        renderer : App.util.Renderer.number(2)
+	    }, {
+	        header : 'IS_COMP_EPS_EXCL_STOCK_COMP',
+	        dataIndex : 'is_comp_eps_excl_stock_comp',
 	        align : 'right',
 	        renderer : App.util.Renderer.number(2)
 	    }, {
@@ -739,7 +749,7 @@
 	var leftInfoForm = new Ext.form.FormPanel({
 	    region : 'west',
 	    title : 'Основная информация',
-	    width : 420,
+	    width : 460,
 	    padding : 10,
 	    frame : true,
 	    border : true,
@@ -748,7 +758,7 @@
 	        labelStyle : 'color:#3764A0;',
 	        xtype : 'displayfield',
 	        cls : 'z-title',
-	        width : 200
+	        width : 240
 	    },
 
 	    items : [ {

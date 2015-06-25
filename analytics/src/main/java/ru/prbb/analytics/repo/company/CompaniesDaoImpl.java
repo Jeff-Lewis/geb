@@ -153,6 +153,8 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 			item.setIs_eps(Utils.toDouble(arr[idx++]));
 			//IS_COMP_EPS_ADJUSTED
 			item.setIs_comp_eps_adjusted(Utils.toDouble(arr[idx++]));
+			//IS_COMP_EPS_EXCL_STOCK_COMP
+			item.setIs_comp_eps_excl_stock_comp(Utils.toDouble(arr[idx++]));
 			//IS_BASIC_EPS_CONT_OPS
 			item.setIs_basic_eps_cont_ops(Utils.toDouble(arr[idx++]));
 			//IS_DIL_EPS_CONT_OPS
@@ -222,6 +224,8 @@ public class CompaniesDaoImpl extends BaseDaoImpl implements CompaniesDao
 			item.setIs_eps(Utils.toDouble(arr[idx++]));
 			//IS_COMP_EPS_ADJUSTED
 			item.setIs_comp_eps_adjusted(Utils.toDouble(arr[idx++]));
+			//IS_COMP_EPS_EXCL_STOCK_COMP
+			item.setIs_comp_eps_excl_stock_comp(Utils.toDouble(arr[idx++]));
 			//IS_BASIC_EPS_CONT_OPS
 			item.setIs_basic_eps_cont_ops(Utils.toDouble(arr[idx++]));
 			//IS_DIL_EPS_CONT_OPS
