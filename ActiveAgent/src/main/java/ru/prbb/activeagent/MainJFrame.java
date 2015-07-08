@@ -51,6 +51,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private static final long serialVersionUID = 1L;
 
     public static final String IS_DEBUG_INFO = "ActiveAgent.isDebugInfo";
+    public static final String IS_SHOW_SUBSCRIPTION = "ActiveAgent.isShowSubscription";
+    public static final String IS_SHOW_TASK = "ActiveAgent.isShowTask";
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -83,27 +85,31 @@ public class MainJFrame extends javax.swing.JFrame {
         JPanel jPanel1n = new JPanel();
         JButton subscriptionAdd = new JButton();
         JButton subscriptionDel = new JButton();
-        Box.Filler filler1 = new Box.Filler(new Dimension(10, 0), new Dimension(10, 0), new Dimension(10, 32767));
+        Box.Filler filler11 = new Box.Filler(new Dimension(10, 0), new Dimension(10, 0), new Dimension(10, 32767));
         JButton subscriptionStart = new JButton();
         JButton subscriptionStop = new JButton();
+        Box.Filler filler12 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
+        JCheckBox isShowSubscription = new JCheckBox();
         JScrollPane jScrollPaneSubscription = new JScrollPane();
         subscriptionList = new JList();
         JPanel jPanel2 = new JPanel();
         JPanel jPanel2n = new JPanel();
         JButton jobberAdd = new JButton();
         JButton jobberDel = new JButton();
-        Box.Filler filler2 = new Box.Filler(new Dimension(10, 0), new Dimension(10, 0), new Dimension(10, 32767));
+        Box.Filler filler21 = new Box.Filler(new Dimension(10, 0), new Dimension(10, 0), new Dimension(10, 32767));
         JButton jobberStart = new JButton();
         JButton jobberStop = new JButton();
+        Box.Filler filler22 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
+        JCheckBox isShowTask = new JCheckBox();
         JScrollPane jScrollPaneJobber = new JScrollPane();
         jobberList = new JList();
         JPanel jPanelCenter = new JPanel();
         JPanel jPanel3n = new JPanel();
         JButton resultClean = new JButton();
-        Box.Filler filler3 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
+        Box.Filler filler31 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
         resultAutoscroll = new JCheckBox();
-        Box.Filler filler4 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
-        isDebugInfo = new JCheckBox();
+        Box.Filler filler32 = new Box.Filler(new Dimension(20, 0), new Dimension(20, 0), new Dimension(32767, 0));
+        JCheckBox isDebugInfo = new JCheckBox();
         JScrollPane jScrollPane1 = new JScrollPane();
         result = new JEditorPane();
 
@@ -141,7 +147,7 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
         jPanel1n.add(subscriptionDel);
-        jPanel1n.add(filler1);
+        jPanel1n.add(filler11);
 
         subscriptionStart.setText("Старт");
         subscriptionStart.addActionListener(new ActionListener() {
@@ -158,6 +164,15 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
         jPanel1n.add(subscriptionStop);
+        jPanel1n.add(filler12);
+
+        isShowSubscription.setText("Показывать сообщения");
+        isShowSubscription.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                isShowSubscriptionActionPerformed(evt);
+            }
+        });
+        jPanel1n.add(isShowSubscription);
 
         jPanel1.add(jPanel1n, BorderLayout.PAGE_START);
 
@@ -188,7 +203,7 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
         jPanel2n.add(jobberDel);
-        jPanel2n.add(filler2);
+        jPanel2n.add(filler21);
 
         jobberStart.setText("Старт");
         jobberStart.addActionListener(new ActionListener() {
@@ -205,6 +220,15 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
         jPanel2n.add(jobberStop);
+        jPanel2n.add(filler22);
+
+        isShowTask.setText("Показывать сообщения");
+        isShowTask.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                isShowTaskActionPerformed(evt);
+            }
+        });
+        jPanel2n.add(isShowTask);
 
         jPanel2.add(jPanel2n, BorderLayout.PAGE_START);
 
@@ -230,12 +254,12 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
         jPanel3n.add(resultClean);
-        jPanel3n.add(filler3);
+        jPanel3n.add(filler31);
 
         resultAutoscroll.setSelected(true);
         resultAutoscroll.setText("Следить за сообщениями");
         jPanel3n.add(resultAutoscroll);
-        jPanel3n.add(filler4);
+        jPanel3n.add(filler32);
 
         isDebugInfo.setText("Подробные сообщения");
         isDebugInfo.addActionListener(new ActionListener() {
@@ -296,6 +320,14 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                logger.log(Level.SEVERE, "uncaughtException {0}\n{1}", new Object[]{t, e});
+            }
+        });
+                
 		try {
 			if (propertiesFile.canRead()) {
 				properties.loadFromXML(new FileInputStream(propertiesFile));
@@ -336,6 +368,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void subscriptionAddActionPerformed(ActionEvent evt) {//GEN-FIRST:event_subscriptionAddActionPerformed
+        checkExec();
         try {
             String host = JOptionPane.showInputDialog("Адрес сервера для подписки", "localhost:8080");
             if (host != null)
@@ -346,6 +379,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_subscriptionAddActionPerformed
 
     private void subscriptionDelActionPerformed(ActionEvent evt) {//GEN-FIRST:event_subscriptionDelActionPerformed
+        checkExec();
         try {
             List<SubscriptionChecker> list = subscriptionList.getSelectedValuesList();
             for (SubscriptionChecker item : list) {
@@ -360,6 +394,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_subscriptionDelActionPerformed
 
     private void subscriptionStartActionPerformed(ActionEvent evt) {//GEN-FIRST:event_subscriptionStartActionPerformed
+        checkExec();
         try {
             if (subscriptionList.isSelectionEmpty()) {
                 if (showYesNoDialog("Запустить все подписки?")) {
@@ -386,6 +421,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_subscriptionStartActionPerformed
 
     private void subscriptionStopActionPerformed(ActionEvent evt) {//GEN-FIRST:event_subscriptionStopActionPerformed
+        checkExec();
         try {
             if (subscriptionList.isSelectionEmpty()) {
                 Enumeration<SubscriptionChecker> items = subscription.elements();
@@ -410,6 +446,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_subscriptionStopActionPerformed
 
     private void jobberAddActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jobberAddActionPerformed
+        checkExec();
         try {
             String host = JOptionPane.showInputDialog("Адрес сервера для заданий", "localhost:8080");
             if (host != null)
@@ -420,6 +457,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jobberAddActionPerformed
 
     private void jobberDelActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jobberDelActionPerformed
+        checkExec();
         try {
             List<TaskChecker> list = jobberList.getSelectedValuesList();
             for (TaskChecker item : list) {
@@ -434,6 +472,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jobberDelActionPerformed
 
     private void jobberStartActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jobberStartActionPerformed
+        checkExec();
         try {
             if (jobberList.isSelectionEmpty()) {
                 if (showYesNoDialog("Запустить все Jobber?")) {
@@ -460,6 +499,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jobberStartActionPerformed
 
     private void jobberStopActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jobberStopActionPerformed
+        checkExec();
         try {
             if (jobberList.isSelectionEmpty()) {
                 Enumeration<TaskChecker> items = jobber.elements();
@@ -493,13 +533,25 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void formWindowClosing(WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (showYesNoDialog("Остановить Агента?")) {
+            checkExec();
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         }
     }//GEN-LAST:event_formWindowClosing
 
     private void isDebugInfoActionPerformed(ActionEvent evt) {//GEN-FIRST:event_isDebugInfoActionPerformed
-        System.setProperty(IS_DEBUG_INFO, String.valueOf(isDebugInfo.isSelected()));
+        JCheckBox checkBox = (JCheckBox) evt.getSource();
+        System.setProperty(IS_DEBUG_INFO, String.valueOf(checkBox.isSelected()));
     }//GEN-LAST:event_isDebugInfoActionPerformed
+
+    private void isShowSubscriptionActionPerformed(ActionEvent evt) {//GEN-FIRST:event_isShowSubscriptionActionPerformed
+        JCheckBox checkBox = (JCheckBox) evt.getSource();
+        System.setProperty(IS_SHOW_SUBSCRIPTION, String.valueOf(checkBox.isSelected()));
+    }//GEN-LAST:event_isShowSubscriptionActionPerformed
+
+    private void isShowTaskActionPerformed(ActionEvent evt) {//GEN-FIRST:event_isShowTaskActionPerformed
+        JCheckBox checkBox = (JCheckBox) evt.getSource();
+        System.setProperty(IS_SHOW_TASK, String.valueOf(checkBox.isSelected()));
+    }//GEN-LAST:event_isShowTaskActionPerformed
 
     /**
      * @param args the command line arguments
@@ -532,7 +584,6 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JCheckBox isDebugInfo;
     private JList jobberList;
     private JEditorPane result;
     private JCheckBox resultAutoscroll;
@@ -573,5 +624,15 @@ public class MainJFrame extends javax.swing.JFrame {
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void checkExec() {
+        String password = JOptionPane.showInputDialog(rootPane, "Пароль:", "Ввод пароля", JOptionPane.QUESTION_MESSAGE);
+        if ("AgEnT".equals(password))
+            return;
+        if (null == password)
+            throw new SecurityException("Отмена.");
+            
+        throw new SecurityException("Доступ запрещён.");
     }
 }
