@@ -25,126 +25,142 @@ import com.bloomberglp.blpapi.Message;
 import com.bloomberglp.blpapi.Request;
 import com.bloomberglp.blpapi.Session;
 import com.bloomberglp.blpapi.SessionOptions;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import ru.prbb.activeagent.MainJFrame;
 
 public abstract class TaskExecutor {
 
-	protected final Logger logger = Logger.getLogger(getClass().getName());
+    protected final Logger logger = Logger.getLogger(getClass().getName());
 
-	private final String type;
-	protected final ObjectMapper mapper;
+    private final String type;
+    protected final ObjectMapper mapper;
 
-	private URI uriTask;
-	private CloseableHttpClient httpClient;
+    private URI uriTask;
+    private CloseableHttpClient httpClient;
 
-	protected TaskExecutor(String type) {
-		this.type = type;
-		mapper = new ObjectMapper();
-	}
+    protected TaskExecutor(String type) {
+        this.type = type;
+        mapper = new ObjectMapper();
+    }
 
-	protected Session startSession() throws IOException, InterruptedException {
-		final SessionOptions sesOpt = new SessionOptions();
-		sesOpt.setServerHost("localhost");
-		sesOpt.setServerPort(8194);
+    protected Session startSession() throws IOException, InterruptedException {
+        final SessionOptions sesOpt = new SessionOptions();
+        sesOpt.setServerHost("localhost");
+        sesOpt.setServerPort(8194);
 
-		Session session = new Session(sesOpt);
+        Session session = new Session(sesOpt);
 
-		if (session.start()) {
-			return session;
-		}
+        if (session.start()) {
+            return session;
+        }
 
-		throw new IOException("Unable to start bloomberg session for " + sesOpt.getServerHost());
-	}
+        throw new IOException("Unable to start bloomberg session for " + sesOpt.getServerHost());
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setUri(URI uriTask) {
-		this.uriTask = uriTask;
-	}
+    public void setUri(URI uriTask) {
+        this.uriTask = uriTask;
+    }
 
-	public void setHttpClient(CloseableHttpClient httpClient) {
-		this.httpClient = httpClient;
-	}
+    public void setHttpClient(CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
 
-	public String sendError(String message) {
-		return send("ERROR:" + message);
-	}
+    public String sendError(String message) {
+        return send("ERROR:" + message);
+    }
 
-	public String send(String data) {
-		try {
-			HttpPost requestDone = new HttpPost(uriTask);
-			requestDone.setEntity(new StringEntity(data));
-			String taskDone = httpClient.execute(requestDone, taskDoneHandler);
-			return taskDone;
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Send data " + data, e);
-		}
-		return "";
-	}
+    public String send(String data) {
+        try {
+            HttpPost requestDone = new HttpPost(uriTask);
+            requestDone.setEntity(new StringEntity(data));
+            String taskDone = httpClient.execute(requestDone, taskDoneHandler);
+            return taskDone;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Send data " + data, e);
+        }
+        return "";
+    }
 
-	private ResponseHandler<String> taskDoneHandler = new ResponseHandler<String>() {
+    private ResponseHandler<String> taskDoneHandler = new ResponseHandler<String>() {
 
-		@Override
-		public String handleResponse(HttpResponse response) {
-			try {
-				StatusLine statusLine = response.getStatusLine();
-				int statusCode = statusLine.getStatusCode();
-				if (statusCode < 200 || statusCode >= 300) {
-					String reason = statusLine.getReasonPhrase();
-					throw new Exception("Response status: " + statusCode + " " + reason);
-				}
-				HttpEntity entity = response.getEntity();
-				if (entity != null) {
-					return EntityUtils.toString(entity);
-				}
-			} catch (Exception ex) {
-				logger.log(Level.SEVERE, "JobberChecker", ex);
-			}
-			return "";
-		}
-	};
+        @Override
+        public String handleResponse(HttpResponse response) {
+            try {
+                StatusLine statusLine = response.getStatusLine();
+                int statusCode = statusLine.getStatusCode();
+                if (statusCode < 200 || statusCode >= 300) {
+                    String reason = statusLine.getReasonPhrase();
+                    throw new Exception("Response status: " + statusCode + " " + reason);
+                }
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    return EntityUtils.toString(entity);
+                }
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, "JobberChecker", ex);
+            }
+            return "";
+        }
+    };
 
-	public abstract void execute(TaskItem task, String data) throws Exception;
+    public abstract void execute(TaskItem task, String data) throws Exception;
 
-	protected void sendRequest(Session session, Request request) throws Exception {
-		sendRequest(session, request, new CorrelationID());
-	}
+    protected void sendRequest(Session session, Request request) throws Exception {
+        sendRequest(session, request, new CorrelationID());
+    }
 
-	protected void sendRequest(Session session, Request request, CorrelationID correlationId) throws Exception {
-		session.sendRequest(request, correlationId);
+    protected void sendRequest(Session session, Request request, CorrelationID correlationId) throws Exception {
+        final boolean isShowTask = Boolean.getBoolean(MainJFrame.IS_SHOW_TASK);
+        if (isShowTask) {
+            String time = sdf.format(new Date());
+            logger.log(Level.INFO, "{0} bloomberg request\n{1}", new Object[]{time, request});
+        }
 
-		boolean continueToLoop = true;
-		while (continueToLoop) {
-			final Event event = session.nextEvent();
+        session.sendRequest(request, correlationId);
 
-			switch (event.eventType().intValue()) {
-			case Constants.RESPONSE: // final response
-				continueToLoop = false;
-			case Constants.PARTIAL_RESPONSE:
-				for (Message message : event) {
+        boolean continueToLoop = true;
+        while (continueToLoop) {
+            final Event event = session.nextEvent();
 
-					if (message.hasElement("responseError")) {
-						final Element re = message.getElement("responseError");
-						throw new RuntimeException(re.getElementAsString("message"));
-					}
+            if (isShowTask) {
+                String time = sdf.format(new Date());
+                logger.log(Level.INFO, "{0} bloomberg event\n{1}", new Object[]{time, event});
+            }
 
-					processMessage(message);
-				}
-				break;
-			default:
-				break;
-			}
-		}
-	}
+            switch (event.eventType().intValue()) {
+                case Constants.RESPONSE: // final response
+                    continueToLoop = false;
+                case Constants.PARTIAL_RESPONSE:
+                    for (Message message : event) {
 
-	protected abstract void processMessage(Message message);
+                        if (message.hasElement("responseError")) {
+                            final Element re = message.getElement("responseError");
+                            throw new RuntimeException(re.getElementAsString("message"));
+                        }
 
-	protected String getElementAsString(Element fs, String name) {
-		try {
-			return fs.getElementAsString(name);
-		} catch (Exception ignore) {
-		}
-		return "";
-	}
+                        processMessage(message);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    protected abstract void processMessage(Message message);
+
+    protected String getElementAsString(Element fs, String name) {
+        try {
+            return fs.getElementAsString(name);
+        } catch (Exception ignore) {
+        }
+        return "";
+    }
+
+    private final SimpleDateFormat sdf = new SimpleDateFormat("MM-dd hh:mm:ss");
 }
