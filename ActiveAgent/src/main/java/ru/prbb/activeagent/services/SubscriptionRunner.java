@@ -35,6 +35,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import ru.prbb.activeagent.MainJFrame;
 import ru.prbb.activeagent.data.SecurityItem;
 import ru.prbb.activeagent.data.SubscriptionItem;
 
@@ -235,8 +236,10 @@ public class SubscriptionRunner implements Runnable {
 
             String response = httpClient.execute(httpPost, updateHandler);
             if ("OK".equals(response)) {
-                String time = sdf.format(new Date());
-                logger.log(Level.INFO, time + uri + " - " + response + "\n" + data);
+                if (Boolean.getBoolean(MainJFrame.IS_SHOW_SUBSCRIPTION)) {
+                    String time = sdf.format(new Date());
+                    logger.log(Level.INFO, "{0} {1} - {2}\n{3}", new Object[]{time, uri, response, data});
+                }
             } else {
                 if (!response.isEmpty()) {
                     logger.severe(response);
@@ -267,6 +270,6 @@ public class SubscriptionRunner implements Runnable {
         }
     };
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("MM-dd hh:mm:ss ");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("MM-dd hh:mm:ss");
 
 }
