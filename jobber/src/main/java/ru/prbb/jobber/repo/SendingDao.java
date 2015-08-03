@@ -39,7 +39,7 @@ public interface SendingDao {
 	 *            1 – автоматическая, 2 – ручная отправка
 	 * @return
 	 */
-	List<SendingItem> sendSms(String text, List<String> phones, Number type);
+	List<SendingItem> sendSms(Number service, String text, List<String> phones, Number type);
 
 	/**
 	 * @param query

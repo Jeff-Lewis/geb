@@ -28,13 +28,16 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,7 +93,7 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 
 			switch (type) {
 			case 0:
-				list.addAll(sendSms(text, Arrays.asList(addrs), 1));
+				list.addAll(sendSms(0, text, Arrays.asList(addrs), 1));
 				break;
 
 			case 1:
@@ -176,15 +179,94 @@ public class SendingDaoImpl extends BaseDaoImpl implements SendingDao {
 		}
 		return 0;
 	}
-
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
-	public List<SendingItem> sendSms(String text, List<String> phones, Number type) {
-		final boolean isSecure = false;
-
+	public List<SendingItem> sendSms(Number service, String text, List<String> phones, Number type) {
 		text = text.replaceAll("\u20AC", "EUR");
 		text = text.replaceAll("\u00A5", "JPY");
 		text = text.replaceAll("\u00A3", "GBP");
+
+		switch (service.intValue()) {
+		case 0:
+			return sendSmsMFMSru(text, phones, type);
+
+		case 1:
+			return sendSmsSMSru(text, phones);
+
+		default:
+			throw new IllegalArgumentException("Unknown service for sending SMS " + service);
+		}
+	}
+
+	private List<SendingItem> sendSmsSMSru(String text, List<String> phones) {
+		String api_id = "33bd77b5-d915-c964-a184-a6e07b15b226";
+		String from = "LIFE";
+
+		StringBuilder to = new StringBuilder(phones.size() * 10);
+		String res = null;
+		try {
+			URI uri = new URIBuilder()
+					.setScheme("http")
+					.setHost("sms.ru")
+					.setPath("/sms/send")
+					.build();
+
+			HttpPost httpPost = new HttpPost(uri);
+
+			for (String phone : phones) {
+				to.append(phone);
+				to.append(',');
+			}
+			to.setLength(to.length() - 1);
+
+			List<NameValuePair> nvps = new ArrayList<>();
+			//nvps.add(new BasicNameValuePair("test", "1"));
+			nvps.add(new BasicNameValuePair("api_id", api_id));
+			// TODO nvps.add(new BasicNameValuePair("from", from));
+			nvps.add(new BasicNameValuePair("to", to.toString()));
+			nvps.add(new BasicNameValuePair("text", text));
+			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+
+			try (CloseableHttpClient httpclient = HttpClients.createSystem()) {
+				log.debug("Executing request " + httpPost.getRequestLine());
+				String responseBody = httpclient.execute(httpPost, new ResponseHandler<String>() {
+
+					public String handleResponse(final HttpResponse response)
+							throws ClientProtocolException, IOException {
+						int status = response.getStatusLine().getStatusCode();
+						if (status >= HttpStatus.SC_OK && status < HttpStatus.SC_MULTIPLE_CHOICES) {
+							HttpEntity entity = response.getEntity();
+							return entity != null ? EntityUtils.toString(entity) : null;
+						} else {
+							throw new ClientProtocolException("Unexpected response status: " + status);
+						}
+					}
+
+				});
+				log.debug("Response " + responseBody);
+				res = responseBody;
+			}
+		} catch (Exception e) {
+			log.error("executeHttpRequest", e);
+			throw new RuntimeException(e);
+		}
+
+		try {
+			if ("0".equals(res)) {
+				Thread.sleep(4000);
+			}
+		} catch (InterruptedException e) {
+			log.error("sendSms", e);
+		}
+
+		SendingItem si = new SendingItem();
+		si.setMail(to.toString());
+		si.setStatus(res);
+		return Arrays.asList(si);
+	}
+
+	private List<SendingItem> sendSmsMFMSru(String text, List<String> phones, Number type) {
+		final boolean isSecure = false;
 
 		if (Utils.isDebug()) {
 			List<SendingItem> res =new ArrayList<>(phones.size());

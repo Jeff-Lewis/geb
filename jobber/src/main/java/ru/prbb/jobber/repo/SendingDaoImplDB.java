@@ -50,7 +50,7 @@ public class SendingDaoImplDB extends SendingDaoImpl
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	@Override
-	public List<SendingItem> sendSms(String sms_text, List<String> phones, Number type) {
+	public List<SendingItem> sendSms(Number service, String sms_text, List<String> phones, Number type) {
 		List<SendingItem> list = new ArrayList<>(phones.size());
 		for (String phone : phones) {
 			String sql = "{call dbo.MakeSendSmsJava ?, ?, 2}";

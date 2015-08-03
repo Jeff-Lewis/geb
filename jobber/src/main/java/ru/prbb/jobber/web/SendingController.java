@@ -39,7 +39,8 @@ public class SendingController
 			@RequestParam String subject,
 			@RequestParam String text,
 			@RequestParam(value = "recp") String recPhones,
-			@RequestParam(value = "recm") String recMails)
+			@RequestParam(value = "recm") String recMails,
+			@RequestParam(required=false, defaultValue = "0") Integer service)
 	{
 		log.info("POST Sending: recp=({}), recm=({})", recPhones, recMails);
 		log.info("POST Sending: subject={}", subject);
@@ -77,7 +78,7 @@ public class SendingController
 					}
 				}
 			}
-			res.addAll(dao.sendSms(text, phones, 2));
+			res.addAll(dao.sendSms(service, text, phones, 2));
 		}
 
 		return res;

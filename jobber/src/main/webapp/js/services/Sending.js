@@ -102,6 +102,23 @@
 		}
 	});
 
+	var serviceSelect = new Ext.form.ComboBox({
+		fieldLabel : 'Сервис СМС',
+		mode : 'local',
+		valueField : 'id',
+		displayField : 'name',
+		store : new Ext.data.ArrayStore({
+			autoDestroy : true,
+			fields : [ 'id', 'name' ],
+			data : [ [ 0, 'mfms.ru' ], [ 1, 'sms.ru' ] ]
+		}),
+		allowBlank : false,
+		loadingText : 'Поиск...',
+		triggerAction : 'all',
+		editable : false,
+		value : 0
+	});
+
 	var textarea = new Ext.form.TextArea({
 		fieldLabel : 'Текст рассылки',
 		height : 200,
@@ -136,7 +153,8 @@
 				subject : _subject,
 				text : _text,
 				recp : _recp,
-				recm : _recm
+				recm : _recm,
+				service : serviceSelect.getValue()
 			},
 			timeout : 10 * 60 * 1000, // 10 min
 			waitMsg : 'Отправка сообщения ...',
@@ -170,7 +188,7 @@
 				width : 500
 			},
 
-			items : [ receiverSMS, receiverEMail, patternSelect, textarea, {
+			items : [ receiverSMS, receiverEMail, patternSelect, serviceSelect, textarea, {
 				xtype : 'button',
 				text : 'Отправить',
 				handler : send
