@@ -296,25 +296,6 @@ public class Utils {
 		return field;
 	}
 
-	/**
-	 * Из списка строк сделать список {id, name}, id c 1
-	 * 
-	 * @param list
-	 *            name
-	 * @return [ {id, name} ]
-	 */
-	public static List<SimpleItem> toSimpleItem(List<?> list) {
-		List<SimpleItem> res = new ArrayList<>(list.size());
-		long id = 0;
-		for (Object object : list) {
-			SimpleItem item = new SimpleItem();
-			item.setId(++id);
-			item.setName(Utils.toString(object));
-			res.add(item);
-		}
-		return res;
-	}
-
 	public static Object[] asArray(Object... args) {
 		return args;
 	}

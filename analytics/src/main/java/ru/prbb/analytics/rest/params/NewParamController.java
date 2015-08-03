@@ -3,6 +3,8 @@
  */
 package ru.prbb.analytics.rest.params;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,33 +35,33 @@ public class NewParamController
 
 	@RequestMapping(value = "/Setup", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData postSetup(
+	public ResultData postSetup(HttpServletRequest request,
 			@RequestParam String code)
 	{
 		log.info("POST NewParam/Setup: code={}", code);
-		return new ResultData(dao.setup(code));
+		return new ResultData(dao.setup(createUserInfo(request), code));
 	}
 
 	@RequestMapping(value = "/Save", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postSave(
+	public Result postSave(HttpServletRequest request,
 			@RequestParam String blm_id,
 			@RequestParam String code,
 			@RequestParam String name)
 	{
 		log.info("POST NewParam/Save: blm_id={}, code={}, name={}", Utils.asArray(blm_id, code, name));
-		dao.save(blm_id, code, name);
+		dao.save(createUserInfo(request), blm_id, code, name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/SaveOvr", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postSaveOvr(
+	public Result postSaveOvr(HttpServletRequest request,
 			@RequestParam String code,
 			@RequestParam String broker)
 	{
 		log.info("POST NewParam/SaveOvr: code={}, broker={}", code, broker);
-		dao.saveOvr(code, broker);
+		dao.saveOvr(createUserInfo(request), code, broker);
 		return Result.SUCCESS;
 	}
 }

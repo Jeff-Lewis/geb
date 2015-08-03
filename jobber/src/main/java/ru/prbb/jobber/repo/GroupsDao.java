@@ -5,71 +5,83 @@ package ru.prbb.jobber.repo;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.prbb.jobber.domain.GroupAddressItem;
 import ru.prbb.jobber.domain.GroupContactsItem;
 import ru.prbb.jobber.domain.SimpleItem;
+import ru.prbb.jobber.services.EntityManagerService;
 
 /**
  * Справочник контактов
+ * Repository
  * 
  * @author RBr
  */
-public interface GroupsDao {
+@Service
+public class GroupsDao
+{
 
-	/**
-	 * @return
-	 */
-	List<SimpleItem> findAll();
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	SimpleItem findById(Long id);
+	public List<SimpleItem> findAll() {
+		String sql = "{call dbo.WebGet_SelectGroups_sp}";
+		return ems.getSelectList(SimpleItem.class, sql);
+	}
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	int put(String name);
+	public SimpleItem findById(Long id) {
+		List<SimpleItem> list = findAll();
+		for (SimpleItem item : list) {
+			if (id.equals(item.getId())) {
+				return item;
+			}
+		}
+		return null;
+	}
 
-	/**
-	 * @param id
-	 * @param name
-	 * @return
-	 */
-	int updateById(Long id, String name);
+	public int put(String name) {
+		String sql = "{call dbo.WebSet_putGroup_sp ?}";
+		return ems.executeUpdate(sql, name);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	int deleteById(Long id);
+	public int updateById(Long id, String name) {
+		String sql = "{call dbo.WebSet_udGroup_sp 'u', ?, ?}";
+		return ems.executeUpdate(sql, id, name);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<GroupAddressItem> findAllAddresses(Long id);
+	public int deleteById(Long id) {
+		String sql = "{call dbo.WebSet_udGroup_sp 'd', ?}";
+		return ems.executeUpdate(sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<GroupContactsItem> findAllContacts(Long id);
+	public List<GroupAddressItem> findAllAddresses(Long id) {
+		String sql = "{call dbo.WebGet_SelectContactsAddress_sp ?}";
+		return ems.getSelectList(GroupAddressItem.class, sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @param cids
-	 * @return
-	 */
-	int[] putStaff(Long id, Long[] cids);
+	public List<GroupContactsItem> findAllContacts(Long id) {
+		String sql = "{call dbo.WebGet_SelectGroupContacts_sp ?}";
+		return ems.getResultList(GroupContactsItem.class, sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @param cids
-	 * @return
-	 */
-	int[] deleteStaff(Long id, Long[] cids);
+	public int[] putStaff(Long id, Long[] cids) {
+		String sql = "{call dbo.WebSet_mapContactToGroup_sp ?, ?}";
+		int[] res = new int[cids.length];
+		for (int i = 0; i < cids.length; i++) {
+			res[i] = ems.executeUpdate(sql, id, cids[i]);
+		}
+		return res;
+	}
+
+	public int[] deleteStaff(Long id, Long[] cids) {
+		String sql = "{call dbo.WebSet_dContactFromGroup_sp ?, ?}";
+		int[] res = new int[cids.length];
+		for (int i = 0; i < cids.length; i++) {
+			res[i] = ems.executeUpdate(sql, id, cids[i]);
+		}
+		return res;
+	}
 
 }

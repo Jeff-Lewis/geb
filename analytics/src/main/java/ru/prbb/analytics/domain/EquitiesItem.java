@@ -8,6 +8,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -21,6 +23,18 @@ public class EquitiesItem implements Serializable {
 	private String security_code;
 	private String short_name;
 	private String calculation_crncy;
+
+	
+	public EquitiesItem() {
+	}
+
+	public EquitiesItem(Object[] arr) {
+		int idx = 0;
+		id_sec = Utils.toLong(arr[idx++]);
+		security_code = Utils.toString(arr[idx++]);
+		short_name = Utils.toString(arr[idx++]);
+		calculation_crncy = Utils.toString(arr[idx++]);
+	}
 
 	/**
 	 * @return the id_sec

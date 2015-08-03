@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,33 +39,33 @@ public class OptionsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<OptionsItem> getItems()
+	public List<OptionsItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET Options");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Options: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(value = "/Coefficients/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getCoefficientsItem(
+	public ResultData getCoefficientsItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Options/Coefficients: id={}", id);
-		return new ResultData(dao.findCoefficientById(id));
+		return new ResultData(dao.findCoefficientById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddItem(
+	public Result postAddItem(HttpServletRequest request,
 			@RequestParam String name,
 			@RequestParam Double coef,
 			@RequestParam String comment,
@@ -71,13 +73,13 @@ public class OptionsController
 	{
 		log.info("POST Options add: name={}, coef={}, comment={}, tradeSystemId={}",
 				Utils.toArray(name, coef, comment, tradeSystemId));
-		dao.put(name, coef, comment, tradeSystemId);
+		dao.put(createUserInfo(request),name, coef, comment, tradeSystemId);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Coefficients", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddCoefficientItem(
+	public Result postAddCoefficientItem(HttpServletRequest request,
 			@RequestParam Long futureId,
 			@RequestParam Double coef,
 			@RequestParam String comment,
@@ -85,24 +87,24 @@ public class OptionsController
 	{
 		log.info("POST Options add: futureId={}, coef={}, comment={}, tradeSystemId={}",
 				Utils.toArray(futureId, coef, comment, tradeSystemId));
-		dao.putCoefficient(futureId, coef, comment, tradeSystemId);
+		dao.putCoefficient(createUserInfo(request),futureId, coef, comment, tradeSystemId);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateItem(
+	public Result postUpdateItem(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
 		log.info("POST Options update: id={}, name={}", id, name);
-		dao.updateById(id, name);
+		dao.updateById(createUserInfo(request),id, name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Coefficients/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateCoefficientsItem(
+	public Result postUpdateCoefficientsItem(HttpServletRequest request,
 			@PathVariable("id") Long coefId,
 			@RequestParam Double coef,
 			@RequestParam String comment,
@@ -111,27 +113,27 @@ public class OptionsController
 	{
 		log.info("POST Options/Coefficients update: coefId={}, coef={}, comment={}, tradeSystemId={}, futureId={}",
 				Utils.toArray(coefId, coef, comment, tradeSystemId, futureId));
-		dao.updateCoefficientById(coefId, coef, comment, tradeSystemId, futureId);
+		dao.updateCoefficientById(createUserInfo(request),coefId, coef, comment, tradeSystemId, futureId);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result delete(
+	public Result delete(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL Options: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Coefficients/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteCoefficients(
+	public Result deleteCoefficients(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL Options/Coefficients: id={}", id);
-		dao.deleteCoefficientById(id);
+		dao.deleteCoefficientById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 

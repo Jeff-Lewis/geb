@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,51 +35,51 @@ public class InitiatorsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<ReferenceItem> getItems()
+	public List<ReferenceItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET Initiators");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Initiators: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddItem(
+	public Result postAddItem(HttpServletRequest request,
 			@RequestParam String name,
 			@RequestParam String comment)
 	{
 		log.info("GET Initiators: name={}, comment={}", name, comment);
-		dao.put(name, comment);
+		dao.put(createUserInfo(request),name, comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateItem(
+	public Result postUpdateItem(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String name,
 			@RequestParam String comment)
 	{
 		log.info("GET Initiators: id={}, name={}, comment={}", Utils.toArray(id, name, comment));
-		dao.updateById(id, name, comment);
+		dao.updateById(createUserInfo(request),id, name, comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL Initiators: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 }

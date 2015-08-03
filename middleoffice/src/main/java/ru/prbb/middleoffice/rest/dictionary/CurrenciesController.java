@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +30,9 @@ public class CurrenciesController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<CurrenciesItem> getItems()
+	public List<CurrenciesItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET Currencies");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 }

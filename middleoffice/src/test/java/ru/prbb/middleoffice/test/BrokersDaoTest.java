@@ -3,6 +3,7 @@ package ru.prbb.middleoffice.test;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.prbb.ArmUserInfo;
 
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 
@@ -17,11 +18,12 @@ public class BrokersDaoTest
 {
 	@Autowired
 	private BrokersDao dao;
+	private ArmUserInfo user =new ArmUserInfo("admin1", "host");
 
 	@Test
 	public void testFindAll()
 	{
-		dao.findAll();
+		dao.findAll(user);
 	}
 
 	@Test

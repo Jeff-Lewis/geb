@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +46,13 @@ public class ViewPortfolioController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<ViewPortfolioItem> postShow(
+	public List<ViewPortfolioItem> postShow(HttpServletRequest request,
 			@RequestParam String date,
 			@RequestParam Long security,
 			@RequestParam Long client)
 	{
 		log.info("POST ViewPortfolio: date={}, security={}, client={}", Utils.toArray(date, security, client));
-		return dao.executeSelect(Utils.parseDate(date), security, client);
+		return dao.executeSelect(createUserInfo(request),Utils.parseDate(date), security, client);
 	}
 
 	private Result p = Result.FAIL;
@@ -61,20 +62,20 @@ public class ViewPortfolioController
 
 	@RequestMapping(value = "/Delete", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postDelete(
+	public Result postDelete(HttpServletRequest request,
 			@RequestParam String date,
 			@RequestParam Long security)
 	{
 		log.info("POST ViewPortfolio/Delete: date={}, security={}", date, security);
 
-		dao.executeDelete(Utils.parseDate(date), security);
+		dao.executeDelete(createUserInfo(request),Utils.parseDate(date), security);
 
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Calculate", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postCalculate(
+	public Result postCalculate(HttpServletRequest request,
 			@RequestParam String date,
 			@RequestParam Long security,
 			@RequestParam Long client)
@@ -113,7 +114,7 @@ public class ViewPortfolioController
 				String text = time + sdf.format(dateCalc.getTime()) + info;
 				p = new ResultProgress(v, text);
 
-				dao.executeCalc(new Date(dateCalc.getTimeInMillis()), security, client);
+				dao.executeCalc(createUserInfo(request),new Date(dateCalc.getTimeInMillis()), security, client);
 
 				long runTime = System.currentTimeMillis() - stTime;
 				time = "Прошло, сек: " + Long.valueOf(runTime / 1000) + " ";
@@ -154,14 +155,14 @@ public class ViewPortfolioController
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] getExport(HttpServletResponse response,
+	public byte[] getExport(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam String date,
 			@RequestParam Long security,
 			@RequestParam Long client)
 	{
 		log.info("GET ViewPortfolio/Export: date={}, security={}, client={}", Utils.toArray(date, security, client));
 		List<ViewPortfolioItem> list =
-				dao.executeSelect(Utils.parseDate(date), security, client);
+				dao.executeSelect(createUserInfo(request),Utils.parseDate(date), security, client);
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Текущий портфель");

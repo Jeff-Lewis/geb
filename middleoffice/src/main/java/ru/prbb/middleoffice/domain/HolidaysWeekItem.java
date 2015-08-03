@@ -5,6 +5,8 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -16,6 +18,17 @@ public class HolidaysWeekItem implements Serializable {
 	private Number day_week;
 	private String start;
 	private String stop;
+
+	
+	public HolidaysWeekItem() {
+	}
+
+	public HolidaysWeekItem(Object[] arr) {
+		setCountry(Utils.toString(arr[0]));
+		setDay_week(Utils.toInteger(arr[1]));
+		setStart(Utils.toTime(arr[2]));
+		setStop(Utils.toTime(arr[3]));
+	}
 
 	/**
 	 * @return the country

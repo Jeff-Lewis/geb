@@ -9,10 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  */
-@Entity
+//@Entity
 public class CompaniesItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -72,6 +74,68 @@ public class CompaniesItem implements Serializable {
 	private Number consensus;
 	@Column(name = "roe")
 	private Number roe;
+
+	
+	public CompaniesItem() {
+	}
+
+	public CompaniesItem(Object[] arr) {
+		int i = 0;
+		// id
+		setId_sec(Utils.toLong(arr[i++]));
+		// ISIN
+		setIsin(Utils.toString(arr[i++]));
+		// Название компании
+		setSecurity_name(Utils.toString(arr[i++]));
+		// Код Блумберг
+		setSecurity_code(Utils.toString(arr[i++]));
+		// Родной тикер
+		setTicker(Utils.toString(arr[i++]));
+		// Валюта расчета
+		setCurrency(Utils.toString(arr[i++]));
+		// ADR
+		setAdr(Utils.toString(arr[i++]));
+		// Сектор
+		setIndstry_grp(Utils.toString(arr[i++]));
+		// Группа в сводной
+		setSvod_grp(Utils.toString(arr[i++]));
+		// Koef Upside
+		setKoefUpside(Utils.toDouble(arr[i++]));
+		// Koef Upside н.м.
+		setKoefUpsideNM(Utils.toDouble(arr[i++]));
+		// Периодичность отчетности
+		setPeriod(Utils.toString(arr[i++]));
+		// EPS
+		setEps(Utils.toString(arr[i++]));
+		// g10 =
+		setG10(Utils.toString(arr[i++]));
+		// g5 =
+		setG5(Utils.toString(arr[i++]));
+		// b10 =
+		setB10(Utils.toString(arr[i++]));
+		// b5 =
+		setB5(Utils.toString(arr[i++]));
+		// PE10 =
+		setPe10(Utils.toString(arr[i++]));
+		// PE5 =
+		setPe5(Utils.toString(arr[i++]));
+		// crncy
+		setCurrencyTrade(Utils.toString(arr[i++]));
+		// eqy_fund_crncy
+		setCurrencyReport(Utils.toString(arr[i++]));
+		// px_last
+		setPx_last(Utils.toDouble(arr[i++]));
+		// peCurrent
+		setPeCurrent(Utils.toDouble(arr[i++]));
+		// methodOld
+		setMethodOld(Utils.toDouble(arr[i++]));
+		// methodNew
+		setMethodNew(Utils.toDouble(arr[i++]));
+		// consensus
+		setConsensus(Utils.toDouble(arr[i++]));
+		// roe
+		setRoe(Utils.toDouble(arr[i++]));
+	}
 
 	public Long getId_sec() {
 		return id_sec;

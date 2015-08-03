@@ -31,7 +31,7 @@ import ru.prbb.middleoffice.services.TasksService;
 @Service
 public class BloombergServicesMTasksImpl implements BloombergServicesM {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private TasksService tasks;

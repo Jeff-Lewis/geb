@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,43 +40,43 @@ public class ViewBondsController
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAdd(
+	public Result postAdd(HttpServletRequest request,
 			@RequestParam Long code,
 			@RequestParam String ticker)
 	{
 		log.info("POST ViewBonds/Add: code={}, ticker={}", code, ticker);
-		dao.put(code, ticker);
+		dao.put(createUserInfo(request),code, ticker);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postDel(
+	public Result postDel(HttpServletRequest request,
 			@RequestParam Long code,
 			@RequestParam String ticker)
 	{
 		log.info("POST ViewBonds/Del: code={}, ticker={}", code, ticker);
-		dao.del(code, ticker);
+		dao.del(createUserInfo(request),code, ticker);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<PortfolioItem> getPortfolio()
+	public List<PortfolioItem> getPortfolio(HttpServletRequest request)
 	{
 		log.info("GET ViewBonds/Portfolio");
-		return daoEquities.findAllBonds();
+		return daoEquities.findAllBonds(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityItem> listSecurities(
+	public List<SecurityItem> listSecurities(HttpServletRequest request,
 			@RequestParam(defaultValue = "Bond") String filter,
 			@RequestParam(required = false) Long security)
 	{
 		filter = "Bond";
 		log.info("POST ViewBonds/Securities: filter={}, security={}", filter, security);
-		return daoSecurities.findAll(filter, security);
+		return daoSecurities.findAll(createUserInfo(request),filter, security);
 	}
 
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

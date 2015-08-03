@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,24 +39,24 @@ public class ClientsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<ClientsItem> getItems()
+	public List<ClientsItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET Clients");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Clients: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddItem(
+	public Result postAddItem(HttpServletRequest request,
 			@RequestParam String name,
 			@RequestParam String comment,
 			@RequestParam Long country,
@@ -63,13 +65,13 @@ public class ClientsController
 	{
 		log.info("POST Clients add: name={}, comment={}, country={}, dateBegin={}, dateEnd={}",
 				Utils.toArray(name, comment, country, dateBegin, dateEnd));
-		dao.put(name, comment, country, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
+		dao.put(createUserInfo(request),name, comment, country, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateItem(
+	public Result postUpdateItem(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String name,
 			@RequestParam String comment,
@@ -79,17 +81,17 @@ public class ClientsController
 	{
 		log.info("POST Clients update: id={}, name={}, comment={}, country={}, dateBegin={}, dateEnd={}",
 				Utils.toArray(id, name, comment, country, dateBegin, dateEnd));
-		dao.updateById(id, name, comment, country, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
+		dao.updateById(createUserInfo(request),id, name, comment, country, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL Clients: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 

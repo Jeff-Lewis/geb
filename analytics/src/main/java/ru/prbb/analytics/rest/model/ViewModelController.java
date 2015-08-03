@@ -2,6 +2,8 @@ package ru.prbb.analytics.rest.model;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,27 +32,27 @@ public class ViewModelController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<ViewModelItem> getItems()
+	public List<ViewModelItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET ViewModel");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}/Info", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItemInfo(
+	public ResultData getItemInfo(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET ViewModel/Info: id={}", id);
-		return new ResultData(dao.getInfoById(id));
+		return new ResultData(dao.getInfoById(createUserInfo(request), id));
 	}
 
 	@RequestMapping(value = "/{id}/Price", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItemPrice(
+	public ResultData getItemPrice(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET ViewModel/Price: id={}", id);
-		return new ResultData(dao.findPriceById(id));
+		return new ResultData(dao.findPriceById(createUserInfo(request), id));
 	}
 }

@@ -5,32 +5,39 @@ package ru.prbb.middleoffice.repo.services;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
+
 import ru.prbb.middleoffice.domain.RiskRewardPrice1Item;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
- * Цена1 для RR
- * 
  * @author RBr
- * 
  */
-public interface RiskRewardPrice1Dao {
+@Service
+public class RiskRewardPrice1Dao
+{
 
-	/**
-	 * @return
-	 */
-	List<RiskRewardPrice1Item> findAll();
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	RiskRewardPrice1Item findById(Long id);
+	public List<RiskRewardPrice1Item> findAll(ArmUserInfo user) {
+		String sql = "{call dbo.mo_WebGet_SecuritiesAttributes_sp}";
+		return ems.getSelectList(user, RiskRewardPrice1Item.class, sql);
+	}
 
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	int deleteById(Long id);
+	public RiskRewardPrice1Item findById(ArmUserInfo user, Long id) {
+		String sql = "{call dbo.mo_WebGet_SecuritiesAttributes_sp ?}";
+		return ems.getSelectItem(user, RiskRewardPrice1Item.class, sql, id);
+	}
+
+	public int deleteById(ArmUserInfo user, Long id) {
+		String sql = "{call dbo.mo_WebSet_dSecuritiesAttributes_sp ?}";
+		return ems.executeUpdate(AccessAction.DELETE, user, sql, id);
+	}
 
 }

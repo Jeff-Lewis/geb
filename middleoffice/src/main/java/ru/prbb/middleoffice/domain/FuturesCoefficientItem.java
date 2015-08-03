@@ -6,6 +6,9 @@ package ru.prbb.middleoffice.domain;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
+
+import ru.prbb.Utils;
 
 /**
  * @author RBr
@@ -14,32 +17,47 @@ public class FuturesCoefficientItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	@Column(name = "coef_id")
-	private Long coefId;
+	private Number coefId;
 	@Column(name = "futures_alias_id")
-	private Long futuresId;
+	private Number futuresId;
 	@Column(name = "fut_name")
 	private String futures;
 	@Column(name = "sys_id")
-	private Long tradeSystemId;
+	private Number tradeSystemId;
 	@Column(name = "TradeSystem")
 	private String tradeSystem;
 	private Number coefficient;
 	private String comment;
 
-	public Long getCoefId() {
+	public FuturesCoefficientItem() {
+	}
+	
+	public FuturesCoefficientItem(Object[] arr) {
+		int idx = 0;
+		coefId = Utils.toLong(arr[idx++]);
+		futuresId = Utils.toLong(arr[idx++]);
+		tradeSystemId = Utils.toLong(arr[idx++]);
+		futures = Utils.toString(arr[idx++]);
+		tradeSystem = Utils.toString(arr[idx++]);
+		coefficient = Utils.toDouble(arr[idx++]);
+		comment = Utils.toString(arr[idx++]);
+	}
+
+	public Number getCoefId() {
 		return coefId;
 	}
 
-	public void setCoefId(Long coefId) {
+	public void setCoefId(Number coefId) {
 		this.coefId = coefId;
 	}
 
-	public Long getFuturesId() {
+	public Number getFuturesId() {
 		return futuresId;
 	}
 
-	public void setFuturesId(Long futuresId) {
+	public void setFuturesId(Number futuresId) {
 		this.futuresId = futuresId;
 	}
 
@@ -51,11 +69,11 @@ public class FuturesCoefficientItem implements Serializable {
 		this.futures = futures;
 	}
 
-	public Long getTradeSystemId() {
+	public Number getTradeSystemId() {
 		return tradeSystemId;
 	}
 
-	public void setTradeSystemId(Long tradeSystemId) {
+	public void setTradeSystemId(Number tradeSystemId) {
 		this.tradeSystemId = tradeSystemId;
 	}
 

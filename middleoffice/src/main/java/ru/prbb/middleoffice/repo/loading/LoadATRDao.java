@@ -3,48 +3,60 @@
  */
 package ru.prbb.middleoffice.repo.loading;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
+
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.AtrLoadDataItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
  * Загрузка ATR
  * 
  * @author RBr
- * 
  */
-public interface LoadATRDao {
+@Service
+public class LoadATRDao
+{
 
-	/**
-	 * @param dateStart
-	 * @param dateEnd
-	 * @param securities
-	 * @param typeMA
-	 * @param periodTA
-	 * @param period
-	 * @param calendar
-	 * @return
-	 */
-	List<AtrLoadDataItem> execute(List<AtrLoadDataItem> answer,
-			String typeMA, Integer periodTA, String period, String calendar);
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> getTypeMA(String query);
+	public List<AtrLoadDataItem> execute(ArmUserInfo user, List<AtrLoadDataItem> answer,
+			String maType, Integer taPeriod, String period, String calendar) {
+		String sql = "{call dbo.mo_WebSet_putATR_sp ?, ?, ?, " + taPeriod + ", '" + maType + "', 'PX_HIGH', 'PX_LOW', 'PX_LAST', '"
+				+ period + "', '" + calendar + "'}";
+		for (AtrLoadDataItem item : answer) {
+			ems.executeUpdate(AccessAction.OTHER, user, sql,
+					item.getSecurity(), Utils.parseDate(item.getDate()), new BigDecimal(item.getValue()));
+		}
+		return answer;
+	}
 
-	/**
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> getPeriod(String query);
+	public List<SimpleItem> getTypeMA(String query) {
+		String sql = "select id, algorithm_name as name from dbo.mo_WebGet_ajaxAlgorithm_v";
+		String where = " where lower(algorithm_name) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 
-	/**
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> getCalendar(String query);
+	public List<SimpleItem> getPeriod(String query) {
+		String sql = "select period_id as id, name from dbo.period_type";
+		String where = " where lower(name) like ?";
+		return ems.getComboList(sql, where, query);
+	}
+
+	public List<SimpleItem> getCalendar(String query) {
+		String sql = "select calendar_id as id, name from dbo.calendar_type";
+		String where = " where lower(name) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 
 }

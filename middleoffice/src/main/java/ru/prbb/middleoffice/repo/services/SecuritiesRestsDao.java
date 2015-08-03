@@ -6,31 +6,34 @@ package ru.prbb.middleoffice.repo.services;
 import java.sql.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
+
 import ru.prbb.middleoffice.domain.SecuritiesRestsItem;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
- * Верификация остатков
- * 
  * @author RBr
- * 
  */
-public interface SecuritiesRestsDao {
+@Service
+public class SecuritiesRestsDao
+{
 
-	/**
-	 * @param security
-	 * @param client
-	 * @param fund
-	 * @param batch
-	 * @param date
-	 * @return
-	 */
-	List<SecuritiesRestsItem> execute(Long security, Long client, Long fund, Integer batch, Date date);
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param id
-	 * @param checkFlag
-	 * @return
-	 */
-	int updateById(Long id, Byte checkFlag);
+	public List<SecuritiesRestsItem> execute(ArmUserInfo user, Long security, Long client, Long fund, Integer batch, Date date) {
+		String sql = "{call dbo.mo_WebGet_securities_rests_sp null, ?, ?, ?, ?, ?}";
+		return ems.getSelectList(user, SecuritiesRestsItem.class, sql, security, fund, batch, client, date);
+	}
+
+	public int updateById(ArmUserInfo user, Long id, Byte checkFlag) {
+		String sql = "{call dbo.mo_WebSet_set_securities_rests_sp ?, ?}";
+		return ems.executeUpdate(AccessAction.UPDATE, user, sql, id, checkFlag);
+	}
 
 }

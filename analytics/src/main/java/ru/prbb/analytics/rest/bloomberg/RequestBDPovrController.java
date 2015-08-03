@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +44,7 @@ public class RequestBDPovrController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postExecute(
+	public Result postExecute(HttpServletRequest request,
 			@RequestParam String[] security,
 			@RequestParam String[] currency,
 			@RequestParam String[] params,
@@ -54,13 +56,13 @@ public class RequestBDPovrController
 		log.info("POST RequestBDP: currency={}", (Object) currency);
 		Map<String, Map<String, Map<String, String>>> answer =
 				bs.executeBdpRequestOverride("BDP с override", security, params, currency, period, over);
-		dao.execute(security, currency, over, answer);
+		dao.execute(createUserInfo(request), security, currency, over, answer);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Quarter", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postExecuteQuarter(
+	public Result postExecuteQuarter(HttpServletRequest request,
 			@RequestParam String[] security,
 			@RequestParam String[] params,
 			@RequestParam String over,
@@ -73,38 +75,38 @@ public class RequestBDPovrController
 		Map<String, Map<String, Map<String, String>>> answer =
 				bs.executeBdpRequestOverrideQuarter("BDP с override-quarter", security, params,
 						_currency.toArray(new String[_currency.size()]), over);
-		dao.execute(security, currency, over, answer);
+		dao.execute(createUserInfo(request), security, currency, over, answer);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<EquitiesItem> getSecurities(
+	public List<EquitiesItem> getSecurities(HttpServletRequest request,
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equities,
 			@RequestParam(required = false) Integer fundamentals)
 	{
 		log.info("POST RequestBDPovr/Securities: filter={}, equities={}, fundamentals={}",
 				Utils.asArray(filter, equities, fundamentals));
-		return daoEquities.findAllEquities(filter, equities, fundamentals);
+		return daoEquities.findAllEquities(createUserInfo(request), filter, equities, fundamentals);
 	}
 
 	@RequestMapping(value = "/Params", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboParams(
+	public List<SimpleItem> comboParams(HttpServletRequest request,
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO RequestBDPovr: Params='{}'", query);
-		return dao.findParams(query);
+		return dao.findParams(createUserInfo(request), query);
 	}
 
 	@RequestMapping(value = "/Override", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboOverride(
+	public List<SimpleItem> comboOverride(HttpServletRequest request,
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO RequestBDPovr: Override='{}'", query);
-		return dao.comboFilterOverride(query);
+		return dao.comboFilterOverride(createUserInfo(request), query);
 	}
 
 	@RequestMapping(value = "/EquitiesFilter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

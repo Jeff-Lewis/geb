@@ -8,11 +8,13 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
  */
-@Entity
+//@Entity
 public class BrokersForecastItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +37,31 @@ public class BrokersForecastItem implements Serializable {
 	private String target_date;
 	private String currency;
 	private String date_insert;
+
+	
+	public BrokersForecastItem() {
+	}
+
+	public BrokersForecastItem(Object[] arr) {
+		setId_sec(Utils.toLong(arr[0]));
+		setSecurity_code(Utils.toString(arr[1]));
+		setShort_name(Utils.toString(arr[2]));
+		setPivot_group(Utils.toString(arr[3]));
+		setBroker(Utils.toString(arr[4]));
+		setEPS1Q(Utils.toDouble(arr[5]));
+		setEPS2Q(Utils.toDouble(arr[6]));
+		setEPS3Q(Utils.toDouble(arr[7]));
+		setEPS4Q(Utils.toDouble(arr[8]));
+		setEPS1CY(Utils.toDouble(arr[9]));
+		setEPS2CY(Utils.toDouble(arr[10]));
+		setTargetConsensus12m(Utils.toDouble(arr[11]));
+		setTargetConsensus(Utils.toDouble(arr[12]));
+		setRecommendation(Utils.toString(arr[13]));
+		setPeriod(Utils.toString(arr[14]));
+		setTarget_date(Utils.toDate(arr[15]));
+		setCurrency(Utils.toString(arr[16]));
+		setDate_insert(Utils.toString(arr[17]));
+	}
 
 	/**
 	 * @return the id_sec

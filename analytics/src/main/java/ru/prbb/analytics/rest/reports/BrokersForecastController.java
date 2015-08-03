@@ -2,6 +2,8 @@ package ru.prbb.analytics.rest.reports;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,22 +40,22 @@ public class BrokersForecastController
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<BrokersForecastItem> show(
+	public List<BrokersForecastItem> show(HttpServletRequest request,
 			@RequestParam(required = false) String date,
 			@RequestParam(required = false) Long broker,
 			@RequestParam(required = false) Long equity)
 	{
 		log.info("POST BrokersForecast: date={}, broker={}, equity={}", Utils.asArray(date, broker, equity));
-		return dao.execute(date, broker, equity);
+		return dao.execute(createUserInfo(request), date, broker, equity);
 	}
 
 	@RequestMapping(value = "/Dates", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<BrokersForecastDateItem> comboDates(
+	public List<BrokersForecastDateItem> comboDates(HttpServletRequest request,
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO BrokersForecast: Dates='{}'", query);
-		return dao.findBrokerDates();
+		return dao.findBrokerDates(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/Brokers", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

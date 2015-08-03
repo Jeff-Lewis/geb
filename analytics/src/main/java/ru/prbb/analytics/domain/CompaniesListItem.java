@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -29,6 +31,20 @@ public class CompaniesListItem implements Serializable {
 	private String currency;
 	@Column(name = "Сектор")
 	private String indstry_grp;
+
+	
+	public CompaniesListItem() {
+	}
+
+	public CompaniesListItem(Object[] arr) {
+		int idx = 0;
+		id_sec = Utils.toLong(arr[idx++]);
+		id_isin = Utils.toString(arr[idx++]);
+		security_code = Utils.toString(arr[idx++]);
+		security_name = Utils.toString(arr[idx++]);
+		currency = Utils.toString(arr[idx++]);
+		indstry_grp = Utils.toString(arr[idx++]);
+	}
 
 	/**
 	 * @return the id_sec

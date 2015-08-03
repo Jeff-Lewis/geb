@@ -8,12 +8,14 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
- * 
  */
 @Entity
 public class ViewParamsItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -21,6 +23,16 @@ public class ViewParamsItem implements Serializable {
 	private String blm_id;
 	private String code;
 	private String name;
+
+	public ViewParamsItem() {
+	}
+
+	public ViewParamsItem(Object[] arr) {
+		param_id = Utils.toLong(arr[0]);
+		blm_id = Utils.toString(arr[1]);
+		code = Utils.toString(arr[2]);
+		name = Utils.toString(arr[3]);
+	}
 
 	/**
 	 * @return the param_id

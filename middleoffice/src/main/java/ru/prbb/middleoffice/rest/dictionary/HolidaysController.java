@@ -6,6 +6,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,15 +42,15 @@ public class HolidaysController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<HolidaysItem> getItems()
+	public List<HolidaysItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET Holidays");
-		return dao.showHolidays();
+		return dao.showHolidays(createUserInfo(request));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddItem(
+	public Result postAddItem(HttpServletRequest request,
 			@RequestParam String date,
 			@RequestParam String name,
 			@RequestParam String times,
@@ -59,33 +61,33 @@ public class HolidaysController
 	{
 		log.info("POST Holidays add: country={}, date={}, times={}, timee={}, name={}, sms={}, portfolio={}",
 				Utils.toArray(country, date, times, timee, name, sms, portfolio));
-		dao.addHoliday(country, Utils.parseDate(date), times, timee, name, sms, portfolio);
+		dao.addHoliday(createUserInfo(request),country, Utils.parseDate(date), times, timee, name, sms, portfolio);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Delete", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postDeleteItem(
+	public Result postDeleteItem(HttpServletRequest request,
 			@RequestParam String country,
 			@RequestParam String date)
 	{
 		log.info("POST Holidays delete: country={}, date={}", country, date);
-		dao.delHoliday(country, Utils.parseDate(date));
+		dao.delHoliday(createUserInfo(request),country, Utils.parseDate(date));
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Time/{country}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<HolidaysWeekItem> getTime(
+	public List<HolidaysWeekItem> getTime(HttpServletRequest request,
 			@PathVariable("country") String country)
 	{
 		log.info("GET Holidays time: country={}", country);
-		return dao.showHolidaysWeek(country);
+		return dao.showHolidaysWeek(createUserInfo(request),country);
 	}
 
 	@RequestMapping(value = "/Time", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postTime(
+	public Result postTime(HttpServletRequest request,
 			@RequestParam String[] values)
 	{
 		List<HolidaysWeekItem> items = new ArrayList<>(values.length);
@@ -99,21 +101,21 @@ public class HolidaysController
 			item.setStop(arr[3]);
 			items.add(item);
 		}
-		dao.setHolidaysWeek(items);
+		dao.setHolidaysWeek(createUserInfo(request),items);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/TimeOffset", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<CountryOffsetItem> getTimeOffset()
+	public List<CountryOffsetItem> getTimeOffset(HttpServletRequest request)
 	{
 		log.info("GET Holidays timeoffset");
-		return dao.showCountryOffset();
+		return dao.showCountryOffset(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/TimeOffset", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postTimeOffset(
+	public Result postTimeOffset(HttpServletRequest request,
 			@RequestParam String[] values)
 	{
 		List<CountryOffsetItem> items = new ArrayList<>();
@@ -128,13 +130,13 @@ public class HolidaysController
 			item.setStop(arr[4]);
 			items.add(item);
 		}
-		dao.setCountryOffset(items);
+		dao.setCountryOffset(createUserInfo(request),items);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Countries", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboCountries(
+	public List<SimpleItem> comboCountries(HttpServletRequest request,
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO Holidays: Countries='{}'", query);

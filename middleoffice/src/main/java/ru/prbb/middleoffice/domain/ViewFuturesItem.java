@@ -4,7 +4,8 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+
+import ru.prbb.Utils;
 
 /**
  * @author RBr
@@ -18,6 +19,19 @@ public class ViewFuturesItem implements Serializable {
 	private String deal_name;
 	private String name;
 	private String date_insert;
+
+	
+	public ViewFuturesItem() {
+	}
+
+	public ViewFuturesItem(Object[] arr) {
+		int col = 0;
+		setId_sec(Utils.toLong(arr[col++]));
+		setTicker(Utils.toString(arr[col++]));
+		setDeal_name(Utils.toString(arr[col++]));
+		setName(Utils.toString(arr[col++]));
+		setDate_insert(Utils.toTimestamp(arr[col++]));
+	}
 
 	/**
 	 * @return the id_sec

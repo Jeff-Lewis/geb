@@ -5,6 +5,8 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  */
@@ -22,6 +24,23 @@ public class ViewPortfolioTransferItem implements Serializable {
 	private Number avg_price;
 	private Number avg_price_usd;
 	private String currency;
+
+	
+	public ViewPortfolioTransferItem() {
+	}
+
+	public ViewPortfolioTransferItem(Object[] arr) {
+		setId(Utils.toLong(arr[0]));
+		setDated(Utils.toDate(arr[1]));
+		setClient(Utils.toString(arr[2]));
+		setFund(Utils.toString(arr[3]));
+		setSecurity_code(Utils.toString(arr[4]));
+		setBatch(Utils.toInteger(arr[5]));
+		setQuantity(Utils.toInteger(arr[6]));
+		setAvg_price(Utils.toDouble(arr[7]));
+		setAvg_price_usd(Utils.toDouble(arr[8]));
+		setCurrency(Utils.toString(arr[9]));
+	}
 
 	public Long getId() {
 		return id;

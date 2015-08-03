@@ -5,73 +5,75 @@ package ru.prbb.middleoffice.repo;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.prbb.ArmUserInfo;
+import org.springframework.stereotype.Service;
+
 import ru.prbb.middleoffice.domain.SecurityItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
- * Список инструментов и фильтр для списка
- * 
  * @author RBr
  */
-public interface SecuritiesDao {
+@Service
+public class SecuritiesDao
+{
 
-	/**
-	 * @param filter
-	 * @param security
-	 * @return
-	 */
-	List<SecurityItem> findAll(String filter, Long security);
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findCombo(String query);
+	public List<SecurityItem> findAll(ArmUserInfo user, String filter, Long security) {
+		String sql = "{call dbo.mo_WebGet_FilterSecurities_sp ?, ?}";
+		return ems.getSelectList(user, SecurityItem.class, sql, filter, security);
+	}
 
-	/**
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findComboFilter(String query);
+	public List<SimpleItem> findCombo(String query) {
+		String sql = "select id, name from dbo.mo_WebGet_ajaxSecurities_v";
+		String where = " where lower(name) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 
-	/**
-	 * Акции
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findComboShares(String query);
+	public List<SimpleItem> findComboType(String query) {
+		String sql = "select id, name from dbo.mo_WebGet_ajaxSecurityType_v";
+		String where = " where lower(name) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 
-	/**
-	 * Свопы
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findComboSwaps(String query);
+	public List<SimpleItem> findComboFilter(String query) {
+		String sql = "select name from dbo.mo_WebGet_ajaxFilterRequest_v";
+		String where = " where lower(name) like ?";
+		return ems.getComboListName(sql, where, query);
+	}
 
-	/**
-	 * Облигации
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findComboBonds(String query);
+	public List<SimpleItem> findComboShares(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxShares_v";
+		String where = " where lower(security_code) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 
-	/**
-	 * Фьючерсы
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findComboFutures(String query);
+	public List<SimpleItem> findComboSwaps(String query) {
+		String sql = "select id_sec as id, security_code as name from dbo.mo_WebGet_ajaxSwaps_v";
+		String where = " where lower(security_code) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 
-	/**
-	 * Опционы
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findComboOptions(String query);
+	public List<SimpleItem> findComboBonds(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxBonds_v";
+		String where = " where lower(security_code) like ?";
+		return ems.getComboList(sql, where, query);
+	}
+
+	public List<SimpleItem> findComboFutures(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxFutures_v";
+		String where = " where lower(security_code) like ?";
+		return ems.getComboList(sql, where, query);
+	}
+
+	public List<SimpleItem> findComboOptions(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxOptions_v";
+		String where = " where lower(security_code) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 
 }

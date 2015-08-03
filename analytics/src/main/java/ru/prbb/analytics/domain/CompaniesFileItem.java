@@ -8,6 +8,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -21,6 +23,16 @@ public class CompaniesFileItem implements Serializable {
 	private String file_type;
 	private String file_name;
 	private String insert_date;
+
+	public CompaniesFileItem() {
+	}
+
+	public CompaniesFileItem(Object[] arr) {
+		id_doc = Utils.toLong(arr[0]);
+		file_type = Utils.toString(arr[1]);
+		file_name = Utils.toString(arr[2]);
+		insert_date = Utils.toString(arr[3]);
+	}
 
 	/**
 	 * @return the id_doc

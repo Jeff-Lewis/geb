@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  */
@@ -23,6 +25,19 @@ public class FuturesItem implements Serializable {
 	@Column(name = "TradeSystem")
 	private String tradeSystem;
 	private String comment;
+
+	
+	public FuturesItem() {
+	}
+
+	public FuturesItem(Object[] arr) {
+		setFuturesId(Utils.toLong(arr[0]));
+		setCoefId(Utils.toLong(arr[1]));
+		setFutures(Utils.toString(arr[2]));
+		setTradeSystem(Utils.toString(arr[3]));
+		setCoefficient(Utils.toDouble(arr[4]));
+		setComment(Utils.toString(arr[5]));
+	}
 
 	public Long getFuturesId() {
 		return futuresId;

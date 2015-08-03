@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.operations;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +40,7 @@ public class DealsTransferController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postSave(
+	public Result postSave(HttpServletRequest request,
 			@RequestParam Long portfolioId,
 			@RequestParam Integer quantity,
 			@RequestParam Double price,
@@ -48,18 +50,18 @@ public class DealsTransferController
 	{
 		log.info("POST DealsTransfer: portfolioId={}, quantity={}, price={}, fundId={}, batch={}, comment={}",
 				Utils.toArray(portfolioId, quantity, price, fundId, batch, comment));
-		dao.execute(portfolioId, quantity, price, fundId, batch, comment);
+		dao.execute(createUserInfo(request),portfolioId, quantity, price, fundId, batch, comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/PortfolioShowTransfer", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<ViewPortfolioTransferItem> postGetPortfolio(
+	public List<ViewPortfolioTransferItem> postGetPortfolio(HttpServletRequest request,
 			@RequestParam String date,
 			@RequestParam Long client)
 	{
 		log.info("POST DealsTransfer/PortfolioShowTransfer: date={}, client={}", date, client);
-		return daoPortfolio.executeSelect(Utils.parseDate(date), client);
+		return daoPortfolio.executeSelect(createUserInfo(request),Utils.parseDate(date), client);
 	}
 
 	@RequestMapping(value = "/Funds", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

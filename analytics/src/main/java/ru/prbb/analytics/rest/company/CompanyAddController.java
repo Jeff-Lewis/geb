@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +49,7 @@ public class CompanyAddController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData add(
+	public ResultData add(HttpServletRequest request,
 			@RequestParam String[] codes)
 	{
 		log.info("POST CompanyAdd: codes={}", (Object) codes);
@@ -60,7 +62,7 @@ public class CompanyAddController
 				"BEST_CRNCY_ISO", "DVD_CRNCY", "EARN_EST_CRNCY", "EQY_FUND_TICKER", "EQY_FISCAL_YR_END",
 				"PRIMARY_PERIODICITY"};
 		Map<String, Map<String, String>> answer = bs.executeReferenceDataRequest("CompanyAdd", codes, fields);
-		return new ResultData(dao.execute(codes, answer));
+		return new ResultData(dao.execute(createUserInfo(request), codes, answer));
 	}
 
 	@Autowired
@@ -76,7 +78,7 @@ public class CompanyAddController
 
 	@RequestMapping(value = "/Bloom", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData addBloom(
+	public ResultData addBloom(HttpServletRequest request,
 			@RequestParam String[] codes,
 			@RequestParam(required = false, defaultValue = "") String period)
 	{
@@ -141,7 +143,7 @@ public class CompanyAddController
 		Set<String> saCurrencies = new HashSet<>();
 		List<String> saCode_crncy = new ArrayList<>(codes.length);
 
-		List<CompanyAddDao.InfoItem> infoAdd = dao.getCompanyInfo(codes);
+		List<CompanyAddDao.InfoItem> infoAdd = dao.getCompanyInfo(createUserInfo(request), codes);
 		for (CompanyAddDao.InfoItem item : infoAdd) {
 			String text = item + "; ";
 			if (periodicity.containsKey(item.code)) {
@@ -196,7 +198,7 @@ public class CompanyAddController
 								"IS_COMP_EPS_EXCL_STOCK_COMP",
 								"OPER_ROE",
 								"RETENTION_RATIO"));
-				reqBDHdao.execute(securities, currencies, answer);
+				reqBDHdao.execute(createUserInfo(request), securities, currencies, answer);
 			} catch (Exception e) {
 				info.put("BDH YEARLY", new StringBuilder("Запрос BDH YEARLY:").append(e.getMessage()));
 			}
@@ -214,7 +216,7 @@ public class CompanyAddController
 								"TOT_SELL_REC",
 								"PX_LAST",
 								"PX_VOLUME"));
-				reqBDHdao.execute(securities, currencies, answer);
+				reqBDHdao.execute(createUserInfo(request), securities, currencies, answer);
 			} catch (Exception e) {
 				info.put("BDH DAILY", new StringBuilder("Запрос BDH DAILY:").append(e.getMessage()));
 			}
@@ -242,7 +244,7 @@ public class CompanyAddController
 							"PROF_MARGIN",
 							"OPER_MARGIN",
 							"EQY_DVD_YLD_IND"));
-			reqBDHEPSdao.execute(securities, currencies, answer);
+			reqBDHEPSdao.execute(createUserInfo(request), securities, currencies, answer);
 		} catch (Exception e) {
 			info.put("BDH EPS YEARLY", new StringBuilder("Запрос BDH EPS YEARLY:").append(e.getMessage()));
 		}
@@ -268,7 +270,7 @@ public class CompanyAddController
 								"PROF_MARGIN",
 								"OPER_MARGIN",
 								"EQY_DVD_YLD_IND"));
-				reqBDHEPSdao.execute(securities, currencies, answer);
+				reqBDHEPSdao.execute(createUserInfo(request), securities, currencies, answer);
 			} catch (Exception e) {
 				info.put("BDH EPS QUARTERLY",
 						new StringBuilder("Запрос BDH EPS QUARTERLY:").append(e.getMessage()));
@@ -296,7 +298,7 @@ public class CompanyAddController
 								"PROF_MARGIN",
 								"OPER_MARGIN",
 								"EQY_DVD_YLD_IND"));
-				reqBDHEPSdao.execute(securities, currencies, answer);
+				reqBDHEPSdao.execute(createUserInfo(request), securities, currencies, answer);
 			} catch (Exception e) {
 				info.put("BDH EPS SEMI_ANNUALLY",
 						new StringBuilder("Запрос BDH EPS SEMI_ANNUALLY:").append(e.getMessage()));
@@ -322,7 +324,7 @@ public class CompanyAddController
 					"PE_RATIO",
 					"PX_LAST",
 					"PX_VOLUME"));
-			reqBDPdao.execute(codes, answer);
+			reqBDPdao.execute(createUserInfo(request), codes, answer);
 		} catch (Exception e) {
 			info.put("BDP", new StringBuilder("Запрос BDP:").append(e.getMessage()));
 		}
@@ -334,7 +336,7 @@ public class CompanyAddController
 			String over = "BST";
 			Map<String, Map<String, Map<String, String>>> answer = bs.executeBdpRequestOverrideQuarter("Добавление компаний BDP override",
 					securities, toArray("BEST_EPS_GAAP", "BEST_BPS"), currencies, over);
-			reqBDPOVRdao.execute(securities, currencies, over, answer);
+			reqBDPOVRdao.execute(createUserInfo(request), securities, currencies, over, answer);
 		} catch (Exception e) {
 			info.put("", new StringBuilder("Запрос BDP over:").append(e.getMessage()));
 		}
@@ -343,7 +345,7 @@ public class CompanyAddController
 		try {
 			Map<String, Object> answer = bs.executeBdsRequest("Добавление компаний BDS", codes,
 					toArray("BLOOMBERG_PEERS", "BEST_ANALYST_RECS_BULK"));
-			reqBDSdao.execute(codes, answer);
+			reqBDSdao.execute(createUserInfo(request), codes, answer);
 		} catch (Exception e) {
 			info.put("BDS", new StringBuilder("Запрос BDS:").append(e.getMessage()));
 		}

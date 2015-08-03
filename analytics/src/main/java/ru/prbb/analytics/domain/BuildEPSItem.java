@@ -5,6 +5,8 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -20,6 +22,23 @@ public class BuildEPSItem implements Serializable {
 	private String eps_growth_status;
 	private String bv_growth_rate;
 	private String pb_median;
+
+	
+	public BuildEPSItem() {
+	}
+
+	public BuildEPSItem(Object[] arr) {
+		int idx = 0;
+		setSecurity_code(Utils.toString(arr[idx++]));
+		setPeriodical_eps_status(Utils.toString(arr[idx++]));
+		setYearly_eps_status(Utils.toString(arr[idx++]));
+		setEps_median_status(Utils.toString(arr[idx++]));
+		setPe_median_status(Utils.toString(arr[idx++]));
+		setEps_growth_status(Utils.toString(arr[idx++]));
+		setBv_growth_rate(Utils.toString(arr[idx++]));
+		setPb_median(Utils.toString(arr[idx++]));
+	}
+
 	/**
 	 * @return the security_code
 	 */

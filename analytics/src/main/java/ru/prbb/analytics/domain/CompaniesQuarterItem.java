@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  */
@@ -52,6 +54,52 @@ public class CompaniesQuarterItem implements Serializable {
 	private Number eqy_dps;
 	@Column(name = "EQY_DVD_YLD_IND")
 	private Number eqy_dvd_yld_ind;
+
+	
+	public CompaniesQuarterItem() {
+	}
+
+	public CompaniesQuarterItem(Object[] arr) {
+		int idx = 0;
+		//Код Блумберг
+		setSecurity_code(Utils.toString(arr[idx++]));
+		//Период
+		setPeriod(Utils.toString(arr[idx++]));
+		//date
+		setDate(Utils.toDate(arr[idx++]));
+		//EPS
+		setEps(Utils.toDouble(arr[idx++]));
+		//IS_EPS
+		setIs_eps(Utils.toDouble(arr[idx++]));
+		//IS_COMP_EPS_ADJUSTED
+		setIs_comp_eps_adjusted(Utils.toDouble(arr[idx++]));
+		//IS_COMP_EPS_EXCL_STOCK_COMP
+		setIs_comp_eps_excl_stock_comp(Utils.toDouble(arr[idx++]));
+		//IS_BASIC_EPS_CONT_OPS
+		setIs_basic_eps_cont_ops(Utils.toDouble(arr[idx++]));
+		//IS_DIL_EPS_CONT_OPS
+		setIs_dil_eps_cont_ops(Utils.toDouble(arr[idx++]));
+		//EBITDA
+		setEbitda(Utils.toDouble(arr[idx++]));
+		//BEST_EBITDA
+		setBest_ebitda(Utils.toDouble(arr[idx++]));
+		//SALES_REV_TURN
+		setSales_rev_turn(Utils.toDouble(arr[idx++]));
+		//NET_REV
+		setNet_rev(Utils.toDouble(arr[idx++]));
+		//PROF_MARGIN
+		setProf_margin(Utils.toDouble(arr[idx++]));
+		//OPER_MARGIN
+		setOper_margin(Utils.toDouble(arr[idx++]));
+		//OPER_ROE
+		setOper_roe(Utils.toDouble(arr[idx++]));
+		//EQY_DPS
+		setEqy_dps(Utils.toDouble(arr[idx++]));
+		//EQY_DVD_YLD_IND
+		setEqy_dvd_yld_ind(Utils.toDouble(arr[idx++]));
+		//Currency
+		setCurrency(Utils.toString(arr[idx++]));
+	}
 
 	public String getSecurity_code() {
 		return security_code;

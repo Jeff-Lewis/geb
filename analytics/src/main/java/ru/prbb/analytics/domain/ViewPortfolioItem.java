@@ -8,6 +8,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -19,6 +21,15 @@ public class ViewPortfolioItem implements Serializable {
 	@Id
 	private Long id_sec;
 	private String security_code;
+
+	
+	public ViewPortfolioItem() {
+	}
+
+	public ViewPortfolioItem(Object[] arr) {
+		id_sec = Utils.toLong(arr[0]);
+		security_code = Utils.toString(arr[1]);
+	}
 
 	/**
 	 * @return the id_sec

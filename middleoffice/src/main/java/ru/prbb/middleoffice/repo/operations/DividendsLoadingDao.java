@@ -6,18 +6,24 @@ package ru.prbb.middleoffice.repo.operations;
 import java.sql.Date;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
 
 import ru.prbb.XlsRecord;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
- * Загрузка дивидендов из файла
- * 
  * @author RBr
- * 
  */
-public interface DividendsLoadingDao {
+@Service
+public class DividendsLoadingDao
+{
 
-	class Record extends XlsRecord {
+	public static class Record extends XlsRecord {
 
 		public final String security_code;
 		public final Date record_date;
@@ -45,9 +51,13 @@ public interface DividendsLoadingDao {
 		}
 	}
 
-	/**
-	 * @param record
-	 * @return
-	 */
-	int put(Record record);
+	@Autowired
+	private EntityManagerService ems;
+
+	public int put(ArmUserInfo user, Record r) {
+		String sql = "{call dbo.mo_xlsLoadDividends_sp ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+		return ems.executeUpdate(AccessAction.OTHER, user, sql,
+				r.security_code, r.record_date, r.div_per_share, r.quantity, r.receive_date, r.account, r.extra_costs, r.currency, r.fund);
+	}
+
 }

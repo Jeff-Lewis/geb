@@ -5,6 +5,8 @@ package ru.prbb.analytics.rest.params;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,18 +35,18 @@ public class ViewParamsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<ViewParamsItem> getItems()
+	public List<ViewParamsItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET ViewParams");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") String blm_id)
 	{
 		log.info("GET ViewParams: blm_id={}", blm_id);
-		return new ResultData(dao.findById(blm_id));
+		return new ResultData(dao.findById(createUserInfo(request), blm_id));
 	}
 }

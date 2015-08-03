@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,50 +38,50 @@ public class SwapsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<SwapItem> getItems()
+	public List<SwapItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET Swaps");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Swaps: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddItem(
+	public Result postAddItem(HttpServletRequest request,
 			@RequestParam String swap,
 			@RequestParam Long security)
 	{
 		log.info("POST Swaps add: swap={}, security={}", swap, security);
-		dao.put(swap, security);
+		dao.put(createUserInfo(request),swap, security);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateItem(
+	public Result postUpdateItem(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String swap)
 	{
 		log.info("POST Swaps update: id={}, swap={}", id, swap);
-		dao.updateById(id, swap);
+		dao.updateById(createUserInfo(request),id, swap);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL Swaps: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 

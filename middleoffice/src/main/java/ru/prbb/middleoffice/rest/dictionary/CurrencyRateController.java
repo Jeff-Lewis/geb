@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,12 +36,12 @@ public class CurrencyRateController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<CurrencyRateItem> postItems(
+	public List<CurrencyRateItem> postItems(HttpServletRequest request,
 			@RequestParam String dated,
 			@RequestParam String iso)
 	{
 		log.info("POST CurrencyRate: dated={}, iso={}", dated, iso);
-		return dao.findAll(Utils.parseDate(dated), Utils.parseString(iso));
+		return dao.findAll(createUserInfo(request),Utils.parseDate(dated), Utils.parseString(iso));
 	}
 
 	@RequestMapping(value = "/Currencies", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

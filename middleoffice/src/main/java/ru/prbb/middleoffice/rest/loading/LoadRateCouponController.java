@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +41,7 @@ public class LoadRateCouponController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData show(
+	public ResultData show(HttpServletRequest request,
 			@RequestParam String[] securities)
 	{
 		final Map<String, Long> ids = new HashMap<>();
@@ -55,17 +57,17 @@ public class LoadRateCouponController
 
 		List<Map<String, Object>> answer = bs.executeRateCouponLoad(ids);
 
-		return new ResultData(dao.execute(answer));
+		return new ResultData(dao.execute(createUserInfo(request),answer));
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityItem> listSecurities(
+	public List<SecurityItem> listSecurities(HttpServletRequest request,
 			@RequestParam(defaultValue = "Bond") String filter,
 			@RequestParam(required = false) Long security)
 	{
 		log.info("POST LoadRateCoupon/Securities: filter={}, security={}", filter, security);
-		return daoSecurities.findAll(filter, security);
+		return daoSecurities.findAll(createUserInfo(request),filter, security);
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

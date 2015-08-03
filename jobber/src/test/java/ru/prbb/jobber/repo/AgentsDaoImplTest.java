@@ -20,14 +20,14 @@ import ru.prbb.jobber.domain.AgentItem;
  */
 public class AgentsDaoImplTest {
 
-	private AgentsDaoImpl dao;
+	private AgentsDao dao;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		dao = new AgentsDaoImpl();
+		dao = new AgentsDao();
 	}
 
 	/**

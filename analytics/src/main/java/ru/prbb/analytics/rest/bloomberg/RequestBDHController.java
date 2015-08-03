@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +47,7 @@ public class RequestBDHController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postExecute(
+	public Result postExecute(HttpServletRequest request,
 			@RequestParam String[] security,
 			@RequestParam String[] params,
 			@RequestParam String dateStart,
@@ -63,46 +65,46 @@ public class RequestBDHController
 		Map<String, Map<String, Map<String, String>>> answer =
 				bs.executeBdhRequest("BDH запрос", dateStart, dateEnd, period, calendar,
 						_currency.toArray(new String[_currency.size()]), security, params);
-		dao.execute(security, currency, answer);
+		dao.execute(createUserInfo(request), security, currency, answer);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<EquitiesItem> getSecurities(
+	public List<EquitiesItem> getSecurities(HttpServletRequest request,
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equities,
 			@RequestParam(required = false) Integer fundamentals)
 	{
 		log.info("POST RequestBDH/Securities: filter={}, equities={}, fundamentals={}", Utils.asArray(filter, equities, fundamentals));
-		return daoEquities.findAllEquities(filter, equities, fundamentals);
+		return daoEquities.findAllEquities(createUserInfo(request), filter, equities, fundamentals);
 	}
 
 	@RequestMapping(value = "/Params", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboParams(
+	public List<SimpleItem> comboParams(HttpServletRequest request,
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO RequestBDH: Params='{}'", query);
-		return dao.findParams(query);
+		return dao.findParams(createUserInfo(request), query);
 	}
 
 	@RequestMapping(value = "/Period", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboPeriod(
+	public List<SimpleItem> comboPeriod(HttpServletRequest request,
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO RequestBDH: Period='{}'", query);
-		return daoParams.findPeriod(query);
+		return daoParams.findPeriod(createUserInfo(request), query);
 	}
 
 	@RequestMapping(value = "/Calendar", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboCalendar(
+	public List<SimpleItem> comboCalendar(HttpServletRequest request,
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO RequestBDH: Calendar='{}'", query);
-		return daoParams.findCalendar(query);
+		return daoParams.findCalendar(createUserInfo(request), query);
 	}
 
 	@RequestMapping(value = "/EquitiesFilter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

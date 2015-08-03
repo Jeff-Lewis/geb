@@ -2,6 +2,7 @@ package ru.prbb.middleoffice.rest.portfolio;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,34 +44,34 @@ public class TransferOperationsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<TransferOperationsListItem> postShow(
+	public List<TransferOperationsListItem> postShow(HttpServletRequest request,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker)
 	{
 		log.info("POST TransferOperations: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
-		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
+		return dao.findAll(createUserInfo(request),Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET TransferOperations: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] getExport(HttpServletResponse response,
+	public byte[] getExport(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker)
 	{
 		log.info("GET TransferOperations/Export: dateBegin={}, dateEnd={}, ticker={}", Utils.toArray(dateBegin, dateEnd, ticker));
 		List<TransferOperationsListItem> list =
-				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
+				dao.findAll(createUserInfo(request),Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker);
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Список перекидок");
@@ -116,17 +117,17 @@ public class TransferOperationsController
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@RequestParam Long[] ids)
 	{
 		log.info("DEL TransferOperations: ids={}", ids);
-		dao.deleteById(ids);
+		dao.deleteById(createUserInfo(request),ids);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Set", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postSet(
+	public Result postSet(HttpServletRequest request,
 			@RequestParam Long[] ids,
 			@RequestParam String field,
 			@RequestParam String value)
@@ -137,7 +138,7 @@ public class TransferOperationsController
 		sb.setCharAt(0, ch);
 		field = sb.toString();
 
-		dao.updateById(ids, field, value);
+		dao.updateById(createUserInfo(request),ids, field, value);
 		return Result.SUCCESS;
 	}
 

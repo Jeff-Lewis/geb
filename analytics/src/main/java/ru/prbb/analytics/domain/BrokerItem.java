@@ -5,24 +5,46 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
- * 
  */
-@Entity
+//@Entity
 public class BrokerItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name = "id")
 	private Long id;
+	@Column(name = "full_name")
 	private String full_name;
-	private Integer rating;
+	@Column(name = "rating")
+	private Number rating;
+	@Column(name = "bloomberg_code")
 	private String bloomberg_code;
-	private Integer cover_russian;
+	@Column(name = "cover_russian")
+	private Number cover_russian;
+	@Column(name = "short_name")
 	private String short_name;
+
+	public BrokerItem() {
+	}
+
+	public BrokerItem(Object[] arr) {
+		int idx = 0;
+		id = Utils.toLong(arr[idx++]);
+		full_name = Utils.toString(arr[idx++]);
+		rating = Utils.toInteger(arr[idx++]);
+		bloomberg_code = Utils.toString(arr[idx++]);
+		cover_russian = Utils.toInteger(arr[idx++]);
+		short_name = Utils.toString(arr[idx++]);
+	}
 
 	/**
 	 * @return the id
@@ -57,7 +79,7 @@ public class BrokerItem implements Serializable {
 	/**
 	 * @return the rating
 	 */
-	public Integer getRating() {
+	public Number getRating() {
 		return rating;
 	}
 
@@ -65,7 +87,7 @@ public class BrokerItem implements Serializable {
 	 * @param rating
 	 *            the rating to set
 	 */
-	public void setRating(Integer rating) {
+	public void setRating(Number rating) {
 		this.rating = rating;
 	}
 
@@ -87,7 +109,7 @@ public class BrokerItem implements Serializable {
 	/**
 	 * @return the cover_russian
 	 */
-	public Integer getCover_russian() {
+	public Number getCover_russian() {
 		return cover_russian;
 	}
 
@@ -95,7 +117,7 @@ public class BrokerItem implements Serializable {
 	 * @param cover_russian
 	 *            the cover_russian to set
 	 */
-	public void setCover_russian(Integer cover_russian) {
+	public void setCover_russian(Number cover_russian) {
 		this.cover_russian = cover_russian;
 	}
 

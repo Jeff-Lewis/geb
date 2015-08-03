@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,19 +46,19 @@ public class RiskRewardPrice1Controller
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<RiskRewardPrice1Item> getItems()
+	public List<RiskRewardPrice1Item> getItems(HttpServletRequest request)
 	{
 		log.info("GET RiskRewardPrice1");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET RiskRewardPrice1: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -87,11 +89,11 @@ public class RiskRewardPrice1Controller
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL RiskRewardPrice1: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 
@@ -115,11 +117,11 @@ public class RiskRewardPrice1Controller
 
 	@RequestMapping(value = "/PortfolioShowTransfer", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<ViewPortfolioTransferItem> getPortfolio(
+	public List<ViewPortfolioTransferItem> getPortfolio(HttpServletRequest request,
 			@RequestParam String date,
 			@RequestParam Long client)
 	{
 		log.info("GET RiskRewardPrice1/PortfolioShowTransfer: date={}, client={}", date, client);
-		return daoPortfolio.executeSelect(Utils.parseDate(date), client);
+		return daoPortfolio.executeSelect(createUserInfo(request),Utils.parseDate(date), client);
 	}
 }

@@ -2,6 +2,7 @@ package ru.prbb.middleoffice.rest.portfolio;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class ViewDetailedFinrezController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<ViewDetailedFinrezItem> postShow(
+	public List<ViewDetailedFinrezItem> postShow(HttpServletRequest request,
 			@RequestParam Long security,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
@@ -56,12 +57,12 @@ public class ViewDetailedFinrezController
 	{
 		log.info("POST ViewDetailedFinrez: security={}, dateBegin={}, dateEnd={}, client={}, fund={}, initiator={}",
 				Utils.toArray(security, dateBegin, dateEnd, client, fund, initiator));
-		return dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund, initiator);
+		return dao.executeSelect(createUserInfo(request),security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund, initiator);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] getExport(HttpServletResponse response,
+	public byte[] getExport(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam Long security,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
@@ -72,7 +73,7 @@ public class ViewDetailedFinrezController
 		log.info("POST ViewDetailedFinrez/Export: security={}, dateBegin={}, dateEnd={}, client={}, fund={}, initiator={}",
 				Utils.toArray(security, dateBegin, dateEnd, client, fund));
 		List<ViewDetailedFinrezItem> list =
-				dao.executeSelect(security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund, initiator);
+				dao.executeSelect(createUserInfo(request),security, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), client, fund, initiator);
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Текущий финрез");

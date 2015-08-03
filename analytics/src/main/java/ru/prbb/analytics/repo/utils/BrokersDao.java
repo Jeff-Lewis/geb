@@ -5,60 +5,59 @@ package ru.prbb.analytics.repo.utils;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import ru.prbb.ArmUserInfo;
 import ru.prbb.analytics.domain.BrokerItem;
 import ru.prbb.analytics.domain.SimpleItem;
+import ru.prbb.analytics.repo.UserHistory.AccessAction;
+import ru.prbb.analytics.services.EntityManagerService;
 
 /**
  * Справочник брокеров
  * 
  * @author RBr
- * 
  */
-public interface BrokersDao {
+@Service
+public class BrokersDao
+{
 
-	/**
-	 * @return
-	 */
-	public List<BrokerItem> findAll();
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	public BrokerItem findById(Long id);
+	public List<BrokerItem> findAll(ArmUserInfo user) {
+		String sql = "{call dbo.anca_WebGet_SelectBrokers_sp}";
+		return ems.getSelectList(user, BrokerItem.class, sql);
+	}
 
-	/**
-	 * 
-	 * @param full_name
-	 * @param rating
-	 * @param bloomberg_code
-	 * @param cover_russian
-	 * @param short_name
-	 * @return 
-	 */
-	public int put(String full_name, Integer rating, String bloomberg_code,
-			Integer cover_russian, String short_name);
+	public BrokerItem findById(ArmUserInfo user, Long id) {
+		String sql = "{call dbo.anca_WebGet_SelectBrokers_sp ?}";
+		return ems.getSelectItem(user, BrokerItem.class, sql, id);
+	}
 
-	/**
-	 * 
-	 * @param id
-	 * @param name
-	 * @param comment
-	 * @return 
-	 */
-	public int updateById(Long id, String full_name, Integer rating, String bloomberg_code,
-			Integer cover_russian, String short_name);
+	public int put(ArmUserInfo user, String full_name, Integer rating, String bloomberg_code,
+			Integer cover_russian, String short_name) {
+		String sql = "{call dbo.anca_WebSet_putBrokers_sp ?, ?, ?, ?, ?}";
+		return ems.executeUpdate(AccessAction.INSERT, user, sql,
+				full_name, rating, bloomberg_code, cover_russian, short_name);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	public int deleteById(Long id);
+	public int updateById(ArmUserInfo user, Long id, String full_name, Integer rating, String bloomberg_code,
+			Integer cover_russian, String short_name) {
+		String sql = "{call dbo.anca_WebSet_udBrokers_sp 'u', ?, ?, ?, ?, ?, ?}";
+		return ems.executeUpdate(AccessAction.UPDATE, user, sql,
+				id, full_name, rating, bloomberg_code, cover_russian, short_name);
+	}
 
-	/**
-	 * @param query
-	 * @return
-	 */
-	public List<SimpleItem> findCombo(String query);
+	public int deleteById(ArmUserInfo user, Long id) {
+		String sql = "{call dbo.anca_WebSet_udBrokers_sp 'd', ?}";
+		return ems.executeUpdate(AccessAction.DELETE, user, sql, id);
+	}
 
+	public List<SimpleItem> findCombo(String query) {
+		String sql = "select id, name from dbo.anca_WebGet_ajaxBrokers_v";
+		String where = "where lower(name) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 }

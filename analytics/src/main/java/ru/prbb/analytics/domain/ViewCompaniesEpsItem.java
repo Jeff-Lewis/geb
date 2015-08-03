@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -24,6 +26,19 @@ public class ViewCompaniesEpsItem implements Serializable {
 	private String eps;
 	private String related_security;
 	private String security_code;
+
+	
+	public ViewCompaniesEpsItem() {
+	}
+
+	public ViewCompaniesEpsItem(Object[] arr) {
+		int idx = 0;
+		id_sec = Utils.toLong(arr[idx++]);
+		sector = Utils.toString(arr[idx++]);
+		eps = Utils.toString(arr[idx++]);
+		related_security = Utils.toString(arr[idx++]);
+		security_code = Utils.toString(arr[idx++]);
+	}
 
 	/**
 	 * @return the id_sec

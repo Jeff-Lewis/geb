@@ -19,6 +19,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
+ * Периодический опрос заданного сервера для проверки новых заданий
  *
  * @author ruslan
  */
@@ -26,12 +27,15 @@ abstract class AbstractChecker implements Runnable {
 
     protected final Logger logger = Logger.getLogger(getClass().getName());
 
+    /**
+     * Сервер для опроса
+     */
     protected final URI uri;
     protected final ObjectMapper mapper;
 
     private final ScheduledExecutorService exec;
     private ScheduledFuture<?> ft;
-	private boolean isRun;
+    private boolean isRun;
 
     protected AbstractChecker(String host) throws URISyntaxException {
         uri = new URI(host);
@@ -40,14 +44,14 @@ abstract class AbstractChecker implements Runnable {
         exec = Executors.newSingleThreadScheduledExecutor();
     }
 
-	public URI getUri() {
-		return uri;
-	}
+    public URI getUri() {
+        return uri;
+    }
 
-	@Override
+    @Override
     public String toString() {
         String status = (ft == null) ? "stop" : isRun ? "work" : "wait";
-		return "[ " + status + " ]   " + uri;
+        return "[ " + status + " ]   " + uri;
     }
 
     public void start() {
@@ -56,25 +60,26 @@ abstract class AbstractChecker implements Runnable {
         }
     }
 
-	public void stop() {
+    public void stop() {
         if (ft != null) {
-        	ft.cancel(false);
-        	ft = null;
+            ft.cancel(false);
+            ft = null;
         }
-	}
+    }
 
     @Override
     public void run() {
-    	isRun = true;
+        isRun = true;
         try (CloseableHttpClient httpClient = createHttpClient()) {
             check(httpClient);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
         }
-    	isRun = false;
+        isRun = false;
     }
 
     protected abstract int getDelaySec();
+
     protected abstract void check(CloseableHttpClient httpClient) throws Exception;
 
     private CloseableHttpClient createHttpClient() {

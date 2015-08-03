@@ -5,6 +5,8 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -21,6 +23,22 @@ public class ViewModelPriceItem implements Serializable {
 	private String price_date;
 	private String price_period;
 	private Number TR;
+
+	
+	public ViewModelPriceItem() {
+	}
+
+	public ViewModelPriceItem(Object[] arr) {
+		setEquity_fund_ticker(Utils.toString(arr[0]));
+		setCompany_short_name(Utils.toString(arr[1]));
+		setFirm_name(Utils.toString(arr[2]));
+		setBloomberg_code(Utils.toString(arr[3]));
+		setFirm_rating(Utils.toInteger(arr[4]));
+		setTarget_price(Utils.toDouble(arr[5]));
+		setPrice_date(Utils.toString(arr[6]));
+		setPrice_period(Utils.toString(arr[7]));
+		setTR(Utils.toInteger(arr[8]));
+	}
 
 	/**
 	 * @return the equity_fund_ticker

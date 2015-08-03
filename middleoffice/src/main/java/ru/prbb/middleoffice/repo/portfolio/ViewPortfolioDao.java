@@ -6,42 +6,48 @@ package ru.prbb.middleoffice.repo.portfolio;
 import java.sql.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
+
 import ru.prbb.middleoffice.domain.ViewPortfolioItem;
 import ru.prbb.middleoffice.domain.ViewPortfolioTransferItem;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
  * Текущий портфель
  * 
  * @author RBr
  */
-public interface ViewPortfolioDao {
+@Service
+public class ViewPortfolioDao
+{
 
-	/**
-	 * @param date
-	 * @param security
-	 * @return
-	 */
-	List<ViewPortfolioItem> executeSelect(Date date, Long security, Long client);
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param date
-	 * @return
-	 */
-	List<ViewPortfolioTransferItem> executeSelect(Date date, Long client);
+	public List<ViewPortfolioItem> executeSelect(ArmUserInfo user, Date rep_date, Long id_sec, Long funds_id) {
+		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, ?, ?}";
+		return ems.getSelectList(user, ViewPortfolioItem.class, sql, rep_date, id_sec, funds_id);
+	}
 
-	/**
-	 * @param date
-	 * @param security
-	 * @param client
-	 * @return
-	 */
-	int executeCalc(Date date, Long security, Long client);
+	public List<ViewPortfolioTransferItem> executeSelect(ArmUserInfo user, Date rep_date, Long funds_id) {
+		String sql = "{call dbo.mo_WebGet_SelectPlReport_sp ?, null, ?, 1}";
+		return ems.getSelectList(user, ViewPortfolioTransferItem.class, sql, rep_date, funds_id);
+	}
 
-	/**
-	 * @param date
-	 * @param security
-	 * @return
-	 */
-	int executeDelete(Date date, Long security);
+	public int executeCalc(ArmUserInfo user, Date report_date, Long id_sec, Long funds_id) {
+//		String sql = "{call dbo.mo_WebSet_PlReport_sp ?, null, ?}";
+		String sql = "{call dbo.PlPortfolioOnDate ?, ?, ?}";
+		return ems.executeUpdate(AccessAction.OTHER, user, sql, report_date, id_sec, funds_id);
+	}
+
+	public int executeDelete(ArmUserInfo user, Date begin_date, Long id_sec) {
+		String sql = "{call dbo.mo_dFinResAndRests_sp ?, ?}";
+		return ems.executeUpdate(AccessAction.DELETE, user, sql, begin_date, id_sec);
+	}
 
 }

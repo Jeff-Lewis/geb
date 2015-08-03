@@ -2,6 +2,8 @@ package ru.prbb.analytics.rest.model;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,73 +37,73 @@ public class CompanyReportsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> getItems()
+	public List<SimpleItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET CompanyReports");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET CompanyReports: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request), id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postItemAdd(
+	public Result postItemAdd(HttpServletRequest request,
 			@RequestParam String name)
 	{
 		log.info("POST CompanyReports: name={}", name);
-		dao.put(name);
+		dao.put(createUserInfo(request), name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postItemRename(
+	public Result postItemRename(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
 		log.info("POST CompanyReports: id={}, name={}", id, name);
-		dao.renameById(id, name);
+		dao.renameById(createUserInfo(request), id, name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL CompanyReports: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request), id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/All", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<CompanyAllItem> getAll(
+	public List<CompanyAllItem> getAll(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET CompanyReports/All: id={}", id);
-		return dao.findStaff(id);
+		return dao.findStaff(createUserInfo(request), id);
 	}
 
 	@RequestMapping(value = "/{id}/Report", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<CompanyStaffItem> getReport(
+	public List<CompanyStaffItem> getReport(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET CompanyReports/Report: id={}", id);
-		return dao.findStaffReport(id);
+		return dao.findStaffReport(createUserInfo(request), id);
 	}
 
 	@RequestMapping(value = "/{id}/Staff", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postStaff(
+	public Result postStaff(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String action,
 			@RequestParam Long[] ids)
@@ -110,12 +112,12 @@ public class CompanyReportsController
 		action = action.toUpperCase();
 
 		if ("ADD".equals(action)) {
-			dao.putStaff(id, ids);
+			dao.putStaff(createUserInfo(request), id, ids);
 			return Result.SUCCESS;
 		}
 
 		if ("DEL".equals(action)) {
-			dao.deleteStaff(id, ids);
+			dao.deleteStaff(createUserInfo(request), id, ids);
 			return Result.SUCCESS;
 		}
 

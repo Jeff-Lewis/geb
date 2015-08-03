@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.operations;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +16,7 @@ import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
 import ru.prbb.middleoffice.repo.SecuritiesDao;
-import ru.prbb.middleoffice.repo.SecurityTypeDao;
-import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
+import ru.prbb.middleoffice.repo.dictionary.AccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
 import ru.prbb.middleoffice.repo.dictionary.FuturesDao;
 import ru.prbb.middleoffice.repo.dictionary.TradesystemsDao;
@@ -36,13 +37,11 @@ public class DealsOneNewController
 	@Autowired
 	private DealsOneNewDao dao;
 	@Autowired
-	private SecurityTypeDao daoSecurityType;
-	@Autowired
 	private CurrenciesDao daoCurrencies;
 	@Autowired
 	private TradesystemsDao daoTradesystems;
 	@Autowired
-	private BrokerAccountsDao daoBrokerAccounts;
+	private AccountsDao daoBrokerAccounts;
 	@Autowired
 	private EquitiesDao daoEquities;
 	@Autowired
@@ -52,7 +51,7 @@ public class DealsOneNewController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postSave(
+	public Result postSave(HttpServletRequest request,
 			@RequestParam String tradenum,
 			@RequestParam String batch,
 			@RequestParam String tradeticker,
@@ -75,11 +74,11 @@ public class DealsOneNewController
 				Utils.toArray(tradenum, batch, tradeticker, tradedate, settleDate, tradeoper,
 						tradeprice, quantity, currency, tradeSystem, account, portfolio, tickerSelect,
 						futures, kindTicker));
-		dao.put(Utils.parseString(batch), tradenum, tradeticker,
-				Utils.parseDate(tradedate), Utils.parseDate(settleDate),
-				tradeoper, tradeprice, quantity, currency, tradeSystem, account,
-				Utils.parseString(portfolio), tickerSelect,
-				Utils.parseString(futures), kindTicker);
+		dao.put(createUserInfo(request),Utils.parseString(batch), tradenum,
+				tradeticker, Utils.parseDate(tradedate),
+				Utils.parseDate(settleDate), tradeoper, tradeprice, quantity, currency, tradeSystem,
+				account, Utils.parseString(portfolio),
+				tickerSelect, Utils.parseString(futures), kindTicker);
 		return Result.SUCCESS;
 	}
 
@@ -89,7 +88,7 @@ public class DealsOneNewController
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO DealsOneNew: SecurityType='{}'", query);
-		return daoSecurityType.findCombo(query);
+		return daoSecurities.findComboType(query);
 	}
 
 	@RequestMapping(value = "/Currencies", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

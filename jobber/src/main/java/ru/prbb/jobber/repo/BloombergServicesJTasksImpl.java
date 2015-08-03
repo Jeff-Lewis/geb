@@ -31,7 +31,7 @@ import ru.prbb.jobber.services.TasksService;
 @Service
 public class BloombergServicesJTasksImpl implements BloombergServicesJ {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private TasksService tasks;

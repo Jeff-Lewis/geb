@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services.contacts;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,73 +37,73 @@ public class GroupsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> getItems()
+	public List<SimpleItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET Groups");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Groups: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddItem(
+	public Result postAddItem(HttpServletRequest request,
 			@RequestParam String name)
 	{
 		log.info("POST Groups: name={}", name);
-		dao.put(name);
+		dao.put(createUserInfo(request),name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateItem(
+	public Result postUpdateItem(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
 		log.info("POST Groups: id={}, name={}", id, name);
-		dao.updateById(id, name);
+		dao.updateById(createUserInfo(request),id, name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL Groups: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/Addresses", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<GroupAddressItem> getAddresses(
+	public List<GroupAddressItem> getAddresses(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Groups/Addresses: id={}", id);
-		return dao.findAllAddresses(id);
+		return dao.findAllAddresses(createUserInfo(request),id);
 	}
 
 	@RequestMapping(value = "/{id}/Contacts", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<GroupContactsItem> getContacts(
+	public List<GroupContactsItem> getContacts(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Groups/Contacts: id={}", id);
-		return dao.findAllContacts(id);
+		return dao.findAllContacts(createUserInfo(request),id);
 	}
 
 	@RequestMapping(value = "/{id}/Staff", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postStaff(
+	public Result postStaff(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String action,
 			@RequestParam Long[] cids)
@@ -110,12 +112,12 @@ public class GroupsController
 		action = action.toUpperCase();
 
 		if ("ADD".equals(action)) {
-			dao.putStaff(id, cids);
+			dao.putStaff(createUserInfo(request),id, cids);
 			return Result.SUCCESS;
 		}
 
 		if ("DEL".equals(action)) {
-			dao.deleteStaff(id, cids);
+			dao.deleteStaff(createUserInfo(request),id, cids);
 			return Result.SUCCESS;
 		}
 

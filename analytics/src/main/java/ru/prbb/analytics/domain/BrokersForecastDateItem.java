@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -25,6 +27,15 @@ public class BrokersForecastDateItem implements Serializable {
 	private Timestamp date;
 	@Column(name = "display")
 	private String value;
+
+	
+	public BrokersForecastDateItem() {
+	}
+
+	public BrokersForecastDateItem(Object[] arr) {
+		date = (Timestamp) arr[0];
+		value = Utils.toString(arr[1]);
+	}
 
 	/**
 	 * @return the date

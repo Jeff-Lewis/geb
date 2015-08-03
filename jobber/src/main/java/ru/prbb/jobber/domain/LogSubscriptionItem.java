@@ -5,6 +5,8 @@ package ru.prbb.jobber.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -19,6 +21,20 @@ public class LogSubscriptionItem implements Serializable {
 	private Number lastchange;
 	private String lastchangetime;
 	private String attention;
+
+	
+	public LogSubscriptionItem() {
+	}
+
+	public LogSubscriptionItem(Object[] arr) {
+		setSecurity_type(Utils.toString(arr[0]));
+		setTicker(Utils.toString(arr[1]));
+		setName(Utils.toString(arr[2]));
+		setLast(Utils.toDouble(arr[3]));
+		setLastchange(Utils.toDouble(arr[4]));
+		setLastchangetime(Utils.toString(arr[5])); // Timestamp
+		setAttention(Utils.toString(arr[6]));
+	}
 
 	/**
 	 * @return the security_type

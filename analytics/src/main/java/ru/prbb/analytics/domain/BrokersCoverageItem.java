@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -32,6 +34,24 @@ public class BrokersCoverageItem implements Serializable {
 	private Number morgan_Stanley;
 	@Column(name = "Deutsche_Bank")
 	private Number deutsche_Bank;
+
+	
+	public BrokersCoverageItem() {
+	}
+
+	public BrokersCoverageItem(Object[] arr) {
+		setId_sec(Utils.toLong(arr[0]));
+		setSecurity_code(Utils.toString(arr[1]));
+		setShort_name(Utils.toString(arr[2]));
+		setPivot_group(Utils.toString(arr[3]));
+		setCredit_Suisse(Utils.toInteger(arr[4]));
+		setGoldman_Sachs(Utils.toInteger(arr[5]));
+		setJp_Morgan(Utils.toInteger(arr[6]));
+		setUBS(Utils.toInteger(arr[7]));
+		setMerrill_Lynch(Utils.toInteger(arr[8]));
+		setMorgan_Stanley(Utils.toInteger(arr[9]));
+		setDeutsche_Bank(Utils.toInteger(arr[10]));
+	}
 
 	/**
 	 * @return the id_sec

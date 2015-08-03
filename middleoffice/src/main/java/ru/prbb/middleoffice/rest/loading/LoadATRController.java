@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.loading;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +41,7 @@ public class LoadATRController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData postShow(
+	public ResultData postShow(HttpServletRequest request,
 			@RequestParam String[] securities,
 			@RequestParam String typeMA,
 			@RequestParam Integer periodTA,
@@ -55,17 +57,17 @@ public class LoadATRController
 				bs.executeAtrLoad(Utils.parseDate(dateStart), Utils.parseDate(dateEnd),
 						securities, typeMA, periodTA, period, calendar);
 
-		return new ResultData(dao.execute(answer, typeMA, periodTA, period, calendar));
+		return new ResultData(dao.execute(createUserInfo(request),answer, typeMA, periodTA, period, calendar));
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityItem> listSecurities(
+	public List<SecurityItem> listSecurities(HttpServletRequest request,
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long security)
 	{
 		log.info("POST LoadATR/Securities: filter={}, security={}", filter, security);
-		return daoSecurities.findAll(filter, security);
+		return daoSecurities.findAll(createUserInfo(request),filter, security);
 	}
 
 	@RequestMapping(value = "/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

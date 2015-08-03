@@ -5,6 +5,8 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -16,6 +18,17 @@ public class PortfolioItem implements Serializable {
 	private String deal_name;
 	private String ticker;
 	private String date_insert;
+
+	
+	public PortfolioItem() {
+	}
+
+	public PortfolioItem(Object[] arr) {
+		setId_sec(Utils.toLong(arr[0]));
+		setTicker(Utils.toString(arr[1]));
+		setDeal_name(Utils.toString(arr[2]));
+		setDate_insert(Utils.toTimestamp(arr[3]));
+	}
 
 	/**
 	 * @return the id_sec

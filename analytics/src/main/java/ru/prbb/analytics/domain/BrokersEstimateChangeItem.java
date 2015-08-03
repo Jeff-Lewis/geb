@@ -5,6 +5,8 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -18,6 +20,19 @@ public class BrokersEstimateChangeItem implements Serializable {
 	private String pcntChange;
 	private String recommendation;
 	private String dateInsert;
+
+	
+	public BrokersEstimateChangeItem() {
+	}
+
+	public BrokersEstimateChangeItem(Object[] arr) {
+		setSecurity(Utils.toString(arr[0]));
+		setBroker(Utils.toString(arr[1]));
+		setTargetChange(Utils.toString(arr[2]));
+		setPcntChange(Utils.toString(arr[3]));
+		setRecommendation(Utils.toString(arr[4]));
+		setDateInsert(Utils.toString(arr[5]));
+	}
 
 	/**
 	 * @return the security

@@ -2,6 +2,7 @@ package ru.prbb.middleoffice.rest.dictionary;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import ru.prbb.middleoffice.domain.DividendItem;
 import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
-import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
+import ru.prbb.middleoffice.repo.dictionary.AccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.BrokersDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.CurrenciesDao;
@@ -44,7 +45,7 @@ public class DividendsController
 	@Autowired
 	private BrokersDao daoBrokers;
 	@Autowired
-	private BrokerAccountsDao daoAccounts;
+	private AccountsDao daoAccounts;
 	@Autowired
 	private FundsDao daoFunds;
 	@Autowired
@@ -54,7 +55,7 @@ public class DividendsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<DividendItem> postItems(
+	public List<DividendItem> postItems(HttpServletRequest request,
 			@RequestParam Long clientId,
 			@RequestParam Long brokerId,
 			@RequestParam Long securityId,
@@ -63,13 +64,13 @@ public class DividendsController
 	{
 		log.info("POST Dividends: clientId={}, brokerId={}, securityId={}, dateBegin={}, dateEnd={}",
 				Utils.toArray(clientId, brokerId, securityId, dateBegin, dateEnd));
-		return dao.findAll(securityId, clientId, brokerId, null,
-				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
+		return dao.findAll(createUserInfo(request),securityId, clientId, brokerId,
+				null, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 	}
 
 	@RequestMapping(value = "/ExportXls", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] postExport(HttpServletResponse response,
+	public byte[] postExport(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam Long clientId,
 			@RequestParam Long brokerId,
 			@RequestParam Long securityId,
@@ -78,8 +79,8 @@ public class DividendsController
 	{
 		log.info("POST Dividends/ExportXls: clientId={}, brokerId={}, securityId={}, dateBegin={}, dateEnd={}",
 				Utils.toArray(clientId, brokerId, securityId, dateBegin, dateEnd));
-		List<DividendItem> list = dao.findAll(securityId, clientId, brokerId, null,
-				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
+		List<DividendItem> list = dao.findAll(createUserInfo(request),securityId, clientId, brokerId,
+				null, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd));
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Дивиденды");
@@ -133,7 +134,7 @@ public class DividendsController
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddItem(
+	public Result postAddItem(HttpServletRequest request,
 			@RequestParam Long securityId,
 			@RequestParam Long accountId,
 			@RequestParam Long fundId,
@@ -148,40 +149,40 @@ public class DividendsController
 				+ " dateRecord={}, dateReceive={}, quantity={}, dividend={}, extraCost={}",
 				Utils.toArray(securityId, accountId, fundId, currencyId,
 						dateRecord, dateReceive, quantity, dividend, extraCost));
-		dao.put(securityId, accountId, fundId, currencyId,
-				Utils.parseDate(dateRecord), Utils.parseDate(dateReceive),
-				quantity, dividend, extraCost);
+		dao.put(createUserInfo(request),securityId, accountId, fundId,
+				currencyId, Utils.parseDate(dateRecord),
+				Utils.parseDate(dateReceive), quantity, dividend, extraCost);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public DividendItem getItem(
+	public DividendItem getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Dividends: id={}", id);
-		return dao.findById(id);
+		return dao.findById(createUserInfo(request),id);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result changeById(
+	public Result changeById(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String type,
 			@RequestParam String value)
 	{
 		log.info("POST Dividends: id={}, type={}, value={}", Utils.toArray(id, type, value));
-		dao.updateAttrById(id, type, value);
+		dao.updateAttrById(createUserInfo(request),id, type, value);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL Dividends: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 

@@ -5,6 +5,8 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -19,6 +21,20 @@ public class HolidaysItem implements Serializable {
 	private String time_stop;
 	private Number sms;
 	private Number portfolio;
+
+	
+	public HolidaysItem() {
+	}
+
+	public HolidaysItem(Object[] arr) {
+		setCountry(Utils.toString(arr[0]));
+		setDate(Utils.toDate(arr[1]));
+		setName(Utils.toString(arr[2]));
+		setTime_start(Utils.toTime(arr[3]));
+		setTime_stop(Utils.toTime(arr[4]));
+		setSms(Utils.toByte(arr[5]));
+		setPortfolio(Utils.toByte(arr[6]));
+	}
 
 	/**
 	 * @return the country

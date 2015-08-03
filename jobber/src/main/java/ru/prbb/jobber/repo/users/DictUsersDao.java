@@ -2,56 +2,51 @@ package ru.prbb.jobber.repo.users;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.prbb.jobber.domain.DictUserItem;
 import ru.prbb.jobber.domain.DictUsersInfoItem;
+import ru.prbb.jobber.services.EntityManagerService;
 
 /**
- * Справочник пользователей - Пользователи
- * 
  * @author BrihlyaevRA
  */
-public interface DictUsersDao {
+@Service
+public class DictUsersDao
+{
 
-	/**
-	 * @return
-	 */
-	List<DictUserItem> findAll();
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	DictUserItem findById(Long id);
+	public List<DictUserItem> findAll() {
+		String sql = "select user_id, user_login, user_name, user_email from dbo.users_v";
+		return ems.getSelectList(DictUserItem.class, sql);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<DictUsersInfoItem> findInfoById(Long id);
+	public DictUserItem findById(Long id) {
+		String sql = "select user_id, user_login, user_name, user_email from dbo.users_v where user_id=?";
+		return ems.getSelectItem(DictUserItem.class, sql, id);
+	}
 
-	/**
-	 * @param login
-	 * @param password
-	 * @param name
-	 * @param email
-	 * @return
-	 */
-	public int put(String login, String password, String name, String email);
+	public List<DictUsersInfoItem> findInfoById(Long id) {
+		String sql = "{call dbo.WebGet_Permission2user_sp null, null, null, null, ?}";
+		return ems.getSelectList(DictUsersInfoItem.class, sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @param login
-	 * @param password
-	 * @param name
-	 * @param email
-	 * @return
-	 */
-	public int updateById(Long id, String login, String password, String name, String email);
+	public int put(String login, String password, String name, String email) {
+		String sql = "{call dbo.WebSet_iudUsers_sp 'i', null, ?, ?, ?, ?}";
+		return ems.executeUpdate(sql, login, password, name, email);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	public int deleteById(Long id);
+	public int updateById(Long id, String login, String password, String name, String email) {
+		String sql = "{call dbo.WebSet_iudUsers_sp 'u', ?, ?, ?, ?, ?}";
+		return ems.executeUpdate(sql, id, login, password, name, email);
+	}
+
+	public int deleteById(Long id) {
+		String sql = "{call dbo.WebSet_iudUsers_sp 'd', ?}";
+		return ems.executeUpdate(sql, id);
+	}
 
 }

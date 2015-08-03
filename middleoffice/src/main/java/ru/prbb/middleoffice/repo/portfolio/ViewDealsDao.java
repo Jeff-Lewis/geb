@@ -6,39 +6,47 @@ package ru.prbb.middleoffice.repo.portfolio;
 import java.sql.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
+
 import ru.prbb.middleoffice.domain.ViewDealsItem;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
  * Список сделок
  * 
  * @author RBr
- * 
  */
-public interface ViewDealsDao {
+@Service
+public class ViewDealsDao
+{
 
-	/**
-	 * @param begin
-	 * @param end
-	 * @param security
-	 * @param client
-	 * @param funds
-	 * @param initiator
-	 * @param batch
-	 * @return
-	 */
-	List<ViewDealsItem> findAll(Date begin, Date end,
-			Long security, Long client, Long funds, Long initiator, Integer batch);
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param deals
-	 */
-	void deleteById(Long[] deals);
+	// FIXME @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, timeout = 60000)
+	public List<ViewDealsItem> findAll(ArmUserInfo user, Date begin, Date end,
+			Long security, Long client, Long funds, Long initiator, Integer batch) {
+		String sql = "{call dbo.mo_WebGet_SelectDeals_sp ?, ?, ?, ?, ?, ?, ?}";
+		return ems.getSelectList(user, ViewDealsItem.class, sql, begin, end, security, client, funds, initiator, batch);
+	}
 
-	/**
-	 * @param deals
-	 * @param field
-	 * @param value
-	 */
-	void updateById(Long[] deals, String field, String value);
+	public void updateById(ArmUserInfo user, Long[] deals, String field, String value) {
+		String sql = "{call dbo.mo_WebSet_setDealsAttr_sp ?, ?, ?}";
+		for (Long deal : deals) {
+			ems.executeUpdate(AccessAction.UPDATE, user, sql, deal, field, value);
+		}
+	}
+
+	public void deleteById(ArmUserInfo user, Long[] deals) {
+		String sql = "{call dbo.mo_WebSet_dDeals_sp ?}";
+		for (Long deal : deals) {
+			ems.executeUpdate(AccessAction.DELETE, user, sql, deal);
+		}
+	}
 
 }

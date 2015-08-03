@@ -58,7 +58,7 @@ public class ScheduledServices {
 	public static final String TASK_QUOTES_USA = PREFIX + "QuotesUsa";
 	public static final String TASK_ANALYTICS = PREFIX + "Analytics";
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ParametersDao parameters;

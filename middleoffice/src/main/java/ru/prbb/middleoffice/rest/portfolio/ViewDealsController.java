@@ -2,6 +2,7 @@ package ru.prbb.middleoffice.rest.portfolio;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import ru.prbb.middleoffice.domain.Result;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewDealsItem;
 import ru.prbb.middleoffice.repo.EquitiesDao;
-import ru.prbb.middleoffice.repo.dictionary.BrokerAccountsDao;
+import ru.prbb.middleoffice.repo.dictionary.AccountsDao;
 import ru.prbb.middleoffice.repo.dictionary.ClientsDao;
 import ru.prbb.middleoffice.repo.dictionary.FundsDao;
 import ru.prbb.middleoffice.repo.dictionary.InitiatorsDao;
@@ -43,7 +44,7 @@ public class ViewDealsController
 	@Autowired
 	private TradesystemsDao daoTradesystems;
 	@Autowired
-	private BrokerAccountsDao daoAccounts;
+	private AccountsDao daoAccounts;
 	@Autowired
 	private EquitiesDao daoEquities;
 	@Autowired
@@ -53,7 +54,7 @@ public class ViewDealsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<ViewDealsItem> postShow(
+	public List<ViewDealsItem> postShow(HttpServletRequest request,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker,
@@ -64,12 +65,12 @@ public class ViewDealsController
 	{
 		log.info("POST ViewDeals: dateBegin={}, dateEnd={}, ticker={}, client={}, funds={}, initiator={}, batch={}",
 				Utils.toArray(dateBegin, dateEnd, ticker, client, funds, initiator, batch));
-		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator, batch);
+		return dao.findAll(createUserInfo(request),Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator, batch);
 	}
 
 	@RequestMapping(value = "/Export", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] getExport(HttpServletResponse response,
+	public byte[] getExport(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long ticker,
@@ -82,7 +83,7 @@ public class ViewDealsController
 		log.info("POST ViewDeals/Export: dateBegin={}, dateEnd={}, ticker={}, client={}, funds={}, initiator={}, batch={}",
 				Utils.toArray(dateBegin, dateEnd, ticker, client, funds, initiator, batch));
 		List<ViewDealsItem> list =
-				dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator, batch);
+				dao.findAll(createUserInfo(request),Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), ticker, client, funds, initiator, batch);
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Список сделок");
@@ -136,23 +137,23 @@ public class ViewDealsController
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postDel(
+	public Result postDel(HttpServletRequest request,
 			@RequestParam Long[] deals)
 	{
 		log.info("DEL ViewDeals: ids={}", deals);
-		dao.deleteById(deals);
+		dao.deleteById(createUserInfo(request),deals);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Set", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postSet(
+	public Result postSet(HttpServletRequest request,
 			@RequestParam Long[] deals,
 			@RequestParam String field,
 			@RequestParam String value)
 	{
 		log.info("POST ViewDeals/Set: field={}, value={}, deals={}", Utils.toArray(field, value, deals));
-		dao.updateById(deals, field, value);
+		dao.updateById(createUserInfo(request),deals, field, value);
 		return Result.SUCCESS;
 	}
 

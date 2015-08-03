@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +44,7 @@ public class SecuritiesRestsController
 
 	@RequestMapping(method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecuritiesRestsItem> postItems(
+	public List<SecuritiesRestsItem> postItems(HttpServletRequest request,
 			@RequestParam Long security,
 			@RequestParam Long client,
 			@RequestParam Long fund,
@@ -51,17 +53,17 @@ public class SecuritiesRestsController
 	{
 		log.info("POST SecuritiesRests: security={}, fund={}, client={}, batch={}, date={}",
 				Utils.toArray(security, fund, client, batch, date));
-		return dao.execute(security, fund, client, batch, Utils.parseDate(date));
+		return dao.execute(createUserInfo(request),security, fund, client, batch, Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postCheckFlag(
+	public Result postCheckFlag(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam Byte checkFlag)
 	{
 		log.info("POST SecuritiesRests: id={}, checkFlag={}", id, checkFlag);
-		dao.updateById(id, checkFlag);
+		dao.updateById(createUserInfo(request),id, checkFlag);
 		return Result.SUCCESS;
 	}
 

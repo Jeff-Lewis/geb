@@ -2,6 +2,7 @@ package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,28 +34,28 @@ public class NoConformityController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<NoConformityItem> getShow()
+	public List<NoConformityItem> getShow(HttpServletRequest request)
 	{
 		log.info("GET NoConformity");
-		return dao.show();
+		return dao.show(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/Delete", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postDelete(
+	public Result postDelete(HttpServletRequest request,
 			@RequestParam Long[] ids)
 	{
 		log.info("POST NoConformity: ids={}", ids);
-		dao.delete(ids);
+		dao.delete(createUserInfo(request),ids);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/ExportXls", method = RequestMethod.GET)
 	@ResponseBody
-	public byte[] export(HttpServletResponse response)
+	public byte[] export(HttpServletRequest request, HttpServletResponse response)
 	{
 		log.info("GET NoConformity/ExportXls");
-		List<NoConformityItem> list = dao.show();
+		List<NoConformityItem> list = dao.show(createUserInfo(request));
 
 		Export exp = Export.newInstance();
 		exp.setCaption("Нет соответствия");

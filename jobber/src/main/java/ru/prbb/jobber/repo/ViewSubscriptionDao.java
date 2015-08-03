@@ -5,81 +5,91 @@ package ru.prbb.jobber.repo;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.prbb.jobber.domain.SecuritySubscrItem;
 import ru.prbb.jobber.domain.ViewSubscriptionItem;
+import ru.prbb.jobber.services.EntityManagerService;
 
 /**
  * Subscription
  * 
  * @author RBr
- * 
  */
-public interface ViewSubscriptionDao {
+@Service
+public class ViewSubscriptionDao
+{
 
-	/**
-	 * @return
-	 */
-	List<ViewSubscriptionItem> findAll();
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param name
-	 * @param comment
-	 * @return
-	 */
-	int put(String name, String comment);
+	public List<ViewSubscriptionItem> findAll() {
+		String sql = "{call dbo.output_subscriptions_prc}";
+		return ems.getSelectList(ViewSubscriptionItem.class, sql);
+	}
 
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	ViewSubscriptionItem findById(Long id);
+	public ViewSubscriptionItem findById(Long id) {
+		List<ViewSubscriptionItem> list = findAll();
+		for (ViewSubscriptionItem item : list) {
+			if (id.equals(item.getId())) {
+				return item;
+			}
+		}
 
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	int deleteById(Long id);
+		ViewSubscriptionItem item = new ViewSubscriptionItem();
+		item.setId(id);
+		item.setName(id.toString());
+		item.setComment("findById:" + id);
+		return item;
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	int start(Long id);
+	public int put(String name, String comment) {
+		String sql = "{call dbo.create_subscription_proc ?, ?}";
+		return ems.executeUpdate(sql, name, comment);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	int stop(Long id);
+	public int deleteById(Long id) {
+		String sql = "{call dbo.remove_subscription_proc ?}";
+		return ems.executeUpdate(sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<SecuritySubscrItem> findAllSecurities();
+	public List<SecuritySubscrItem> findAllSecurities() {
+		String sql = "{call dbo.output_securities_subscr_prc}";
+		return ems.getSelectList(SecuritySubscrItem.class, sql);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<SecuritySubscrItem> findAllSecurities(Long id);
+	public List<SecuritySubscrItem> findAllSecurities(Long id) {
+		String sql = "{call dbo.secs_in_subscription_prc ?}";
+		return ems.getSelectList(SecuritySubscrItem.class, sql, id);
+	}
 
-	/**
-	 * 
-	 * @param id
-	 * @param ids
-	 * @return
-	 */
-	int[] staffAdd(Long id, Long[] ids);
+	public int[] staffAdd(Long id_subscr, Long[] ids) {
+		String sql = "{call dbo.subscribe_security_proc ?, ?}";
+		int[] res = new int[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			res[i] = ems.executeUpdate(sql, ids[i], id_subscr);
+		}
+		return res;
+	}
 
-	/**
-	 * 
-	 * @param id
-	 * @param ids
-	 * @return
-	 */
-	int[] staffDel(Long id, Long[] ids);
+	public int[] staffDel(Long id_subscr, Long[] ids) {
+		String sql = "{call dbo.unsubscribe_security_proc ?, ?}";
+		int[] res = new int[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			res[i] = ems.executeUpdate(sql, ids[i], id_subscr);
+		}
+		return res;
+	}
+
+	public int start(Long id) {
+		String sql = "{call dbo.run_subscription_proc ?}";
+		return ems.executeUpdate(sql, id);
+	}
+
+	public int stop(Long id) {
+		String sql = "{call dbo.stop_subscription_proc ?}";
+		return ems.executeUpdate(sql, id);
+	}
 
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +43,7 @@ public class NewInstrumentController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData postAdd(
+	public ResultData postAdd(HttpServletRequest request,
 			@RequestParam String[] instruments)
 	{
 		final List<String> shares = new ArrayList<>();
@@ -87,29 +89,29 @@ public class NewInstrumentController
 		}
 
 		if (!shares.isEmpty()) {
-			processShares(info, shares);
+			processShares(request, info, shares);
 		}
 
 		if (!indexes.isEmpty()) {
-			processIndexes(info, indexes);
+			processIndexes(request, info, indexes);
 		}
 
 		if (!bonds.isEmpty()) {
-			processBonds(info, bonds);
+			processBonds(request, info, bonds);
 		}
 
 		if (!futures.isEmpty()) {
-			processFutures(info, futures);
+			processFutures(request, info, futures);
 		}
 
 		if (!options.isEmpty()) {
-			processOptions(info, options);
+			processOptions(request, info, options);
 		}
 
 		return new ResultData(info);
 	}
 
-	private void processShares(List<String[]> info, List<String> codes) {
+	private void processShares(HttpServletRequest request, List<String[]> info, List<String> codes) {
 		final String[] fields = {
 				"ID_BB_GLOBAL",
 				"ID_BB",
@@ -164,7 +166,7 @@ public class NewInstrumentController
 			}
 
 			try {
-				dao.putSecurityData(values);
+				dao.putSecurityData(createUserInfo(request),values);
 				updateInfo(info, security, АКЦИЯ, "Загружено.");
 			} catch (Exception e) {
 				log.error("Ошибка при сохранении АКЦИЯ: " + security, e);
@@ -173,7 +175,7 @@ public class NewInstrumentController
 		}
 	}
 
-	private void processIndexes(List<String[]> info, List<String> codes) {
+	private void processIndexes(HttpServletRequest request, List<String[]> info, List<String> codes) {
 		final String[] fields = {
 				"ID_BB_GLOBAL",
 				"ID_BB_SEC_NUM_SRC",
@@ -210,7 +212,7 @@ public class NewInstrumentController
 			}
 
 			try {
-				dao.putIndexData(values);
+				dao.putIndexData(createUserInfo(request),values);
 				updateInfo(info, security, ИНДЕКС, "Загружено");
 			} catch (Exception e) {
 				log.error("Ошибка при сохранении ИНДЕКС: " + security, e);
@@ -219,7 +221,7 @@ public class NewInstrumentController
 		}
 	}
 
-	private void processBonds(List<String[]> info, List<String> codes) {
+	private void processBonds(HttpServletRequest request, List<String[]> info, List<String> codes) {
 		final String[] fields = {
 				"ID_BB_UNIQUE",
 				"ID_BB_COMPANY",
@@ -273,7 +275,7 @@ public class NewInstrumentController
 			}
 
 			try {
-				dao.putBondsData(values);
+				dao.putBondsData(createUserInfo(request),values);
 				updateInfo(info, security, ОБЛИГАЦИЯ, "Загружено");
 			} catch (Exception e) {
 				log.error("Ошибка при сохранении ОБЛИГАЦИЯ: " + security, e);
@@ -282,7 +284,7 @@ public class NewInstrumentController
 		}
 	}
 
-	private void processFutures(List<String[]> info, List<String> codes) {
+	private void processFutures(HttpServletRequest request, List<String[]> info, List<String> codes) {
 		final String[] fields = {
 				"ID_BB_GLOBAL",
 				"ID_BB",
@@ -332,7 +334,7 @@ public class NewInstrumentController
 			}
 
 			try {
-				dao.putFuturesData(values);
+				dao.putFuturesData(createUserInfo(request),values);
 				updateInfo(info, security, ФЬЮЧЕРС, "Загружено");
 			} catch (Exception e) {
 				log.error("Ошибка при сохранении ФЬЮЧЕРС: " + security, e);
@@ -341,7 +343,7 @@ public class NewInstrumentController
 		}
 	}
 
-	private void processOptions(List<String[]> info, List<String> codes) {
+	private void processOptions(HttpServletRequest request, List<String[]> info, List<String> codes) {
 		final String[] fields = {
 				"ID_BB_GLOBAL",
 				"ID_BB",
@@ -390,7 +392,7 @@ public class NewInstrumentController
 			}
 
 			try {
-				dao.putOptionsData(values);
+				dao.putOptionsData(createUserInfo(request),values);
 				updateInfo(info, security, ОПЦИОН, "Загружено");
 			} catch (Exception e) {
 				log.error("Ошибка при сохранении ОПЦИОН: " + security, e);

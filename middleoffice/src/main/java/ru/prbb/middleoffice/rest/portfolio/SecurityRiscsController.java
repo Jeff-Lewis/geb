@@ -3,6 +3,8 @@ package ru.prbb.middleoffice.rest.portfolio;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +46,7 @@ public class SecurityRiscsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<SecurityRiscsItem> postShow(
+	public List<SecurityRiscsItem> postShow(HttpServletRequest request,
 			@RequestParam Long security,
 			@RequestParam Long client,
 			@RequestParam Long fund,
@@ -53,21 +55,21 @@ public class SecurityRiscsController
 	{
 		log.info("POST SecurityRiscs: security={}, fund={}, batch={}, client={}, date={}",
 				Utils.toArray(security, fund, batch, client, date));
-		return dao.findAll(security, fund, batch, client, Utils.parseDate(date));
+		return dao.findAll(createUserInfo(request),security, fund, batch, client, Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET SecurityRiscs: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateItem(
+	public Result postUpdateItem(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam Long client,
 			@RequestParam Long fund,
@@ -83,18 +85,18 @@ public class SecurityRiscsController
 				+ " dateBegin={}, dateEnd={}, comment={}",
 				Utils.toArray(id, client, fund, batch, riskATH, riskAVG, stopLoss,
 						dateBegin, dateEnd, comment));
-		dao.updateById(id, client, fund, batch, riskATH, riskAVG, stopLoss,
-				Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), comment);
+		dao.updateById(createUserInfo(request),id, client, fund, batch, riskATH, riskAVG,
+				stopLoss, Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL SecurityRiscs: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 

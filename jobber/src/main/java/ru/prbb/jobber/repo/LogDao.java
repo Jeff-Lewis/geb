@@ -5,9 +5,13 @@ package ru.prbb.jobber.repo;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.prbb.jobber.domain.LogContactItem;
 import ru.prbb.jobber.domain.LogMessagesItem;
 import ru.prbb.jobber.domain.LogSubscriptionItem;
+import ru.prbb.jobber.services.EntityManagerService;
 
 /**
  * Журнал отправки сообщений<br>
@@ -17,26 +21,25 @@ import ru.prbb.jobber.domain.LogSubscriptionItem;
  * @author RBr
  * 
  */
-public interface LogDao {
+@Service
+public class LogDao
+{
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param start
-	 * @param stop
-	 * @return
-	 */
-	List<LogContactItem> getLogContacts(String start, String stop);
+	public List<LogContactItem> getLogContacts(String start, String stop) {
+		String sql = "{call dbo.check_ncontacts_change_log ?, ?}";
+		return ems.getSelectList(LogContactItem.class, sql, start, stop);
+	}
 
-	/**
-	 * @param type
-	 * @param start
-	 * @param stop
-	 * @return
-	 */
-	List<LogMessagesItem> getLogMessages(String type, String start, String stop);
+	public List<LogMessagesItem> getLogMessages(String type, String start, String stop) {
+		String sql = "{call dbo.check_sms_and_email_reciver ?, ?, ?}";
+		return ems.getSelectList(LogMessagesItem.class, sql, type, start, stop);
+	}
 
-	/**
-	 * @return
-	 */
-	List<LogSubscriptionItem> getLogSubscription();
+	public List<LogSubscriptionItem> getLogSubscription() {
+		String sql = "{call dbo.subscription_data_v_proc}";
+		return ems.getSelectList(LogSubscriptionItem.class, sql);
+	}
 
 }

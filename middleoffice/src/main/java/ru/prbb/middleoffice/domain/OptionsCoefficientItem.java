@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  */
@@ -26,6 +28,20 @@ public class OptionsCoefficientItem implements Serializable {
 	private String tradeSystem;
 	private Number coefficient;
 	private String comment;
+
+	
+	public OptionsCoefficientItem() {
+	}
+
+	public OptionsCoefficientItem(Object[] arr) {
+		setCoefId(Utils.toLong(arr[0]));
+		setOptionsId(Utils.toLong(arr[1]));
+		setTradeSystemId(Utils.toLong(arr[2]));
+		setOptions(Utils.toString(arr[3]));
+		setTradeSystem(Utils.toString(arr[4]));
+		setCoefficient(Utils.toDouble(arr[5]));
+		setComment(Utils.toString(arr[6]));
+	}
 
 	public Long getCoefId() {
 		return coefId;

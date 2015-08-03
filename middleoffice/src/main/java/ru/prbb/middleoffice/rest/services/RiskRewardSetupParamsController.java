@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,21 +40,21 @@ public class RiskRewardSetupParamsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<RiskRewardSetupParamsItem> getItems(
+	public List<RiskRewardSetupParamsItem> getItems(HttpServletRequest request,
 			@RequestParam Long security,
 			@RequestParam String date)
 	{
 		log.info("POST RiskRewardSetupParams: security={}, date={}", security, date);
-		return dao.findAll(security, Utils.parseDate(date));
+		return dao.findAll(createUserInfo(request),security, Utils.parseDate(date));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET RiskRewardSetupParams: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
@@ -121,12 +123,12 @@ public class RiskRewardSetupParamsController
 
 	@RequestMapping(value = "/Add/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityItem> listSecurities(
+	public List<SecurityItem> listSecurities(HttpServletRequest request,
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long security)
 	{
 		log.info("COMBO RiskRewardSetupParams/Add: filter={}, security={}", filter, security);
-		return daoSecurities.findAll(filter, security);
+		return daoSecurities.findAll(createUserInfo(request),filter, security);
 	}
 
 	@RequestMapping(value = "/Add/Filter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

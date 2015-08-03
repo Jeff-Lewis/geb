@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -28,6 +30,20 @@ public class ViewQuotesItem implements Serializable {
 	private Number price;
 	@Column(name = "Closeprice")
 	private Number closeprice;
+
+	
+	public ViewQuotesItem() {
+	}
+
+	public ViewQuotesItem(Object[] arr) {
+		setId_sec(Utils.toLong(arr[0]));
+		setSecurityCode(Utils.toString(arr[1]));
+		setShortName(Utils.toString(arr[2]));
+		setSecurityType(Utils.toString(arr[3]));
+		setQuoteDate(Utils.toDate(arr[4]));
+		setPrice(Utils.toDouble(arr[5]));
+		setCloseprice(Utils.toDouble(arr[6]));
+	}
 
 	/**
 	 * @return the id_sec

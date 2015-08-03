@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -24,6 +26,17 @@ public class NewParamItem implements Serializable {
 	private String blmId;
 	@Column(name = "description")
 	private String name;
+
+	
+	public NewParamItem() {
+	}
+
+	public NewParamItem(Object[] arr) {
+		int idx = 0;
+		setCode(Utils.toString(arr[idx++]));
+		setBlmId(Utils.toString(arr[idx++]));
+		setName(Utils.toString(arr[idx++]));
+	}
 
 	/**
 	 * @return the code

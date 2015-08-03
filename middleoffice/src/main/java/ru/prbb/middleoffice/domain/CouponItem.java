@@ -6,6 +6,8 @@ package ru.prbb.middleoffice.domain;
 import java.io.Serializable;
 import java.sql.Date;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  */
@@ -34,6 +36,34 @@ public class CouponItem implements Serializable {
 	private String country;
 	private String oper;
 
+	
+	public CouponItem() {
+	}
+
+	public CouponItem(Object[] arr) {
+		int i = 0;
+		setId_sec(Utils.toLong(arr[i++]));
+		setSecurity_code(Utils.toString(arr[i++]));
+		setShort_name(Utils.toString(arr[i++]));
+		setClient(Utils.toString(arr[i++]));
+		setFund(Utils.toString(arr[i++]));
+		setBroker(Utils.toString(arr[i++]));
+		setAccount(Utils.toString(arr[i++]));
+		setCurrency(Utils.toString(arr[i++]));
+		setRecord_date(Utils.toSqlDate(arr[i++]));
+		setQuantity(Utils.toInteger(arr[i++]));
+		setCoupon_per_share(Utils.toDouble(arr[i++]));
+		setReceive_date(Utils.toSqlDate(arr[i++]));
+		setReal_coupon_per_share(Utils.toDouble(arr[i++]));
+		setStatus(Utils.toString(arr[i++]));
+		setEstimate(Utils.toDouble(arr[i++]));
+		setReal_coupons(Utils.toDouble(arr[i++]));
+		setExtra_costs(Utils.toDouble(arr[i++]));
+		setTax_value(Utils.toDouble(arr[i++]));
+		setCountry(Utils.toString(arr[i++]));
+		setOper(Utils.toString(arr[i++]));
+	}
+	
 	public Long getId_sec() {
 		return id_sec;
 	}

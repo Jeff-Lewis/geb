@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services.contacts;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,10 +41,10 @@ public class ContactsController
 	 */
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> getItems()
+	public List<SimpleItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET Contacts");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	/**
@@ -53,11 +55,11 @@ public class ContactsController
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Contacts: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	/**
@@ -68,11 +70,11 @@ public class ContactsController
 	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddItem(
+	public Result postAddItem(HttpServletRequest request,
 			@RequestParam String name)
 	{
 		log.info("POST Contacts add: name={}", name);
-		dao.put(name);
+		dao.put(createUserInfo(request),name);
 		return Result.SUCCESS;
 	}
 
@@ -85,12 +87,12 @@ public class ContactsController
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateItem(
+	public Result postUpdateItem(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
 		log.info("POST Contacts: id={}, name={}", id, name);
-		dao.updateById(id, name);
+		dao.updateById(createUserInfo(request),id, name);
 		return Result.SUCCESS;
 	}
 
@@ -102,55 +104,55 @@ public class ContactsController
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL Contacts: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/Staff", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<ContactStaffItem> getStaff(
+	public List<ContactStaffItem> getStaff(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET Contacts/Staff: id={}", id);
-		return dao.findAllStaff(id);
+		return dao.findAllStaff(createUserInfo(request),id);
 	}
 
 	@RequestMapping(value = "/{id}/Staff", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAddStaff(
+	public Result postAddStaff(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String name,
 			@RequestParam Integer type)
 	{
 		log.info("POST Contacts/Staff: id={}, name={}, type={}", Utils.toArray(id, name, type));
-		dao.putStaff(id, name, type);
+		dao.putStaff(createUserInfo(request),id, name, type);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/Staff/{cid}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateStaff(
+	public Result postUpdateStaff(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@PathVariable("cid") Long cid,
 			@RequestParam String name)
 	{
 		log.info("POST Contacts/Staff: id={}, cid={}, name={}", Utils.toArray(id, cid, name));
-		dao.updateByIdStaff(id, cid, name);
+		dao.updateByIdStaff(createUserInfo(request),id, cid, name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/Staff/{cid}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteStaff(
+	public Result deleteStaff(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@PathVariable("cid") Long cid)
 	{
 		log.info("POST Contacts/Staff: id={}, cid={}", id, cid);
-		dao.deleteByIdStaff(id, cid);
+		dao.deleteByIdStaff(createUserInfo(request),id, cid);
 		return Result.SUCCESS;
 	}
 }

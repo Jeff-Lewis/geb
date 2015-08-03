@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,24 +44,24 @@ public class ViewOptionsController
 
 	@RequestMapping(value = "/Add", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postAdd(
+	public Result postAdd(HttpServletRequest request,
 			@RequestParam Long code,
 			@RequestParam String deal,
 			@RequestParam Long futures)
 	{
 		log.info("POST ViewOptions/Add: code={}, deal={}, futures={}", Utils.toArray(code, deal, futures));
-		dao.put(code, deal, futures);
+		dao.put(createUserInfo(request),code, deal, futures);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Del", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postDel(
+	public Result postDel(HttpServletRequest request,
 			@RequestParam Long code,
 			@RequestParam String deal)
 	{
 		log.info("POST ViewOptions/Del: code={}, deal={}", code, deal);
-		dao.del(code, deal);
+		dao.del(createUserInfo(request),code, deal);
 		return Result.SUCCESS;
 	}
 
@@ -74,21 +76,21 @@ public class ViewOptionsController
 
 	@RequestMapping(value = "/Portfolio", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<ViewOptionsItem> getPortfolio()
+	public List<ViewOptionsItem> getPortfolio(HttpServletRequest request)
 	{
 		log.info("GET ViewOptions/Portfolio");
-		return daoEquities.findAllOptions();
+		return daoEquities.findAllOptions(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityItem> listSecurities(
+	public List<SecurityItem> listSecurities(HttpServletRequest request,
 			@RequestParam(defaultValue = "Option") String filter,
 			@RequestParam(required = false) Long security)
 	{
 		filter = "Option";
 		log.info("POST ViewOptions/Securities: filter={}, security={}", filter, security);
-		return daoSecurities.findAll(filter, security);
+		return daoSecurities.findAll(createUserInfo(request),filter, security);
 	}
 
 	@RequestMapping(value = "/FilterSecurities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

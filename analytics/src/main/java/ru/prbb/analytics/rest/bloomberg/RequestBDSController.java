@@ -3,6 +3,8 @@ package ru.prbb.analytics.rest.bloomberg;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,36 +41,36 @@ public class RequestBDSController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postExecute(
+	public Result postExecute(HttpServletRequest request,
 			@RequestParam String[] security,
 			@RequestParam String[] params)
 	{
 		log.info("POST RequestBDS: security={}", (Object) security);
 		log.info("POST RequestBDS: params={}", (Object) params);
 		Map<String, Object> answer = bs.executeBdsRequest("BDS запрос", security, params);
-		dao.execute(security, answer);
+		dao.execute(createUserInfo(request), security, answer);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<EquitiesItem> getSecurities(
+	public List<EquitiesItem> getSecurities(HttpServletRequest request,
 			@RequestParam(required = false) String filter,
 			@RequestParam(required = false) Long equities,
 			@RequestParam(required = false) Integer fundamentals)
 	{
 		log.info("POST RequestBDS/Securities: filter={}, equities={}, fundamentals={}",
 				Utils.asArray(filter, equities, fundamentals));
-		return daoEquities.findAllEquities(filter, equities, fundamentals);
+		return daoEquities.findAllEquities(createUserInfo(request), filter, equities, fundamentals);
 	}
 
 	@RequestMapping(value = "/Params", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> comboParams(
+	public List<SimpleItem> comboParams(HttpServletRequest request,
 			@RequestParam(required = false) String query)
 	{
 		log.info("COMBO RequestBDS: Params='{}'", query);
-		return dao.findParams(query);
+		return dao.findParams(createUserInfo(request), query);
 	}
 
 	@RequestMapping(value = "/EquitiesFilter", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")

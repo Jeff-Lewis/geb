@@ -2,6 +2,8 @@ package ru.prbb.analytics.rest.reports;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +30,9 @@ public class BrokersEstimateChangeController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<BrokersEstimateChangeItem> getShow()
+	public List<BrokersEstimateChangeItem> getShow(HttpServletRequest request)
 	{
 		log.info("GET BrokersEstimateChange");
-		return dao.execute();
+		return dao.execute(createUserInfo(request));
 	}
 }

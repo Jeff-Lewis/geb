@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -21,6 +23,17 @@ public class ViewExceptionsItem implements Serializable {
 	private String exc;
 	@Column(name = "related_parameter")
 	private String r_par;
+
+	
+	public ViewExceptionsItem() {
+	}
+
+	public ViewExceptionsItem(Object[] arr) {
+		setSec_code(Utils.toString(arr[0]));
+		setRs_code(Utils.toString(arr[1]));
+		setExc(Utils.toString(arr[2]));
+		setR_par(Utils.toString(arr[3]));
+	}
 
 	/**
 	 * @return the sec_code

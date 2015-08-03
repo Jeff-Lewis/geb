@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  */
@@ -22,6 +24,17 @@ public class CompanyAllItem implements Serializable {
 	private Long id;
 	private String security_code;
 	private String short_name;
+
+	
+	public CompanyAllItem() {
+	}
+
+	public CompanyAllItem(Object[] arr) {
+		int idx = 0;
+		id = Utils.toLong(arr[idx++]);
+		security_code = Utils.toString(arr[idx++]);
+		short_name = Utils.toString(arr[idx++]);
+	}
 
 	public Long getId() {
 		return id;

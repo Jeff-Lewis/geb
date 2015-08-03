@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.operations;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +52,7 @@ public class SetSecurityRiscsController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postSave(
+	public Result postSave(HttpServletRequest request,
 			@RequestParam Long id,
 			@RequestParam Double riskATH,
 			@RequestParam Double riskAVG,
@@ -59,23 +61,23 @@ public class SetSecurityRiscsController
 	{
 		log.info("POST SetSecurityRiscs: id={}, riskATH={}, riskAVG={}, stopLoss={}, comment={}",
 				Utils.toArray(id, riskATH, riskAVG, stopLoss, comment));
-		dao.execute(id, riskATH, riskAVG, stopLoss, comment);
+		dao.execute(createUserInfo(request),id, riskATH, riskAVG, stopLoss, comment);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/PortfolioShowTransfer", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<ViewPortfolioTransferItem> postGetPortfolio(
+	public List<ViewPortfolioTransferItem> postGetPortfolio(HttpServletRequest request,
 			@RequestParam String date,
 			@RequestParam Long client)
 	{
 		log.info("POST SetSecurityRiscs/PortfolioShowTransfer: date={}, client={}", date, client);
-		return daoPortfolio.executeSelect(Utils.parseDate(date), client);
+		return daoPortfolio.executeSelect(createUserInfo(request),Utils.parseDate(date), client);
 	}
 
 	@RequestMapping(value = "/UpdateFields", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdate(
+	public Result postUpdate(HttpServletRequest request,
 			@RequestParam String security,
 			@RequestParam String client,
 			@RequestParam String fund,
@@ -88,7 +90,7 @@ public class SetSecurityRiscsController
 		Long _security = getId(daoEquities.findCombo(security));
 		Long _fund = getId(daoFunds.findCombo(fund));
 		Long _client = getId(daoClients.findCombo(client));
-		List<SecurityRiscsItem> res = daoSecurityRiscs.findAll(_security, _fund, batch, _client, Utils.parseDate(date));
+		List<SecurityRiscsItem> res = daoSecurityRiscs.findAll(createUserInfo(request),_security, _fund, batch, _client, Utils.parseDate(date));
 
 		return res.isEmpty() ? Result.FAIL : new ResultData(res.get(0));
 	}

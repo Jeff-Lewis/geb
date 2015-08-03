@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -62,6 +64,38 @@ public class ViewModelItem implements Serializable {
 	private String beta;
 	@Column(name = "Currency")
 	private String currency;
+
+	
+	public ViewModelItem() {
+	}
+
+	public ViewModelItem(Object[] arr) {
+		int idx = 0;
+		id_sec = Utils.toLong(arr[idx++]);
+		company_short_name = Utils.toString(arr[idx++]);
+		industry_group = Utils.toString(arr[idx++]);
+		currentPrice = Utils.toString(arr[idx++]);
+		bestPrice = Utils.toString(arr[idx++]);
+		deltaBstCur_pct = Utils.toString(arr[idx++]);
+		currentUpside_pct = Utils.toString(arr[idx++]);
+		upsideCons_pct = Utils.toString(arr[idx++]);
+		avgUpside = Utils.toString(arr[idx++]);
+		volatility = Utils.toString(arr[idx++]);
+		targetPrice = Utils.toString(arr[idx++]);
+		targetPriceCons12M = Utils.toString(arr[idx++]);
+		targetPriceNewMeth = Utils.toString(arr[idx++]);
+		bestPriceNewMeth = Utils.toString(arr[idx++]);
+		curUpsideNewMeth = Utils.toString(arr[idx++]);
+		deltaBstPrcCurPrcNewMeth = Utils.toString(arr[idx++]);
+		yearHigh = Utils.toString(arr[idx++]);
+		yearLow = Utils.toString(arr[idx++]);
+		pe_current = Utils.toString(arr[idx++]);
+		pe_5 = Utils.toString(arr[idx++]);
+		pe_10 = Utils.toString(arr[idx++]);
+		dividendYield = Utils.toString(arr[idx++]);
+		beta = Utils.toString(arr[idx++]);
+		currency = Utils.toString(arr[idx++]);
+	}
 
 	/**
 	 * @return the id_sec

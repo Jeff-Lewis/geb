@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 public class NotEnoughDividendsItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -17,6 +19,24 @@ public class NotEnoughDividendsItem implements Serializable {
 	private Number quantity;
 	private Number dividend_per_share;
 	private String receive_date;
+
+	
+	public NotEnoughDividendsItem() {
+	}
+
+	public NotEnoughDividendsItem(Object[] arr) {
+		setSecurity_code(Utils.toString(arr[0]));
+		setShort_name(Utils.toString(arr[1]));
+		setClient(Utils.toString(arr[2]));
+		setFund(Utils.toString(arr[3]));
+		setBroker(Utils.toString(arr[4]));
+		setAccount(Utils.toString(arr[5]));
+		setCurrency(Utils.toString(arr[6]));
+		setRecord_date(Utils.toDate(arr[7]));
+		setQuantity(Utils.toInteger(arr[8]));
+		setDividend_per_share(Utils.toDouble(arr[9]));
+		setReceive_date(Utils.toDate(arr[10]));
+	}
 
 	public String getSecurity_code() {
 		return security_code;

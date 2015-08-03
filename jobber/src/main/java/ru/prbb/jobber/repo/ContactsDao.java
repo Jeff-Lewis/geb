@@ -5,74 +5,73 @@ package ru.prbb.jobber.repo;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.prbb.jobber.domain.ContactStaffItem;
 import ru.prbb.jobber.domain.SimpleItem;
+import ru.prbb.jobber.services.EntityManagerService;
 
 /**
  * Справочник контактов
  * 
  * @author RBr
- * 
  */
-public interface ContactsDao {
+@Service
+public class ContactsDao
+{
 
-	/**
-	 * @return
-	 */
-	List<SimpleItem> findAll();
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	SimpleItem findById(Long id);
+	public List<SimpleItem> findAll() {
+		String sql = "{call dbo.WebGet_SelectContacts_sp}";
+		return ems.getSelectList(SimpleItem.class, sql);
+	}
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	int put(String name);
+	public SimpleItem findById(Long id) {
+		List<SimpleItem> list = findAll();
+		for (SimpleItem item : list) {
+			if (id.equals(item.getId())) {
+				return item;
+			}
+		}
+		return null;
+	}
 
-	/**
-	 * @param id
-	 * @param name
-	 * @return
-	 */
-	int updateById(Long id, String name);
+	public int put(String name) {
+		String sql = "{call dbo.WebSet_putСontact_sp ?}";
+		return ems.executeUpdate(sql, name);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	int deleteById(Long id);
+	public int updateById(Long id, String name) {
+		String sql = "{call dbo.WebSet_udContact_sp 'u', ?, ?}";
+		return ems.executeUpdate(sql, id, name);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<ContactStaffItem> findAllStaff(Long id);
+	public int deleteById(Long id) {
+		String sql = "{call dbo.WebSet_udContact_sp 'd', ?}";
+		return ems.executeUpdate(sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @param name
-	 * @param type
-	 * @return
-	 */
-	int putStaff(Long id, String name, Integer type);
+	public List<ContactStaffItem> findAllStaff(Long id) {
+		String sql = "{call dbo.WebGet_SelectContactInfo_sp ?}";
+		return ems.getSelectList(ContactStaffItem.class, sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @param cid
-	 * @param name
-	 * @return
-	 */
-	int updateByIdStaff(Long id, Long cid, String name);
+	public int putStaff(Long id, String name, Integer type) {
+		String sql = "{call dbo.WebSet_putContactInfo_sp ?, ?, ?}";
+		return ems.executeUpdate(sql, id, name, type);
+	}
 
-	/**
-	 * @param id
-	 * @param cid
-	 * @return
-	 */
-	int deleteByIdStaff(Long id, Long cid);
+	public int updateByIdStaff(Long id, Long cid, String name) {
+		String sql = "{call dbo.WebSet_udContactInfo_sp 'u', ?, ?}";
+		return ems.executeUpdate(sql, cid, name);
+	}
+
+	public int deleteByIdStaff(Long id, Long cid) {
+		String sql = "{call dbo.WebSet_udContactInfo_sp 'd', ?}";
+		return ems.executeUpdate(sql, cid);
+	}
 
 }

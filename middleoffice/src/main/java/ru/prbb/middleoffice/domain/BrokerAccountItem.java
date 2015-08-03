@@ -8,12 +8,14 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
- * 
  */
 @Entity
 public class BrokerAccountItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -22,6 +24,18 @@ public class BrokerAccountItem implements Serializable {
 	private String broker;
 	private String client;
 	private String comment;
+
+	public BrokerAccountItem() {
+	}
+
+	public BrokerAccountItem(Object[] arr) {
+		int idx = 0;
+		id = Utils.toLong(arr[idx++]);
+		name = Utils.toString(arr[idx++]);
+		broker = Utils.toString(arr[idx++]);
+		client = Utils.toString(arr[idx++]);
+		comment = Utils.toString(arr[idx++]);
+	}
 
 	public Long getId() {
 		return id;

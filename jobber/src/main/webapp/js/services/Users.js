@@ -20,7 +20,7 @@
 	});
 
 	function addUser() {
-		showModal('utils/UsersAddUsers');
+		showModal('services/UsersAddUsers');
 	}
 
 	function renUser() {
@@ -30,7 +30,7 @@
 		}
 
 		var id = smU.getSelected().data.id;
-		showModal('utils/UsersEditUsers', 'rest/DictUsers/' + id + '.do');
+		showModal('services/UsersEditUsers', 'rest/DictUsers/' + id + '.do');
 	}
 
 	function infoUser() {
@@ -40,7 +40,7 @@
 		}
 
 		var id = smU.getSelected().data.id;
-		showPanel('utils/UsersInfoUsers', 'rest/DictUsers/' + id + '.do');
+		showPanel('services/UsersInfoUsers', 'rest/DictUsers/' + id + '.do');
 	}
 
 	function delUser() {
@@ -88,7 +88,7 @@
 	});
 
 	function addGroup() {
-		showModal('utils/UsersAddGroups');
+		showModal('services/UsersAddGroups');
 	}
 
 	function renGroup() {
@@ -98,7 +98,7 @@
 		}
 
 		var id = smG.getSelected().data.id;
-		showModal('utils/UsersEditGroups', 'rest/DictGroups/' + id + '.do');
+		showModal('services/UsersEditGroups', 'rest/DictGroups/' + id + '.do');
 	}
 
 	function staffGroup() {
@@ -108,7 +108,7 @@
 		}
 
 		var id = smG.getSelected().data.id;
-		showPanel('utils/UsersStaffGroup', 'rest/DictGroups/' + id + '.do');
+		showPanel('services/UsersStaffGroup', 'rest/DictGroups/' + id + '.do');
 	}
 
 	function infoGroup() {
@@ -118,7 +118,7 @@
 		}
 
 		var id = smG.getSelected().data.id;
-		showPanel('utils/UsersInfoGroup', 'rest/DictGroups/' + id + '.do');
+		showPanel('services/UsersInfoGroup', 'rest/DictGroups/' + id + '.do');
     }
 
 	function delGroup() {
@@ -166,7 +166,7 @@
 	});
 
 	function addObject() {
-		showModal('utils/UsersAddObjects');
+		showModal('services/UsersAddObjects');
     }
 
 	function edtObject() {
@@ -176,7 +176,7 @@
 		}
 
 		var id = smO.getSelected().data.id;
-		showModal('utils/UsersEditObjects', 'rest/DictObjects/' + id + '.do');
+		showModal('services/UsersEditObjects', 'rest/DictObjects/' + id + '.do');
     }
 
 	function delObject() {

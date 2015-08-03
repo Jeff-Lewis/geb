@@ -5,6 +5,8 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * Курсы валют
  * 
@@ -20,6 +22,19 @@ public class CurrencyRateItem implements Serializable {
 	private String iso;
 	private String name;
 	private Number rate;
+
+	
+	public CurrencyRateItem() {
+	}
+
+	public CurrencyRateItem(Object[] arr) {
+		setDated(Utils.toTimestamp(arr[0]));
+		setCode(Utils.toString(arr[1]));
+		setScale(Utils.toInteger(arr[2]));
+		setIso(Utils.toString(arr[3]));
+		setName(Utils.toString(arr[4]));
+		setRate(Utils.toDouble(arr[5]));
+	}
 
 	/**
 	 * @return the dated

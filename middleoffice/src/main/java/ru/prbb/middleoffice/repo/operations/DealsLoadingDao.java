@@ -6,19 +6,25 @@ package ru.prbb.middleoffice.repo.operations;
 import java.sql.Date;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
 
 import ru.prbb.Utils;
 import ru.prbb.XlsRecord;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
- * Загрузка сделок
- * 
  * @author RBr
- * 
  */
-public interface DealsLoadingDao {
+@Service
+public class DealsLoadingDao
+{
 
-	class Record extends XlsRecord {
+	public static class Record extends XlsRecord {
 
 		public final String Batch; // varchar(50) in может быть null A
 		public final String TradeNum; // varchar(50) B
@@ -53,9 +59,14 @@ public interface DealsLoadingDao {
 		}
 	}
 
-	/**
-	 * @param record
-	 * @return
-	 */
-	int put(Record record);
+	@Autowired
+	private EntityManagerService ems;
+
+	public int put(ArmUserInfo user, Record r) {
+		String sql = "{call dbo.mo_WebSet_putDeals_sp ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+		return ems.executeUpdate(AccessAction.OTHER, user, sql,
+				r.Batch, r.TradeNum, r.TradeTicker, r.TradeDate, r.SettleDate, r.TradeOper, r.TradePrice,
+				r.Quantity, r.Currency, r.TradeSystem, r.Account, r.Portfolio, r.Initiator);
+	}
+
 }

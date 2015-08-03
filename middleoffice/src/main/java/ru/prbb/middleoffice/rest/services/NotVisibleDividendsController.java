@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.services;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +30,9 @@ public class NotVisibleDividendsController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<NotEnoughDividendsItem> getItems()
+	public List<NotEnoughDividendsItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET NotVisibleDividends");
-		return dao.show();
+		return dao.show(createUserInfo(request));
 	}
 }

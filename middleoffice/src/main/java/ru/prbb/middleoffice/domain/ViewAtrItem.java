@@ -4,7 +4,8 @@
 package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+
+import ru.prbb.Utils;
 
 /**
  * @author RBr
@@ -25,6 +26,25 @@ public class ViewAtrItem implements Serializable {
 	private String period_type;
 	private String calendar;
 	private String date_insert;
+
+	
+	public ViewAtrItem() {
+	}
+
+	public ViewAtrItem(Object[] arr) {
+		setId_sec(Utils.toLong(arr[0]));
+		setSecurity_code(Utils.toString(arr[1]));
+		setDate_time(Utils.toString(arr[2]));
+		setATR(Utils.toDouble(arr[3]));
+		setAtr_period(Utils.toString(arr[4]));
+		setAlgorithm(Utils.toString(arr[5]));
+		setDs_high_code(Utils.toString(arr[6]));
+		setDs_low_code(Utils.toString(arr[7]));
+		setDs_close_code(Utils.toString(arr[8]));
+		setPeriod_type(Utils.toString(arr[9]));
+		setCalendar(Utils.toString(arr[10]));
+		setDate_insert(Utils.toDate(arr[11]));
+	}
 
 	/**
 	 * @return the id_sec

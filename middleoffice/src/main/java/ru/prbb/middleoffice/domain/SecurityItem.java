@@ -8,12 +8,14 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
- * 
  */
 @Entity
 public class SecurityItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -21,6 +23,16 @@ public class SecurityItem implements Serializable {
 	private String security_code;
 	private String short_name;
 	private Long type_id;
+
+	public SecurityItem() {
+	}
+
+	public SecurityItem(Object[] arr) {
+		id_sec = Utils.toLong(arr[0]);
+		security_code = Utils.toString(arr[1]);
+		short_name = Utils.toString(arr[2]);
+		type_id = Utils.toLong(arr[3]);
+	}
 
 	/**
 	 * @return the id_sec

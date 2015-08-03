@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,15 +40,15 @@ public class LoadCurrenciesController
 
 	@RequestMapping(value = "/Securities", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<LoadCurrenciesItem> getSecurities()
+	public List<LoadCurrenciesItem> getSecurities(HttpServletRequest request)
 	{
 		log.info("POST LoadCurrencies/Securities");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData show(
+	public ResultData show(HttpServletRequest request,
 			@RequestParam String dateStart,
 			@RequestParam(required = false) String dateEnd,
 			@RequestParam String[] securities)
@@ -63,7 +65,7 @@ public class LoadCurrenciesController
 						Utils.parseDate(dateStart), Utils.parseDate(dateEnd),
 						securities, new String[] { "PX_LAST" });
 
-		return new ResultData(dao.execute(securities, answer));
+		return new ResultData(dao.execute(createUserInfo(request),securities, answer));
 	}
 
 }

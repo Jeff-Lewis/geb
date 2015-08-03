@@ -2,6 +2,8 @@ package ru.prbb.analytics.rest.reports;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,21 +33,21 @@ public class BrokersCoverageController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<BrokersCoverageItem> getShow()
+	public List<BrokersCoverageItem> getShow(HttpServletRequest request)
 	{
 		log.info("GET BrokersCoverage");
-		return dao.execute();
+		return dao.execute(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/Change", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postChange(
+	public Result postChange(HttpServletRequest request,
 			@RequestParam Long id,
 			@RequestParam String broker,
 			@RequestParam Integer value)
 	{
 		log.info("POST BrokersCoverage: id={}, broker={}, value={}", Utils.asArray(id, broker, value));
-		dao.change(id, Utils.getColumnNameByField(broker, BrokersCoverageItem.class), value);
+		dao.change(createUserInfo(request), id, Utils.getColumnNameByField(broker, BrokersCoverageItem.class), value);
 		return Result.SUCCESS;
 	}
 }

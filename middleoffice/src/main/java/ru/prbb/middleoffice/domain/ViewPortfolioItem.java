@@ -5,6 +5,8 @@ package ru.prbb.middleoffice.domain;
 
 import java.io.Serializable;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
  * 
@@ -27,6 +29,28 @@ public class ViewPortfolioItem implements Serializable {
 	private Number position;
 	private Number position_rep_date;
 	private Number revaluation;
+
+	
+	public ViewPortfolioItem() {
+	}
+
+	public ViewPortfolioItem(Object[] arr) {
+		setReport_date(Utils.toDate(arr[0]));
+		setClient(Utils.toString(arr[1]));
+		setFund(Utils.toString(arr[2]));
+		setSecurity_code(Utils.toString(arr[3]));
+		setShort_name(Utils.toString(arr[4]));
+		setBatch(Utils.toInteger(arr[5]));
+		setUsd_funding(Utils.toString(arr[6]));
+		setCurrency(Utils.toString(arr[7]));
+		setQuantity(Utils.toInteger(arr[8]));
+		setAvg_price(Utils.toDouble(arr[9]));
+		setLast_price(Utils.toDouble(arr[10]));
+		setNkd(Utils.toDouble(arr[11]));
+		setPosition(Utils.toDouble(arr[12]));
+		setPosition_rep_date(Utils.toDouble(arr[13]));
+		setRevaluation(Utils.toDouble(arr[14]));
+	}
 
 	/**
 	 * @return the report_date

@@ -2,6 +2,8 @@ package ru.prbb.middleoffice.rest.portfolio;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,27 +39,27 @@ public class ViewDealsREPOController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public List<ViewDealsREPOItem> postShow(
+	public List<ViewDealsREPOItem> postShow(HttpServletRequest request,
 			@RequestParam String dateBegin,
 			@RequestParam String dateEnd,
 			@RequestParam Long security)
 	{
 		log.info("POST ViewDealsREPO: dateBegin={}, dateEnd={}, security={}", Utils.toArray(dateBegin, dateEnd, security));
-		return dao.findAll(Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), security);
+		return dao.findAll(createUserInfo(request),Utils.parseDate(dateBegin), Utils.parseDate(dateEnd), security);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET ViewDealsREPO: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request),id));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postUpdateItem(
+	public Result postUpdateItem(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam Double rate,
 			@RequestParam Integer quantity,
@@ -66,17 +68,17 @@ public class ViewDealsREPOController
 	{
 		log.info("POST ViewDealsREPO: id={}, rate={}, quantity={}, price={}, days={}",
 				Utils.toArray(id, rate, quantity, price, days));
-		dao.updateById(id, rate, quantity, price, days);
+		dao.updateById(createUserInfo(request),id, rate, quantity, price, days);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL ViewDealsREPO: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request),id);
 		return Result.SUCCESS;
 	}
 

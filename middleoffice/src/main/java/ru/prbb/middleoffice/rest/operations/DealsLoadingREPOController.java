@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -42,7 +44,7 @@ public class DealsLoadingREPOController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData postUpload(
+	public ResultData postUpload(HttpServletRequest request,
 			@RequestParam("upload") MultipartFile file) throws Exception
 	{
 		log.info("POST DealsLoadingREPO: " + file.getOriginalFilename());
@@ -70,7 +72,7 @@ public class DealsLoadingREPOController
 		Map<Record, Exception> errors = new HashMap<>();
 		for (Record r : records) {
 			try {
-				dao.put(r);
+				dao.put(createUserInfo(request),r);
 			} catch (Exception e) {
 				errors.put(r, e);
 			}

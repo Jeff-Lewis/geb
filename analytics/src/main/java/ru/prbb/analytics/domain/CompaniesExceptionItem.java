@@ -5,15 +5,28 @@ package ru.prbb.analytics.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+
+import ru.prbb.Utils;
+
 /**
  * @author RBr
- * 
  */
 public class CompaniesExceptionItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = " Exception")
 	private String exception;
 	private String comment;
+
+	public CompaniesExceptionItem() {
+	}
+
+	public CompaniesExceptionItem(Object[] arr) {
+		exception = Utils.toString(arr[0]);
+		comment = Utils.toString(arr[1]);
+	}
 
 	/**
 	 * @return the exception

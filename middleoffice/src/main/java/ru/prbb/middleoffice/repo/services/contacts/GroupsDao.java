@@ -5,71 +5,86 @@ package ru.prbb.middleoffice.repo.services.contacts;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
+
 import ru.prbb.middleoffice.domain.GroupAddressItem;
 import ru.prbb.middleoffice.domain.GroupContactsItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
  * Справочник контактов
  * 
  * @author RBr
  */
-public interface GroupsDao {
+@Service
+public class GroupsDao
+{
 
-	/**
-	 * @return
-	 */
-	List<SimpleItem> findAll();
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	SimpleItem findById(Long id);
+	public List<SimpleItem> findAll(ArmUserInfo user) {
+		String sql = "{call dbo.WebGet_SelectGroups_sp}";
+		return ems.getSelectList(user, SimpleItem.class, sql);
+	}
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	int put(String name);
+	public SimpleItem findById(ArmUserInfo user, Long id) {
+		List<SimpleItem> list = findAll(user);
+		for (SimpleItem item : list) {
+			if (id.equals(item.getId())) {
+				return item;
+			}
+		}
+		return null;
+	}
 
-	/**
-	 * @param id
-	 * @param name
-	 * @return
-	 */
-	int updateById(Long id, String name);
+	public int put(ArmUserInfo user, String name) {
+		String sql = "{call dbo.WebSet_putGroup_sp ?}";
+		return ems.executeUpdate(AccessAction.INSERT, user, sql, name);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	int deleteById(Long id);
+	public int updateById(ArmUserInfo user, Long id, String name) {
+		String sql = "{call dbo.WebSet_udGroup_sp 'u', ?, ?}";
+		return ems.executeUpdate(AccessAction.UPDATE, user, sql, id, name);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<GroupAddressItem> findAllAddresses(Long id);
+	public int deleteById(ArmUserInfo user, Long id) {
+		String sql = "{call dbo.WebSet_udGroup_sp 'd', ?}";
+		return ems.executeUpdate(AccessAction.DELETE, user, sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<GroupContactsItem> findAllContacts(Long id);
+	public List<GroupAddressItem> findAllAddresses(ArmUserInfo user, Long id) {
+		String sql = "{call dbo.WebGet_SelectContactsAddress_sp ?}";
+		return ems.getSelectList(user, GroupAddressItem.class, sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @param cids
-	 * @return
-	 */
-	int[] putStaff(Long id, Long[] cids);
+	public List<GroupContactsItem> findAllContacts(ArmUserInfo user, Long id) {
+		String sql = "{call dbo.WebGet_SelectGroupContacts_sp ?}";
+		return ems.getSelectList(user, GroupContactsItem.class, sql, id);
+	}
 
-	/**
-	 * @param id
-	 * @param cids
-	 * @return
-	 */
-	int[] deleteStaff(Long id, Long[] cids);
+	public int[] putStaff(ArmUserInfo user, Long id, Long[] cids) {
+		String sql = "{call dbo.WebSet_mapContactToGroup_sp ?, ?}";
+		int[] res = new int[cids.length];
+		for (int i = 0; i < cids.length; i++) {
+			res[i] = ems.executeUpdate(AccessAction.UPDATE, user, sql, id, cids[i]);
+		}
+		return res;
+	}
+
+	public int[] deleteStaff(ArmUserInfo user, Long id, Long[] cids) {
+		String sql = "{call dbo.WebSet_dContactFromGroup_sp ?, ?}";
+		int[] res = new int[cids.length];
+		for (int i = 0; i < cids.length; i++) {
+			res[i] = ems.executeUpdate(AccessAction.DELETE, user, sql, id, cids[i]);
+		}
+		return res;
+	}
 
 }

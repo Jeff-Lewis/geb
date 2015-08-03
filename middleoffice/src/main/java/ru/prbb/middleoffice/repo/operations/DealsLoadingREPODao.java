@@ -7,18 +7,24 @@ import java.sql.Date;
 import java.sql.Time;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
 
 import ru.prbb.XlsRecord;
+import ru.prbb.middleoffice.repo.UserHistory.AccessAction;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
- * Загрузка сделок РЕПО из файла
- * 
  * @author RBr
- * 
  */
-public interface DealsLoadingREPODao {
+@Service
+public class DealsLoadingREPODao
+{
 
-	class Record extends XlsRecord {
+	public static class Record extends XlsRecord {
 
 		public final Date date;
 		public final Time time;
@@ -51,10 +57,14 @@ public interface DealsLoadingREPODao {
 		}
 	}
 
-	/**
-	 * @param record
-	 * @return
-	 */
-	int put(Record record);
+	@Autowired
+	private EntityManagerService ems;
+
+	public int put(ArmUserInfo user, Record r) {
+		String sql = "{call dbo.mo_WebSet_putRepoDeals_sp ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?}";
+		return ems.executeUpdate(AccessAction.OTHER, user, sql,
+				r.date, r.time, r.deal_num, r.deal_security, r.oper, r.price,
+				r.quantity, r.account, r.rate, r.days, r.currency, r.trade_system);
+	}
 
 }

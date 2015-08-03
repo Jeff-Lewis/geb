@@ -26,12 +26,15 @@
 		<intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
 	</http>
 
+	<beans:bean id="ArmUserDetailsService" class="ru.prbb.middleoffice.services.ArmUserDetailsService"/>
+
 	<authentication-manager>
-		<authentication-provider>
+		<authentication-provider user-service-ref="ArmUserDetailsService" />
+		<!-- <authentication-provider>
 			<user-service>
 				<user name="mo" password="mo" authorities="ROLE_USER, ROLE_ADMIN" />
 				<user name="admin1" password="admin1" authorities="ROLE_USER" />
 			</user-service>
-		</authentication-provider>
+		</authentication-provider> -->
 	</authentication-manager>
 </beans:beans>

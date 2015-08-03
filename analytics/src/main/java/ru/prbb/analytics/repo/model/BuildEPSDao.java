@@ -5,7 +5,12 @@ package ru.prbb.analytics.repo.model;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import ru.prbb.ArmUserInfo;
 import ru.prbb.analytics.domain.BuildEPSItem;
+import ru.prbb.analytics.services.EntityManagerService;
 
 /**
  * Расчёт EPS по компании
@@ -13,17 +18,20 @@ import ru.prbb.analytics.domain.BuildEPSItem;
  * @author RBr
  * 
  */
-public interface BuildEPSDao {
+@Service
+public class BuildEPSDao
+{
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	BuildEPSItem calculate(Long id);
+	public BuildEPSItem calculate(ArmUserInfo user, Long id) {
+		String sql = "{call dbo.main_create_eps_proc ?}";
+		return ems.getResultItem(user, BuildEPSItem.class, sql, id);
+	}
 
-	/**
-	 * @return
-	 */
-	List<BuildEPSItem> calculate();
+	public List<BuildEPSItem> calculate(ArmUserInfo user) {
+		String sql = "{call dbo.main_create_eps_proc}";
+		return ems.getResultList(user, BuildEPSItem.class, sql);
+	}
 
 }

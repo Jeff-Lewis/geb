@@ -2,6 +2,8 @@ package ru.prbb.analytics.rest.model;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,73 +39,73 @@ public class CompanyGroupController
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<SimpleItem> getItems()
+	public List<SimpleItem> getItems(HttpServletRequest request)
 	{
 		log.info("GET CompanyGroup");
-		return dao.findAll();
+		return dao.findAll(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public ResultData getItem(
+	public ResultData getItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET CompanyGroup: id={}", id);
-		return new ResultData(dao.findById(id));
+		return new ResultData(dao.findById(createUserInfo(request), id));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postItemAdd(
+	public Result postItemAdd(HttpServletRequest request,
 			@RequestParam String name)
 	{
 		log.info("GET CompanyGroup: name={}", name);
-		dao.put(name);
+		dao.put(createUserInfo(request), name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postItemRename(
+	public Result postItemRename(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String name)
 	{
 		log.info("POST CompanyGroup: id={}, name={}", id, name);
-		dao.renameById(id, name);
+		dao.renameById(createUserInfo(request), id, name);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
 	@ResponseBody
-	public Result deleteItem(
+	public Result deleteItem(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("DEL CompanyGroup: id={}", id);
-		dao.deleteById(id);
+		dao.deleteById(createUserInfo(request), id);
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/All", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<CompanyStaffItem> getAll(
+	public List<CompanyStaffItem> getAll(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET CompanyGroup/All: id={}", id);
-		return dao.findStaff();
+		return dao.findStaff(createUserInfo(request));
 	}
 
 	@RequestMapping(value = "/{id}/Group", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<CompanyStaffItem> getGroup(
+	public List<CompanyStaffItem> getGroup(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET CompanyGroup/Group: id={}", id);
-		return dao.findStaff(id);
+		return dao.findStaff(createUserInfo(request), id);
 	}
 
 	@RequestMapping(value = "/{id}/Staff", method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public Result postStaff(
+	public Result postStaff(HttpServletRequest request,
 			@PathVariable("id") Long id,
 			@RequestParam String action,
 			@RequestParam Long[] ids)
@@ -112,11 +114,11 @@ public class CompanyGroupController
 		action = action.toUpperCase();
 
 		if ("ADD".equals(action)) {
-			dao.putStaff(id, ids);
+			dao.putStaff(createUserInfo(request), id, ids);
 		}
 
 		if ("DEL".equals(action)) {
-			dao.deleteStaff(id, ids);
+			dao.deleteStaff(createUserInfo(request), id, ids);
 		}
 
 		return Result.SUCCESS;
@@ -124,31 +126,31 @@ public class CompanyGroupController
 
 	@RequestMapping(value = "/{id}/RequestBDP", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public Result  getRequestBDP(
+	public Result  getRequestBDP(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET CompanyGroup/RequestBDP: id={}", id);
 
-		List<CompanyStaffItem> list = dao.findStaff(id);
+		List<CompanyStaffItem> list = dao.findStaff(createUserInfo(request), id);
 
 		String[] security = new String[list.size()];
 		int i = 0;
 		for (CompanyStaffItem item : list) {
 			security[i++] = item.getSecurity_code();
 		}
-		reqBDP.postExecute(security, null);
+		reqBDP.postExecute(request, security, null);
 
 		return Result.SUCCESS;
 	}
 
 	@RequestMapping(value = "/{id}/RequestYearly", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public Result  getRequestYearly(
+	public Result  getRequestYearly(HttpServletRequest request,
 			@PathVariable("id") Long id)
 	{
 		log.info("GET CompanyGroup/RequestYearly: id={}", id);
 
-		List<CompanyStaffItem> list = dao.findStaff(id);
+		List<CompanyStaffItem> list = dao.findStaff(createUserInfo(request), id);
 
 		String[] security = new String[list.size()];
 		int i = 0;

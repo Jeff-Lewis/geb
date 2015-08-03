@@ -3,66 +3,83 @@
  */
 package ru.prbb.middleoffice.repo;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.prbb.ArmUserInfo;
+
+import org.springframework.stereotype.Service;
+
+import ru.prbb.Utils;
 import ru.prbb.middleoffice.domain.PortfolioItem;
 import ru.prbb.middleoffice.domain.SimpleItem;
 import ru.prbb.middleoffice.domain.ViewFuturesItem;
 import ru.prbb.middleoffice.domain.ViewOptionsItem;
+import ru.prbb.middleoffice.services.EntityManagerService;
 
 /**
  * @author RBr
- * 
  */
-public interface EquitiesDao {
+@Service
+public class EquitiesDao
+{
 
-	/**
-	 * @return
-	 */
-	List<PortfolioItem> findAllPortfolio();
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @return
-	 */
-	List<PortfolioItem> findAllSwaps();
+	public List<PortfolioItem> findAllPortfolio(ArmUserInfo user) {
+		String sql = "select id_sec, ticker, deal_name, date_insert from dbo.portfolio_equity_v";
+		return ems.getSelectList(user, PortfolioItem.class, sql);
+	}
 
-	/**
-	 * @return
-	 */
-	List<PortfolioItem> findAllBonds();
+	public List<PortfolioItem> findAllSwaps(ArmUserInfo user) {
+		String sql = "{call mo_WebGet_SecuritiesDealNameMapping_sp 4}";
+		return ems.getSelectList(user, PortfolioItem.class, sql);
+	}
 
-	/**
-	 * @return
-	 */
-	List<ViewFuturesItem> findAllFutures();
+	public List<PortfolioItem> findAllBonds(ArmUserInfo user) {
+		String sql = "{call dbo.mo_WebGet_SecuritiesDealNameMapping_sp 5}";
+		List<Object[]> list = ems.getSelectList(user, Object[].class, sql);
 
-	/**
-	 * @return
-	 */
-	List<ViewOptionsItem> findAllOptions();
+		List<PortfolioItem> res = new ArrayList<>(list.size());
+		for (Object[] arr : list) {
+			PortfolioItem item = new PortfolioItem();
+			item.setId_sec(Utils.toLong(arr[0]));
+			item.setTicker(Utils.toString(arr[2]));
+			item.setDeal_name(Utils.toString(arr[3]));
+			item.setDate_insert(Utils.toTimestamp(arr[4]));
+			res.add(item);
+		}
+		return res;
+	}
 
-	/**
-	 * mo_WebGet_ajaxEquity_v
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findCombo(String query);
+	public List<ViewFuturesItem> findAllFutures(ArmUserInfo user) {
+		String sql = "select * from dbo.portfolio_cmdt_v";
+		return ems.getSelectList(user, ViewFuturesItem.class, sql);
+	}
 
-	/**
-	 * investment_portfolio
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findComboInvestmentPortfolio(String query);
+	public List<ViewOptionsItem> findAllOptions(ArmUserInfo user) {
+		String sql = "select * from dbo.portfolio_options_v";
+		return ems.getSelectList(user, ViewOptionsItem.class, sql);
+	}
 
-	/**
-	 * mo_WebGet_Portfolio_v
-	 * 
-	 * @param query
-	 * @return
-	 */
-	List<SimpleItem> findComboPortfolio(String query);
+	public List<SimpleItem> findCombo(String query) {
+		String sql = "select id, security_code as name from dbo.mo_WebGet_ajaxEquity_v";
+		String where = " where lower(security_code) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 
+	public List<SimpleItem> findComboInvestmentPortfolio(String query) {
+		String sql = "select p_id as id, name from dbo.investment_portfolio";
+		String where = " where lower(name) like ?";
+		return ems.getComboList(sql, where, query);
+	}
+
+	public List<SimpleItem> findComboPortfolio(String query) {
+		String sql = "select id_sec as id, security_code as name from dbo.mo_WebGet_Portfolio_v";
+		String where = " where lower(security_code) like ?";
+		return ems.getComboList(sql, where, query);
+	}
 }

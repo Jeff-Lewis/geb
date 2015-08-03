@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import ru.prbb.Utils;
+
 public class NoCoefficientsItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -17,6 +19,17 @@ public class NoCoefficientsItem implements Serializable {
 	private String securityCode;
 	@Column(name = "TradeSystem")
 	private String tradeSystem;
+
+	
+	public NoCoefficientsItem() {
+	}
+
+	public NoCoefficientsItem(Object[] arr) {
+		setSecurityId(Utils.toLong(arr[0]));
+		setTradeSystemId(Utils.toLong(arr[1]));
+		setSecurityCode(Utils.toString(arr[2]));
+		setTradeSystem(Utils.toString(arr[3]));
+	}
 
 	public String getType() {
 		return type;

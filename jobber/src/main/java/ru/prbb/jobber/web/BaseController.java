@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ru.prbb.Utils;
 import ru.prbb.jobber.domain.Result;
 import ru.prbb.jobber.domain.ResultError;
 
@@ -95,6 +96,10 @@ public abstract class BaseController {
 			} catch (Exception e) {
 				log.error("catch PersistenceException", e);
 			}
+		}
+
+		if (Utils.isEmpty(message)) {
+			message = ex.toString();
 		}
 
 		return new ResultError(message);

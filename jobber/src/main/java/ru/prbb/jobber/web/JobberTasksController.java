@@ -30,7 +30,7 @@ import ru.prbb.jobber.services.ScheduledServices;
 @RequestMapping(value = "/JobberTasks")
 public class JobberTasksController {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ParametersDao parameters;

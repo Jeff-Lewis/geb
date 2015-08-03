@@ -8,12 +8,14 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import ru.prbb.Utils;
+
 /**
  * @author RBr
- * 
  */
 @Entity
 public class ViewParamItem implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -48,6 +50,44 @@ public class ViewParamItem implements Serializable {
 	private String old_mnemonic;
 	private String data_license_category_2;
 	private String psboopt;
+
+	public ViewParamItem() {
+	}
+
+	public ViewParamItem(Object[] arr) {
+		int idx = 0;
+		field_id = Utils.toString(arr[idx++]);
+		field_mnemonic = Utils.toString(arr[idx++]);
+		description = Utils.toString(arr[idx++]);
+		data_license_category = Utils.toString(arr[idx++]);
+		category = Utils.toString(arr[idx++]);
+		definition = Utils.toString(arr[idx++]);
+		comdty = Utils.toString(arr[idx++]);
+		equity = Utils.toString(arr[idx++]);
+		muni = Utils.toString(arr[idx++]);
+		pfd = Utils.toString(arr[idx++]);
+		m_mkt = Utils.toString(arr[idx++]);
+		govt = Utils.toString(arr[idx++]);
+		corp = Utils.toString(arr[idx++]);
+		indx = Utils.toString(arr[idx++]);
+		curncy = Utils.toString(arr[idx++]);
+		mtge = Utils.toString(arr[idx++]);
+		standard_width = Utils.toString(arr[idx++]);
+		standard_decimal_places = Utils.toString(arr[idx++]);
+		field_type = Utils.toString(arr[idx++]);
+		back_office = Utils.toString(arr[idx++]);
+		extended_back_office = Utils.toString(arr[idx++]);
+		production_date = Utils.toString(arr[idx++]);
+		current_maximum_width = Utils.toString(arr[idx++]);
+		bval = Utils.toString(arr[idx++]);
+		bval_blocked = Utils.toString(arr[idx++]);
+		getfundamentals = Utils.toString(arr[idx++]);
+		gethistory = Utils.toString(arr[idx++]);
+		getcompany = Utils.toString(arr[idx++]);
+		old_mnemonic = Utils.toString(arr[idx++]);
+		data_license_category_2 = Utils.toString(arr[idx++]);
+		psboopt = Utils.toString(arr[idx++]);
+	}
 
 	/**
 	 * @return the field_id

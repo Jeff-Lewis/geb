@@ -2,44 +2,45 @@ package ru.prbb.jobber.repo.users;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import ru.prbb.jobber.domain.DictObjectItem;
+import ru.prbb.jobber.services.EntityManagerService;
 
 /**
- * Справочник пользователей - Объекты
  * 
  * @author BrihlyaevRA
+ *
  */
-public interface DictObjectsDao {
+@Service
+public class DictObjectsDao
+{
+	@Autowired
+	private EntityManagerService ems;
 
-	/**
-	 * @return
-	 */
-	List<DictObjectItem> findAll();
+	public List<DictObjectItem> findAll() {
+		String sql = "{call dbo.WebGet_SelectObjects_sp}";
+		return ems.getSelectList(DictObjectItem.class, sql);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	DictObjectItem findById(Long id);
+	public DictObjectItem findById(Long id) {
+		String sql = "{call dbo.WebGet_SelectObjects_sp ?}";
+		return ems.getSelectItem(DictObjectItem.class, sql, id);
+	}
 
-	/**
-	 * @param name
-	 * @param comment
-	 * @return
-	 */
-	public int put(String name, String comment);
+	public int put(String name, String comment) {
+		String sql = "{call dbo.WebSet_iudObjects_sp  'i', null, ?, ?}";
+		return ems.executeUpdate(sql, name, comment);
+	}
 
-	/**
-	 * @param id
-	 * @param name
-	 * @param comment
-	 * @return
-	 */
-	public int updateById(Long id, String name, String comment);
+	public int updateById(Long id, String name, String comment) {
+		String sql = "{call dbo.WebSet_iudObjects_sp  'u', ?, ?, ?}";
+		return ems.executeUpdate(sql, id, name, comment);
+	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	public int deleteById(Long id);
+	public int deleteById(Long id) {
+		String sql = "{call dbo.WebSet_iudObjects_sp  'd', ?}";
+		return ems.executeUpdate(sql, id);
+	}
 }

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +37,7 @@ public class LoadValuesController
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ResponseBody
-	public ResultData show(
+	public ResultData show(HttpServletRequest request,
 			@RequestParam String[] securities)
 	{
 		final Map<String, Long> ids = new HashMap<>();
@@ -51,14 +53,14 @@ public class LoadValuesController
 
 		List<Map<String, String>> answer = bs.executeValuesLoad(ids);
 
-		return new ResultData(dao.execute(answer));
+		return new ResultData(dao.execute(createUserInfo(request),answer));
 	}
 
 	@RequestMapping(value = "/Securities", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
 	@ResponseBody
-	public List<SecurityValuesItem> listSecurities()
+	public List<SecurityValuesItem> listSecurities(HttpServletRequest request)
 	{
 		log.info("GET LoadValues/Securities");
-		return dao.findAllSecurities();
+		return dao.findAllSecurities(createUserInfo(request));
 	}
 }
