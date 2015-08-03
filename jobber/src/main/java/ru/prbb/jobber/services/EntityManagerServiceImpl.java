@@ -110,22 +110,27 @@ public class EntityManagerServiceImpl implements EntityManagerService {
 		}
 
 		Query q = setParameters(em.createNativeQuery(sql), params);
-		List<?> object = getResultList(q, sql);
+		List<?> objects = getResultList(q, sql);
 
 		if (resultClass == Object[].class) {
-			List<T> result = (List<T>) object;
+			List<T> result = (List<T>) objects;
 			return result;
 		}
 
-		List<T> result = new ArrayList<T>(object.size());
-		try {
-			Constructor<T> constructor = resultClass.getConstructor(Object[].class);
-			for (Object arr : object) {
-				T e = constructor.newInstance(arr);
-				result.add(e);
+		List<T> result;
+		if (resultClass.getSimpleName().contains("Item")) {
+			result = new ArrayList<T>(objects.size());
+			try {
+				Constructor<T> constructor = resultClass.getConstructor(Object[].class);
+				for (Object arr : objects) {
+					T e = constructor.newInstance(arr);
+					result.add(e);
+				}
+			} catch (Exception e) {
+				log.error("create newInstance in getResultList", e);
 			}
-		} catch (Exception e) {
-			log.error("create newInstance in getResultList", e);
+		} else {
+			result = (List<T>) objects;
 		}
 		return result;
 	}

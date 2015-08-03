@@ -328,7 +328,7 @@ public class SendingDao
 			}
 			URI uri = uriBuilder.build();
 
-			Map<String, String> map = new HashMap<>(phones.size());
+			Map<Number, String> map = new HashMap<>(phones.size());
 
 			String xml = createXmlConsumeOutMessageRequest(map, text, phones, type);
 
@@ -368,7 +368,7 @@ public class SendingDao
 		}
 	}
 
-	private String createXmlConsumeOutMessageRequest(Map<String, String> map, String commonContent, List<String> phones, Number type) {
+	private String createXmlConsumeOutMessageRequest(Map<Number, String> map, String commonContent, List<String> phones, Number type) {
 		final String login = "lifein0";
 		final String password = "JWtwRait";
 
@@ -470,7 +470,7 @@ public class SendingDao
 
 				for (String phone : phones) {
 					xmlWriter.writeStartElement("outMessage");
-					String clientId = logSmsGetId(phone, commonContent, type);
+					Number clientId = logSmsGetId(phone, commonContent, type);
 					xmlWriter.writeAttribute("clientId", clientId.toString());
 
 					xmlWriter.writeStartElement("address");
@@ -503,9 +503,9 @@ public class SendingDao
 		return sw.toString();
 	}
 
-	private String logSmsGetId(String phone, String sms_text, Number sms_type) {
+	private Number logSmsGetId(String phone, String sms_text, Number sms_type) {
 		String sql = "{call dbo.iu_sms_log 'i', ?, ?, ?}";
-		return ems.getSelectItem(String.class, sql, sms_text, phone, sms_type);
+		return ems.getSelectItem(Number.class, sql, sms_text, phone, sms_type);
 	}
 
 	private int logSms(String id, String response) {
@@ -518,7 +518,7 @@ public class SendingDao
 		return 0;
 	}
 
-	private List<SendingItem> parseConsumeOutMessageResponse(Map<String, String> map, String xml) {
+	private List<SendingItem> parseConsumeOutMessageResponse(Map<Number, String> map, String xml) {
 		List<SendingItem> result = new ArrayList<>();
 		try {
 			XMLStreamReader sr = XMLInputFactory.newFactory().createXMLStreamReader(new StringReader(xml));
