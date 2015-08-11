@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +30,7 @@ public class ArmUserDetailsService implements UserDetailsService {
 	private static final List<SimpleGrantedAuthority> AUTHORITIES_ADMIN = Arrays.asList(ROLE_USER, ROLE_ADMIN);
 
 	@Override
+	@Cacheable("UserByUsername")
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		log.info("loadUserByUsername({})", username);
 

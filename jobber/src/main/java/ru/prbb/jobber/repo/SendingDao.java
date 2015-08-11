@@ -127,10 +127,10 @@ public class SendingDao
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	public List<SendingItem> sendMail(String email_text, List<String> emails, String subject) {
-		final String smtpServer = "wonderworksinvestments.com";
+//		final String smtpServer = "wonderworksinvestments.com";
 		final String fromAddress = "noreply@wonderworksinvestments.com";
-		final String userName = fromAddress;
-		final String password = "D6c8W3g2";
+//		final String userName = fromAddress;
+//		final String password = "D6c8W3g2";
 		final String body = email_text;
 
 		List<SendingItem> result = new ArrayList<>(emails.size());
@@ -231,7 +231,7 @@ public class SendingDao
 
 	private List<SendingItem> sendSmsSMSru(String text, List<String> phones) {
 		String api_id = "33bd77b5-d915-c964-a184-a6e07b15b226";
-		String from = "LIFE";
+//		String from = "LIFE";
 
 		StringBuilder to = new StringBuilder(phones.size() * 10);
 		try {
@@ -334,7 +334,8 @@ public class SendingDao
 
 			HttpPost httpPost = new HttpPost(uri);
 			httpPost.setEntity(new StringEntity(xml, "UTF-8"));
-			log.debug("Executing request " + httpPost.getRequestLine());
+			log.debug("Executing request {}", httpPost.getRequestLine());
+			log.debug("Executing request\n{}", xml);
 
 			try (CloseableHttpClient httpclient = HttpClients.createSystem()) {
 				String responseBody = httpclient.execute(httpPost, new ResponseHandler<String>() {
@@ -351,7 +352,7 @@ public class SendingDao
 					}
 
 				});
-				log.debug("Response " + responseBody);
+				log.debug("Response {}", responseBody);
 				return parseConsumeOutMessageResponse(map, responseBody);
 			}
 		} catch (Exception e) {
